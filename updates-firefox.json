@@ -1,0 +1,26 @@
+{
+    "addons": {
+        "animestars-extension@teri-anric.github.io": {
+            "updates": [
+                {
+                    "version": "1.0.1",
+                    "update_link": "https://github.com/Teri-anric/AnimeStarsExtensions/releases/download/v1.0.1/animestars_extension-1.0.1-fx.xpi",
+                    "update_hash": "",
+                    "applications": {
+                        "gecko": {
+                            "strict_min_version": "68.0"
+                        }
+                    },
+                    "update_details": {
+                        "release_date": "2024-02-15",
+                        "changelog": [
+                            "Improved cross-browser compatibility",
+                            "Removed window.eval() usage", 
+                            "Added automatic update mechanism"
+                        ]
+                    }
+                }
+            ]
+        }
+    }
+} 

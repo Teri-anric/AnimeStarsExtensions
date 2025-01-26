@@ -1,0 +1,38 @@
+{
+    "manifest_version": 3,
+    "name": "AnimeStar Extension",
+    "version": "1.0.0",
+    "description": "Enhanced functionality for AnimeStar website",
+    "permissions": [
+        "activeTab",
+        "storage",
+        "webNavigation"
+    ],
+    "update_url": "https://raw.githubusercontent.com/Teri-anric/AnimeStarsExtensions/main/updates.json",
+    "background": {
+        "service_worker": "background.js"
+    },
+    "content_scripts": [
+        {
+            "matches": ["https://animestars.org/aniserials/video/*/*.html"],
+            "js": ["../scripts/auto_seen_card.js"]
+        },
+        {
+            "matches": ["https://animestars.org/user/*"],
+            "js": ["../scripts/user_card_buttons.js"]
+        },
+        {
+            "matches": ["https://animestars.org/*"],
+            "js": ["../scripts/fix_watchlist.js"]
+        },
+        {
+            "matches": ["https://animestars.org/clubs/*/boost/"],
+            "js": ["../scripts/boost_club_keymap.js"]
+        }
+    ],
+    "icons": {
+        "16": "icon16.png",
+        "48": "icon48.png",
+        "128": "icon128.png"
+    }
+}
