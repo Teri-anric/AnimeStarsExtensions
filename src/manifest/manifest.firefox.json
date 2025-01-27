@@ -1,5 +1,5 @@
 {
-    "manifest_version": 2,
+    "manifest_version": 3,
     "browser_specific_settings": {
         "gecko": {
             "id": "animestars-extension@teri-anric.github.io"

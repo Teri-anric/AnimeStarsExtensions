@@ -1,5 +1,10 @@
 (function() {
-    if (document.querySelector(".usp__name")) {
+    chrome.storage.sync.get(['add-user-cards-buttons'], (settings) => {
+
+        if (!settings['add-user-cards-buttons']) return;
+        
+        if (!document.querySelector(".usp__name")) return;
+
         let username = document.querySelector(".usp__name").textContent.replace("возвышение", "").trim();
         let login_username = document.querySelector(".login__title").textContent.trim();
 
@@ -30,5 +35,5 @@
             rankLink.style = ITEM_STYLE;
             boxShort.append(rankLink);
         });
-    }
+    });
 })();
