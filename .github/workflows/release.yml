@@ -42,4 +42,5 @@ jobs:
         files: |
           build/animestars_extension-chrome.crx
           build/animestars_extension-firefox.xpi
-    
+        draft: true
+        token: ${{ secrets.GITHUB_TOKEN }}
