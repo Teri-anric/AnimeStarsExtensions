@@ -1,14 +1,12 @@
 {
-    "version": "1.0.1",
+    "version": "0.0.1",
     "update_url": "https://raw.githubusercontent.com/Teri-anric/AnimeStarsExtensions/main/updates.json",
     "update_details": {
-        "version": "1.0.1",
-        "release_date": "2024-02-15",
+        "version": "0.0.1",
+        "release_date": "2025-01-27",
         "changelog": [
-            "Improved cross-browser compatibility",
-            "Removed window.eval() usage",
-            "Added automatic update mechanism"
+            "Initial release"
         ],
-        "download_url": "https://github.com/Teri-anric/AnimeStarsExtensions/releases/tag/v1.0.1"
+        "download_url": "https://github.com/Teri-anric/AnimeStarsExtensions/releases/tag/v0.0.1"
     }
-} 
+}

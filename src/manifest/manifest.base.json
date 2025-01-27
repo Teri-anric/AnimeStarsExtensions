@@ -1,0 +1,84 @@
+{
+    "manifest_version": 3,
+    "name": "AnimeStar Extension",
+    "version": "0.0.1",
+    "description": "Enhanced functionality for AnimeStar website",
+    "permissions": [
+        "activeTab",
+        "storage",
+        "webNavigation"
+    ],
+    "background": {
+        "scripts": [
+            "background.js"
+        ],
+        "persistent": false
+    },
+    "content_scripts": [
+        {
+            "matches": [    
+                "https://animestars.org/aniserials/video/*/*.html",
+                "https://astars.club/aniserials/video/*/*.html",
+                "https://asstars1.astars.club/aniserials/video/*/*.html",
+                "https://as1.astars.club/aniserials/video/*/*.html",
+                "https://asstars.tv/aniserials/video/*/*.html"
+            ],
+            "js": [
+                "./scripts/auto_seen_card.js"
+            ]
+        },
+        {
+            "matches": [
+                "https://animestars.org/user/*",
+                "https://astars.club/user/*",
+                "https://asstars1.astars.club/user/*",
+                "https://as1.astars.club/user/*",
+                "https://asstars.tv/user/*"
+            ],
+            "js": [
+                "./scripts/user_card_buttons.js"
+            ]
+        },
+        {
+            "matches": [
+                "https://animestars.org/*",
+                "https://astars.club/*",
+                "https://asstars1.astars.club/*",
+                "https://as1.astars.club/*",
+                "https://asstars.tv/*"
+            ],
+            "js": [
+                "./scripts/fix_watchlist.js"
+            ]
+        },
+        {
+            "matches": [    
+                "https://animestars.org/clubs/*/boost/",
+                "https://astars.club/clubs/*/boost/",
+                "https://asstars1.astars.club/clubs/*/boost/",
+                "https://as1.astars.club/clubs/*/boost/",
+                "https://asstars.tv/clubs/*/boost/"
+            ],
+            "js": [
+                "./scripts/boost_club_keymap.js"
+            ]
+        },
+        {
+            "matches": [
+                "https://animestars.org/*",
+                "https://astars.club/*",
+                "https://asstars1.astars.club/*",
+                "https://as1.astars.club/*",
+                "https://asstars.tv/*"
+            ],
+            "js": [
+                "./libs/jquery-3.7.1.min.js",
+                "./scripts/card_user_count.js"
+            ],
+            "run_at": "document_end"
+        }
+    ],
+    "icons": {
+        "128": "icons/icon-128.png"
+    }
+}

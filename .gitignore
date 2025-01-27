@@ -1,0 +1,8 @@
+build/
+*.xpi
+*.crx
+*.pem
+*.p12
+*.sig
+*.mf
+*.txt
