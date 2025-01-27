@@ -32,6 +32,8 @@
     };
 
     async function get_card_info(card_id) {
+        if (!card_id) return { need: 0, users: 0, trade: 0 };
+
         const need = await get_user_count(card_id, "need");
         const users = await get_user_count(card_id);
         const trade = await get_user_count(card_id, "trade");
@@ -51,4 +53,32 @@
             elm.appendChild(scop);
         });
     });
+
+    document.querySelector(".lootbox")?.addEventListener("click", () => {
+        document.querySelectorAll(".lootbox__card").forEach((elm) => {
+            const card_id = elm.getAttribute("data-id");
+            const old_data_id = elm.getAttribute("old-data-id");
+
+            if (card_id == old_data_id) return;
+            elm.setAttribute("old-data-id", card_id);
+
+            get_card_info(card_id).then(({ need, users, trade }) => {
+                elm.querySelector(".card-user-count").textContent = `${need} | ${users} | ${trade}`;
+            });
+        });
+    });
+
+    document.querySelectorAll(".lootbox__card")?.forEach((elm) => {
+        const card_id = elm.getAttribute("data-id");
+        elm.setAttribute("old-data-id", card_id);
+
+        get_card_info(card_id).then(({ need, users, trade }) => {
+            const scop = document.createElement("span");
+            scop.classList.add("card-user-count");
+            scop.style = "display: grid; place-items: center";
+            scop.textContent = `${need} | ${users} | ${trade}`;
+
+            elm.appendChild(scop);
+        });
+    });             
 })();
