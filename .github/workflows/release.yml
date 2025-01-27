@@ -16,17 +16,30 @@ jobs:
       with:
         python-version: '3.10'
     
+    - name: Install dependencies
+      run: |
+        pip install click
+    
+    - name: Private key
+      run: |
+        echo "${{ secrets.PRIVATE_KEY }}" > mykey.pem
+        echo "${{ secrets.PUBLIC_KEY }}" > mycert.pem
+        openssl pkcs12 -export -out mycert.p12 -inkey mykey.pem -in mycert.pem -passout pass:""
+        chmod 600 mykey.pem
+        chmod 600 mycert.pem
+
+    
     - name: Build
       run: |
         make build-chrome
         make build-firefox
 
-    - name: Upload Artifacts
-      uses: actions/upload-artifact@v3
+    - name: Create Release
+      uses: softprops/action-gh-release@v2
       with:
-        name: animestars_extension
-        path: |
+        name: ${{ github.ref }}
+        tag_name: ${{ github.ref }}
+        files: |
           build/animestars_extension-chrome.crx
           build/animestars_extension-firefox.xpi
-        retention-days: 10
-        
+    
