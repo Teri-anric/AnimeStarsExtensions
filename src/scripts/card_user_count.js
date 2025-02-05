@@ -1,88 +1,82 @@
 (async () => {
-    chrome.storage.sync.get(['card-user-count', 'card-user-count-exp-time'], async (settings) => {
+    chrome.storage.sync.get(['card-user-count', 'card-user-count-event-target'], async (settings) => {
         if (settings['card-user-count'] === false) return;
 
-        const CACHE_DURATION = settings['card-user-count-exp-time'] * 60 * 1000; // Cache duration in milliseconds (e.g., 30 minute)
-
         const get_user_count = async (card_id, type = "") => {
-            const cacheKey = `teri-${card_id}-${type}`; // Create a unique cache key
-            const cachedValue = localStorage.getItem(cacheKey); // Check localStorage for cached value
-
-            if (cachedValue) {
-                const { value, timestamp } = JSON.parse(cachedValue);
-                if (Date.now() - timestamp < CACHE_DURATION) {
-                    return value; // Return cached result if it hasn't expired
-                }
-            }
-
             const res = await fetch(`https://${window.location.hostname}/cards/${card_id}/users/${type}`);
             const doc = window.$(await res.text());
-            const count = doc.find(".profile__friends-item").length;
+            let selector = ".profile__friends-item";
+            if (type == "") 
+                selector = ".card-show__owner";
+            const count = doc.find(selector).length;
 
-            let page_count = 1;
             const p_l = doc.find(".pagination__pages a");
-            if (p_l.length)
-            {
-                // const res = await fetch(`${window.location.origin}/cards/${card_id}/users/${type}`);
-                // const doc = window.$(await res.text());
-                // page_count = parseInt(doc.find(".pagination__pages a").length - 2);
-                page_count = parseInt(p_l[p_l.length - 2].textContent);
-            }
+            let has_pagination = p_l.length > 0;
 
-            const totalCount = count + ((page_count - 1) * 36);
-            localStorage.setItem(cacheKey, JSON.stringify({ value: totalCount, timestamp: Date.now() })); // Store the result with timestamp
-            return totalCount;
+            return has_pagination ? `${count}+` : count;
         };
 
-        async function get_card_info(card_id) {
+        let get_card_info = async (card_id) => {
             if (!card_id) return { need: 0, users: 0, trade: 0 };
 
-            const need = await get_user_count(card_id, "need");
-            const users = await get_user_count(card_id);
-            const trade = await get_user_count(card_id, "trade");
+            const [need, users, trade] = await Promise.all([
+                get_user_count(card_id, "need"),
+                get_user_count(card_id),
+                get_user_count(card_id, "trade")
+            ]);
 
             return { need, users, trade };
         }
 
-        document.querySelectorAll(".anime-cards__item").forEach((elm) => {
-            const card_id = elm.getAttribute("data-id");
-            if (!card_id) return;
+        function create_card_user_count(elm, card_id = null) {
+            if (card_id == null) {
+                card_id = elm?.getAttribute("data-id");
+            }
+            if (!card_id || !elm) return;
 
-            get_card_info(card_id).then(({ need, users, trade }) => {
-                const scop = document.createElement("span");
-                scop.style = "display: grid; place-items: center";
-                scop.textContent = `${need} | ${users} | ${trade}`;
-
-                elm.appendChild(scop);
-            });
-        });
-
-        document.querySelector(".lootbox")?.addEventListener("click", () => {
-            document.querySelectorAll(".lootbox__card").forEach((elm) => {
-                const card_id = elm.getAttribute("data-id");
-                const old_data_id = elm.getAttribute("old-data-id");
-
-                if (card_id == old_data_id) return;
-                elm.setAttribute("old-data-id", card_id);
-
-                get_card_info(card_id).then(({ need, users, trade }) => {
-                    elm.querySelector(".card-user-count").textContent = `${need} | ${users} | ${trade}`;
-                });
-            });
-        });
-
-        document.querySelectorAll(".lootbox__card")?.forEach((elm) => {
-            const card_id = elm.getAttribute("data-id");
+            const old_data_id = elm.getAttribute("old-data-id");
+            if (card_id == old_data_id) return;
             elm.setAttribute("old-data-id", card_id);
 
             get_card_info(card_id).then(({ need, users, trade }) => {
+                const text = `${need} | ${users} | ${trade}`;
+
+                if (elm.querySelector(".card-user-count")) {
+                    elm.querySelector(".card-user-count").textContent = text;
+                    return;
+                }
+
                 const scop = document.createElement("span");
                 scop.classList.add("card-user-count");
                 scop.style = "display: grid; place-items: center";
-                scop.textContent = `${need} | ${users} | ${trade}`;
+                scop.textContent = text;
 
                 elm.appendChild(scop);
             });
+        }
+
+        // settings event target
+        let event_target = settings["card-user-count-event-target"] || "mousedown";
+        let mousedown_button = 1;
+        if (event_target.startsWith("mousedown-")) {
+            mousedown_button = parseInt(event_target.split("-")[1]);
+            event_target = "mousedown";
+        }
+        // event listener
+        document.addEventListener(event_target, function (event) {
+            if (event_target == "mousedown" && event.button != mousedown_button) return;   
+            if (event.target.tagName != "IMG") return;
+            // lootbox card 
+            create_card_user_count(event.target.closest(".lootbox__card"));
+            // anime cards
+            create_card_user_count(event.target.closest(".anime-cards__item"));
+            // trade card
+            const trade_card = event.target.closest("a.trade__main-item, a.history__body-item");
+            if (trade_card){
+                const card_id = trade_card.getAttribute("href").split("/")[2];
+                if (!card_id) return;
+                create_card_user_count(trade_card, card_id);
+            }
         });
     });
 })();

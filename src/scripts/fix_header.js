@@ -1,13 +1,5 @@
 (function() {
-    chrome.storage.sync.get('auto-watchlist-fix', (settings) => {
-        if (settings['auto-watchlist-fix']){
-            // Fix watchlist link
-            document.querySelector(".header > a:nth-child(4)").href += "watchlist/watching/";
-        }
-        if (settings['add-my-cards-button']){
-            createMyCardsButton();
-        }
-
+    chrome.storage.sync.get(['auto-watchlist-fix', 'add-my-cards-button'], (settings) => {
         const username = document.querySelector(".login .login__title").textContent.trim();
 
         function createMyCardsButton() {
@@ -53,6 +45,14 @@
             if (themeToggle2) {
                 themeToggle2.parentNode.insertBefore(buttonContainer, themeToggle2.nextSibling);
             }
+        }
+
+        if (settings['auto-watchlist-fix']){
+            // Fix watchlist link
+            document.querySelector(".header > a:nth-child(4)").href += "watchlist/watching/";
+        }
+        if (settings['add-my-cards-button']){
+            createMyCardsButton();
         }
 
     });

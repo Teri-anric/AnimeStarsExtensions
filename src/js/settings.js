@@ -8,13 +8,16 @@ document.addEventListener('DOMContentLoaded', () => {
         'add-user-cards-buttons'
     ];
 
+    const settingsSelects = [
+        'card-user-count-event-target',
+    ];
+
     const settingsInputs = [
         'api-domain',
-        'card-user-count-exp-time'
     ];
 
     // Combine all settings to load 
-    const allSettings = [...settingsCheckboxes, ...settingsInputs];
+    const allSettings = [...settingsCheckboxes, ...settingsInputs, ...settingsSelects];
 
     // Load saved settings
     chrome.storage.sync.get(allSettings, (settings) => {
@@ -33,13 +36,12 @@ document.addEventListener('DOMContentLoaded', () => {
                 input.value = settings[id] || '';
             }
         });
-    });
 
-    document.getElementById('card-user-count-clear').addEventListener('click', () => {
-        chrome.tabs.query({ active  : true, currentWindow: true }, (tabs) => {
-            const activeTab = tabs[0];
-            while (key = activeTab.localStorage.key('teri-')) {
-                activeTab.localStorage.removeItem(key);
+        // Load select settings
+        settingsSelects.forEach(id => {
+            const select = document.getElementById(id);
+            if (select) {
+                select.value = settings[id] || '';
             }
         });
     });
@@ -52,7 +54,7 @@ document.addEventListener('DOMContentLoaded', () => {
         settingsCheckboxes.forEach(id => {
             const checkbox = document.getElementById(id);
             if (checkbox) {
-                settings[id] = checkbox.checked;
+                settings[id] = checkbox.checked;                                    
             }
         });
 
@@ -61,6 +63,14 @@ document.addEventListener('DOMContentLoaded', () => {
             const input = document.getElementById(id);
             if (input) {
                 settings[id] = input.value.trim();
+            }
+        });
+
+        // Save select settings
+        settingsSelects.forEach(id => {
+            const select = document.getElementById(id);
+            if (select) {
+                settings[id] = select.value;
             }
         });
 

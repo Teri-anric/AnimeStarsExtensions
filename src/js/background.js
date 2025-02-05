@@ -6,9 +6,10 @@ const DEFAULT_SETTINGS = {
     'auto-watchlist-fix': true,
     'club-boost-keymap': true,
     'card-user-count': true,
-    'api-domain': 'api.animestars.org',
-    'add-my-cards-buttons': true,
-    'card-user-count-exp-time': 60 * 24
+    'card-user-count-event-target': 'mousedown-1',
+    'api-domain': '',
+    'add-my-cards-button': true,
+    'add-user-cards-buttons': true
 };
 
 // Initialize settings on first install or update

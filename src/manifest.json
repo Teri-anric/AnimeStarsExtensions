@@ -1,7 +1,7 @@
 {
     "manifest_version": 3,
     "name": "AnimeStar Extension",
-    "version": "0.0.3",
+    "version": "0.0.4",
     "description": "Enhanced functionality for AnimeStar website",
     "permissions": [
         "activeTab",
@@ -13,6 +13,13 @@
             "js/background.js"
         ]
     },
+    "host_permissions": [
+        "https://animestars.org/*",
+        "https://astars.club/*",
+        "https://asstars1.astars.club/*",
+        "https://as1.astars.club/*",
+        "https://asstars.tv/*"
+    ],
     "content_scripts": [
         {
             "matches": [
@@ -47,7 +54,7 @@
                 "https://asstars.tv/*"
             ],
             "js": [
-                "./scripts/fix_watchlist.js"
+                "./scripts/fix_header.js"
             ]
         },
         {
@@ -78,7 +85,11 @@
         }
     ],
     "icons": {
-        "128": "icons/icon-128.png"
+        "16": "icons/icon-16.png",
+        "32": "icons/icon-32.png",
+        "48": "icons/icon-48.png",
+        "128": "icons/icon-128.png",
+        "256": "icons/icon-256.png"
     },
     "action": {
         "default_icon": "icons/icon-128.png",
