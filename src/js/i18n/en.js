@@ -3,6 +3,7 @@ const AnimeStarExtensionTranslationEnglish = {
     'language-uk': 'Ukrainian',
     'language-en': 'English',
     'language-ru': 'Russian',
+    'language-inspect': 'Inspect',
     'select-language': 'Select Language',
     'auto-features': 'Automatic Features',
     'auto-seen-card': 'Automatically take cards for viewing',

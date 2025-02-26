@@ -3,6 +3,7 @@ const AnimeStarExtensionTranslationUkraine = {
     'language-uk': 'Українська',
     'language-en': 'Англійська',
     'language-ru': 'Російська',
+    'language-inspect': 'Перевірити',
     'select-language': 'Виберіть мову',
     'auto-features': 'Автоматичні функції',
     'auto-seen-card': 'Автоматично брати картки за перегляд',

@@ -9,6 +9,7 @@ const AnimeStarExtensionTranslations = {
 };
 
 const defaultLang = 'en';
+const INSPECT_LANG_KEY = '$inspect';
 
 class TranslateText extends HTMLElement {
     constructor() {
@@ -25,12 +26,26 @@ class TranslateText extends HTMLElement {
         if (element.childNodes.length === 0) {
             return;
         }
+        if (element?.getAttribute("disable-translate")) {
+            return;
+        }   
         if (element.childNodes.length === 1 && element.childNodes[0].nodeType === 3) {
             let tralateKey = element.getAttribute("translate-key") || element.textContent?.trim();
             if (tralateKey) {
                 element.setAttribute("translate-key", tralateKey);
             }
-            element.textContent = AnimeStarExtensionTranslations[lang][tralateKey] || tralateKey;
+            
+
+            if (lang == INSPECT_LANG_KEY) {
+                element.textContent = tralateKey;
+                return;
+            }
+
+            const defaultLanguage = AnimeStarExtensionTranslations[defaultLang] || {};
+            const language = AnimeStarExtensionTranslations[lang] || {};
+
+            element.textContent = language[tralateKey] || defaultLanguage[tralateKey] || tralateKey;
+
             return;
         }
         element.childNodes?.forEach(elm => {

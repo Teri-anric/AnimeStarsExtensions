@@ -3,6 +3,7 @@ export const AnimeStarExtensionTranslationRussian = {
     'language-uk': 'Украинский',
     'language-en': 'Английский',
     'language-ru': 'Русский',
+    'language-inspect': 'Проверить',
     'select-language': 'Выберите язык',
     'auto-features': 'Автоматические функции',
     'auto-seen-card': 'Автоматически брать карточки за просмотр',
