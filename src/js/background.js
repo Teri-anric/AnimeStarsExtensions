@@ -9,7 +9,8 @@ const DEFAULT_SETTINGS = {
     'card-user-count-event-target': 'mousedown-1',
     'api-domain': '',
     'add-my-cards-button': true,
-    'add-user-cards-buttons': true
+    'add-user-cards-buttons': true,
+    'language': 'uk'
 };
 
 // Initialize settings on first install or update

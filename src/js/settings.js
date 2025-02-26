@@ -9,15 +9,12 @@ document.addEventListener('DOMContentLoaded', () => {
     ];
 
     const settingsSelects = [
+        'language',
         'card-user-count-event-target',
     ];
 
-    const settingsInputs = [
-        'api-domain',
-    ];
-
     // Combine all settings to load 
-    const allSettings = [...settingsCheckboxes, ...settingsInputs, ...settingsSelects];
+    const allSettings = [...settingsCheckboxes, ...settingsSelects];
 
     // Load saved settings
     chrome.storage.sync.get(allSettings, (settings) => {
@@ -26,14 +23,6 @@ document.addEventListener('DOMContentLoaded', () => {
             const checkbox = document.getElementById(id);
             if (checkbox) {
                 checkbox.checked = settings[id] || false;
-            }
-        });
-
-        // Load input settings
-        settingsInputs.forEach(id => {
-            const input = document.getElementById(id);
-            if (input) {
-                input.value = settings[id] || '';
             }
         });
 
@@ -46,6 +35,14 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
+    // Load language settings
+    chrome.storage.sync.get('language', (settings) => {
+        window.i18n.changeLang(settings.language);
+    });
+    document.getElementById('language').addEventListener('change', (event) => {
+        window.i18n.changeLang(event.target.value);
+        chrome.storage.sync.set({ language: event.target.value });
+    });
     // Save settings
     document.getElementById('save-settings').addEventListener('click', () => {
         const settings = {};
@@ -58,13 +55,6 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         });
 
-        // Save input settings
-        settingsInputs.forEach(id => {
-            const input = document.getElementById(id);
-            if (input) {
-                settings[id] = input.value.trim();
-            }
-        });
 
         // Save select settings
         settingsSelects.forEach(id => {
