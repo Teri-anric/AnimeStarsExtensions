@@ -1,6 +1,6 @@
 (function () {
     chrome.storage.sync.get('club-boost-keymap', (settings) => {
-        if (settings['club-boost-keymap'] === false) return;
+        if (!settings['club-boost-keymap']) return;
 
         document.addEventListener("keydown", (event) => {
             if (event.code === "KeyR") {
