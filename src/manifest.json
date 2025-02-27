@@ -1,24 +1,22 @@
 {
     "manifest_version": 3,
     "name": "AnimeStar Extension",
-    "version": "0.0.5",
+    "version": "0.0.6",
     "description": "Enhanced functionality for AnimeStar website",
     "permissions": [
         "activeTab",
         "storage",
-        "webNavigation"
+        "webNavigation",
+        "notifications",
+        "alarms"
     ],
-    "background": {
-        "scripts": [
-            "js/background.js"
-        ]
-    },
     "host_permissions": [
         "https://animestars.org/*",
         "https://astars.club/*",
         "https://asstars1.astars.club/*",
         "https://as1.astars.club/*",
-        "https://asstars.tv/*"
+        "https://asstars.tv/*",
+        "https://raw.githubusercontent.com/Teri-anric/AnimeStarsExtensions/main/updates.json"
     ],
     "content_scripts": [
         {
@@ -97,9 +95,9 @@
         "default_popup": "pages/settings.html"
     },
     "options_page": "pages/settings.html",
-    "browser_specific_settings": {
-        "gecko": {
-            "id": "animestars-extension@teri-anric.github.io"
-        }
-    }
+    "background": {
+        "service_worker": "./js/background.js",
+        "type": "module"
+    },
+    "update_url": "https://raw.githubusercontent.com/Teri-anric/AnimeStarsExtensions/main/updates.json"
 }

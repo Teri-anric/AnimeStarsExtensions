@@ -10,11 +10,6 @@
         "notifications",
         "alarms"
     ],
-    "background": {
-        "scripts": [
-            "js/background.js"
-        ]   
-    },
     "host_permissions": [
         "https://animestars.org/*",
         "https://astars.club/*",

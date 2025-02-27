@@ -1,6 +1,4 @@
-// Background script for managing extension settings and features
-
-import AnimeStarExtensionTranslations from './translation.js';
+import { i18n } from './translation.js';
 
 // Default settings
 const DEFAULT_SETTINGS = {
@@ -33,9 +31,6 @@ async function checkForUpdates() {
             });
         });
 
-        // Get translations
-        const translations = AnimeStarExtensionTranslations[language] || AnimeStarExtensionTranslations['en'];
-
         // Compare versions
         if (compareVersions(githubManifest.version, currentVersion) > 0) {
             // New version available
@@ -45,9 +40,9 @@ async function checkForUpdates() {
                     chrome.notifications.create('extension-update', {
                         type: 'basic',
                         iconUrl: 'icons/icon-128.png',
-                        title: translations['update-notification-title'],
-                        message: translations['update-notification-message'].replace('{version}', githubManifest.version),
-                        buttons: [{ title: translations['update-notification-button'] }]
+                        title: i18n.getTranslateText('update-notification-title', language),
+                        message: i18n.getTranslateText('update-notification-message', language).replace('{version}', githubManifest.version),
+                        buttons: [{ title: i18n.getTranslateText('update-notification-button', language) }]
                     });
 
                     // Store the version to prevent repeated notifications

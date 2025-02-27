@@ -1,10 +1,12 @@
 body {
     font-family: Arial, sans-serif;
-    max-width: 600px;
+    max-width: 650px;
+    min-width: 500px;
     margin: 0 auto;
     padding: 20px;
     background-color: #f4f4f4;
     color: #333;
+    border-radius: 10px;
 }
 h1 {
     text-align: center;

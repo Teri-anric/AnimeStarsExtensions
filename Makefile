@@ -26,12 +26,12 @@ build-chrome:
 	@rm -rf dist
 	@mkdir -p build
 	@mkdir -p dist
-	@echo "Copying files..."
-	@cp -r src/* dist/
 	@echo "Merging manifest.json..."
 	@python3 scripts/merge-json.py \
 		src/manifest/manifest.base.json src/manifest/manifest.chrome.json \
-		-o dist/manifest.json
+		-o src/manifest.json
+	@echo "Copying files..."
+	@cp -r src/* dist/
 	@echo "Removing manifest directory..."
 	@rm -rf dist/manifest
 	@echo "Packing extension..."
