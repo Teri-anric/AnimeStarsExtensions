@@ -60,13 +60,36 @@
         </div>
 
         <div class="settings-section">
-            <h2>club-settings</h2>
+            <h2><span>club-settings</span>
+                <div class="tooltip">
+                    <span class="tooltip-icon">?</span>
+                    <span class="tooltip-text">club-boost-hotkey-description</span>
+                </div>
+            </h2>
             <div class="setting-item">
                 <label for="club-boost-keymap">club-boost-keymap</label>
                 <label class="toggle">
                     <input type="checkbox" id="club-boost-keymap">
                     <span class="slider"></span>
                 </label>
+            </div>
+            <div class="setting-item">
+                <label for="club-boost-refresh-cooldown">club-boost-refresh-cooldown</label>
+                <div class="slider-container">
+                    <input type="range" id="club-boost-refresh-cooldown" min="100" max="2000" step="50" value="600">
+                    <span class="slider-value">600</span>
+                    <span>ms</span>
+                </div>
+                <small translate-key="club-boost-cooldown-description"></small>
+            </div>
+            <div class="setting-item">
+                <label for="club-boost-action-cooldown">club-boost-action-cooldown</label>
+                <div class="slider-container">
+                    <input type="range" id="club-boost-action-cooldown" min="100" max="2000" step="50" value="500">
+                    <span class="slider-value">500</span>
+                    <span>ms</span>
+                </div>
+                <small translate-key="club-boost-cooldown-description"></small>
             </div>
         </div>
 

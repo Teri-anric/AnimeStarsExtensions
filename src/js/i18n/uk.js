@@ -20,6 +20,13 @@ const AnimeStarExtensionTranslationUkraine = {
     'mouseover': 'Наведення курсора',
     'club-settings': 'Клубні налаштування',
     'settings-title': 'Налаштування розширення',
+    'club-boost-refresh-cooldown': 'Інтервал оновлення',
+    'club-boost-action-cooldown': 'Інтервал між вкладами',
+    'club-boost-cooldown-description': 'Налаштування інтервалів для автоматичного бусту клубу (мс)',
+    'club-boost-hotkey-description': "Гарячі клавіші для керування бустом клубу:\n" +
+        "- R: Оновити\n" +
+        "- E: Підсилити\n" +
+        "- B: Увімкнути/Вимкнути автоматичний буст",
 }
 
 export default AnimeStarExtensionTranslationUkraine;

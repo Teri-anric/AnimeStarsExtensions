@@ -20,6 +20,13 @@ const AnimeStarExtensionTranslationEnglish = {
     'mouseover': 'Mouse over',
     'club-settings': 'Club Settings',
     'settings-title': 'Extension Settings',
+    'club-boost-refresh-cooldown': 'Refresh Interval',
+    'club-boost-action-cooldown': 'Boost Interval',
+    'club-boost-cooldown-description': 'Settings for automatic club boost intervals (ms)',
+    'club-boost-hotkey-description': 'Hotkeys for club boost control:\n' +
+        '- R: Refresh\n' +
+        '- E: Boost\n' +
+        '- B: Toggle Automatic Boost',
 }
 
 export default AnimeStarExtensionTranslationEnglish;

@@ -20,6 +20,13 @@ export const AnimeStarExtensionTranslationRussian = {
     'mouseover': 'Наведение курсора',
     'club-settings': 'Настройки клуба',
     'settings-title': 'Настройки расширения',
+    'club-boost-refresh-cooldown': 'Интервал обновления',
+    'club-boost-action-cooldown': 'Интервал между вкладами',
+    'club-boost-cooldown-description': 'Настройки интервалов для автоматического буста клуба (мс)',
+    'club-boost-hotkey-description': 'Горячие клавиши для управления бустом клуба:\n' +
+        '- R: Обновить\n' +
+        '- E: Усилить\n' +
+        '- B: Включить/Выключить автоматический буст',
 }
 
 export default AnimeStarExtensionTranslationRussian;
