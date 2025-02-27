@@ -6,7 +6,9 @@
     "permissions": [
         "activeTab",
         "storage",
-        "webNavigation"
+        "webNavigation",
+        "notifications",
+        "alarms"
     ],
     "background": {
         "scripts": [
@@ -18,7 +20,8 @@
         "https://astars.club/*",
         "https://asstars1.astars.club/*",
         "https://as1.astars.club/*",
-        "https://asstars.tv/*"
+        "https://asstars.tv/*",
+        "https://raw.githubusercontent.com/Teri-anric/AnimeStarsExtensions/main/updates.json"
     ],
     "content_scripts": [
         {

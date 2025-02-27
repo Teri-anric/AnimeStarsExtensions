@@ -27,6 +27,9 @@ const AnimeStarExtensionTranslationEnglish = {
         '- R: Refresh\n' +
         '- E: Boost\n' +
         '- B: Toggle Automatic Boost',
+    'update-notification-title': 'AnimeStar Extension Update Available',
+    'update-notification-message': 'New version {version} is available! Click to see details.',
+    'update-notification-button': 'View Details'
 }
 
 export default AnimeStarExtensionTranslationEnglish;
