@@ -29,7 +29,10 @@ const AnimeStarExtensionTranslationUkraine = {
         "- B: Увімкнути/Вимкнути автоматичний буст",
     'update-notification-title': 'Доступне оновлення розширення AnimeStar',
     'update-notification-message': 'Нова версія {version} вже доступна! Натисніть, щоб переглянути деталі.',
-    'update-notification-button': 'Переглянути деталі'
+    'update-notification-button': 'Переглянути деталі',
+    'bottom-bar-text': 'Якщо у вас є питання або побажання, будь ласка, зв\'яжіться зі мною.',
+    'bottom-bar-github': 'GitHub',
+    'bottom-bar-telegram': 'Telegram'
 }
 
 export default AnimeStarExtensionTranslationUkraine;

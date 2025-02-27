@@ -29,7 +29,10 @@ export const AnimeStarExtensionTranslationRussian = {
         '- B: Включить/Выключить автоматический буст',
     'update-notification-title': 'Доступно обновление расширения AnimeStar',
     'update-notification-message': 'Новая версия {version} уже доступна! Нажмите, чтобы просмотреть детали.',
-    'update-notification-button': 'Просмотреть детали'
+    'update-notification-button': 'Просмотреть детали',
+    'bottom-bar-text': 'Если у вас есть вопросы или предложения, пожалуйста, свяжитесь со мной.',
+    'bottom-bar-github': 'GitHub',
+    'bottom-bar-telegram': 'Telegram'
 }
 
 export default AnimeStarExtensionTranslationRussian;

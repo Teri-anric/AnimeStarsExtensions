@@ -194,3 +194,37 @@ input:checked + .slider:before {
     border-style: solid;
     border-color: #333 transparent transparent transparent;
 }
+
+.bottom-bar {
+    /* position: fixed; */
+    bottom: 0;
+    width: 100%;
+    background-color: #f4f4f4;
+    padding: 10px;
+    text-align: center;
+}
+.bottom-bar a {
+    text-decoration: none;
+    color: #333;
+}
+.separator-line {
+    min-width: 25px;
+    height: 1px;
+    /* background-color: #333; */
+    margin: 10px 0;
+    display: inline-block;
+}
+.icon {
+    width: 20px;
+    height: 20px;
+}
+.big-icon {
+    width: 30px;
+    height: 30px;
+}
+.h-scale {
+    transition: transform 0.3s ease;
+}
+.h-scale:hover {
+    transform: scale(1.5);
+}
