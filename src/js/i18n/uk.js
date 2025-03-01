@@ -14,6 +14,7 @@ const AnimeStarExtensionTranslationUkraine = {
     'card-user-count': 'Показати статистику карток',
     'card-user-count-event-target': 'Подія для показу статистики карток',
     'save-settings': 'Зберегти налаштування',
+    'automatic': "Автоматичний",
     'mousedown-0': 'Ліва кнопка миші',
     'mousedown-1': 'Середня кнопка миші',
     'mousedown-2': 'Права кнопка миші',
