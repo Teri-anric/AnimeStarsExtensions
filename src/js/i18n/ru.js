@@ -14,6 +14,7 @@ export const AnimeStarExtensionTranslationRussian = {
     'card-user-count': 'Показать статистику карточек',
     'card-user-count-event-target': 'Событие для показа статистики карточек',
     'save-settings': 'Сохранить настройки',
+    'automatic': "Автоматический",
     'mousedown-0': 'Левая кнопка мыши',
     'mousedown-1': 'Средняя кнопка мыши',
     'mousedown-2': 'Правая кнопка мыши',

@@ -14,6 +14,7 @@ const AnimeStarExtensionTranslationEnglish = {
     'card-user-count': 'Show card statistics',
     'card-user-count-event-target': 'Event target for showing card statistics',
     'save-settings': 'Save Settings',
+    'automatic': "Automatic",
     'mousedown-0': 'Left mouse button',
     'mousedown-1': 'Middle mouse button',
     'mousedown-2': 'Right mouse button',
