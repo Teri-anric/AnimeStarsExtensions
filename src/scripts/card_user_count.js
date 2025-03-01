@@ -5,9 +5,9 @@
       if (settings['card-user-count'] === false) return;
 
       const CONFIG = {
-        REQUEST_DELAY: 350, // задержка между запросами
-        INITIAL_DELAY: 100, // начальная задержка перед запуском
-        MAX_RETRIES: 2      // максимальное количество повторных попыток
+        REQUEST_DELAY: 350, 
+        INITIAL_DELAY: 100, 
+        MAX_RETRIES: 2    
       };
 
       const get_user_count = async (card_id, type = "") => {
@@ -56,8 +56,9 @@
         try {
           card_id = card_id || elm?.dataset?.id;
           if (!card_id || !elm) return;
-          if (elm.dataset.processed === 'true') return;
-          elm.dataset.processed = 'true';
+          const lastId = elm.dataset.lastId;
+          if (lastId === card_id) return; 
+          elm.dataset.lastId = card_id; 
 
           const { need, users, trade } = await get_card_info(card_id);
           let countElm = elm.querySelector('.card-user-count');
@@ -126,8 +127,6 @@
           await processCards('.cardpack__item', elm => elm.dataset.id);
         }, CONFIG.INITIAL_DELAY);
       } else {
-        // По умолчанию событие будет mousedown для левой кнопки (0),
-        // если настройка не содержит явного указания кнопки (например, "mousedown-1" или "mousedown-2")
         const eventConfig = {
           eventType: 'mouseover',
           buttonCheck: () => true
@@ -135,7 +134,7 @@
 
         if (settings["card-user-count-event-target"]?.startsWith('mousedown')) {
           const parts = settings["card-user-count-event-target"].split('-');
-          let buttonNumber = 0; // по умолчанию левая кнопка
+          let buttonNumber = 0;
           if (parts.length > 1) {
             const parsed = parseInt(parts[1]);
             buttonNumber = isNaN(parsed) ? 0 : parsed;
