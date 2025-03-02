@@ -19,6 +19,13 @@ h1 {
     margin-bottom: 20px;
     box-shadow: 0 2px 4px rgba(0,0,0,0.1);
 }
+.settings-sub-section {
+    background-color: #f4f4f4;
+    border-radius: 8px;
+    padding: 20px;
+    margin-bottom: 20px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
 .setting-item {
     display: flex;
     justify-content: space-between;
@@ -229,4 +236,8 @@ input:checked + .slider:before {
 }
 .h-scale:hover {
     transform: scale(1.5);
+}
+
+.hidden {
+    display: none;
 }

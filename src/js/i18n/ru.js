@@ -33,7 +33,12 @@ export const AnimeStarExtensionTranslationRussian = {
     'update-notification-button': 'Просмотреть детали',
     'bottom-bar-text': 'Если у вас есть вопросы или предложения, пожалуйста, свяжитесь со мной.',
     'bottom-bar-github': 'GitHub',
-    'bottom-bar-telegram': 'Telegram'
+    'bottom-bar-telegram': 'Telegram',
+    'card-user-count-automatic': 'Автоматическая статистика карточек',
+    'card-user-count-request-delay': 'Задержка между запросами',
+    'card-user-count-initial-delay': 'Задержка перед первым запросом',
+    'card-user-count-request-delay-description': 'Задержка между запросами статистики карточек (мс)',
+    'card-user-count-initial-delay-description': 'Задержка перед первым запросом статистики карточек (мс)'
 }
 
 export default AnimeStarExtensionTranslationRussian;

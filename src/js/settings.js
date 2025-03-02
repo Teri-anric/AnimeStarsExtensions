@@ -15,7 +15,33 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const settingsRangeInputs = [
         'club-boost-refresh-cooldown',
-        'club-boost-action-cooldown'
+        'club-boost-action-cooldown',
+        'card-user-count-request-delay',
+        'card-user-count-initial-delay'
+    ];
+
+    const additionalSettings = [
+        {
+            condition: {
+                "club-boost-auto": true,
+            },
+            targets: [
+                "club-boost-auto-subsettings"
+            ]
+        },
+        {
+            condition: {
+                "card-user-count": true,
+            },
+            targets: ["card-user-count-event-target"]
+        },
+        {
+            condition: {
+                "card-user-count": true,
+                "card-user-count-event-target": "automatic"
+            },
+            targets: ["card-user-count-automatic"]
+        }
     ];
 
     // Combine all settings to load 
@@ -55,7 +81,7 @@ document.addEventListener('DOMContentLoaded', () => {
         settingsRangeInputs.forEach(id => {
             const input = document.getElementById(id);
             const valueSpan = input.nextElementSibling;
-            
+
             if (input) {
                 const defaultValue = id === 'club-boost-refresh-cooldown' ? 600 : 500;
                 input.value = settings[id] || defaultValue;
@@ -68,5 +94,37 @@ document.addEventListener('DOMContentLoaded', () => {
                 chrome.storage.sync.set({ [id]: value });
             });
         });
+
+        // Load additional settings
+        additionalSettings.forEach(({ condition, targets }) => {
+            if (!condition || !targets) return;
+            let isHidden = Object.keys(condition).some(key => condition[key] != settings[key]);
+            targets.forEach(target => {
+                const boxTarget = document.getElementById(target).closest(".setting-item, .settings-sub-section")
+                boxTarget.classList.toggle("hidden", isHidden);
+            });
+        });
     });
+
+    chrome.storage.onChanged.addListener(() => {
+        additionalSettings.forEach(({ condition, targets }) => {
+            if (!condition || !targets) return;
+            let isHidden = false;
+            Object.keys(condition).forEach(key => {
+                const element = document.getElementById(key);
+                const box = element.closest(".setting-item, .settings-sub-section");
+                const elementValue = (element.type == "checkbox" ? element.checked : element.value)
+                const conditionTrue = elementValue == condition[key];
+                if (box.classList.contains("hidden") || !conditionTrue) {
+                    isHidden = true;
+                }
+            });
+            // Toggle hidden class on the target element
+            targets.forEach(target => {
+                const boxTarget = document.getElementById(target).closest(".setting-item, .settings-sub-section")
+                boxTarget.classList.toggle("hidden", isHidden);
+            });
+        });
+    });
+
 }); 

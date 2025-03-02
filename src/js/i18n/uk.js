@@ -33,7 +33,12 @@ const AnimeStarExtensionTranslationUkraine = {
     'update-notification-button': 'Переглянути деталі',
     'bottom-bar-text': 'Якщо у вас є питання або побажання, будь ласка, зв\'яжіться зі мною.',
     'bottom-bar-github': 'GitHub',
-    'bottom-bar-telegram': 'Telegram'
+    'bottom-bar-telegram': 'Telegram',
+    'card-user-count-automatic': 'Автоматична статистика карток',
+    'card-user-count-request-delay': 'Затримка між запитами',
+    'card-user-count-initial-delay': 'Затримка перед першим запитом',
+    'card-user-count-request-delay-description': 'Затримка між запитами для статистики карток (мс)',
+    'card-user-count-initial-delay-description': 'Затримка перед першим запитом для статистики карток (мс)'
 }
 
 export default AnimeStarExtensionTranslationUkraine;

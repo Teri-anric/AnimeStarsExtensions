@@ -1,13 +1,13 @@
 (async () => {
   chrome.storage.sync.get(
-    ['card-user-count', 'card-user-count-event-target'],
+    ['card-user-count', 'card-user-count-event-target', 'card-user-count-request-delay', 'card-user-count-initial-delay'],
     async (settings) => {
       if (settings['card-user-count'] === false) return;
 
       const CONFIG = {
-        REQUEST_DELAY: 350, 
-        INITIAL_DELAY: 100, 
-        MAX_RETRIES: 2    
+        REQUEST_DELAY: settings['card-user-count-request-delay'] || 350,
+        INITIAL_DELAY: settings['card-user-count-initial-delay'] || 100,
+        MAX_RETRIES: 2
       };
 
       const get_user_count = async (card_id, type = "") => {

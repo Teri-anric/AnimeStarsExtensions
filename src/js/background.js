@@ -4,14 +4,16 @@ import { i18n } from './translation.js';
 const DEFAULT_SETTINGS = {
     'auto-seen-card': true,
     'auto-watchlist-fix': true,
-    'club-boost-keymap': true,
-    'card-user-count': true,
-    'card-user-count-event-target': 'mousedown-1',
+    'club-boost-auto': true,
     'api-domain': '',
     'add-my-cards-button': true,
     'add-user-cards-buttons': true,
     'language': 'uk',
-    'last-checked-version': null
+    'last-checked-version': null,
+    'card-user-count': true,
+    'card-user-count-event-target': 'mousedown-1',
+    'card-user-count-request-delay': 350,
+    'card-user-count-initial-delay': 100
 };
 
 // Update URL for version checking
