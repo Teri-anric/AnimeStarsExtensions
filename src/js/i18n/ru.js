@@ -38,7 +38,13 @@ export const AnimeStarExtensionTranslationRussian = {
     'card-user-count-request-delay': 'Задержка между запросами',
     'card-user-count-initial-delay': 'Задержка перед первым запросом',
     'card-user-count-request-delay-description': 'Задержка между запросами статистики карточек (мс)',
-    'card-user-count-initial-delay-description': 'Задержка перед первым запросом статистики карточек (мс)'
+    'card-user-count-initial-delay-description': 'Задержка перед первым запросом статистики карточек (мс)',
+    'updates': 'Обновления',
+    'not-update-check': 'Не проверять обновления',
+    'check-update': 'Проверить обновления',
+    'update-available-title': 'Доступно обновление',
+    'update-available-description': 'Новая версия уже доступна! Нажмите, чтобы просмотреть детали. Версия: ',
+    'dismiss': 'Отклонить'
 }
 
 export default AnimeStarExtensionTranslationRussian;

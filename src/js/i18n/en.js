@@ -38,7 +38,13 @@ const AnimeStarExtensionTranslationEnglish = {
     'card-user-count-request-delay': 'Request delay',
     'card-user-count-initial-delay': 'Initial delay',
     'card-user-count-request-delay-description': 'Delay between requests for card statistics (ms)',
-    'card-user-count-initial-delay-description': 'Delay before first request for card statistics (ms)'
+    'card-user-count-initial-delay-description': 'Delay before first request for card statistics (ms)',
+    'updates': 'Updates',
+    'not-update-check': 'Not check for updates',
+    'check-update': 'Check for update',
+    'update-available-title': 'Update Available',
+    'update-available-description': 'New version is available! Click to see details. Version: ',
+    'dismiss': 'Dismiss'
 }
 
 export default AnimeStarExtensionTranslationEnglish;

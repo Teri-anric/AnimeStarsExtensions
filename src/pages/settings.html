@@ -135,7 +135,34 @@
                 </div>
             </div>
         </div>
+        <div class="settings-section">
+            <h2>updates</h2>
+            <div class="setting-item">
+                <label for="not-update-check">not-update-check</label>
+                <label class="toggle">
+                    <input type="checkbox" id="not-update-check">
+                    <span class="slider"></span>
+                </label>
+            </div>
+            <div class="setting-item">
+                <button class="check-update-btn">check-update</button>
+            </div>
+        </div>
     </translate-text>
+
+    <div class="update-notification hidden" id="update-notification">
+        <div class="update-content">
+            <h3>update-available-title</h3>
+            <p>
+                <span>update-available-description</span>
+                <span id="update-version"></span>
+            </p>
+            <div class="update-actions">
+                <button class="check-update-btn">check-update</button>
+                <button class="dismiss-update-btn">dismiss</button>
+            </div>
+        </div>
+    </div>
 
     <script src="../js/settings.js"></script>
     <translate-text>

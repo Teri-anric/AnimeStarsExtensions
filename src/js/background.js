@@ -13,7 +13,8 @@ const DEFAULT_SETTINGS = {
     'card-user-count': true,
     'card-user-count-event-target': 'mousedown-1',
     'card-user-count-request-delay': 350,
-    'card-user-count-initial-delay': 100
+    'card-user-count-initial-delay': 100,
+    'not-update-check': false
 };
 
 // Update URL for version checking
@@ -21,40 +22,29 @@ const UPDATE_URL = 'https://raw.githubusercontent.com/Teri-anric/AnimeStarsExten
 
 // Function to check for updates
 async function checkForUpdates() {
-    try {
-        const response = await fetch(UPDATE_URL);
-        const githubManifest = await response.json();
-        const currentVersion = chrome.runtime.getManifest().version;
+    chrome.storage.sync.get('not-update-check', async (result) => {
+        if (result['not-update-check']) return;
 
-        // Get current language
-        const language = await new Promise((resolve) => {
-            chrome.storage.sync.get('language', (storage) => {
-                resolve(storage.language || 'en');
-            });
-        });
+        try {
+            const response = await fetch(UPDATE_URL);
+            const githubManifest = await response.json();
+            const currentVersion = chrome.runtime.getManifest().version;
 
         // Compare versions
         if (compareVersions(githubManifest.version, currentVersion) > 0) {
             // New version available
-            chrome.storage.sync.get('last-checked-version', (storage) => {
-                if (storage['last-checked-version'] !== githubManifest.version) {
-                    // Show notification
-                    chrome.notifications.create('extension-update', {
-                        type: 'basic',
-                        iconUrl: 'icons/icon-128.png',
-                        title: i18n.getTranslateText('update-notification-title', language),
-                        message: i18n.getTranslateText('update-notification-message', language).replace('{version}', githubManifest.version),
-                        buttons: [{ title: i18n.getTranslateText('update-notification-button', language) }]
-                    });
-
-                    // Store the version to prevent repeated notifications
-                    chrome.storage.sync.set({ 'last-checked-version': githubManifest.version });
-                }
+            chrome.storage.sync.set({
+                'update-available': true,
+                'new-version': githubManifest.version,
             });
+        } else {
+            // No update available, clear update flags
+            chrome.storage.sync.remove(['update-available', 'new-version', 'update-checked-at']);
         }
-    } catch (error) {
-        console.error('Update check failed:', error);
-    }
+        } catch (error) {
+            console.error('Update check failed:', error);
+        }
+    });
 }
 
 // Version comparison function
@@ -87,23 +77,14 @@ chrome.runtime.onInstalled.addListener(() => {
     checkForUpdates();
 });
 
-// Periodic update check (every 24 hours)
-chrome.alarms.create('update-check', { periodInMinutes: 24 * 60 });
+// Periodic update check (every 1 hours)
+chrome.alarms.create('update-check', { periodInMinutes: 1 * 60 });
 chrome.alarms.onAlarm.addListener((alarm) => {
     if (alarm.name === 'update-check') {
         checkForUpdates();
     }
 });
 
-// Notification click handler
-chrome.notifications.onButtonClicked.addListener((notificationId, buttonIndex) => {
-    if (notificationId === 'extension-update' && buttonIndex === 0) {
-        // Open GitHub releases page
-        chrome.tabs.create({ 
-            url: 'https://github.com/Teri-anric/AnimeStarsExtensions/releases' 
-        });
-    }
-});
 
 // Optional: Add listener for settings changes if needed in future
 chrome.storage.onChanged.addListener((changes, namespace) => {

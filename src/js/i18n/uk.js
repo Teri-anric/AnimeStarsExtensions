@@ -38,7 +38,13 @@ const AnimeStarExtensionTranslationUkraine = {
     'card-user-count-request-delay': 'Затримка між запитами',
     'card-user-count-initial-delay': 'Затримка перед першим запитом',
     'card-user-count-request-delay-description': 'Затримка між запитами для статистики карток (мс)',
-    'card-user-count-initial-delay-description': 'Затримка перед першим запитом для статистики карток (мс)'
+    'card-user-count-initial-delay-description': 'Затримка перед першим запитом для статистики карток (мс)',
+    'updates': 'Оновлення',
+    'not-update-check': 'Не перевіряти оновлення',
+    'check-update': 'Перевірити оновлення',
+    'update-available-title': 'Доступне оновлення',
+    'update-available-description': 'Нова версія вже доступна! Натисніть, щоб переглянути деталі. Версія: ',
+    'dismiss': 'Відхилити'
 }
 
 export default AnimeStarExtensionTranslationUkraine;

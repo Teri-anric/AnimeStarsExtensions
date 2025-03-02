@@ -1,11 +1,15 @@
 document.addEventListener('DOMContentLoaded', () => {
+    const RELEASES_URL = 'https://github.com/Teri-anric/AnimeStarsExtensions/releases';
+
+
     const settingsCheckboxes = [
         'auto-seen-card',
         'auto-watchlist-fix',
         'club-boost-auto',
         'card-user-count',
         'add-my-cards-button',
-        'add-user-cards-buttons'
+        'add-user-cards-buttons',
+        'not-update-check'
     ];
 
     const settingsSelects = [
@@ -106,6 +110,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
+    // Update additional settings
     chrome.storage.onChanged.addListener(() => {
         additionalSettings.forEach(({ condition, targets }) => {
             if (!condition || !targets) return;
@@ -127,4 +132,36 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
+    // Update notification handling
+    function checkForUpdateNotification() {
+        chrome.storage.sync.get(['update-available', 'new-version', 'language', 'ignore-version'], (storage) => {
+            const updateNotification = document.getElementById('update-notification');
+            const checkUpdateBtn = document.querySelectorAll('.check-update-btn');
+            const dismissUpdateBtn = document.querySelectorAll('.dismiss-update-btn');
+
+            if (storage['update-available'] && storage['ignore-version'] != storage['new-version']) {
+                updateNotification.classList.remove('hidden');
+                
+                const versionElement = updateNotification.querySelector('#update-version');
+                versionElement.textContent = storage['new-version'];
+            }
+
+            checkUpdateBtn.forEach(btn => {
+                btn.addEventListener('click', () => {
+                    window.open(RELEASES_URL, '_blank');
+                });
+            });
+
+            dismissUpdateBtn.forEach(btn => {
+                btn.addEventListener('click', () => {
+                    updateNotification.classList.add('hidden');
+                    chrome.storage.sync.set({"ignore-version": storage['new-version']});
+                    chrome.storage.sync.remove(['update-available', 'new-version']);
+                });
+            });
+        });
+    }
+
+    // Call update notification check
+    checkForUpdateNotification();
 }); 
