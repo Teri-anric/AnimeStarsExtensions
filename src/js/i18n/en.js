@@ -10,7 +10,7 @@ const AnimeStarExtensionTranslationEnglish = {
     'auto-watchlist-fix': 'Collection is a watchlist',
     'add-my-cards-button': 'Add "My Cards" button to the header',
     'add-user-cards-buttons': 'Add buttons for quick access to user\'s open cards',
-    'club-boost-keymap': 'Hotkeys for club boosting',
+    'club-boost-auto': 'Automatic club boost',
     'card-user-count': 'Show card statistics',
     'card-user-count-event-target': 'Event target for showing card statistics',
     'save-settings': 'Save Settings',

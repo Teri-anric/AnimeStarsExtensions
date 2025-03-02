@@ -1,0 +1,25 @@
+.card-user-count {
+    position: absolute;
+    bottom: 5px;
+    right: 5px;
+    background: rgba(0,0,0,0.7);
+    color: white;
+    padding: 2px 5px;
+    border-radius: 3px;
+    font-size: 11px;
+    z-index: 10;
+}
+
+.card-user-count:hover {
+    background: rgb(0,0,0);
+    transition: 0.3s ease;
+    right: 20px;
+    scale: 1.6;
+    animation: fadeOut 3s forwards;
+}
+
+@keyframes fadeOut {
+    100% {
+        cursor: none;
+    }
+}

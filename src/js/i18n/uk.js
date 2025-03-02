@@ -10,7 +10,7 @@ const AnimeStarExtensionTranslationUkraine = {
     'auto-watchlist-fix': 'Колекція як список перегляду',
     'add-my-cards-button': 'Додати кнопку "Мої картки" в заголовок',
     'add-user-cards-buttons': 'Додати кнопки швидкого доступу до відкритих карток користувача',
-    'club-boost-keymap': 'Гарячі клавіші для підсилення клубу',
+    'club-boost-auto': 'Автоматичне підсилення клубу',
     'card-user-count': 'Показати статистику карток',
     'card-user-count-event-target': 'Подія для показу статистики карток',
     'save-settings': 'Зберегти налаштування',

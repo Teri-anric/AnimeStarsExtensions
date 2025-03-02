@@ -53,6 +53,9 @@
             ],
             "js": [
                 "./scripts/fix_header.js"
+            ],
+            "css": [
+                "./styles/fix_header.css"
             ]
         },
         {
@@ -64,7 +67,11 @@
                 "https://asstars.tv/clubs/*/boost/"
             ],
             "js": [
-                "./scripts/boost_club_keymap.js"
+                "./scripts/boost_club.js",
+                "./scripts/boost_club_auto.js"
+            ],
+            "css": [
+                "./styles/boost_club.css"
             ]
         },
         {
@@ -76,8 +83,10 @@
                 "https://asstars.tv/*"
             ],
             "js": [
-                "./libs/jquery-3.7.1.min.js",
                 "./scripts/card_user_count.js"
+            ],
+            "css": [
+                "./styles/card_user_count.css"
             ],
             "run_at": "document_end"
         }

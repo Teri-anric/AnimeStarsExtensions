@@ -2,7 +2,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const settingsCheckboxes = [
         'auto-seen-card',
         'auto-watchlist-fix',
-        'club-boost-keymap',
+        'club-boost-auto',
         'card-user-count',
         'add-my-cards-button',
         'add-user-cards-buttons'

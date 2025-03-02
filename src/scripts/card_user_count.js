@@ -65,17 +65,6 @@
           if (!countElm) {
             countElm = document.createElement('div');
             countElm.className = 'card-user-count';
-            countElm.style.cssText = `
-              position: absolute;
-              bottom: 5px;
-              right: 5px;
-              background: rgba(0,0,0,0.7);
-              color: white;
-              padding: 2px 5px;
-              border-radius: 3px;
-              font-size: 11px;
-              z-index: 10;
-            `;
             elm.style.position = 'relative';
             elm.appendChild(countElm);
           }
@@ -124,7 +113,6 @@
             const href = elm.getAttribute('href') || '';
             return href.split('/')[2];
           });
-          await processCards('.cardpack__item', elm => elm.dataset.id);
         }, CONFIG.INITIAL_DELAY);
       } else {
         const eventConfig = {
@@ -151,7 +139,6 @@
             '.anime-cards__item',
             'a.trade__main-item',
             'a.history__body-item',
-            '.cardpack__item'
           ].join(','));
           
           if (cardElement) {
