@@ -1,8 +1,6 @@
 {
     "background": {
-        "scripts": ["js/background.js"],
-        "persistent": false,
-        "type": "module"
+        "page": "pages/background.html"
     },
     "manifest_version": 3,
     "browser_specific_settings": {
