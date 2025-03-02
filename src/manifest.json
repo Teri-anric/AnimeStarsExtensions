@@ -1,7 +1,7 @@
 {
     "manifest_version": 3,
     "name": "AnimeStar Extension",
-    "version": "0.0.7",
+    "version": "0.0.8",
     "description": "Enhanced functionality for AnimeStar website",
     "permissions": [
         "activeTab",
