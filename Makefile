@@ -34,6 +34,8 @@ build-chrome:
 	@cp -r src/* dist/
 	@echo "Removing manifest directory..."
 	@rm -rf dist/manifest
+	@echo "Zipping extension..."
+	@cd dist && zip -r -0 ../build/animestars_extension-chrome.zip *
 	@echo "Packing extension..."
 	google-chrome \
 		--pack-extension=./dist \

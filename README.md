@@ -4,11 +4,31 @@
 
 This browser extension provides enhanced functionality for the AnimeStar website:
 
-1. **Auto Seen Card**: Automatically clicks card notifications and closes card modals
-2. **User Card Buttons**: Adds quick navigation buttons to user profile pages
-3. **Watchlist Fix**: Improves watchlist navigation and adds a quick cards button
-4. **Club Boost Keymap**: Adds keyboard shortcuts for club boost page
-5. **Automatic Updates**: Periodically checks for and notifies about extension updates
+1. **Auto Seen Card**:
+    - Automatically clicks card notifications
+    - Closes card modals
+2. **User Card Buttons**: 
+    - Adds quick navigation buttons to user profile pages
+3. **Watchlist Fix**: 
+    - Improves watchlist navigation button
+    - Adds a quick cards button
+4. **Club Boost**: 
+    - Adds keyboard shortcuts
+    - Adds automatic club boost
+    - Adds highlight for you user in top
+5. **Customizable**: 
+    - enable/disable auto seen card
+    - enable/disable user card buttons
+    - enable/disable watchlist fix
+    - enable/disable auto club boost
+    - enable/disable card need/have/trade show
+    - set refresh and action cooldowns
+    - disable update check
+    - set language
+6. **Language Support**: 
+    - English
+    - Russian
+    - Ukrainian
 
 ## Installation
 
@@ -18,10 +38,10 @@ This browser extension provides enhanced functionality for the AnimeStar website
 3. Click "Load unpacked" and select the `src` directory
 
 ### Firefox
-1. Open Firefox and go to `about:debugging`
-2. Click "This Firefox" in the left sidebar
-3. Click "Load Temporary Add-on"
-4. Select the `manifest.firefox.json` file in the `src/manifest` directory
+1. Open [release page](https://github.com/Teri-anric/AnimeStarsExtensions/releases/)
+2. Scroll to Assets
+3. Click `animestars_extension-firefox.xpi`
+4. Apply install extension
 
 ## Permissions
 
@@ -30,17 +50,17 @@ The extension requires the following permissions:
 - `storage`: For potential future settings
 - `webNavigation`: For update checking and management
 - `notifications`: To show update notifications
-
-## Update Mechanism
-
-The extension includes a background script that:
-- Checks for updates when the extension is installed
-- Periodically checks for updates every 24 hours
-- Notifies you when a new version is available
+- `alarms`: For periodic update checks
 
 ## Development
 
 Feel free to contribute or modify the scripts to suit your needs.
+
+Steps to contribute:
+1. Fork the repository
+2. Make your changes
+3. Create a pull request
+4. Wait for approval
 
 ## License
 

@@ -2,6 +2,5 @@
     "background": {
         "service_worker": "./js/background.js",
         "type": "module"
-    },
-    "update_url": "https://raw.githubusercontent.com/Teri-anric/AnimeStarsExtensions/main/updates.json"
+    }
 }
