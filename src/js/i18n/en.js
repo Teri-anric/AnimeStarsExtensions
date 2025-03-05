@@ -21,6 +21,7 @@ const AnimeStarExtensionTranslationEnglish = {
     'mouseover': 'Mouse over',
     'club-settings': 'Club Settings',
     'settings-title': 'Extension Settings',
+    'club-boost-highlight': 'Highlight my top item',
     'club-boost-refresh-cooldown': 'Refresh Interval',
     'club-boost-action-cooldown': 'Boost Interval',
     'club-boost-cooldown-description': 'Settings for automatic club boost intervals (ms)',
@@ -44,7 +45,7 @@ const AnimeStarExtensionTranslationEnglish = {
     'check-update': 'Check for update',
     'update-available-title': 'Update Available',
     'update-available-description': 'New version is available! Click to see details. Version: ',
-    'dismiss': 'Dismiss'
+    'dismiss': 'Dismiss',
 }
 
 export default AnimeStarExtensionTranslationEnglish;

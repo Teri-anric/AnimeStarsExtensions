@@ -1,154 +1,206 @@
 (async () => {
-  chrome.storage.sync.get(
-    ['card-user-count', 'card-user-count-event-target', 'card-user-count-request-delay', 'card-user-count-initial-delay'],
-    async (settings) => {
-      if (settings['card-user-count'] === false) return;
+  const cardContainerSelector = [
+    '.lootbox__card',
+    '.anime-cards__item',
+    'a.trade__main-item',
+    'a.history__body-item'
+  ].join(',');
 
-      const CONFIG = {
-        REQUEST_DELAY: settings['card-user-count-request-delay'] || 350,
-        INITIAL_DELAY: settings['card-user-count-initial-delay'] || 100,
-        MAX_RETRIES: 2
-      };
-
-      const get_user_count = async (card_id, type = "") => {
-        for (let attempt = 0; attempt < CONFIG.MAX_RETRIES; attempt++) {
-          try {
-            const res = await fetch(
-              `https://${window.location.hostname}/cards/${card_id}/users/${type}`
-            );
-            if (!res.ok) throw new Error(`HTTP ${res.status}`);
-            const text = await res.text();
-            const parser = new DOMParser();
-            const doc = parser.parseFromString(text, "text/html");
-
-            let selector = type === "" ? ".card-show__owner" : ".profile__friends-item";
-            const count = doc.querySelectorAll(selector).length;
-            const hasPagination = doc.querySelector(".pagination__pages a") !== null;
-
-            return hasPagination ? `${count}+` : count;
-          } catch (error) {
-            if (attempt === CONFIG.MAX_RETRIES - 1) return '?';
-            await new Promise(resolve => setTimeout(resolve, 500 * (attempt + 1)));
-          }
+  const CONFIG = {
+    ENABLED: false,
+    REQUEST_DELAY: 350,
+    INITIAL_DELAY: 100,
+    MAX_RETRIES: 2,
+    EVENT_TARGET: "automatic",
+    // functions
+    checkEvent: (e) => {
+      if (!CONFIG.ENABLED) return false;
+      if (CONFIG.EVENT_TARGET == "mouseover") return e.type == "mouseover";
+      if (CONFIG.EVENT_TARGET.startsWith("mousedown")) {
+        if (e.type != "mousedown") return false;
+        const buttonNumber = parseInt(CONFIG.EVENT_TARGET.split("-")[1]);
+        return e.button == buttonNumber;
+      }
+      return false;
+    },
+    checkActiveAutoProcessCards: () => {
+      return CONFIG.ENABLED && CONFIG.EVENT_TARGET === "automatic"
+    },
+    // config work
+    configMap: {
+      "card-user-count": "ENABLED",
+      "card-user-count-request-delay": "REQUEST_DELAY",
+      "card-user-count-initial-delay": "INITIAL_DELAY",
+      "card-user-count-event-target": "EVENT_TARGET"
+    },
+    updateFromSettings: (changes) => {
+      Object.keys(changes).forEach(key => {
+        if (CONFIG.configMap[key]) {
+          CONFIG[CONFIG.configMap[key]] = changes[key].newValue;
         }
-      };
-
-      const get_card_info = async (card_id) => {
-        if (!card_id) return { need: '?', users: '?', trade: '?' };
-        
-        try {
-          return await Promise.race([
-            Promise.all([
-              get_user_count(card_id, "need"),
-              get_user_count(card_id),
-              get_user_count(card_id, "trade")
-            ]).then(([need, users, trade]) => ({ need, users, trade })),
-            new Promise((_, reject) =>
-              setTimeout(() => reject(new Error('Timeout')), 5000)
-            )
-          ]);
-        } catch (error) {
-          return { need: '?', users: '?', trade: '?' };
+      });
+    },
+    initFromSettings: (settings) => {
+      Object.keys(settings).forEach(key => {
+        if (CONFIG.configMap[key]) {
+          CONFIG[CONFIG.configMap[key]] = settings[key] || CONFIG[CONFIG.configMap[key]];
         }
-      };
+      });
+    }
+  };
 
-      const create_card_user_count = async (elm, card_id) => {
-        try {
-          card_id = card_id || elm?.dataset?.id;
-          if (!card_id || !elm) return;
-          const lastId = elm.dataset.lastId;
-          if (lastId === card_id) return; 
-          elm.dataset.lastId = card_id; 
-
-          const { need, users, trade } = await get_card_info(card_id);
-          let countElm = elm.querySelector('.card-user-count');
-          if (!countElm) {
-            countElm = document.createElement('div');
-            countElm.className = 'card-user-count';
-            elm.style.position = 'relative';
-            elm.appendChild(countElm);
-          }
-          countElm.textContent = `${need} | ${users} | ${trade}`;
-        } catch (error) {
-          console.error('Card processing error:', error);
-        }
-      };
-
-      const attachObserverToCard = (elm) => {
-        if (elm.dataset.observerAttached === "true") return;
-        elm.dataset.observerAttached = "true";
-
-        const observer = new MutationObserver(mutations => {
-          mutations.forEach(mutation => {
-            if (mutation.type === 'attributes' && mutation.attributeName === 'data-id') {
-              create_card_user_count(mutation.target, mutation.target.dataset.id);
-            }
-          });
-        });
-        observer.observe(elm, { attributes: true, attributeFilter: ['data-id'] });
-      };
-
-      const processCards = async (selector, getId) => {
-        const elements = Array.from(document.querySelectorAll(selector));
-        for (const elm of elements) {
-          try {
-            const card_id = getId(elm);
-            if (!card_id) continue;
-            
-            await create_card_user_count(elm, card_id);
-            attachObserverToCard(elm);
-            await new Promise(resolve => setTimeout(resolve, CONFIG.REQUEST_DELAY));
-          } catch (error) {
-            console.warn('Processing interrupted:', error);
-            break;
-          }
-        }
-      };
-
-      if (settings["card-user-count-event-target"] === "automatic") {
-        setTimeout(async () => {
-          await processCards('.lootbox__card', elm => elm.dataset.id);
-          await processCards('.anime-cards__item', elm => elm.dataset.id);
-          await processCards('a.trade__main-item, a.history__body-item', elm => {
-            const href = elm.getAttribute('href') || '';
-            return href.split('/')[2];
-          });
-        }, CONFIG.INITIAL_DELAY);
+  const cardProcesor = {
+    toProcessCards: Array.from(document.querySelectorAll(cardContainerSelector)),
+    autoProcessCardsIntervalID: null,
+    // conditions
+    isActive: () => {
+      return cardProcesor.autoProcessCardsIntervalID != null
+    },
+    // status mutation
+    start: () => {
+      cardProcesor.autoProcessCardsIntervalID = setTimeout(cardProcesor.processCards, CONFIG.INITIAL_DELAY);
+    },
+    continue: () => {
+      if (cardProcesor.autoProcessCardsIntervalID == "processing") {
+        cardProcesor.autoProcessCardsIntervalID = setTimeout(cardProcesor.processCards, CONFIG.REQUEST_DELAY);
       } else {
-        const eventConfig = {
-          eventType: 'mouseover',
-          buttonCheck: () => true
-        };
-
-        if (settings["card-user-count-event-target"]?.startsWith('mousedown')) {
-          const parts = settings["card-user-count-event-target"].split('-');
-          let buttonNumber = 0;
-          if (parts.length > 1) {
-            const parsed = parseInt(parts[1]);
-            buttonNumber = isNaN(parsed) ? 0 : parsed;
-          }
-          eventConfig.eventType = 'mousedown';
-          eventConfig.buttonCheck = e => e.button === buttonNumber;
+        console.warn("Card procesor is already running, conflicting with continue");
+      }
+    },
+    stop: () => {
+      if (cardProcesor.autoProcessCardsIntervalID !== "processing") {
+        clearInterval(cardProcesor.autoProcessCardsIntervalID);
+      }
+      cardProcesor.autoProcessCardsIntervalID = null;
+    },
+    sync: () => {
+      // start auto process if not active
+      if (CONFIG.checkActiveAutoProcessCards() && !cardProcesor.isActive()) {
+        cardProcesor.start();
+      }
+      // stop auto process if active
+      if (!CONFIG.checkActiveAutoProcessCards() && cardProcesor.isActive()) {
+        cardProcesor.stop();
+      }
+    },
+    // process cards
+    processCards: async () => {
+      cardProcesor.autoProcessCardsIntervalID = "processing";
+      const elm = cardProcesor.toProcessCards.shift();
+      try {
+        await createCardUserCount(elm)
+        cardProcesor.attachObserverToCard(elm);
+      } catch (error) {
+        console.warn('Processing interrupted:', error);
+      } finally {
+        if (CONFIG.checkActiveAutoProcessCards()) {
+          cardProcesor.continue();
+        } else {
+          cardProcesor.stop();
         }
+      }
+    },
+    // observer
+    attachObserverToCard: (elm) => {
+      cardProcesor.observer.observe(elm, { attributes: true, attributeFilter: ['data-id'] });
+    },
+    observer: new MutationObserver(mutations => {
+      mutations.forEach(mutation => {
+        cardProcesor.toProcessCards.unshift(mutation.target);
+      });
+    }),
+  }
 
-        document.addEventListener(eventConfig.eventType, async (e) => {
-          if (!eventConfig.buttonCheck(e)) return;
-          
-          const cardElement = e.target.closest([
-            '.lootbox__card',
-            '.anime-cards__item',
-            'a.trade__main-item',
-            'a.history__body-item',
-          ].join(','));
-          
-          if (cardElement) {
-            const card_id = cardElement.dataset?.id ||
-                            (cardElement.getAttribute('href')?.split('/')?.[2] || null);
-            await create_card_user_count(cardElement, card_id);
-            attachObserverToCard(cardElement);
-          }
-        });
+  // utils
+  function extractCardId(elm) {
+    if (!elm) return null;
+    return elm.dataset?.id || elm.getAttribute('href')?.split('/')?.[2] || null;
+  };
+
+  async function getUserCount(card_id, type = "") {
+    for (let attempt = 0; attempt < CONFIG.MAX_RETRIES; attempt++) {
+      try {
+        const res = await fetch(
+          `https://${window.location.hostname}/cards/${card_id}/users/${type}`
+        );
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+        const text = await res.text();
+        const parser = new DOMParser();
+        const doc = parser.parseFromString(text, "text/html");
+
+        let selector = type === "" ? ".card-show__owner" : ".profile__friends-item";
+        const count = doc.querySelectorAll(selector).length;
+        const hasPagination = doc.querySelector(".pagination__pages a") !== null;
+
+        return hasPagination ? `${count}+` : count;
+      } catch (error) {
+        if (attempt === CONFIG.MAX_RETRIES - 1) return '?';
+        await new Promise(resolve => setTimeout(resolve, 500 * (attempt + 1)));
       }
     }
-  );
+  };
+
+  async function getCardInfo(card_id) {
+    if (!card_id) return { need: '?', users: '?', trade: '?' };
+
+    try {
+      return await Promise.race([
+        Promise.all([
+          getUserCount(card_id, "need"),
+          getUserCount(card_id),
+          getUserCount(card_id, "trade")
+        ]).then(([need, users, trade]) => ({ need, users, trade })),
+        new Promise((_, reject) =>
+          setTimeout(() => reject(new Error('Timeout')), 5000)
+        )
+      ]);
+    } catch (error) {
+      return { need: '?', users: '?', trade: '?' };
+    }
+  };
+
+  async function createCardUserCount(elm) {
+    try {
+      const card_id = extractCardId(elm);
+      if (!elm || !card_id) return;
+      const lastId = elm.dataset.lastId;
+      if (lastId === card_id) return; // don't update if the card_id is the same
+      elm.dataset.lastId = card_id;
+
+      const { need, users, trade } = await getCardInfo(card_id);
+      let countElm = elm.querySelector('.card-user-count');
+      if (!countElm) {
+        countElm = document.createElement('div');
+        countElm.className = 'card-user-count';
+        elm.appendChild(countElm);
+      }
+      countElm.textContent = `${need} | ${users} | ${trade}`;
+    } catch (error) {
+      console.error('Card processing error:', error);
+    }
+  };
+
+  // event handler
+  async function eventHandler(e) {
+    if (!CONFIG.checkEvent(e)) return;
+    const cardElement = e.target.closest(cardContainerSelector);
+    if (!cardElement) return;
+    await createCardUserCount(cardElement);
+  }
+  // add mouse event listeners
+  document.addEventListener("mouseover", eventHandler);
+  document.addEventListener("mousedown", eventHandler);
+
+  // init
+  chrome.storage.sync.get(Object.keys(CONFIG.configMap), async (settings) => {
+    CONFIG.initFromSettings(settings);
+    cardProcesor.sync();
+  });
+
+  // update
+  chrome.storage.onChanged.addListener((changes, namespace) => {
+    if (namespace != "sync") return;
+    CONFIG.updateFromSettings(changes);
+    cardProcesor.sync();
+  });
 })();

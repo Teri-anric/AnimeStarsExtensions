@@ -46,7 +46,8 @@
         }
     });
 
-    chrome.storage.onChanged.addListener((changes) => {
+    chrome.storage.onChanged.addListener((changes, namespace) => {
+        if (namespace != "sync") return;
         if (changes['club-boost-refresh-cooldown'] != undefined) {
             refreshCooldown = changes['club-boost-refresh-cooldown'].newValue;
         }

@@ -42,7 +42,7 @@ jobs:
       if: startsWith(github.ref, 'refs/tags/')
       with:
         files: |
-          build/animestars_extension-chrome.crx
+          build/animestars_extension-chrome.zip
           build/animestars_extension-firefox.xpi
         draft: true
         body_path: RELEASE.md

@@ -6,6 +6,7 @@ document.addEventListener('DOMContentLoaded', () => {
         'auto-seen-card',
         'auto-watchlist-fix',
         'club-boost-auto',
+        'club-boost-highlight',
         'card-user-count',
         'add-my-cards-button',
         'add-user-cards-buttons',

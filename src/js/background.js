@@ -14,7 +14,8 @@ const DEFAULT_SETTINGS = {
     'card-user-count-event-target': 'mousedown-1',
     'card-user-count-request-delay': 350,
     'card-user-count-initial-delay': 100,
-    'not-update-check': false
+    'not-update-check': false,
+    'club-boost-highlight': true
 };
 
 // Update URL for version checking

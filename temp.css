@@ -1,0 +1,14 @@
+.lock-card-btn {
+    display: block;
+    position: absolute !important;
+    top: 5px;
+    background-color: var(--bdc);
+    padding: 2px 6px;
+    border-radius: 50%;
+    right: calc(50% - 80px);
+    border: 1px solid rgba(0, 0, 0, 0.4);
+}
+
+.lock-card-btn:hover {
+    background-color: #ffbfc1;
+}

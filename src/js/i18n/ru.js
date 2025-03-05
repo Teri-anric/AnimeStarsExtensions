@@ -21,6 +21,7 @@ export const AnimeStarExtensionTranslationRussian = {
     'mouseover': 'Наведение мыши',
     'club-settings': 'Настройки клуба',
     'settings-title': 'Настройки расширения',
+    'club-boost-highlight': 'Выделить меня в топе',
     'club-boost-refresh-cooldown': 'Интервал обновления',
     'club-boost-action-cooldown': 'Интервал усиления',
     'club-boost-cooldown-description': 'Настройки интервалов автоматического усиления клуба (мс)',
@@ -44,7 +45,7 @@ export const AnimeStarExtensionTranslationRussian = {
     'check-update': 'Проверить обновления',
     'update-available-title': 'Доступно обновление',
     'update-available-description': 'Новая версия уже доступна! Нажмите, чтобы просмотреть детали. Версия: ',
-    'dismiss': 'Отклонить'
+    'dismiss': 'Отклонить',
 }
 
 export default AnimeStarExtensionTranslationRussian;

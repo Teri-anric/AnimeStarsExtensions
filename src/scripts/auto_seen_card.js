@@ -1,21 +1,28 @@
 (function() {
+    const CONFIG = {
+        ENABLED: false,
+    }
+    function clickCardNotification() {
+        const cardNotification = document.querySelector(".card-notification");
+        if (cardNotification && CONFIG.ENABLED) {
+            cardNotification.click();
+            setTimeout(closeCardModal, 100);
+        }
+    }
+    function closeCardModal() {
+        const cardModalClose = document.querySelector('.ui-dialog[aria-describedby="card-modal"] .ui-dialog-titlebar-close');
+        if (cardModalClose && CONFIG.ENABLED) {
+            cardModalClose.click();
+        }
+    }
+    // init
+    setTimeout(clickCardNotification, 1000);
     chrome.storage.sync.get('auto-seen-card', (settings) => {
-        if (settings['auto-seen-card'] === false) return;
-
-        // Auto click card notification
-        setInterval(() => { 
-            const cardNotification = document.querySelector(".card-notification");
-            if (cardNotification) {
-                cardNotification.click();
-            }
-        }, 2 * 1000);
-
-        // Close card modal
-        setInterval(() => { 
-            const cardModalClose = document.querySelector('.ui-dialog[aria-describedby="card-modal"] .ui-dialog-titlebar-close');
-            if (cardModalClose) {
-                cardModalClose.click();
-            }
-        }, 2 * 1010);
+        CONFIG.ENABLED = settings['auto-seen-card']
     });
+    chrome.storage.onChanged.addListener((changes, namespace) => {
+        if (namespace != "sync") return;
+        CONFIG.ENABLED = changes['auto-seen-card'].newValue;
+    });
+
 })();

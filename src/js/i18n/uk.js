@@ -21,6 +21,7 @@ const AnimeStarExtensionTranslationUkraine = {
     'mouseover': 'Наведення миші',
     'club-settings': 'Налаштування клубу',
     'settings-title': 'Налаштування розширення',
+    'club-boost-highlight': 'Виділити мене в топі',
     'club-boost-refresh-cooldown': 'Інтервал оновлення',
     'club-boost-action-cooldown': 'Інтервал підсилення',
     'club-boost-cooldown-description': 'Налаштування інтервалів автоматичного підсилення клубу (мс)',
@@ -44,7 +45,7 @@ const AnimeStarExtensionTranslationUkraine = {
     'check-update': 'Перевірити оновлення',
     'update-available-title': 'Доступне оновлення',
     'update-available-description': 'Нова версія вже доступна! Натисніть, щоб переглянути деталі. Версія: ',
-    'dismiss': 'Відхилити'
+    'dismiss': 'Відхилити',
 }
 
 export default AnimeStarExtensionTranslationUkraine;

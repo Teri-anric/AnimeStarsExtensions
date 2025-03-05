@@ -1,0 +1,13 @@
+.new-profile__title {
+    display: flex;
+    flex-flow: row;
+}
+
+.user-card-buttons {
+    display: flex;
+    flex-flow: row;
+}
+
+.user-card-buttons a {
+    margin-left: 10px;
+}

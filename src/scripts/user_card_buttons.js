@@ -1,39 +1,48 @@
-(function() {
-    chrome.storage.sync.get(['add-user-cards-buttons'], (settings) => {
+(function () {
+    let USERNAME = document.querySelector(".usp__name")?.textContent
+    // let LOGIN_USERNAME = document.querySelector(".login__title").textContent.trim();
+    if (USERNAME) { // clear username
+        USERNAME = USERNAME.replace("возвышение", "").trim();
+    }
 
-        if (!settings['add-user-cards-buttons']) return;
-        
-        if (!document.querySelector(".usp__name")) return;
+    function createUserCardButtons() {
+        const cardButton = document.querySelector(".new-profile__title");
+        if (!cardButton) return;
 
-        let username = document.querySelector(".usp__name").textContent.replace("возвышение", "").trim();
-        let login_username = document.querySelector(".login__title").textContent.trim();
-
-        let cardButton = document.querySelector(".new-profile__title");
-        cardButton.style = "flex-flow: row; display: flex;";
-
-        let boxShort = document.createElement("div");
+        const boxShort = document.createElement("div");
+        boxShort.classList.add("user-card-buttons");
         cardButton.append(boxShort);
 
-        const ITEM_STYLE = "margin-left: 10px;";
-
-        let needLink = document.createElement("a");
+        const needLink = document.createElement("a");
         needLink.className = "fal fa-heart";
-        needLink.href = `/user/${username}/cards/need/`;
-        needLink.style = ITEM_STYLE;
+        needLink.href = `/user/${USERNAME}/cards/need/`;
         boxShort.append(needLink);
 
-        let unlockLink = document.createElement("a");
+        const unlockLink = document.createElement("a");
         unlockLink.className = "fal fa-unlock";
-        unlockLink.href = `/user/${username}/cards/?locked=0`;
-        unlockLink.style = ITEM_STYLE;
+        unlockLink.href = `/user/${USERNAME}/cards/?locked=0`;
         boxShort.append(unlockLink);
 
         "abcdes".split('').forEach(rank => {
-            let rankLink = document.createElement("a");
+            const rankLink = document.createElement("a");
             rankLink.textContent = rank;
-            rankLink.href = `/user/${username}/cards/?locked=0&rank=${rank}`;
-            rankLink.style = ITEM_STYLE;
+            rankLink.href = `/user/${USERNAME}/cards/?locked=0&rank=${rank}`;
             boxShort.append(rankLink);
         });
+    }
+
+    chrome.storage.sync.get(['add-user-cards-buttons'], (settings) => {
+        if (!settings['add-user-cards-buttons']) return;
+        createUserCardButtons();
+    });
+    chrome.storage.onChanged.addListener((changes, namespace) => {
+        if (namespace != "sync") return;
+        if (changes['add-user-cards-buttons'] && changes['add-user-cards-buttons'].newValue != changes['add-user-cards-buttons'].oldValue) {
+            if (changes['add-user-cards-buttons'].newValue) {
+                createUserCardButtons();
+            } else {
+                document.querySelector(".user-card-buttons").remove();
+            }
+        }
     });
 })();

@@ -6,8 +6,6 @@
     "permissions": [
         "activeTab",
         "storage",
-        "webNavigation",
-        "notifications",
         "alarms"
     ],
     "host_permissions": [
@@ -16,7 +14,7 @@
         "https://asstars1.astars.club/*",
         "https://as1.astars.club/*",
         "https://asstars.tv/*",
-        "https://raw.githubusercontent.com/Teri-anric/AnimeStarsExtensions/main/updates.json"
+        "https://raw.githubusercontent.com/Teri-anric/AnimeStarsExtensions/*"
     ],
     "content_scripts": [
         {
@@ -41,6 +39,9 @@
             ],
             "js": [
                 "./scripts/user_card_buttons.js"
+            ],
+            "css": [
+                "./styles/user_card_buttons.css"
             ]
         },
         {

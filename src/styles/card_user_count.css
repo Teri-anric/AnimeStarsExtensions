@@ -14,11 +14,14 @@
     background: rgb(0,0,0);
     transition: 0.3s ease;
     right: 20px;
-    scale: 1.6;
-    animation: fadeOut 3s forwards;
+    scale: 1.4;
+    animation: hideCursor 3s forwards;
 }
 
-@keyframes fadeOut {
+@keyframes hideCursor {
+    0% {
+        cursor: default;
+    }
     100% {
         cursor: none;
     }
