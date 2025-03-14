@@ -7,6 +7,7 @@ const AnimeStarExtensionTranslationUkraine = {
     'select-language': 'Оберіть мову',
     'auto-features': 'Автоматичні функції',
     'auto-seen-card': 'Автоматично переглядати картки',
+    'auto-seen-card-stack': 'Складати картки з перегляду',
     'auto-watchlist-fix': 'Колекція як список перегляду',
     'add-my-cards-button': 'Додати кнопку "Мої картки" в заголовок',
     'add-user-cards-buttons': 'Додати кнопки швидкого доступу до відкритих карток користувача',

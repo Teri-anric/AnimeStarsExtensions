@@ -27,6 +27,9 @@
             ],
             "js": [
                 "./scripts/auto_seen_card.js"
+            ],
+            "css": [
+                "./styles/auto_seen_card.css"
             ]
         },
         {

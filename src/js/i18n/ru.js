@@ -7,6 +7,7 @@ export const AnimeStarExtensionTranslationRussian = {
     'select-language': 'Выберите язык',
     'auto-features': 'Автоматические функции',
     'auto-seen-card': 'Автоматически просматривать карточки',
+    'auto-seen-card-stack': 'Складывать карточки из просмотра',
     'auto-watchlist-fix': 'Коллекция как список просмотра',
     'add-my-cards-button': 'Добавить кнопку "Мои карточки" в заголовок',
     'add-user-cards-buttons': 'Добавить кнопки быстрого доступа к открытым карточкам пользователя',

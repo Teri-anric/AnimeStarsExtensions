@@ -4,6 +4,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const settingsCheckboxes = [
         'auto-seen-card',
+        'auto-seen-card-stack',
         'auto-watchlist-fix',
         'club-boost-auto',
         'club-boost-highlight',
@@ -48,6 +49,27 @@ document.addEventListener('DOMContentLoaded', () => {
             targets: ["card-user-count-automatic"]
         }
     ];
+    const actions = {
+        "auto-seen-card": (value) => {
+            if (value == true) {
+                const autoSeenCardStack = document.getElementById("auto-seen-card-stack");
+                if (autoSeenCardStack.checked) {
+                    autoSeenCardStack.click(); 
+                }
+            }
+        },
+        "auto-seen-card-stack": (value) => {
+            if (value == true) {
+                const autoSeenCard = document.getElementById("auto-seen-card");
+                if (autoSeenCard.checked) {
+                    autoSeenCard.click();
+                }
+            }
+        },
+        "language": (value) => {
+            window.i18n.changeLang(value);
+        }
+    }
 
     // Combine all settings to load 
     const allSettings = [...settingsCheckboxes, ...settingsSelects, ...settingsRangeInputs];
@@ -56,9 +78,6 @@ document.addEventListener('DOMContentLoaded', () => {
     chrome.storage.sync.get(allSettings, (settings) => {
         // Load language settings
         window.i18n.changeLang(settings.language);
-        document.querySelector("#language").addEventListener('change', (event) => {
-            window.i18n.changeLang(event.target.value);
-        });
 
         // Load checkbox settings
         settingsCheckboxes.forEach(id => {
@@ -67,6 +86,9 @@ document.addEventListener('DOMContentLoaded', () => {
                 checkbox.checked = settings[id] || false;
             }
             checkbox.addEventListener('change', (event) => {
+                if (actions[id]) {
+                    actions[id](event.target.checked);
+                }
                 chrome.storage.sync.set({ [id]: event.target.checked });
             });
         });
@@ -78,6 +100,9 @@ document.addEventListener('DOMContentLoaded', () => {
                 select.value = settings[id] || '';
             }
             select.addEventListener('change', (event) => {
+                if (actions[id]) {
+                    actions[id](event.target.value);
+                }
                 chrome.storage.sync.set({ [id]: event.target.value });
             });
         });
@@ -95,6 +120,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
             input.addEventListener('input', (event) => {
                 const value = parseInt(event.target.value);
+                if (actions[id]) {
+                    actions[id](value);
+                }
                 valueSpan.textContent = value;
                 chrome.storage.sync.set({ [id]: value });
             });
