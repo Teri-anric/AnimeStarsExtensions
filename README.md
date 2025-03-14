@@ -1,5 +1,9 @@
 # AnimeStar Browser Extension
 
+More languages:
+- [Ukrainian](./README_UA.md)
+- [Russian](./README_RU.md)
+
 ## Features
 
 This browser extension provides enhanced functionality for the AnimeStar website:
@@ -7,6 +11,7 @@ This browser extension provides enhanced functionality for the AnimeStar website
 1. **Auto Seen Card**:
     - Automatically clicks card notifications
     - Closes card modals
+    - Collects all cards in one list
 2. **User Card Buttons**: 
     - Adds quick navigation buttons to user profile pages
 3. **Watchlist Fix**: 
@@ -27,8 +32,8 @@ This browser extension provides enhanced functionality for the AnimeStar website
     - set language
 6. **Language Support**: 
     - English
-    - Russian
     - Ukrainian
+    - Russian
 
 ## Installation
 
@@ -56,11 +61,7 @@ The extension requires the following permissions:
 
 Feel free to contribute or modify the scripts to suit your needs.
 
-Steps to contribute:
-1. Fork the repository
-2. Make your changes
-3. Create a pull request
-4. Wait for approval
+For contributing, please refer to [CONTRIBUTING.md](./CONTRIBUTING.md).
 
 ## License
 
