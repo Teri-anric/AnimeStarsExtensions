@@ -51,4 +51,32 @@
             elm.appendChild(scop);
         });
     });
+	
+    document.querySelectorAll("a.history__body-item").forEach((elm) => {
+        const card_id = elm.getAttribute("href").split("/")[2];
+        if (!card_id) return;
+
+        get_card_info(card_id).then(({ need, users, trade }) => {
+            const scop = document.createElement("span");
+            scop.style = "display: grid; place-items: center";
+            scop.textContent = `${need} | ${users} | ${trade}`;
+
+            elm.appendChild(scop);
+        });
+    });
+	
+	 document.querySelectorAll("a.trade__main-item").forEach((elm) => {
+        const card_id = elm.getAttribute("href").split("/")[2];
+        if (!card_id) return;
+
+        get_card_info(card_id).then(({ need, users, trade }) => {
+            const scop = document.createElement("span");
+            scop.style = "display: grid; place-items: center";
+            scop.textContent = `${need} | ${users} | ${trade}`;
+
+            elm.appendChild(scop);
+        });
+    });
+
+
 })();
