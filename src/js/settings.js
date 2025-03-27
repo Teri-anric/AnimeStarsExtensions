@@ -9,9 +9,10 @@ document.addEventListener('DOMContentLoaded', () => {
         'club-boost-auto',
         'club-boost-highlight',
         'card-user-count',
+        'card-user-count-cache-enabled',
         'add-my-cards-button',
         'add-user-cards-buttons',
-        'not-update-check'
+        'not-update-check',
     ];
 
     const settingsSelects = [
@@ -49,7 +50,8 @@ document.addEventListener('DOMContentLoaded', () => {
             targets: [
                 "card-user-count-event-target", 
                 "card-user-count-max-fetch-pages",
-                "card-user-count-template"
+                "card-user-count-template",
+                "card-user-count-cache-enabled",
             ]
         },
         {

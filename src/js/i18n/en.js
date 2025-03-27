@@ -52,6 +52,7 @@ const AnimeStarExtensionTranslationEnglish = {
     'card-user-count-max-fetch-pages-owner': 'For owner',
     'card-user-count-max-fetch-pages-trade': 'For trade',
     'card-user-count-max-fetch-pages-need': 'For need',
+    'card-user-count-cache-enabled': 'Cache enabled',
 }
 
 export default AnimeStarExtensionTranslationEnglish;

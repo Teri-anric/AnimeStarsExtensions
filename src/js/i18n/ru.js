@@ -52,6 +52,7 @@ export const AnimeStarExtensionTranslationRussian = {
     'card-user-count-max-fetch-pages-owner': 'Для владельцев',
     'card-user-count-max-fetch-pages-trade': 'Для готовых обменять',
     'card-user-count-max-fetch-pages-need': 'Для хочуть получить',
+    'card-user-count-cache-enabled': 'Включить кэширование',
 }
 
 export default AnimeStarExtensionTranslationRussian;

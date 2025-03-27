@@ -52,6 +52,7 @@ const AnimeStarExtensionTranslationUkraine = {
     'card-user-count-max-fetch-pages-owner': 'Для власників',
     'card-user-count-max-fetch-pages-trade': 'Для готових обміняти',
     'card-user-count-max-fetch-pages-need': 'Для хочуть отримати',
+    'card-user-count-cache-enabled': 'Включити кешування',
 }
 
 export default AnimeStarExtensionTranslationUkraine;

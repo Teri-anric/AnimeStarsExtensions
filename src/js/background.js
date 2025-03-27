@@ -20,6 +20,7 @@ const DEFAULT_SETTINGS = {
     'card-user-count-max-fetch-pages-owner': 2,
     'card-user-count-max-fetch-pages-trade': 5,
     'card-user-count-max-fetch-pages-need': 5,
+    'card-user-count-cache-enabled': true,
     'not-update-check': false,
     'club-boost-highlight': true
 };

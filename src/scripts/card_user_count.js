@@ -23,6 +23,8 @@
     '.trade__inventory-item'
   ].join(',');
 
+  const CACHE_KEY_PREFIX = 'cardUserCount_';
+
   const CONFIG = {
     ENABLED: false,
     REQUEST_DELAY: 350,
@@ -35,6 +37,8 @@
       need: 5,
     },
     USER_COUNT_DISPLAY_TEMPATE: "{need}{needHasMorePages?+} | {ownerHasMorePages?[ownerPages]P:[owner]} | {trade}{tradeHasMorePages?+[tradePages]P}",
+    CACHE_ENABLED: true,
+    CACHE_MAX_LIFETIME: 24 * 60 * 60 * 1000, // 1 day
     // functions
     checkEvent: (e) => {
       if (!CONFIG.ENABLED) return false;
@@ -59,6 +63,8 @@
       "card-user-count-max-fetch-pages-owner": "MAX_FETCH_PAGES.owner",
       "card-user-count-max-fetch-pages-trade": "MAX_FETCH_PAGES.trade",
       "card-user-count-max-fetch-pages-need": "MAX_FETCH_PAGES.need",
+      "card-user-count-cache-enabled": "CACHE_ENABLED",
+      // "card-user-count-cache-max-lifetime": "CACHE_MAX_LIFETIME",
     },
     // update from settings
     setConfig: (configKey, value) => {
@@ -213,8 +219,34 @@
     return pageData;
   }
 
+  async function getCachedData(cardId) {
+    return new Promise((resolve) => {
+      chrome.storage.local.get([CACHE_KEY_PREFIX + cardId], (result) => {
+        const cachedData = result[CACHE_KEY_PREFIX + cardId];
+        if (cachedData && (Date.now() - cachedData.timestamp < CONFIG.CACHE_MAX_LIFETIME)) {
+          resolve(cachedData.data);
+        } else {
+          resolve(null);
+        }
+      });
+    });
+  }
+
+  async function setCachedData(cardId, data) {
+    const cacheData = {
+      timestamp: Date.now(),
+      data: data
+    };
+    await chrome.storage.local.set({ [CACHE_KEY_PREFIX + cardId]: cacheData });
+  }
+
   async function getCardUserData(cardId) {
     if (!cardId) return {}
+
+    const cachedData = await getCachedData(cardId);
+    if (cachedData && CONFIG.CACHE_ENABLED) {
+      return cachedData;
+    }
 
     const [pagesOfOwner, pagesOfTrade, pagesOfNeed] = await Promise.all([
       fetchDataForAllPages(cardId, "owner"),
@@ -231,6 +263,9 @@
       tradeHasMorePages: pagesOfTrade.hasMorePages,
       needHasMorePages: pagesOfNeed.hasMorePages,
     };
+
+    setCachedData(cardId, data);
+
     return data;
   };
 
