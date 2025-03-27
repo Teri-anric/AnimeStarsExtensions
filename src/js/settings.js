@@ -6,6 +6,7 @@ document.addEventListener('DOMContentLoaded', () => {
         'auto-seen-card',
         'auto-seen-card-stack',
         'auto-watchlist-fix',
+        'auto-take-heavenly-stone',
         'club-boost-auto',
         'club-boost-highlight',
         'card-user-count',

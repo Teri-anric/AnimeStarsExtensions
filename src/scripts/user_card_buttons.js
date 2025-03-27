@@ -1,9 +1,5 @@
 (function () {
-    let USERNAME = document.querySelector(".usp__name")?.textContent
-    // let LOGIN_USERNAME = document.querySelector(".login__title").textContent.trim();
-    if (USERNAME) { // clear username
-        USERNAME = USERNAME.replace("возвышение", "").trim();
-    }
+    let USERNAME = document.querySelector(".usn__name > h1")?.textContent
 
     function createUserCardButtons() {
         const cardButton = document.querySelector(".new-profile__title");
@@ -44,5 +40,6 @@
                 document.querySelector(".user-card-buttons").remove();
             }
         }
+
     });
 })();

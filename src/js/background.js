@@ -22,7 +22,8 @@ const DEFAULT_SETTINGS = {
     'card-user-count-max-fetch-pages-need': 5,
     'card-user-count-cache-enabled': true,
     'not-update-check': false,
-    'club-boost-highlight': true
+    'club-boost-highlight': true,
+    'auto-take-heavenly-stone': true,
 };
 
 // Update URL for version checking
