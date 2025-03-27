@@ -47,6 +47,11 @@ const AnimeStarExtensionTranslationEnglish = {
     'update-available-title': 'Update Available',
     'update-available-description': 'New version is available! Click to see details. Version: ',
     'dismiss': 'Dismiss',
+    'card-user-count-template': 'Card user count template',
+    'card-user-count-max-fetch-pages': 'Max fetch pages',
+    'card-user-count-max-fetch-pages-owner': 'For owner',
+    'card-user-count-max-fetch-pages-trade': 'For trade',
+    'card-user-count-max-fetch-pages-need': 'For need',
 }
 
 export default AnimeStarExtensionTranslationEnglish;

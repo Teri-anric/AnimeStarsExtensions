@@ -34,7 +34,7 @@
       trade: 5,
       need: 5,
     },
-    USER_COUNT_DISPLAY_TEMPATE: "{need}{needHasMorePages?+} | {ownerHasMorePages?[ownerPages]P:[owner]} | {trade}{tradeHasMorePages?+[tradePages]P} ",
+    USER_COUNT_DISPLAY_TEMPATE: "{need}{needHasMorePages?+} | {ownerHasMorePages?[ownerPages]P:[owner]} | {trade}{tradeHasMorePages?+[tradePages]P}",
     // functions
     checkEvent: (e) => {
       if (!CONFIG.ENABLED) return false;

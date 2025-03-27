@@ -23,7 +23,14 @@ document.addEventListener('DOMContentLoaded', () => {
         'club-boost-refresh-cooldown',
         'club-boost-action-cooldown',
         'card-user-count-request-delay',
-        'card-user-count-initial-delay'
+        'card-user-count-initial-delay',
+        'card-user-count-max-fetch-pages-owner',
+        'card-user-count-max-fetch-pages-trade',
+        'card-user-count-max-fetch-pages-need',
+    ];
+
+    const settingsTextInputs = [
+        'card-user-count-template',
     ];
 
     const additionalSettings = [
@@ -39,7 +46,11 @@ document.addEventListener('DOMContentLoaded', () => {
             condition: {
                 "card-user-count": true,
             },
-            targets: ["card-user-count-event-target"]
+            targets: [
+                "card-user-count-event-target", 
+                "card-user-count-max-fetch-pages",
+                "card-user-count-template"
+            ]
         },
         {
             condition: {
@@ -72,7 +83,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // Combine all settings to load 
-    const allSettings = [...settingsCheckboxes, ...settingsSelects, ...settingsRangeInputs];
+    const allSettings = [...settingsCheckboxes, ...settingsSelects, ...settingsRangeInputs, ...settingsTextInputs];
 
     // Load saved settings
     chrome.storage.sync.get(allSettings, (settings) => {
@@ -107,14 +118,26 @@ document.addEventListener('DOMContentLoaded', () => {
             });
         });
 
+        // Load text input settings
+        settingsTextInputs.forEach(id => {
+            const input = document.getElementById(id);
+            if (input) {
+                input.value = settings[id] || '';
+            }
+            input.addEventListener('change', (event) => {
+                if (actions[id]) {
+                    actions[id](event.target.value);
+                }
+                chrome.storage.sync.set({ [id]: event.target.value });
+            });
+        });
         // Load range input settings
         settingsRangeInputs.forEach(id => {
             const input = document.getElementById(id);
             const valueSpan = input.nextElementSibling;
 
             if (input) {
-                const defaultValue = id === 'club-boost-refresh-cooldown' ? 600 : 500;
-                input.value = settings[id] || defaultValue;
+                input.value = settings[id];
                 valueSpan.textContent = input.value;
             }
 

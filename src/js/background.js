@@ -5,6 +5,8 @@ const DEFAULT_SETTINGS = {
     'auto-seen-card': true,
     'auto-watchlist-fix': true,
     'club-boost-auto': true,
+    'club-boost-refresh-cooldown': 600,
+    'club-boost-action-cooldown': 500,
     'api-domain': '',
     'add-my-cards-button': true,
     'add-user-cards-buttons': true,
@@ -14,6 +16,10 @@ const DEFAULT_SETTINGS = {
     'card-user-count-event-target': 'mousedown-1',
     'card-user-count-request-delay': 350,
     'card-user-count-initial-delay': 100,
+    'card-user-count-template': '{need}{needHasMorePages?+} | {ownerHasMorePages?[ownerPages]P:[owner]} | {trade}{tradeHasMorePages?+[tradePages]P} ',
+    'card-user-count-max-fetch-pages-owner': 2,
+    'card-user-count-max-fetch-pages-trade': 5,
+    'card-user-count-max-fetch-pages-need': 5,
     'not-update-check': false,
     'club-boost-highlight': true
 };
