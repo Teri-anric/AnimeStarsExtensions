@@ -1,11 +1,9 @@
-.new-profile__title {
-    display: flex;
-    flex-flow: row;
-}
-
 .user-card-buttons {
     display: flex;
     flex-flow: row;
+    font-size: 16px;
+    font-weight: 700;
+    color: #9d274d;
 }
 
 .user-card-buttons a {

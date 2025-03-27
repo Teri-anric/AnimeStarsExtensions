@@ -22,7 +22,19 @@
                 "https://astars.club/aniserials/video/*/*.html",
                 "https://asstars1.astars.club/aniserials/video/*/*.html",
                 "https://as1.astars.club/aniserials/video/*/*.html",
-                "https://asstars.tv/aniserials/video/*/*.html"
+                "https://asstars.tv/aniserials/video/*/*.html",
+
+                "https://animestars.org/aniserials/ova/*.html",
+                "https://astars.club/aniserials/ova/*.html",
+                "https://asstars1.astars.club/aniserials/ova/*.html",
+                "https://as1.astars.club/aniserials/ova/*.html",
+                "https://asstars.tv/aniserials/ova/*.html",
+                
+                "https://animestars.org/aniserials/film-vvv/*.html",
+                "https://astars.club/aniserials/film-vvv/*.html",
+                "https://asstars1.astars.club/aniserials/film-vvv/*.html",
+                "https://as1.astars.club/aniserials/film-vvv/*.html",
+                "https://asstars.tv/aniserials/film-vvv/*.html"
             ],
             "js": [
                 "./scripts/auto_seen_card.js"

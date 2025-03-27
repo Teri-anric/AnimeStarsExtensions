@@ -2,7 +2,7 @@
     let USERNAME = document.querySelector(".usn__name > h1")?.textContent
 
     function createUserCardButtons() {
-        const cardButton = document.querySelector(".new-profile__title");
+        const cardButton = document.querySelector(".usn-sect__header");
         if (!cardButton) return;
 
         const boxShort = document.createElement("div");
@@ -19,7 +19,7 @@
         unlockLink.href = `/user/${USERNAME}/cards/?locked=0`;
         boxShort.append(unlockLink);
 
-        "abcdes".split('').forEach(rank => {
+        "ABCDES".split('').forEach(rank => {
             const rankLink = document.createElement("a");
             rankLink.textContent = rank;
             rankLink.href = `/user/${USERNAME}/cards/?locked=0&rank=${rank}`;
