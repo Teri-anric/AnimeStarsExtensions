@@ -47,6 +47,12 @@ const AnimeStarExtensionTranslationUkraine = {
     'update-available-title': 'Доступне оновлення',
     'update-available-description': 'Нова версія вже доступна! Натисніть, щоб переглянути деталі. Версія: ',
     'dismiss': 'Відхилити',
+    'card-user-count-template': 'Шаблон текста статистики карток',
+    'card-user-count-max-fetch-pages': 'Максимальне кількість сторінок для запиту',
+    'card-user-count-max-fetch-pages-owner': 'Для власників',
+    'card-user-count-max-fetch-pages-trade': 'Для готових обміняти',
+    'card-user-count-max-fetch-pages-need': 'Для хочуть отримати',
+    'card-user-count-cache-enabled': 'Включити кешування',
 }
 
 export default AnimeStarExtensionTranslationUkraine;

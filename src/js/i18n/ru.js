@@ -47,6 +47,12 @@ export const AnimeStarExtensionTranslationRussian = {
     'update-available-title': 'Доступно обновление',
     'update-available-description': 'Новая версия уже доступна! Нажмите, чтобы просмотреть детали. Версия: ',
     'dismiss': 'Отклонить',
+    'card-user-count-template': 'Шаблон текста статистики карточек',
+    'card-user-count-max-fetch-pages': 'Максимальное количество страниц для запроса',
+    'card-user-count-max-fetch-pages-owner': 'Для владельцев',
+    'card-user-count-max-fetch-pages-trade': 'Для готовых обменять',
+    'card-user-count-max-fetch-pages-need': 'Для хочуть получить',
+    'card-user-count-cache-enabled': 'Включить кэширование',
 }
 
 export default AnimeStarExtensionTranslationRussian;

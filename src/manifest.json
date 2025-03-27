@@ -108,7 +108,11 @@
     },
     "options_page": "pages/settings.html",
     "background": {
-        "service_worker": "./js/background.js",
-        "type": "module"
+        "page": "pages/background.html"
+    },
+    "browser_specific_settings": {
+        "gecko": {
+            "id": "animestars-extension@teri-anric.github.io"
+        }
     }
 }

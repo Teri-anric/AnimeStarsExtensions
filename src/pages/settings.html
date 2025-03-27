@@ -120,6 +120,45 @@
                 </label>
             </div>
             <div class="setting-item">
+                <label for="card-user-count-cache-enabled">card-user-count-cache-enabled</label>
+                <label class="toggle">
+                    <input type="checkbox" id="card-user-count-cache-enabled">
+                    <span class="slider"></span>
+                </label>
+            </div>
+            <div class="setting-item multi-line">
+                <label>card-user-count-template</label>
+                <br>
+                <input class="text-input" type="text" id="card-user-count-template">
+            </div>
+            <div class="settings-sub-section hidden" id="card-user-count-max-fetch-pages">
+                <h3>card-user-count-max-fetch-pages</h3>
+                <div class="setting-item">
+                    <label for="card-user-count-max-fetch-pages-need">card-user-count-max-fetch-pages-need</label>
+                    <div class="slider-container">
+                        <input type="range" id="card-user-count-max-fetch-pages-need" min="0" max="20" step="1">
+                        <span class="slider-value">5</span>
+                        <span>Pages</span>
+                    </div>
+                </div>
+                <div class="setting-item">
+                    <label for="card-user-count-max-fetch-pages-owner">card-user-count-max-fetch-pages-owner</label>
+                    <div class="slider-container">
+                        <input type="range" id="card-user-count-max-fetch-pages-owner" min="0" max="20" step="1">
+                        <span class="slider-value">5</span>
+                        <span>Pages</span>
+                    </div>
+                </div>
+                <div class="setting-item">
+                    <label for="card-user-count-max-fetch-pages-trade">card-user-count-max-fetch-pages-trade</label>
+                    <div class="slider-container">
+                        <input type="range" id="card-user-count-max-fetch-pages-trade" min="0" max="20" step="1">
+                        <span class="slider-value">5</span>
+                        <span>Pages</span>
+                    </div>
+                </div>
+            </div>
+            <div class="setting-item">
                 <label for="card-user-count-event-target">card-user-count-event-target</label>
                 <select id="card-user-count-event-target">
                     <option value="automatic">automatic</option>

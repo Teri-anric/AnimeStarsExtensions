@@ -1,10 +1,29 @@
 (async () => {
+  const cardUserSelectorsByType = {
+    owner: {
+      owner: ".card-show__owners .card-show__owner",
+      trophy: ".fal.fa-trophy-alt", // trophy
+      lock: ".fal.fa-lock", // lock
+      friendsOnly: ".fal.fa-user", // friends only
+      inTrade: ".fal.fa-exchange", // in trade
+    },
+    trade: {
+      trade: ".profile__friends--full .profile__friends-item",
+    },
+    need: {
+      need: ".profile__friends--full .profile__friends-item",
+    }
+  }
+
   const cardContainerSelector = [
     '.lootbox__card',
     '.anime-cards__item',
     'a.trade__main-item',
-    'a.history__body-item'
+    'a.history__body-item',
+    '.trade__inventory-item'
   ].join(',');
+
+  const CACHE_KEY_PREFIX = 'cardUserCount_';
 
   const CONFIG = {
     ENABLED: false,
@@ -12,6 +31,14 @@
     INITIAL_DELAY: 100,
     MAX_RETRIES: 2,
     EVENT_TARGET: "automatic",
+    MAX_FETCH_PAGES: {
+      owner: 2,
+      trade: 5,
+      need: 5,
+    },
+    USER_COUNT_DISPLAY_TEMPATE: "{need}{needHasMorePages?+} | {ownerHasMorePages?[ownerPages]P:[owner]} | {trade}{tradeHasMorePages?+[tradePages]P}",
+    CACHE_ENABLED: true,
+    CACHE_MAX_LIFETIME: 24 * 60 * 60 * 1000, // 1 day
     // functions
     checkEvent: (e) => {
       if (!CONFIG.ENABLED) return false;
@@ -31,19 +58,41 @@
       "card-user-count": "ENABLED",
       "card-user-count-request-delay": "REQUEST_DELAY",
       "card-user-count-initial-delay": "INITIAL_DELAY",
-      "card-user-count-event-target": "EVENT_TARGET"
+      "card-user-count-event-target": "EVENT_TARGET",
+      "card-user-count-user-count-display-template": "USER_COUNT_DISPLAY_TEMPATE",
+      "card-user-count-max-fetch-pages-owner": "MAX_FETCH_PAGES.owner",
+      "card-user-count-max-fetch-pages-trade": "MAX_FETCH_PAGES.trade",
+      "card-user-count-max-fetch-pages-need": "MAX_FETCH_PAGES.need",
+      "card-user-count-cache-enabled": "CACHE_ENABLED",
+      // "card-user-count-cache-max-lifetime": "CACHE_MAX_LIFETIME",
+    },
+    // update from settings
+    setConfig: (configKey, value) => {
+      const sections = configKey.split('.');
+      const key = sections.pop();
+      let current = CONFIG;
+      for (let i = 0; i < sections.length; i++) {
+        current = current[sections[i]];
+      }
+      current[key] = value;
     },
     updateFromSettings: (changes) => {
       Object.keys(changes).forEach(key => {
-        if (CONFIG.configMap[key]) {
-          CONFIG[CONFIG.configMap[key]] = changes[key].newValue;
+        if (!CONFIG.configMap[key]) {
+          return;
+        }
+        if (changes[key].newValue != undefined) {
+          CONFIG.setConfig(CONFIG.configMap[key], changes[key].newValue);
         }
       });
     },
     initFromSettings: (settings) => {
       Object.keys(settings).forEach(key => {
-        if (CONFIG.configMap[key]) {
-          CONFIG[CONFIG.configMap[key]] = settings[key] || CONFIG[CONFIG.configMap[key]];
+        if (!CONFIG.configMap[key]) {
+          return;
+        }
+        if (settings[key] != undefined) {
+          CONFIG.setConfig(CONFIG.configMap[key], settings[key]);
         }
       });
     }
@@ -102,6 +151,8 @@
     },
     // observer
     attachObserverToCard: (elm) => {
+      if (!elm || elm.dataset.observerAttached) return;
+      elm.setAttribute("data-observer-attached", true);
       cardProcesor.observer.observe(elm, { attributes: true, attributeFilter: ['data-id'] });
     },
     observer: new MutationObserver(mutations => {
@@ -111,53 +162,133 @@
     }),
   }
 
+  async function fetchPage(cardId, type, pageNumber) {
+    const path = {
+      owner: "users",
+      trade: "users/trade",
+      need: "users/need"
+    }[type];
+    const url = `${window.location.origin}/cards/${cardId}/${path}/page/${pageNumber}`;
+    const response = await fetch(url);
+    const html = await response.text();
+    const doc = new DOMParser().parseFromString(html, "text/html");
+
+    const paginations = doc.querySelectorAll(".pagination__pages > span, .pagination__pages > a");
+    const lastPagination = paginations.length > 0 ? parseInt(paginations[paginations.length - 1].textContent) : 1;
+
+
+    const totals = {}
+    Object.entries(cardUserSelectorsByType[type]).forEach(([key, selector]) => {
+      totals[key] = doc.querySelectorAll(selector).length;
+    });
+    const empty = Object.values(totals).every(value => value == 0);
+    const lastPage = (lastPagination == 1 && empty) ? 0 : lastPagination;
+  
+    return {totals, lastPage, empty};
+  }
+
+  function sumObjectsValues(objs) {
+    const result = {}
+    objs.forEach(obj => {
+      Object.keys(obj).forEach(key => {
+        result[key] = (result[key] || 0) + obj[key];
+      });
+    });
+    return result;
+  }
+
+  async function fetchDataForAllPages(cardId, type) {
+    const pageData = {
+      totals: {},
+      lastPage: 1,
+      hasMorePages: false,
+    }
+    let i = 1;
+    while (i <= CONFIG.MAX_FETCH_PAGES[type]) {
+      const page = await fetchPage(cardId, type, i);
+      pageData.totals = sumObjectsValues([pageData.totals, page.totals]);
+
+      pageData.lastPage = type != "trade" ? page.lastPage : i;
+      pageData.hasMorePages = type != "trade" ? page.lastPage > i : !page.empty;
+
+      if (page.empty) {
+        break;
+      }
+      i++;
+    }
+    return pageData;
+  }
+
+  async function getCachedData(cardId) {
+    return new Promise((resolve) => {
+      chrome.storage.local.get([CACHE_KEY_PREFIX + cardId], (result) => {
+        const cachedData = result[CACHE_KEY_PREFIX + cardId];
+        if (cachedData && (Date.now() - cachedData.timestamp < CONFIG.CACHE_MAX_LIFETIME)) {
+          resolve(cachedData.data);
+        } else {
+          resolve(null);
+        }
+      });
+    });
+  }
+
+  async function setCachedData(cardId, data) {
+    const cacheData = {
+      timestamp: Date.now(),
+      data: data
+    };
+    await chrome.storage.local.set({ [CACHE_KEY_PREFIX + cardId]: cacheData });
+  }
+
+  async function getCardUserData(cardId) {
+    if (!cardId) return {}
+
+    const cachedData = await getCachedData(cardId);
+    if (cachedData && CONFIG.CACHE_ENABLED) {
+      return cachedData;
+    }
+
+    const [pagesOfOwner, pagesOfTrade, pagesOfNeed] = await Promise.all([
+      fetchDataForAllPages(cardId, "owner"),
+      fetchDataForAllPages(cardId, "trade"),
+      fetchDataForAllPages(cardId, "need"),
+    ]);
+
+    const data = {
+      ...sumObjectsValues([pagesOfOwner.totals, pagesOfTrade.totals, pagesOfNeed.totals]),
+      ownerPages: pagesOfOwner.lastPage,
+      tradePages: pagesOfTrade.lastPage,
+      needPages: pagesOfNeed.lastPage,
+      ownerHasMorePages: pagesOfOwner.hasMorePages,
+      tradeHasMorePages: pagesOfTrade.hasMorePages,
+      needHasMorePages: pagesOfNeed.hasMorePages,
+    };
+
+    setCachedData(cardId, data);
+
+    return data;
+  };
+
   // utils
   function extractCardId(elm) {
     if (!elm) return null;
-    return elm.dataset?.id || elm.getAttribute('href')?.split('/')?.[2] || null;
+    return elm.getAttribute('data-card-id') || elm.dataset?.id || elm.getAttribute('href')?.split('/')?.[2] || null; //для окна трейда
   };
-
-  async function getUserCount(card_id, type = "") {
-    for (let attempt = 0; attempt < CONFIG.MAX_RETRIES; attempt++) {
-      try {
-        const res = await fetch(
-          `https://${window.location.hostname}/cards/${card_id}/users/${type}`
-        );
-        if (!res.ok) throw new Error(`HTTP ${res.status}`);
-        const text = await res.text();
-        const parser = new DOMParser();
-        const doc = parser.parseFromString(text, "text/html");
-
-        let selector = type === "" ? ".card-show__owner" : ".profile__friends-item";
-        const count = doc.querySelectorAll(selector).length;
-        const hasPagination = doc.querySelector(".pagination__pages a") !== null;
-
-        return hasPagination ? `${count}+` : count;
-      } catch (error) {
-        if (attempt === CONFIG.MAX_RETRIES - 1) return '?';
-        await new Promise(resolve => setTimeout(resolve, 500 * (attempt + 1)));
+  function formatSuffix(suffix, values) {
+    if (!suffix) return "";
+    return suffix.replace(/\[(\w+)\]/g, (_, subKey) => values[subKey] || "");
+  }
+  function formatTemplateString(template, values) {
+    return template.replace(/\{(\w+(\?[^}]+)?)\}/g, (_, key) => {
+      if (key.includes("?")) {
+        let [ternaryKey, suffix] = key.split("?");
+        if (suffix == "") return values[ternaryKey] || "";
+        let [trueValue, falseValue] = suffix.split(":");
+        return values[ternaryKey] ? formatSuffix(trueValue, values) : formatSuffix(falseValue, values);
       }
-    }
-  };
-
-  async function getCardInfo(card_id) {
-    if (!card_id) return { need: '?', users: '?', trade: '?' };
-
-    try {
-      return await Promise.race([
-        Promise.all([
-          getUserCount(card_id, "need"),
-          getUserCount(card_id),
-          getUserCount(card_id, "trade")
-        ]).then(([need, users, trade]) => ({ need, users, trade })),
-        new Promise((_, reject) =>
-          setTimeout(() => reject(new Error('Timeout')), 5000)
-        )
-      ]);
-    } catch (error) {
-      return { need: '?', users: '?', trade: '?' };
-    }
-  };
+      return values[key]
+    });
+  }
 
   async function createCardUserCount(elm) {
     try {
@@ -167,14 +298,16 @@
       if (lastId === card_id) return; // don't update if the card_id is the same
       elm.dataset.lastId = card_id;
 
-      const { need, users, trade } = await getCardInfo(card_id);
+      const cardData = await getCardUserData(card_id);
+
       let countElm = elm.querySelector('.card-user-count');
       if (!countElm) {
         countElm = document.createElement('div');
         countElm.className = 'card-user-count';
         elm.appendChild(countElm);
       }
-      countElm.textContent = `${need} | ${users} | ${trade}`;
+
+      countElm.textContent = formatTemplateString(CONFIG.USER_COUNT_DISPLAY_TEMPATE, cardData);
     } catch (error) {
       console.error('Card processing error:', error);
     }
