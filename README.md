@@ -9,9 +9,9 @@ More languages:
 This browser extension provides enhanced functionality for the AnimeStar website:
 
 1. **Auto Seen Card**:
-    - Automatically clicks card notifications
-    - Closes card modals
+    - Automatically collects cards from the seen list
     - Collects all cards in one list
+    - Automatically collects heavenly stones
 2. **User Card Buttons**: 
     - Adds quick navigation buttons to user profile pages
 3. **Watchlist Fix**: 
@@ -27,6 +27,9 @@ This browser extension provides enhanced functionality for the AnimeStar website
     - enable/disable watchlist fix
     - enable/disable auto club boost
     - enable/disable card need/have/trade show
+    - change need/have/trade text to any other
+    - enable/disable caching
+    - enable/disable auto heavenly stone collection
     - set refresh and action cooldowns
     - disable update check
     - set language
