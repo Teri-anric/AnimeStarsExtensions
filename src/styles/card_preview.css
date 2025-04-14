@@ -1,0 +1,71 @@
+ /* card preview */
+ #card-preview {
+     box-sizing: border-box;
+ }
+
+ #card-preview {
+     font: 14px 'Manrope', sans-serif;
+     line-height: normal;
+     padding: 0;
+     margin: 0;
+     color: var(--tt);
+     min-height: 100%;
+     width: 100%;
+     font-weight: 400;
+     overflow-x: hidden;
+     letter-spacing: 0.02em;
+ }
+
+ #card-preview img,
+ table,
+ iframe,
+ video,
+ frame,
+ embed,
+ object {
+     max-width: 100%;
+ }
+
+ .anime-cards__item-wrapper {
+     flex-shrink: 0;
+ }
+
+ .anime-cards__item-wrapper {
+     width: 14.28%;
+     height: auto;
+     margin-bottom: 7px;
+     padding: 0 3.5px;
+     position: relative;
+ }
+
+ .anime-cards__item {
+     position: relative;
+     background: var(--ui-bg-darker);
+     padding: 6px;
+     border-radius: 16px;
+     box-shadow: 0 1px 1px transparent, 0 2px 2px rgba(0, 0, 0, .12);
+     cursor: pointer;
+ }
+
+ .anime-cards__image {
+     display: block;
+     width: 100%;
+ }
+
+ .lock-trade-btn {
+     position: absolute !important;
+     right: 8px;
+     top: 8px;
+     background: var(--bdc);
+     padding: 0 4px;
+     border-radius: 50%;
+     z-index: 1;
+     font-size: 11px;
+     border: 1px solid rgba(0, 0, 0, 0.09);
+     width: 18px;
+     height: 18px;
+ }
+
+ .anime-cards__image img {
+     border-radius: 8px;
+ }

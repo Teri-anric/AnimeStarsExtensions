@@ -1,6 +1,7 @@
 import AnimeStarExtensionTranslationUkraine from './i18n/uk.js';
 import AnimeStarExtensionTranslationEnglish from './i18n/en.js';
 import AnimeStarExtensionTranslationRussian from './i18n/ru.js';
+import { setupUpdateChecks } from './services/update-service.js';
 
 export const AnimeStarExtensionTranslations = {
     'en': AnimeStarExtensionTranslationEnglish,
@@ -12,7 +13,9 @@ export const defaultLang = 'en';
 export const INSPECT_LANG_KEY = '$inspect';
 
 export const i18n = {
+    lang: defaultLang,
     changeLang(lang) {
+        this.lang = lang;
         document.querySelectorAll('translate-text').forEach(element => {
             element.translate(element, lang);
         });
@@ -34,12 +37,13 @@ if (typeof window !== 'undefined' && window.document) {
             
             const lang = this.getAttribute('lang') || defaultLang;
             // const key = this.getAttribute('key') || this.textContent;
-            this.setAttribute('lang', lang);
             // this.setAttribute('key', key);
 
             this.translate(this, lang);
         }
         translate(element, lang) {
+            this.setAttribute('lang', lang);
+
             if (element.childNodes.length === 0) {
                 return;
             }
@@ -69,6 +73,27 @@ if (typeof window !== 'undefined' && window.document) {
     }
 
     customElements.define('translate-text', TranslateText);
+
+    class MutateTranslateText extends TranslateText {
+        constructor() {
+            super();
+            this.observer = new MutationObserver(this.updateTranslate.bind(this));
+            this.#connectedObserver();
+        }
+        updateTranslate() {
+            this.#disconnectedObserver();
+            this.translate(this, i18n.lang);
+            this.#connectedObserver();
+        }
+        #connectedObserver() {
+            this.observer.observe(this, { childList: true, subtree: true });
+        }
+        #disconnectedObserver() {
+            this.observer.disconnect();
+        }
+    }
+
+    customElements.define('mutate-translate-text', MutateTranslateText);
 }
 
 export default i18n;
