@@ -38,7 +38,7 @@
     },
     USER_COUNT_DISPLAY_TEMPATE: "{need}{needHasMorePages?+} | {ownerHasMorePages?[ownerPages]P:[owner]} | {trade}{tradeHasMorePages?+[tradePages]P}",
     CACHE_ENABLED: true,
-    CACHE_MAX_LIFETIME: 24 * 60 * 60 * 1000, // 1 day
+    CACHE_MAX_LIFETIME: 7 * 24 * 60 * 60 * 1000, // 7 days
     // functions
     checkEvent: (e) => {
       if (!CONFIG.ENABLED) return false;

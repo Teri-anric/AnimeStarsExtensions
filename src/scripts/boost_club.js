@@ -13,9 +13,9 @@
 
     // Initial highlight and set up MutationObserver for dynamic content
     const observer = new MutationObserver(highlightUserTopItem);
-    observer.observe(document.body, { 
-        childList: true, 
-        subtree: true 
+    observer.observe(document.body, {
+        childList: true,
+        subtree: true
     });
 
     // initial

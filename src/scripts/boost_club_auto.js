@@ -59,7 +59,7 @@
         isNewCooldown = changes['club-boost-refresh-cooldown'] || changes['club-boost-action-cooldown'];
         isRestart = isActive && isNewCooldown;
         stopBoosting();
-        if (onAutoBoost && isRestart) {
+        if (onAutoBoost || isRestart) {
             startBoosting();
         }
     });

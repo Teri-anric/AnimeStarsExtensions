@@ -3,9 +3,11 @@
         ENABLED: false,
         TO_STACK: false,
     }
+    const notificationRoot = document.querySelector(".fscr")
+
     const cardNotifications = document.createElement('div');
     cardNotifications.classList.add('card-notifications');
-    document.body.appendChild(cardNotifications);
+    notificationRoot.appendChild(cardNotifications);
 
     function toStack(dataset) {
         const cardNotification = document.createElement("div");
@@ -51,7 +53,7 @@
             clickCardNotification();
         });
     });
-    observer.observe(document.body, { childList: true });
+    observer.observe(notificationRoot, { childList: true });
     // init
     chrome.storage.sync.get(['auto-seen-card', 'auto-seen-card-stack'], (settings) => {
         CONFIG.ENABLED = settings['auto-seen-card']
