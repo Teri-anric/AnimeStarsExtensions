@@ -1,20 +1,4 @@
 (async () => {
-  const cardUserSelectorsByType = {
-    owner: {
-      owner: ".card-show__owners .card-show__owner",
-      trophy: ".fal.fa-trophy-alt", // trophy
-      lock: ".fal.fa-lock", // lock
-      friendsOnly: ".fal.fa-user", // friends only
-      inTrade: ".fal.fa-exchange", // in trade
-    },
-    trade: {
-      trade: ".profile__friends--full .profile__friends-item",
-    },
-    need: {
-      need: ".profile__friends--full .profile__friends-item",
-    }
-  }
-
   const cardContainerSelector = [
     '.lootbox__card',
     '.anime-cards__item',
@@ -29,14 +13,8 @@
     ENABLED: false,
     REQUEST_DELAY: 350,
     INITIAL_DELAY: 100,
-    MAX_RETRIES: 2,
     EVENT_TARGET: "automatic",
-    MAX_FETCH_PAGES: {
-      owner: 2,
-      trade: 5,
-      need: 5,
-    },
-    USER_COUNT_DISPLAY_TEMPATE: "{need}{needHasMorePages?+} | {ownerHasMorePages?[ownerPages]P:[owner]} | {trade}{tradeHasMorePages?+[tradePages]P}",
+    USER_COUNT_DISPLAY_TEMPATE: "{need} | {owner} | {trade}",
     CACHE_ENABLED: true,
     CACHE_MAX_LIFETIME: 7 * 24 * 60 * 60 * 1000, // 7 days
     // functions
@@ -162,63 +140,6 @@
     }),
   }
 
-  async function fetchPage(cardId, type, pageNumber) {
-    const path = {
-      owner: "users",
-      trade: "users/trade",
-      need: "users/need"
-    }[type];
-    const url = `${window.location.origin}/cards/${cardId}/${path}/page/${pageNumber}`;
-    const response = await fetch(url);
-    const html = await response.text();
-    const doc = new DOMParser().parseFromString(html, "text/html");
-
-    const paginations = doc.querySelectorAll(".pagination__pages > span, .pagination__pages > a");
-    const lastPagination = paginations.length > 0 ? parseInt(paginations[paginations.length - 1].textContent) : 1;
-
-
-    const totals = {}
-    Object.entries(cardUserSelectorsByType[type]).forEach(([key, selector]) => {
-      totals[key] = doc.querySelectorAll(selector).length;
-    });
-    const empty = Object.values(totals).every(value => value == 0);
-    const lastPage = (lastPagination == 1 && empty) ? 0 : lastPagination;
-  
-    return {totals, lastPage, empty};
-  }
-
-  function sumObjectsValues(objs) {
-    const result = {}
-    objs.forEach(obj => {
-      Object.keys(obj).forEach(key => {
-        result[key] = (result[key] || 0) + obj[key];
-      });
-    });
-    return result;
-  }
-
-  async function fetchDataForAllPages(cardId, type) {
-    const pageData = {
-      totals: {},
-      lastPage: 1,
-      hasMorePages: false,
-    }
-    let i = 1;
-    while (i <= CONFIG.MAX_FETCH_PAGES[type]) {
-      const page = await fetchPage(cardId, type, i);
-      pageData.totals = sumObjectsValues([pageData.totals, page.totals]);
-
-      pageData.lastPage = type != "trade" ? page.lastPage : i;
-      pageData.hasMorePages = type != "trade" ? page.lastPage > i : !page.empty;
-
-      if (page.empty) {
-        break;
-      }
-      i++;
-    }
-    return pageData;
-  }
-
   async function getCachedData(cardId) {
     return new Promise((resolve) => {
       chrome.storage.local.get([CACHE_KEY_PREFIX + cardId], (result) => {
@@ -240,6 +161,21 @@
     await chrome.storage.local.set({ [CACHE_KEY_PREFIX + cardId]: cacheData });
   }
 
+  function fetchCardData(cardId, unlocked = "0"){
+    const url = `${window.location.origin}/cards/${cardId}/users/?unlocked=${unlocked}`;
+    const response = await fetch(url);
+    const html = await response.text();
+    const doc = new DOMParser().parseFromString(html, "text/html");
+
+    const counts = {
+    	trade: parseInt(doc.querySelector("#owners-trade").textContent),
+    	need: parseInt(doc.querySelector("#owners-need").textContent),
+    	owners: parseInt(doc.querySelector("#owners-count").textContent)
+    }
+
+    return counts
+  }
+
   async function getCardUserData(cardId) {
     if (!cardId) return {}
 
@@ -247,26 +183,21 @@
     if (cachedData && CONFIG.CACHE_ENABLED) {
       return cachedData;
     }
+    const allCount = fetchCardData(cardId, )
+    const unlockCount = fetchCardData(cardId, "1")
 
-    const [pagesOfOwner, pagesOfTrade, pagesOfNeed] = await Promise.all([
-      fetchDataForAllPages(cardId, "owner"),
-      fetchDataForAllPages(cardId, "trade"),
-      fetchDataForAllPages(cardId, "need"),
-    ]);
+    const counts = {
+      trade: allCount.trade,
+      need: allCount.need,
+      owners: allCount.owners,
+      unlockTrade: unlockCount.trade,
+      unlockNeed: unlockCount.need,
+      unlockOwners: unlockCount.owners,
+    }
+    
+    setCachedData(cardId, counts)
 
-    const data = {
-      ...sumObjectsValues([pagesOfOwner.totals, pagesOfTrade.totals, pagesOfNeed.totals]),
-      ownerPages: pagesOfOwner.lastPage,
-      tradePages: pagesOfTrade.lastPage,
-      needPages: pagesOfNeed.lastPage,
-      ownerHasMorePages: pagesOfOwner.hasMorePages,
-      tradeHasMorePages: pagesOfTrade.hasMorePages,
-      needHasMorePages: pagesOfNeed.hasMorePages,
-    };
-
-    setCachedData(cardId, data);
-
-    return data;
+    return counts;
   };
 
   // utils
