@@ -1,16 +1,18 @@
-# AnimeStar Extension v0.0.11
+# AnimeStar Extension v0.0.13
 
 ## New Features
-- **Auto seen card**:
-  - Added other pages to support auto seen card
-- **Cards user count**:
-  - Added new setting is display text cards user count in settings page
-  - Added caching for cards user count
-- **Automatic heavenly stone collection**:
-  - Added new setting is enable auto heavenly stone collection in settings page
-- **Club boost**:
-  - Changed minimum club boost cooldown to 10ms
-  - Changed minimum club boost action cooldown to 10ms
+- **Card User Count**:
+  - Simplified card user count data fetching (now uses a single request)
+  - Added new option to parse unlocked card statistics
+  - Removed separate max fetch pages settings
+  - Updated default template format
+  - Improved caching mechanism
+
+## Improvements
+- Refactored storage handling for settings
+- Added migration support for settings
+- Simplified settings page layout
+- Added current extension version display on settings page
 
 ## Important Notes
 ⚠️ Firefox users: Ensure you download the `animestars_extension-firefox.xpi` file for proper installation.
