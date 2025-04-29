@@ -16,15 +16,59 @@ const DEFAULT_SETTINGS = {
     'card-user-count-event-target': 'mousedown-1',
     'card-user-count-request-delay': 350,
     'card-user-count-initial-delay': 100,
-    'card-user-count-template': '{need}{needHasMorePages?+} | {ownerHasMorePages?[ownerPages]P:[owner]} | {trade}{tradeHasMorePages?+[tradePages]P} ',
-    'card-user-count-max-fetch-pages-owner': 2,
-    'card-user-count-max-fetch-pages-trade': 5,
-    'card-user-count-max-fetch-pages-need': 5,
+    'card-user-count-template': '{need} | {owner} | {trade}',
     'card-user-count-cache-enabled': true,
     'not-update-check': false,
     'club-boost-highlight': true,
     'auto-take-heavenly-stone': true,
+    'card-user-count-parse-unlocked': false,
 };
+
+const MIGRATIONS = [
+    {
+        migrateVersion: 1,
+        migrate: () => {
+            chrome.storage.sync.get((settings) => {
+                const OLD_TEMPLATE = "{need}{needHasMorePages?+} | {ownerHasMorePages?[ownerPages]P:[owner]} | {trade}{tradeHasMorePages?+[tradePages]P}";
+                const NEW_TEMPLATE = '{need} | {owner} | {trade}';
+                if (settings["card-user-count-template"].trim() === OLD_TEMPLATE.trim()) {
+                    chrome.storage.sync.set({"card-user-count-template": NEW_TEMPLATE});
+                }
+            });
+            chrome.storage.local.get((items) => {   
+                const toRemove = [];
+                for (const key in items) {
+                    if (key.startsWith('cardUserCount_')) {
+                    toRemove.push(key);
+                }
+                }
+                chrome.storage.local.remove(toRemove);
+            });
+        }
+    }
+];
+
+function setDefaultSettings() {
+    chrome.storage.sync.get(Object.keys(DEFAULT_SETTINGS), (result) => {
+        const settings = {};
+        Object.keys(DEFAULT_SETTINGS).forEach(key => {
+            settings[key] = result[key] !== undefined ? result[key] : DEFAULT_SETTINGS[key];
+        });
+        chrome.storage.sync.set(settings);
+    });
+}
+
+function migrate() {
+    chrome.storage.sync.get('migrate-version', (result) => {
+        const version = parseInt(result.migrateVersion || 0);
+        for (const migration of MIGRATIONS) {
+            if (version < migration.migrateVersion) {
+                migration.migrate();
+                chrome.storage.sync.set({ 'migrate-version': migration.migrateVersion });
+            }
+        }
+    });
+}
 
 // Update URL for version checking
 const UPDATE_URL = 'https://raw.githubusercontent.com/Teri-anric/AnimeStarsExtensions/main/src/manifest/manifest.base.json';
@@ -74,14 +118,8 @@ function compareVersions(v1, v2) {
 
 // Initialize settings on first install or update
 chrome.runtime.onInstalled.addListener(() => {
-    chrome.storage.sync.get(Object.keys(DEFAULT_SETTINGS), (result) => {
-        const settings = {};
-        Object.keys(DEFAULT_SETTINGS).forEach(key => {
-            settings[key] = result[key] !== undefined ? result[key] : DEFAULT_SETTINGS[key];
-        });
-        chrome.storage.sync.set(settings);
-    });
-
+    setDefaultSettings();
+    migrate();
     // Initial update check
     checkForUpdates();
 });

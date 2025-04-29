@@ -7,10 +7,11 @@
     '.trade__inventory-item'
   ].join(',');
 
-  const CACHE_KEY_PREFIX = 'cardUserCount_';
+  const CACHE_KEY_PREFIX = 'cardUserCountV2_';
 
   const CONFIG = {
     ENABLED: false,
+    PARSE_UNLOCKED: false,
     REQUEST_DELAY: 350,
     INITIAL_DELAY: 100,
     EVENT_TARGET: "automatic",
@@ -37,10 +38,8 @@
       "card-user-count-request-delay": "REQUEST_DELAY",
       "card-user-count-initial-delay": "INITIAL_DELAY",
       "card-user-count-event-target": "EVENT_TARGET",
-      "card-user-count-user-count-display-template": "USER_COUNT_DISPLAY_TEMPATE",
-      "card-user-count-max-fetch-pages-owner": "MAX_FETCH_PAGES.owner",
-      "card-user-count-max-fetch-pages-trade": "MAX_FETCH_PAGES.trade",
-      "card-user-count-max-fetch-pages-need": "MAX_FETCH_PAGES.need",
+      "card-user-count-template": "USER_COUNT_DISPLAY_TEMPATE",
+      "card-user-count-parse-unlocked": "PARSE_UNLOCKED",
       "card-user-count-cache-enabled": "CACHE_ENABLED",
       // "card-user-count-cache-max-lifetime": "CACHE_MAX_LIFETIME",
     },
@@ -161,7 +160,7 @@
     await chrome.storage.local.set({ [CACHE_KEY_PREFIX + cardId]: cacheData });
   }
 
-  function fetchCardData(cardId, unlocked = "0"){
+  async function fetchCardData(cardId, unlocked = "0"){
     const url = `${window.location.origin}/cards/${cardId}/users/?unlocked=${unlocked}`;
     const response = await fetch(url);
     const html = await response.text();
@@ -170,7 +169,7 @@
     const counts = {
     	trade: parseInt(doc.querySelector("#owners-trade").textContent),
     	need: parseInt(doc.querySelector("#owners-need").textContent),
-    	owners: parseInt(doc.querySelector("#owners-count").textContent)
+    	owner: parseInt(doc.querySelector("#owners-count").textContent)
     }
 
     return counts
@@ -183,16 +182,14 @@
     if (cachedData && CONFIG.CACHE_ENABLED) {
       return cachedData;
     }
-    const allCount = fetchCardData(cardId, )
-    const unlockCount = fetchCardData(cardId, "1")
+    const counts = await fetchCardData(cardId)
 
-    const counts = {
-      trade: allCount.trade,
-      need: allCount.need,
-      owners: allCount.owners,
-      unlockTrade: unlockCount.trade,
-      unlockNeed: unlockCount.need,
-      unlockOwners: unlockCount.owners,
+    if (CONFIG.PARSE_UNLOCKED) {
+      const unlockCount = await fetchCardData(cardId, "1")
+  
+      counts.unlockTrade = unlockCount.trade
+      counts.unlockNeed = unlockCount.need
+      counts.unlockOwner = unlockCount.owner
     }
     
     setCachedData(cardId, counts)
@@ -208,7 +205,7 @@
   function formatSuffix(suffix, values) {
     if (!suffix) return "";
     return suffix.replace(/\[(\w+)\]/g, (_, subKey) => values[subKey] || "");
-  }
+  } 
   function formatTemplateString(template, values) {
     return template.replace(/\{(\w+(\?[^}]+)?)\}/g, (_, key) => {
       if (key.includes("?")) {

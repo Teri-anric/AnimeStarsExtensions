@@ -10,6 +10,7 @@ document.addEventListener('DOMContentLoaded', () => {
         'club-boost-auto',
         'club-boost-highlight',
         'card-user-count',
+        'card-user-count-parse-unlocked',
         'card-user-count-cache-enabled',
         'add-my-cards-button',
         'add-user-cards-buttons',
@@ -26,9 +27,6 @@ document.addEventListener('DOMContentLoaded', () => {
         'club-boost-action-cooldown',
         'card-user-count-request-delay',
         'card-user-count-initial-delay',
-        'card-user-count-max-fetch-pages-owner',
-        'card-user-count-max-fetch-pages-trade',
-        'card-user-count-max-fetch-pages-need',
     ];
 
     const settingsTextInputs = [
@@ -50,7 +48,7 @@ document.addEventListener('DOMContentLoaded', () => {
             },
             targets: [
                 "card-user-count-event-target", 
-                "card-user-count-max-fetch-pages",
+                "card-user-count-parse-unlocked",
                 "card-user-count-template",
                 "card-user-count-cache-enabled",
             ]
@@ -219,4 +217,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Call update notification check
     checkForUpdateNotification();
+
+
+    const currentVersion = chrome.runtime.getManifest().version;
+    const versionElement = document.getElementById('current-version');
+    versionElement.textContent = currentVersion;
 }); 
