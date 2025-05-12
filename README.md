@@ -12,6 +12,7 @@ This browser extension provides enhanced functionality for the AnimeStar website
     - Automatically collects cards from the seen list
     - Collects all cards in one list
     - Automatically collects heavenly stones
+    - Automatically takes stone in cinema mode
 2. **User Card Buttons**: 
     - Adds quick navigation buttons to user profile pages
 3. **Watchlist Fix**: 
