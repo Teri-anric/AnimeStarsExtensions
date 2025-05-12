@@ -10,18 +10,23 @@
         cardButton.append(boxShort);
 
         const needLink = document.createElement("a");
-        needLink.className = "fal fa-heart";
+        needLink.className = "fal fa-search";
         needLink.href = `/user/${USERNAME}/cards/need/`;
         boxShort.append(needLink);
+
+        const inMyListLink = document.createElement("a");
+        inMyListLink.className = "fal fa-heart";
+        inMyListLink.href = `/user/${USERNAME}/cards/?in_list=1`;
+        boxShort.append(inMyListLink);
 
         const unlockLink = document.createElement("a");
         unlockLink.className = "fal fa-unlock";
         unlockLink.href = `/user/${USERNAME}/cards/?locked=0`;
         boxShort.append(unlockLink);
 
-        "ABCDES".split('').forEach(rank => {
+        ["a", "b", "c", "d", "e", "s", "ass"].forEach(rank => {
             const rankLink = document.createElement("a");
-            rankLink.textContent = rank;
+            rankLink.textContent = rank.toUpperCase();
             rankLink.href = `/user/${USERNAME}/cards/?locked=0&rank=${rank}`;
             boxShort.append(rankLink);
         });

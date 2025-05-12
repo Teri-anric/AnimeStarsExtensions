@@ -10,6 +10,7 @@ const AnimeStarExtensionTranslationEnglish = {
     'auto-seen-card-stack': 'Stack cards from watching',
     'auto-watchlist-fix': 'Collection is a watchlist',
     'auto-take-heavenly-stone': 'Take heavenly stone automatically',
+    'auto-take-cinema-stone': 'Take cinema stones automatically',
     'add-my-cards-button': 'Add "My Cards" button to the header',
     'add-user-cards-buttons': 'Add buttons for quick access to user\'s open cards',
     'club-boost-auto': 'Automatic club boost',

@@ -9,13 +9,15 @@
     background-color: #fff4;
     transition: background-color 0.3s ease;
     cursor: pointer;
+    text-decoration: none;
 }
 
 .my-cards-button:hover {
     background-color: #fff2;
+    text-decoration: none;
 }
 
-.my-cards-button a{
+.my-cards-button i{
     color: #fff;
-    text-decoration: none;    
+    text-decoration: none;
 }

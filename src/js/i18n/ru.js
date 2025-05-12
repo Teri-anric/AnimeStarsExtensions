@@ -10,6 +10,7 @@ export const AnimeStarExtensionTranslationRussian = {
     'auto-seen-card-stack': 'Складывать карточки из просмотра',
     'auto-watchlist-fix': 'Коллекция как список просмотра',
     'auto-take-heavenly-stone': 'Автоматически брать небесный камень',
+    'auto-take-cinema-stone': 'Автоматически брать камни в кинотеатре',
     'add-my-cards-button': 'Добавить кнопку "Мои карточки" в заголовок',
     'add-user-cards-buttons': 'Добавить кнопки быстрого доступа к открытым карточкам пользователя',
     'club-boost-auto': 'Автоматический усиление клуба',

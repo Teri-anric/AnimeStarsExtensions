@@ -21,6 +21,7 @@ const DEFAULT_SETTINGS = {
     'not-update-check': false,
     'club-boost-highlight': true,
     'auto-take-heavenly-stone': true,
+    'auto-take-cinema-stone': true,
     'card-user-count-parse-unlocked': false,
 };
 

@@ -32,10 +32,16 @@
                 "https://astars.club/aniserials/film-vvv/*.html",
                 "https://asstars1.astars.club/aniserials/film-vvv/*.html",
                 "https://as1.astars.club/aniserials/film-vvv/*.html",
-                "https://asstars.tv/aniserials/film-vvv/*.html"
+                "https://asstars.tv/aniserials/film-vvv/*.html",
+                "https://animestars.org/aniserials/videos/*/*.html",
+                "https://astars.club/aniserials/videos/*/*.html",
+                "https://asstars1.astars.club/aniserials/videos/*/*.html",
+                "https://as1.astars.club/aniserials/videos/*/*.html",
+                "https://asstars.tv/aniserials/videos/*/*.html"
             ],
             "js": [
-                "./scripts/auto_seen_card.js"
+                "./scripts/auto_seen_card.js",
+                "./scripts/auto_take_cinema_stone.js"
             ],
             "css": [
                 "./styles/auto_seen_card.css"

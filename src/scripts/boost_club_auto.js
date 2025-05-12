@@ -4,6 +4,14 @@
     let boostIntervalID;
     let refreshIntervalID;
 
+
+    async function clearDLEPush() {
+        const dlePush = document.querySelector("#DLEPush");
+        if (dlePush) {
+            dlePush.remove();
+        }
+    }
+
     function checkBoostLimit() {
         const boostLimit = document.querySelector(".boost-limit");
         if (boostLimit && parseInt(boostLimit.textContent) >= 300) {
@@ -15,11 +23,13 @@
     function boostClub() {
         if (!checkBoostLimit()) return;
         const boostBtn = document.querySelector(".club__boost-btn");
+        clearDLEPush();
         boostBtn?.click();
     }
     function refreshClub() {
         if (!checkBoostLimit()) return;
         const refreshBtn = document.querySelector(".club__boost__refresh-btn");
+        clearDLEPush();
         refreshBtn?.click();
     }
     function startBoosting() {
