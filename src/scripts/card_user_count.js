@@ -160,19 +160,26 @@
     await chrome.storage.local.set({ [CACHE_KEY_PREFIX + cardId]: cacheData });
   }
 
-  async function fetchCardData(cardId, unlocked = "0"){
-    const url = `${window.location.origin}/cards/${cardId}/users/?unlocked=${unlocked}`;
-    const response = await fetch(url);
-    const html = await response.text();
-    const doc = new DOMParser().parseFromString(html, "text/html");
-
-    const counts = {
-    	trade: parseInt(doc.querySelector("#owners-trade").textContent),
-    	need: parseInt(doc.querySelector("#owners-need").textContent),
-    	owner: parseInt(doc.querySelector("#owners-count").textContent)
-    }
-
-    return counts
+  // Delegated fetching via background script queue
+  function fetchCardDataBG(cardId) {
+    return new Promise((resolve, reject) => {
+      try {
+        chrome.runtime.sendMessage({
+          action: "fetch_card_data_queue",
+          cardId,
+          origin: window.location.origin,
+          parseUnlocked: CONFIG.PARSE_UNLOCKED
+        }, (response) => {
+          if (chrome.runtime.lastError) {
+            reject(chrome.runtime.lastError);
+            return;
+          }
+          resolve(response);
+        });
+      } catch (err) {
+        reject(err);
+      }
+    });
   }
 
   async function getCardUserData(cardId) {
@@ -182,15 +189,7 @@
     if (cachedData && CONFIG.CACHE_ENABLED) {
       return cachedData;
     }
-    const counts = await fetchCardData(cardId)
-
-    if (CONFIG.PARSE_UNLOCKED) {
-      const unlockCount = await fetchCardData(cardId, "1")
-  
-      counts.unlockTrade = unlockCount.trade
-      counts.unlockNeed = unlockCount.need
-      counts.unlockOwner = unlockCount.owner
-    }
+    const counts = await fetchCardDataBG(cardId);
     
     setCachedData(cardId, counts)
 
