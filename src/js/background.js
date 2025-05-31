@@ -212,7 +212,7 @@ function setCachedCardCounts(cardId, data) {
 
 // Performs the actual network request and parsing
 async function fetchCardCounts(origin, cardId, unlocked = '0') {
-    const url = `${origin}/cards/${cardId}/users/?unlocked=${unlocked}`;
+    const url = `${origin}/cards/users/?id=${cardId}&unlocked=${unlocked}`;
     const response = await fetch(url);
     const html = await response.text();
 
