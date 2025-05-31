@@ -183,6 +183,51 @@
             </div>
         </div>
         <div class="settings-section">
+            <h2>Telemetry Settings</h2>
+            <div class="setting-item">
+                <label for="telemetry-enabled">Enable Telemetry Collection</label>
+                <label class="toggle">
+                    <input type="checkbox" id="telemetry-enabled">
+                    <span class="slider"></span>
+                </label>
+                <small>Collect anonymous usage data to help improve the extension. See Privacy Policy for details.</small>
+            </div>
+            <div class="settings-sub-section hidden" id="telemetry-subsettings">
+                <div class="setting-item multi-line">
+                    <label>API Endpoint (Optional)</label>
+                    <br>
+                    <input class="text-input" type="text" id="telemetry-api-endpoint" placeholder="https://api.example.com/telemetry">
+                    <small>Leave empty to store data locally only</small>
+                </div>
+                <div class="setting-item">
+                    <label for="telemetry-batch-size">Batch Size</label>
+                    <div class="slider-container">
+                        <input type="range" id="telemetry-batch-size" min="10" max="200" step="10" value="50">
+                        <span class="slider-value">50</span>
+                        <span>events</span>
+                    </div>
+                    <small>Number of events to batch before sending to API</small>
+                </div>
+                <div class="setting-item">
+                    <label for="telemetry-flush-interval">Flush Interval</label>
+                    <div class="slider-container">
+                        <input type="range" id="telemetry-flush-interval" min="5000" max="300000" step="5000" value="30000">
+                        <span class="slider-value">30000</span>
+                        <span>ms</span>
+                    </div>
+                    <small>Time interval for automatic data sending</small>
+                </div>
+                <div class="setting-item">
+                    <button id="telemetry-stats-btn">View Telemetry Statistics</button>
+                    <small>View collected data statistics and machine ID</small>
+                </div>
+                <div class="setting-item">
+                    <button id="telemetry-clear-btn" class="danger-btn">Clear All Telemetry Data</button>
+                    <small>Permanently delete all collected telemetry data</small>
+                </div>
+            </div>
+        </div>
+        <div class="settings-section">
             <h2>updates</h2>
             <div class="setting-item">
                 <label for="not-update-check">not-update-check</label>

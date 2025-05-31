@@ -1,4 +1,5 @@
 import { i18n } from './translation.js';
+import { TelemetrySystem } from './telemetry.js';
 
 // Default settings
 const DEFAULT_SETTINGS = {
@@ -23,6 +24,11 @@ const DEFAULT_SETTINGS = {
     'auto-take-heavenly-stone': true,
     'auto-take-cinema-stone': true,
     'card-user-count-parse-unlocked': false,
+    // Telemetry settings
+    'telemetry-enabled': true,
+    'telemetry-api-endpoint': '',
+    'telemetry-batch-size': 50,
+    'telemetry-flush-interval': 30000,
 };
 
 const MIGRATIONS = [
@@ -123,6 +129,8 @@ chrome.runtime.onInstalled.addListener(() => {
     migrate();
     // Initial update check
     checkForUpdates();
+    // Initialize background telemetry
+    initBackgroundTelemetry();
 });
 
 // Periodic update check (every 1 hours)
@@ -292,5 +300,73 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
         // return true to indicate we will respond asynchronously
         return true;
     }
+    
+    // Handle telemetry operations
+    if (message?.action === 'telemetry_stats') {
+        if (backgroundTelemetry) {
+            backgroundTelemetry.getStats().then(stats => {
+                sendResponse(stats);
+            }).catch(error => {
+                sendResponse({ error: error.message });
+            });
+            return true;
+        }
+    }
+    
+    if (message?.action === 'telemetry_clear') {
+        if (backgroundTelemetry) {
+            backgroundTelemetry.clearAllData().then(() => {
+                sendResponse({ success: true });
+            }).catch(error => {
+                sendResponse({ error: error.message });
+            });
+            return true;
+        }
+    }
+    
+    if (message?.action === 'telemetry_track_event') {
+        if (backgroundTelemetry) {
+            const { eventType, eventData } = message;
+            backgroundTelemetry.trackEvent(eventType, eventData).then(() => {
+                sendResponse({ success: true });
+            }).catch(error => {
+                sendResponse({ error: error.message });
+            });
+            return true;
+        }
+    }
+    
     return undefined;
 });
+
+// Track extension update events
+chrome.runtime.onStartup.addListener(() => {
+    if (backgroundTelemetry) {
+        backgroundTelemetry.trackEvent('extension_startup', {
+            version: chrome.runtime.getManifest().version
+        });
+    }
+});
+
+// Track extension suspension events
+chrome.runtime.onSuspend.addListener(() => {
+    if (backgroundTelemetry) {
+        backgroundTelemetry.trackEvent('extension_suspend', {
+            version: chrome.runtime.getManifest().version
+        });
+    }
+});
+
+// Initialize background telemetry system
+let backgroundTelemetry = null;
+
+// Initialize telemetry in background context
+async function initBackgroundTelemetry() {
+    backgroundTelemetry = new TelemetrySystem();
+    await backgroundTelemetry.init();
+    
+    // Track extension lifecycle events
+    backgroundTelemetry.trackEvent('extension_started', {
+        version: chrome.runtime.getManifest().version
+    });
+}

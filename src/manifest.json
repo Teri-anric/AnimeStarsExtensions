@@ -40,6 +40,7 @@
                 "https://asstars.tv/aniserials/videos/*/*.html"
             ],
             "js": [
+                "./js/telemetry.js",
                 "./scripts/auto_seen_card.js",
                 "./scripts/auto_take_cinema_stone.js"
             ],
@@ -56,6 +57,7 @@
                 "https://asstars.tv/user/*"
             ],
             "js": [
+                "./js/telemetry.js",
                 "./scripts/user_card_buttons.js"
             ],
             "css": [
@@ -71,6 +73,7 @@
                 "https://asstars.tv/*"
             ],
             "js": [
+                "./js/telemetry.js",
                 "./scripts/fix_header.js"
             ],
             "css": [
@@ -86,6 +89,7 @@
                 "https://asstars.tv/clubs/*/boost/"
             ],
             "js": [
+                "./js/telemetry.js",
                 "./scripts/boost_club.js",
                 "./scripts/boost_club_auto.js"
             ],
@@ -102,6 +106,7 @@
                 "https://asstars.tv/*"
             ],
             "js": [
+                "./js/telemetry.js",
                 "./scripts/card_user_count.js"
             ],
             "css": [

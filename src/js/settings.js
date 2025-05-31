@@ -16,6 +16,8 @@ document.addEventListener('DOMContentLoaded', () => {
         'add-my-cards-button',
         'add-user-cards-buttons',
         'not-update-check',
+        // Telemetry settings
+        'telemetry-enabled',
     ];
 
     const settingsSelects = [
@@ -28,10 +30,15 @@ document.addEventListener('DOMContentLoaded', () => {
         'club-boost-action-cooldown',
         'card-user-count-request-delay',
         'card-user-count-initial-delay',
+        // Telemetry range settings
+        'telemetry-batch-size',
+        'telemetry-flush-interval',
     ];
 
     const settingsTextInputs = [
         'card-user-count-template',
+        // Telemetry text settings
+        'telemetry-api-endpoint',
     ];
 
     const additionalSettings = [
@@ -60,6 +67,14 @@ document.addEventListener('DOMContentLoaded', () => {
                 "card-user-count-event-target": "automatic"
             },
             targets: ["card-user-count-automatic"]
+        },
+        {
+            condition: {
+                "telemetry-enabled": true,
+            },
+            targets: [
+                "telemetry-subsettings"
+            ]
         }
     ];
     const actions = {
@@ -223,4 +238,100 @@ document.addEventListener('DOMContentLoaded', () => {
     const currentVersion = chrome.runtime.getManifest().version;
     const versionElement = document.getElementById('current-version');
     versionElement.textContent = currentVersion;
+
+    // Setup telemetry management
+    setupTelemetryManagement();
+
+    // Telemetry management functions
+    function setupTelemetryManagement() {
+        // Telemetry stats button
+        const telemetryStatsBtn = document.getElementById('telemetry-stats-btn');
+        if (telemetryStatsBtn) {
+            telemetryStatsBtn.addEventListener('click', async () => {
+                try {
+                    const response = await chrome.runtime.sendMessage({ action: 'telemetry_stats' });
+                    if (response.error) {
+                        alert('Error getting telemetry stats: ' + response.error);
+                    } else {
+                        displayTelemetryStats(response);
+                    }
+                } catch (error) {
+                    alert('Failed to get telemetry stats: ' + error.message);
+                }
+            });
+        }
+
+        // Clear telemetry data button
+        const telemetryClearBtn = document.getElementById('telemetry-clear-btn');
+        if (telemetryClearBtn) {
+            telemetryClearBtn.addEventListener('click', async () => {
+                if (confirm('Are you sure you want to clear all telemetry data? This action cannot be undone.')) {
+                    try {
+                        const response = await chrome.runtime.sendMessage({ action: 'telemetry_clear' });
+                        if (response.error) {
+                            alert('Error clearing telemetry data: ' + response.error);
+                        } else {
+                            alert('Telemetry data cleared successfully');
+                        }
+                    } catch (error) {
+                        alert('Failed to clear telemetry data: ' + error.message);
+                    }
+                }
+            });
+        }
+    }
+
+    function displayTelemetryStats(stats) {
+        const modal = document.createElement('div');
+        modal.className = 'telemetry-stats-modal';
+        modal.style.cssText = `
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        `;
+
+        const content = document.createElement('div');
+        content.style.cssText = `
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            max-width: 500px;
+            max-height: 70vh;
+            overflow-y: auto;
+        `;
+
+        const eventsByTypeHtml = Object.entries(stats.eventsByType)
+            .map(([type, count]) => `<li>${type}: ${count}</li>`)
+            .join('');
+
+        content.innerHTML = `
+            <h3>Telemetry Statistics</h3>
+            <p><strong>Machine ID:</strong> ${stats.machineId}</p>
+            <p><strong>Telemetry Enabled:</strong> ${stats.enabled ? 'Yes' : 'No'}</p>
+            <p><strong>API Endpoint:</strong> ${stats.apiEndpoint || 'Not configured'}</p>
+            <p><strong>Total Events:</strong> ${stats.totalEvents}</p>
+            <p><strong>Oldest Event:</strong> ${stats.oldestEvent ? new Date(stats.oldestEvent).toLocaleString() : 'None'}</p>
+            <p><strong>Newest Event:</strong> ${stats.newestEvent ? new Date(stats.newestEvent).toLocaleString() : 'None'}</p>
+            <h4>Events by Type:</h4>
+            <ul>${eventsByTypeHtml || '<li>No events recorded</li>'}</ul>
+            <button id="close-stats-modal" style="margin-top: 10px; padding: 8px 16px;">Close</button>
+        `;
+
+        modal.appendChild(content);
+        document.body.appendChild(modal);
+
+        // Close modal handlers
+        const closeBtn = content.querySelector('#close-stats-modal');
+        closeBtn.addEventListener('click', () => modal.remove());
+        modal.addEventListener('click', (e) => {
+            if (e.target === modal) modal.remove();
+        });
+    }
 }); 
