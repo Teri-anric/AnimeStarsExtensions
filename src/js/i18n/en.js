@@ -51,6 +51,7 @@ const AnimeStarExtensionTranslationEnglish = {
     'dismiss': 'Dismiss',
     'card-user-count-template': 'Card user count template',
     'card-user-count-cache-enabled': 'Cache enabled',
+    'card-user-count-cache-max-lifetime': 'Cache maximum lifetime',
     'card-user-count-parse-unlocked': 'Parse unlocked cards',
 }
 

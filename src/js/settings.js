@@ -28,6 +28,7 @@ document.addEventListener('DOMContentLoaded', () => {
         'club-boost-action-cooldown',
         'card-user-count-request-delay',
         'card-user-count-initial-delay',
+        'card-user-count-cache-max-lifetime',
     ];
 
     const settingsTextInputs = [
@@ -52,6 +53,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 "card-user-count-parse-unlocked",
                 "card-user-count-template",
                 "card-user-count-cache-enabled",
+                "card-user-count-cache-max-lifetime",
             ]
         },
         {

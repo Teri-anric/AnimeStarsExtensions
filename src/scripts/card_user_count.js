@@ -7,17 +7,11 @@
     '.trade__inventory-item'
   ].join(',');
 
-  const CACHE_KEY_PREFIX = 'cardUserCountV2_';
-
   const CONFIG = {
     ENABLED: false,
     PARSE_UNLOCKED: false,
-    REQUEST_DELAY: 350,
-    INITIAL_DELAY: 100,
     EVENT_TARGET: "automatic",
     USER_COUNT_DISPLAY_TEMPATE: "{need} | {owner} | {trade}",
-    CACHE_ENABLED: true,
-    CACHE_MAX_LIFETIME: 7 * 24 * 60 * 60 * 1000, // 7 days
     // functions
     checkEvent: (e) => {
       if (!CONFIG.ENABLED) return false;
@@ -29,19 +23,15 @@
       }
       return false;
     },
-    checkActiveAutoProcessCards: () => {
-      return CONFIG.ENABLED && CONFIG.EVENT_TARGET === "automatic"
+    isAutomaticMode: () => {
+      return CONFIG.ENABLED && CONFIG.EVENT_TARGET === "automatic";
     },
     // config work
     configMap: {
       "card-user-count": "ENABLED",
-      "card-user-count-request-delay": "REQUEST_DELAY",
-      "card-user-count-initial-delay": "INITIAL_DELAY",
       "card-user-count-event-target": "EVENT_TARGET",
       "card-user-count-template": "USER_COUNT_DISPLAY_TEMPATE",
       "card-user-count-parse-unlocked": "PARSE_UNLOCKED",
-      "card-user-count-cache-enabled": "CACHE_ENABLED",
-      // "card-user-count-cache-max-lifetime": "CACHE_MAX_LIFETIME",
     },
     // update from settings
     setConfig: (configKey, value) => {
@@ -75,91 +65,6 @@
     }
   };
 
-  const cardProcesor = {
-    toProcessCards: Array.from(document.querySelectorAll(cardContainerSelector)),
-    autoProcessCardsIntervalID: null,
-    // conditions
-    isActive: () => {
-      return cardProcesor.autoProcessCardsIntervalID != null
-    },
-    // status mutation
-    start: () => {
-      cardProcesor.autoProcessCardsIntervalID = setTimeout(cardProcesor.processCards, CONFIG.INITIAL_DELAY);
-    },
-    continue: () => {
-      if (cardProcesor.autoProcessCardsIntervalID == "processing") {
-        cardProcesor.autoProcessCardsIntervalID = setTimeout(cardProcesor.processCards, CONFIG.REQUEST_DELAY);
-      } else {
-        console.warn("Card procesor is already running, conflicting with continue");
-      }
-    },
-    stop: () => {
-      if (cardProcesor.autoProcessCardsIntervalID !== "processing") {
-        clearInterval(cardProcesor.autoProcessCardsIntervalID);
-      }
-      cardProcesor.autoProcessCardsIntervalID = null;
-    },
-    sync: () => {
-      // start auto process if not active
-      if (CONFIG.checkActiveAutoProcessCards() && !cardProcesor.isActive()) {
-        cardProcesor.start();
-      }
-      // stop auto process if active
-      if (!CONFIG.checkActiveAutoProcessCards() && cardProcesor.isActive()) {
-        cardProcesor.stop();
-      }
-    },
-    // process cards
-    processCards: async () => {
-      cardProcesor.autoProcessCardsIntervalID = "processing";
-      const elm = cardProcesor.toProcessCards.shift();
-      try {
-        await createCardUserCount(elm)
-        cardProcesor.attachObserverToCard(elm);
-      } catch (error) {
-        console.warn('Processing interrupted:', error);
-      } finally {
-        if (CONFIG.checkActiveAutoProcessCards()) {
-          cardProcesor.continue();
-        } else {
-          cardProcesor.stop();
-        }
-      }
-    },
-    // observer
-    attachObserverToCard: (elm) => {
-      if (!elm || elm.dataset.observerAttached) return;
-      elm.setAttribute("data-observer-attached", true);
-      cardProcesor.observer.observe(elm, { attributes: true, attributeFilter: ['data-id'] });
-    },
-    observer: new MutationObserver(mutations => {
-      mutations.forEach(mutation => {
-        cardProcesor.toProcessCards.unshift(mutation.target);
-      });
-    }),
-  }
-
-  async function getCachedData(cardId) {
-    return new Promise((resolve) => {
-      chrome.storage.local.get([CACHE_KEY_PREFIX + cardId], (result) => {
-        const cachedData = result[CACHE_KEY_PREFIX + cardId];
-        if (cachedData && (Date.now() - cachedData.timestamp < CONFIG.CACHE_MAX_LIFETIME)) {
-          resolve(cachedData.data);
-        } else {
-          resolve(null);
-        }
-      });
-    });
-  }
-
-  async function setCachedData(cardId, data) {
-    const cacheData = {
-      timestamp: Date.now(),
-      data: data
-    };
-    await chrome.storage.local.set({ [CACHE_KEY_PREFIX + cardId]: cacheData });
-  }
-
   // Delegated fetching via background script queue
   function fetchCardDataBG(cardId) {
     return new Promise((resolve, reject) => {
@@ -184,22 +89,19 @@
 
   async function getCardUserData(cardId) {
     if (!cardId) return {}
-
-    const cachedData = await getCachedData(cardId);
-    if (cachedData && CONFIG.CACHE_ENABLED) {
-      return cachedData;
-    }
-    const counts = await fetchCardDataBG(cardId);
-    
-    setCachedData(cardId, counts)
-
-    return counts;
+    return await fetchCardDataBG(cardId);
   };
 
   // utils
   function extractCardId(elm) {
     if (!elm) return null;
-    return elm.getAttribute('data-card-id') || elm.dataset?.id || elm.getAttribute('href')?.split('/')?.[2] || null; //для окна трейда
+    if (elm.dataset?.id) return elm.dataset.id;
+    try {
+      const url = new URL(elm.getAttribute('href'), window.location.origin);
+      return url.searchParams.get('id') || null;
+    } catch (error) {
+      return null;
+    }
   };
   function formatSuffix(suffix, values) {
     if (!suffix) return "";
@@ -226,6 +128,7 @@
       elm.dataset.lastId = card_id;
 
       const cardData = await getCardUserData(card_id);
+      if (!cardData) return;
 
       let countElm = elm.querySelector('.card-user-count');
       if (!countElm) {
@@ -239,6 +142,47 @@
       console.error('Card processing error:', error);
     }
   };
+
+  // Automatic processing of all visible cards
+  function processAllCards() {
+    if (!CONFIG.isAutomaticMode()) return;
+    
+    const cards = document.querySelectorAll(cardContainerSelector);
+    Array.from(cards).reverse().forEach(card => {
+      createCardUserCount(card);
+    });
+  }
+
+  // Observer for new cards added to the page
+  const cardObserver = new MutationObserver((mutations) => {
+    if (!CONFIG.isAutomaticMode()) return;
+    
+    mutations.forEach((mutation) => {
+      mutation.addedNodes.forEach((node) => {
+        if (node.nodeType === Node.ELEMENT_NODE) {
+          // Check if the added node is a card
+          if (node.matches && node.matches(cardContainerSelector)) {
+            createCardUserCount(node);
+          }
+          // Check for cards within the added node
+          const cards = node.querySelectorAll && node.querySelectorAll(cardContainerSelector);
+          if (cards) {
+            cards.forEach(card => createCardUserCount(card));
+          }
+        }
+      });
+    });
+  });
+
+  // Start/stop automatic processing based on config
+  function syncAutomaticMode() {
+    if (CONFIG.isAutomaticMode()) {
+      processAllCards();
+      cardObserver.observe(document.body, { childList: true, subtree: true });
+    } else {
+      cardObserver.disconnect();
+    }
+  }
 
   // event handler
   async function eventHandler(e) {
@@ -254,13 +198,13 @@
   // init
   chrome.storage.sync.get(Object.keys(CONFIG.configMap), async (settings) => {
     CONFIG.initFromSettings(settings);
-    cardProcesor.sync();
+    syncAutomaticMode();
   });
 
   // update
   chrome.storage.onChanged.addListener((changes, namespace) => {
     if (namespace != "sync") return;
     CONFIG.updateFromSettings(changes);
-    cardProcesor.sync();
+    syncAutomaticMode();
   });
 })();
