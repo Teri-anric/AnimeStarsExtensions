@@ -115,7 +115,9 @@
         let [trueValue, falseValue] = suffix.split(":");
         return values[ternaryKey] ? formatSuffix(trueValue, values) : formatSuffix(falseValue, values);
       }
-      return values[key]
+      const value = values[key];
+      if (value === undefined) return "?";
+      return value;
     });
   }
 
