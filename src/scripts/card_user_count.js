@@ -15,7 +15,7 @@
     // functions
     checkEvent: (e) => {
       if (!CONFIG.ENABLED) return false;
-      if (CONFIG.EVENT_TARGET == "mouseover") return e.type == "mouseover";
+      if (CONFIG.EVENT_TARGET == "mouseover" || CONFIG.EVENT_TARGET == "automatic") return e.type == "mouseover";
       if (CONFIG.EVENT_TARGET.startsWith("mousedown")) {
         if (e.type != "mousedown") return false;
         const buttonNumber = parseInt(CONFIG.EVENT_TARGET.split("-")[1]);
@@ -160,6 +160,10 @@
     if (!CONFIG.isAutomaticMode()) return;
     
     mutations.forEach((mutation) => {
+      if (mutation.type == "attributes") {
+        createCardUserCount(mutation.target);
+        return;
+      }
       mutation.addedNodes.forEach((node) => {
         if (node.nodeType === Node.ELEMENT_NODE) {
           // Check if the added node is a card
@@ -180,7 +184,7 @@
   function syncAutomaticMode() {
     if (CONFIG.isAutomaticMode()) {
       processAllCards();
-      cardObserver.observe(document.body, { childList: true, subtree: true });
+      cardObserver.observe(document.body, { childList: true, subtree: true, attributeFilter: ['data-id'], attributes: true });
     } else {
       cardObserver.disconnect();
       clearCardDataQueue();
