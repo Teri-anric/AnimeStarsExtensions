@@ -1,9 +1,10 @@
 # AnimeStar Extension v0.0.14
 
 ## Improvements
-- Added 'auto-take-cinema-stone' feature with localization support
-- Updated manifest and settings UI
-- Enhanced background script for improved functionality
+- Fixed header button link
+- Fixed boost club button link
+- Fixed cards button link
+- Added background load statistics for cards
 
 ## Important Notes
 ⚠️ Firefox users: Ensure you download the `animestars_extension-firefox.xpi` file for proper installation.
