@@ -8,7 +8,7 @@
 
     function createMyCardsButton() {
         const buttonLink = document.createElement('a');
-        buttonLink.href = `https://${window.location.hostname}/user/${USERNAME}/cards/`;
+        buttonLink.href = `https://${window.location.hostname}/user/cards/?name=${USERNAME}`;
         buttonLink.title = "Cards";
         buttonLink.classList.add('my-cards-button');
 

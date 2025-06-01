@@ -79,11 +79,11 @@
         },
         {
             "matches": [
-                "https://animestars.org/clubs/*/boost/",
-                "https://astars.club/clubs/*/boost/",
-                "https://asstars1.astars.club/clubs/*/boost/",
-                "https://as1.astars.club/clubs/*/boost/",
-                "https://asstars.tv/clubs/*/boost/"
+                "https://animestars.org/clubs/boost/",
+                "https://astars.club/clubs/boost/",
+                "https://asstars1.astars.club/clubs/boost/",
+                "https://as1.astars.club/clubs/boost/",
+                "https://asstars.tv/clubs/boost/"
             ],
             "js": [
                 "./scripts/boost_club.js",
