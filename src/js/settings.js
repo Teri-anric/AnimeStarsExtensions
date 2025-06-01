@@ -27,7 +27,6 @@ document.addEventListener('DOMContentLoaded', () => {
         'club-boost-refresh-cooldown',
         'club-boost-action-cooldown',
         'card-user-count-request-delay',
-        'card-user-count-initial-delay',
         'card-user-count-cache-max-lifetime',
     ];
 
@@ -56,13 +55,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 "card-user-count-cache-max-lifetime",
             ]
         },
-        {
-            condition: {
-                "card-user-count": true,
-                "card-user-count-event-target": "automatic"
-            },
-            targets: ["card-user-count-automatic"]
-        }
     ];
     const actions = {
         "auto-seen-card": (value) => {

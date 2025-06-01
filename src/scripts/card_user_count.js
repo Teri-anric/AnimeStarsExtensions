@@ -181,6 +181,17 @@
       cardObserver.observe(document.body, { childList: true, subtree: true });
     } else {
       cardObserver.disconnect();
+      clearCardDataQueue();
+    }
+  }
+
+  function clearCardDataQueue() {
+    try {
+      chrome.runtime.sendMessage({
+        action: "clear_card_data_queue"
+      });
+    } catch (err) {
+      console.error('Failed to clear card data queue:', err);
     }
   }
 

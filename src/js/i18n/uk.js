@@ -38,11 +38,7 @@ const AnimeStarExtensionTranslationUkraine = {
     'bottom-bar-text': 'Якщо у вас є питання або побажання, будь ласка, зв\'яжіться зі мною.',
     'bottom-bar-github': 'GitHub',
     'bottom-bar-telegram': 'Telegram',
-    'card-user-count-automatic': 'Автоматична статистика карток',
     'card-user-count-request-delay': 'Затримка між запитами',
-    'card-user-count-initial-delay': 'Затримка перед першим запитом',
-    'card-user-count-request-delay-description': 'Затримка між запитами для статистики карток (мс)',
-    'card-user-count-initial-delay-description': 'Затримка перед першим запитом для статистики карток (мс)',
     'updates': 'Оновлення',
     'not-update-check': 'Не перевіряти оновлення',
     'check-update': 'Перевірити оновлення',
@@ -51,7 +47,7 @@ const AnimeStarExtensionTranslationUkraine = {
     'dismiss': 'Відхилити',
     'card-user-count-template': 'Шаблон текста статистики карток',
     'card-user-count-cache-enabled': 'Включити кешування',
-    'card-user-count-cache-max-lifetime': 'Максимальний час життя кешу',
+    'card-user-count-cache-max-lifetime': 'Максимальний час життя кешу (години)',
     'card-user-count-parse-unlocked': 'Парсити статистику відкритих карток',
 }
 

@@ -38,11 +38,7 @@ const AnimeStarExtensionTranslationEnglish = {
     'bottom-bar-text': 'If you have any questions or feedback, feel free to reach out!',
     'bottom-bar-github': 'GitHub',
     'bottom-bar-telegram': 'Telegram',
-    'card-user-count-automatic': 'Automatic card statistics',
     'card-user-count-request-delay': 'Request delay',
-    'card-user-count-initial-delay': 'Initial delay',
-    'card-user-count-request-delay-description': 'Delay between requests for card statistics (ms)',
-    'card-user-count-initial-delay-description': 'Delay before first request for card statistics (ms)',
     'updates': 'Updates',
     'not-update-check': 'Not check for updates',
     'check-update': 'Check for update',
@@ -51,7 +47,7 @@ const AnimeStarExtensionTranslationEnglish = {
     'dismiss': 'Dismiss',
     'card-user-count-template': 'Card user count template',
     'card-user-count-cache-enabled': 'Cache enabled',
-    'card-user-count-cache-max-lifetime': 'Cache maximum lifetime',
+    'card-user-count-cache-max-lifetime': 'Cache maximum lifetime (hours)',
     'card-user-count-parse-unlocked': 'Parse unlocked cards',
 }
 

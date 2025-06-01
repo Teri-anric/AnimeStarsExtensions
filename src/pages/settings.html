@@ -150,9 +150,17 @@
             <div class="setting-item">
                 <label for="card-user-count-cache-max-lifetime">card-user-count-cache-max-lifetime</label>
                 <div class="slider-container">
-                    <input type="range" id="card-user-count-cache-max-lifetime" min="3600000" max="2592000000" step="3600000" value="604800000">
-                    <span class="slider-value">604800000</span>
-                    <span>ms</span>
+                    <input type="range" id="card-user-count-cache-max-lifetime" min="1" max="720" step="1" value="168">
+                    <span class="slider-value">168</span>
+                    <span>hours</span>
+                </div>
+            </div>
+            <div class="setting-item">
+                <label for="card-user-count-request-delay">card-user-count-request-delay</label>
+                <div class="slider-container">
+                    <input type="range" id="card-user-count-request-delay" min="1" max="120" step="1" value="2">
+                    <span class="slider-value">2</span>
+                    <span>s</span>
                 </div>
             </div>
             <div class="setting-item multi-line">
@@ -169,25 +177,6 @@
                     <option value="mousedown-2">mousedown-2</option>
                     <option value="mouseover">mouseover</option>
                 </select>
-            </div>
-            <div class="settings-sub-section hidden" id="card-user-count-automatic">
-                <!-- <h2>card-user-count-automatic</h2> -->
-                <div class="setting-item">
-                    <label for="card-user-count-request-delay">card-user-count-request-delay</label>
-                    <div class="slider-container">
-                        <input type="range" id="card-user-count-request-delay" min="100" max="2000" step="50" value="350">
-                        <span class="slider-value">350</span>
-                        <span>ms</span>
-                    </div>
-                </div>
-                <div class="setting-item">
-                    <label for="card-user-count-initial-delay">card-user-count-initial-delay</label>
-                    <div class="slider-container">
-                        <input type="range" id="card-user-count-initial-delay" min="100" max="2000" step="50" value="100">
-                        <span class="slider-value">100</span>
-                        <span>ms</span>
-                    </div>
-                </div>
             </div>
         </div>
         <div class="settings-section">
