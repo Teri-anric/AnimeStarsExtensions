@@ -1,7 +1,6 @@
 document.addEventListener('DOMContentLoaded', () => {
     const RELEASES_URL = 'https://github.com/Teri-anric/AnimeStarsExtensions/releases';
 
-
     const settingsCheckboxes = [
         'auto-seen-card',
         'auto-seen-card-stack',
@@ -30,8 +29,7 @@ document.addEventListener('DOMContentLoaded', () => {
         'card-user-count-cache-max-lifetime',
     ];
 
-    const settingsTextInputs = [
-        'card-user-count-template',
+    const settingsColorInputs = [
     ];
 
     const additionalSettings = [
@@ -50,12 +48,13 @@ document.addEventListener('DOMContentLoaded', () => {
             targets: [
                 "card-user-count-event-target", 
                 "card-user-count-parse-unlocked",
-                "card-user-count-template",
+                "card-user-count-request-delay",
                 "card-user-count-cache-enabled",
                 "card-user-count-cache-max-lifetime",
             ]
         },
     ];
+
     const actions = {
         "auto-seen-card": (value) => {
             if (value == true) {
@@ -79,7 +78,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // Combine all settings to load 
-    const allSettings = [...settingsCheckboxes, ...settingsSelects, ...settingsRangeInputs, ...settingsTextInputs];
+    const allSettings = [...settingsCheckboxes, ...settingsSelects, ...settingsRangeInputs, ...settingsColorInputs];
 
     // Load saved settings
     chrome.storage.sync.get(allSettings, (settings) => {
@@ -114,8 +113,8 @@ document.addEventListener('DOMContentLoaded', () => {
             });
         });
 
-        // Load text input settings
-        settingsTextInputs.forEach(id => {
+        // Load color input settings
+        settingsColorInputs.forEach(id => {
             const input = document.getElementById(id);
             if (input) {
                 input.value = settings[id] || '';
@@ -127,6 +126,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 chrome.storage.sync.set({ [id]: event.target.value });
             });
         });
+
         // Load range input settings
         settingsRangeInputs.forEach(id => {
             const input = document.getElementById(id);
@@ -152,8 +152,12 @@ document.addEventListener('DOMContentLoaded', () => {
             if (!condition || !targets) return;
             let isHidden = Object.keys(condition).some(key => condition[key] != settings[key]);
             targets.forEach(target => {
-                const boxTarget = document.getElementById(target).closest(".setting-item, .settings-sub-section")
-                boxTarget.classList.toggle("hidden", isHidden);
+                try {
+                    const boxTarget = document.getElementById(target).closest(".setting-item, .settings-sub-section")
+                    boxTarget.classList.toggle("hidden", isHidden);
+                } catch (e) {
+                    console.error('Failed to toggle hidden class on target:', target, e);
+                }
             });
         });
     });
@@ -174,8 +178,12 @@ document.addEventListener('DOMContentLoaded', () => {
             });
             // Toggle hidden class on the target element
             targets.forEach(target => {
-                const boxTarget = document.getElementById(target).closest(".setting-item, .settings-sub-section")
-                boxTarget.classList.toggle("hidden", isHidden);
+                try {
+                    const boxTarget = document.getElementById(target).closest(".setting-item, .settings-sub-section")
+                    boxTarget.classList.toggle("hidden", isHidden);
+                } catch (e) {
+                    console.error('Failed to toggle hidden class on target:', key, target, e);
+                }
             });
         });
     });
@@ -212,7 +220,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Call update notification check
     checkForUpdateNotification();
-
 
     const currentVersion = chrome.runtime.getManifest().version;
     const versionElement = document.getElementById('current-version');

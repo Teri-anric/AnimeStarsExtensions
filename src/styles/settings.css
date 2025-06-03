@@ -304,3 +304,36 @@ input:checked + .slider:before {
     gap: 5px;
     margin-bottom: 15px;
 }
+
+/* Card Appearance Button */
+.open-card-appearance-btn {
+    background: linear-gradient(135deg, #007bff, #0056b3);
+    color: white;
+    border: none;
+    padding: 12px 24px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 8px rgba(0,123,255,0.2);
+    text-decoration: none;
+}
+
+.open-card-appearance-btn:hover {
+    background: linear-gradient(135deg, #0056b3, #004085);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 16px rgba(0,123,255,0.3);
+}
+
+.open-card-appearance-btn:active {
+    transform: translateY(0);
+    box-shadow: 0 2px 8px rgba(0,123,255,0.2);
+}
+
+.open-card-appearance-btn i {
+    font-size: 16px;
+}

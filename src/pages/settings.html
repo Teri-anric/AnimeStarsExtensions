@@ -5,6 +5,7 @@
     <meta charset="UTF-8">
     <title>AnimeStar Extension Settings</title>
     <link rel="stylesheet" href="../styles/settings.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <script src="../js/translation.js" type="module"></script>
 </head>
 
@@ -125,7 +126,10 @@
         </div>
 
         <div class="settings-section">
-            <h2>card-user-count</h2>
+            <h2>
+                <i class="fas fa-palette"></i> card-appearance-settings
+            </h2>
+            
             <div class="setting-item">
                 <label for="card-user-count">card-user-count</label>
                 <label class="toggle">
@@ -133,6 +137,7 @@
                     <span class="slider"></span>
                 </label>
             </div>
+            
             <div class="setting-item">
                 <label for="card-user-count-cache-enabled">card-user-count-cache-enabled</label>
                 <label class="toggle">
@@ -140,6 +145,7 @@
                     <span class="slider"></span>
                 </label>
             </div>
+            
             <div class="setting-item">
                 <label for="card-user-count-parse-unlocked">card-user-count-parse-unlocked</label>
                 <label class="toggle">
@@ -147,6 +153,7 @@
                     <span class="slider"></span>
                 </label>
             </div>
+            
             <div class="setting-item">
                 <label for="card-user-count-cache-max-lifetime">card-user-count-cache-max-lifetime</label>
                 <div class="slider-container">
@@ -155,6 +162,7 @@
                     <span>hours</span>
                 </div>
             </div>
+            
             <div class="setting-item">
                 <label for="card-user-count-request-delay">card-user-count-request-delay</label>
                 <div class="slider-container">
@@ -163,11 +171,7 @@
                     <span>s</span>
                 </div>
             </div>
-            <div class="setting-item multi-line">
-                <label>card-user-count-template</label>
-                <br>
-                <input class="text-input" type="text" id="card-user-count-template">
-            </div>
+            
             <div class="setting-item">
                 <label for="card-user-count-event-target">card-user-count-event-target</label>
                 <select id="card-user-count-event-target">
@@ -178,7 +182,15 @@
                     <option value="mouseover">mouseover</option>
                 </select>
             </div>
+            
+            <div class="setting-item">
+                <label>card-appearance-description</label>
+                <a class="open-card-appearance-btn" id="open-card-appearance" href="card-appearance.html" target="_blank">
+                    <i class="fas fa-external-link-alt"></i> open-card-appearance-editor
+                </a>
+            </div>
         </div>
+
         <div class="settings-section">
             <h2>updates</h2>
             <div class="setting-item">

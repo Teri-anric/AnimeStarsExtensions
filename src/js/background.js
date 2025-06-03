@@ -16,14 +16,27 @@ const DEFAULT_SETTINGS = {
     'card-user-count': true,
     'card-user-count-event-target': 'mousedown-1',
     'card-user-count-request-delay': 2,
-    'card-user-count-template': '{need} | {owner} | {trade}',
+    'card-user-count-template-items': JSON.stringify([
+        { type: 'variable', variable: 'need' },
+        { type: 'text', text: ' | ' },
+        { type: 'variable', variable: 'owner' },
+        { type: 'text', text: ' | ' },
+        { type: 'variable', variable: 'trade' }
+    ]),
     'card-user-count-cache-enabled': true,
     'card-user-count-cache-max-lifetime': 168,
+    'card-user-count-position': 'bottom-right',
+    'card-user-count-style': 'default',
+    'card-user-count-size': 'medium',
+    'card-user-count-background-color': '',
+    'card-user-count-text-color': '',
+    'card-user-count-opacity': 80,
+    'card-user-count-hover-action': 'none',
+    'card-user-count-parse-unlocked': false,
     'not-update-check': false,
     'club-boost-highlight': true,
     'auto-take-heavenly-stone': true,
     'auto-take-cinema-stone': true,
-    'card-user-count-parse-unlocked': false,
 };
 
 const MIGRATIONS = [

@@ -1,0 +1,585 @@
+/**
+ * Card Appearance Page Styles
+ * Dedicated styles for the card appearance editor page
+ */
+
+/* Base layout */
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    margin: 0;
+    padding: 0;
+    background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+    color: #333;
+    min-height: 100vh;
+}
+
+/* Main container */
+.settings-container {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 30px;
+    min-height: 100vh;
+}
+
+/* Page title */
+.section-title {
+    color: #2c3e50;
+    margin-bottom: 30px;
+    padding-bottom: 15px;
+    border-bottom: 3px solid #3498db;
+    font-size: 2.2rem;
+    font-weight: 300;
+    text-align: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 15px;
+}
+
+.section-title i {
+    color: #3498db;
+    font-size: 2rem;
+}
+
+/* Preview section */
+.preview-section {
+    background: white;
+    border-radius: 16px;
+    padding: 30px;
+    margin-bottom: 30px;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+    border: 1px solid rgba(255,255,255,0.2);
+}
+
+.preview-section h2 {
+    color: #34495e;
+    margin-bottom: 25px;
+    font-size: 1.5rem;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.preview-section h2 i {
+    color: #3498db;
+}
+
+/* Preview container */
+.preview-card-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+    min-height: 400px;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border-radius: 12px;
+    padding: 30px;
+    position: relative;
+    box-shadow: inset 0 2px 10px rgba(0,0,0,0.1);
+}
+
+
+.preview-description {
+    color: #666;
+    font-size: 14px;
+    margin-bottom: 20px;
+    text-align: center;
+    font-style: italic;
+}
+
+/* Card wrapper */
+.anime-cards__item-wrapper {
+    position: relative;
+    display: inline-block;
+    filter: drop-shadow(0 8px 16px rgba(0,0,0,0.3));
+}
+
+.anime-cards__item {
+    width: 144px;
+    height: 216px;
+    border-radius: 12px;
+    overflow: hidden;
+    transition: transform 0.3s ease;
+    position: relative;
+    background: white;
+}
+
+
+.anime-cards__image {
+    width: 100%;
+    height: 100%;
+    position: relative;
+}
+
+.anime-cards__image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 8px;
+    aspect-ratio: 288/432;
+}
+
+/* Rank borders */
+.rank-d { border: 4px solid #28a745; }
+.rank-c { border: 4px solid #17a2b8; }
+.rank-b { border: 4px solid #ffc107; }
+.rank-a { border: 4px solid #fd7e14; }
+.rank-s { border: 4px solid #dc3545; }
+.rank-ss { border: 4px solid #6f42c1; }
+.rank-sss { border: 4px solid #e83e8c; }
+
+/* User count preview */
+.card-user-count {
+    position: absolute;
+    background: rgba(0, 0, 0, 0.8);
+    color: white;
+    padding: 4px 8px;
+    font-size: 11px;
+    font-family: Arial, sans-serif;
+    border-radius: 4px;
+    z-index: 10;
+    white-space: nowrap;
+    pointer-events: none;
+    transition: all 0.2s ease;
+    max-width: 200px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* Position Styles for Preview */
+.card-user-count.position-top-left {
+    top: 5px;
+    left: 5px;
+}
+
+.card-user-count.position-top-center {
+    top: 5px;
+    left: 50%;
+    transform: translateX(-50%);
+}
+
+.card-user-count.position-top-right {
+    top: 5px;
+    right: 5px;
+}
+
+.card-user-count.position-bottom-left {
+    bottom: 5px;
+    left: 5px;
+}
+
+.card-user-count.position-bottom-center {
+    bottom: 5px;
+    left: 50%;
+    transform: translateX(-50%);
+}
+
+.card-user-count.position-bottom-right {
+    bottom: 5px;
+    right: 5px;
+}
+
+.card-user-count.position-under {
+    position: static;
+    display: block;
+    margin-top: 5px;
+    text-align: center;
+}
+
+/* Style Variations for Preview */
+.card-user-count.style-minimal {
+    background: transparent;
+    color: white;
+    text-shadow: 1px 1px 2px rgba(0,0,0,0.8);
+    border: none;
+    padding: 2px 4px;
+}
+
+.card-user-count.style-bordered {
+    background: rgba(0, 0, 0, 0.8);
+    border: 2px solid white;
+}
+
+.card-user-count.style-pill {
+    border-radius: 20px;
+    padding: 4px 12px;
+}
+
+.card-user-count.style-badge {
+    background: linear-gradient(135deg, #007bff, #0056b3);
+    border-radius: 6px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.3);
+}
+
+/* Size Variations for Preview */
+.card-user-count.size-small {
+    font-size: 9px;
+    padding: 2px 6px;
+}
+
+.card-user-count.size-medium {
+    font-size: 11px;
+    padding: 4px 8px;
+}
+
+.card-user-count.size-large {
+    font-size: 13px;
+    padding: 6px 10px;
+}
+
+/* Icon spacing for Preview */
+.card-user-count i {
+    margin-right: 2px;
+    font-size: 0.9em;
+}
+
+/* Hover effects for Preview */
+.card-user-count:hover {
+    background: rgb(0,0,0);
+    transform: scale(1.1);
+    z-index: 15;
+}
+
+.card-user-count.position-top-center:hover,
+.card-user-count.position-bottom-center:hover {
+    transform: translateX(-50%) scale(1.1);
+}
+
+.card-user-count.position-under:hover {
+    transform: scale(1.1);
+}
+
+/* Hover Action Styles for Preview */
+.card-user-count.hover-scale-up:hover {
+    transform: scale(1.3) !important;
+}
+
+.card-user-count.hover-scale-up.position-top-center:hover,
+.card-user-count.hover-scale-up.position-bottom-center:hover {
+    transform: translateX(-50%) scale(1.3) !important;
+}
+
+.card-user-count.hover-scale-down:hover {
+    transform: scale(0.8) !important;
+}
+
+.card-user-count.hover-scale-down.position-top-center:hover,
+.card-user-count.hover-scale-down.position-bottom-center:hover {
+    transform: translateX(-50%) scale(0.8) !important;
+}
+
+.card-user-count.hover-fade-out:hover {
+    opacity: 0.3 !important;
+}
+
+.card-user-count.hover-hide:hover {
+    opacity: 0 !important;
+}
+
+.card-user-count.hover-brighten:hover {
+    filter: brightness(1.5) !important;
+    box-shadow: 0 0 10px rgba(255,255,255,0.6) !important;
+}
+
+/* Override default hover effects when custom hover action is set */
+.card-user-count.hover-scale-up:hover,
+.card-user-count.hover-scale-down:hover,
+.card-user-count.hover-fade-out:hover,
+.card-user-count.hover-hide:hover,
+.card-user-count.hover-brighten:hover {
+    background: inherit !important;
+    z-index: 15;
+}
+
+/* Settings grid */
+.settings-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 30px;
+    margin-top: 20px;
+}
+
+@media (max-width: 1200px) {
+    .settings-grid {
+        grid-template-columns: 1fr;
+        gap: 20px;
+    }
+    
+    .settings-container {
+        padding: 20px;
+    }
+}
+
+/* Settings sections */
+.settings-section {
+    background: white;
+    border-radius: 16px;
+    padding: 30px;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+    border: 1px solid rgba(255,255,255,0.2);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.settings-section:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 12px 40px rgba(0,0,0,0.15);
+}
+
+.settings-section h2 {
+    color: #2c3e50;
+    margin-bottom: 25px;
+    font-size: 1.4rem;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding-bottom: 12px;
+    border-bottom: 2px solid #ecf0f1;
+}
+
+.settings-section h2 i {
+    color: #3498db;
+}
+
+/* Setting items */
+.setting-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+    gap: 15px;
+    padding: 15px 0;
+    border-bottom: 1px solid #f8f9fa;
+}
+
+.setting-item:last-child {
+    border-bottom: none;
+    margin-bottom: 0;
+}
+
+.setting-item > label {
+    flex-grow: 1;
+    font-weight: 500;
+    color: #495057;
+    font-size: 14px;
+}
+
+.setting-item > label:not(.toggle) {
+    max-width: calc(100% - 180px);
+}
+
+/* Toggle switches */
+.toggle {
+    position: relative;
+    display: inline-block;
+    width: 50px;
+    height: 26px;
+    flex-shrink: 0;
+}
+
+.toggle input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+.slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(135deg, #bdc3c7, #95a5a6);
+    transition: 0.4s;
+    border-radius: 26px;
+    box-shadow: inset 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.slider:before {
+    position: absolute;
+    content: "";
+    height: 20px;
+    width: 20px;
+    left: 3px;
+    bottom: 3px;
+    background: white;
+    transition: 0.4s;
+    border-radius: 50%;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+}
+
+input:checked + .slider {
+    background: linear-gradient(135deg, #3498db, #2980b9);
+}
+
+input:checked + .slider:before {
+    transform: translateX(24px);
+}
+
+/* Form controls */
+select, input[type="color"] {
+    padding: 8px 12px;
+    border: 2px solid #e1e8ed;
+    border-radius: 8px;
+    font-size: 14px;
+    transition: all 0.3s ease;
+    background: white;
+    min-width: 120px;
+}
+
+select:focus, input[type="color"]:focus {
+    outline: none;
+    border-color: #3498db;
+    box-shadow: 0 0 0 3px rgba(52,152,219,0.1);
+}
+
+/* Range sliders */
+.slider-container {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    min-width: 200px;
+}
+
+.slider-container input[type="range"] {
+    flex-grow: 1;
+    -webkit-appearance: none;
+    height: 6px;
+    background: linear-gradient(135deg, #ecf0f1, #bdc3c7);
+    outline: none;
+    border-radius: 3px;
+    transition: all 0.3s ease;
+}
+
+.slider-container input[type="range"]::-webkit-slider-thumb {   
+    -webkit-appearance: none;
+    appearance: none;
+    width: 18px;
+    height: 18px;
+    background: linear-gradient(135deg, #3498db, #2980b9);
+    cursor: pointer;
+    border-radius: 50%;
+    box-shadow: 0 2px 6px rgba(52,152,219,0.3);
+    transition: all 0.3s ease;
+}
+
+.slider-container input[type="range"]::-webkit-slider-thumb:hover {
+    transform: scale(1.1);
+    box-shadow: 0 4px 12px rgba(52,152,219,0.4);
+}
+
+.slider-container input[type="range"]::-moz-range-thumb {
+    width: 18px;
+    height: 18px;
+    background: linear-gradient(135deg, #3498db, #2980b9);
+    cursor: pointer;
+    border-radius: 50%;
+    border: none;
+    box-shadow: 0 2px 6px rgba(52,152,219,0.3);
+}
+
+.slider-container .slider-value {
+    min-width: 45px;
+    text-align: right;
+    font-weight: 600;
+    color: #3498db;
+    font-size: 14px;
+}
+
+.slider-container span:last-child {
+    color: #7f8c8d;
+    font-size: 12px;
+    min-width: 30px;
+}
+
+/* Multi-line setting items */
+.setting-item.multi-line {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 20px;
+    padding: 25px 0;
+}
+
+/* Color inputs */
+input[type="color"] {
+    width: 50px;
+    height: 35px;
+    border-radius: 8px;
+    border: 2px solid #e1e8ed;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+input[type="color"]:hover {
+    transform: scale(1.05);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+    .settings-container {
+        padding: 15px;
+    }
+    
+    .section-title {
+        font-size: 1.8rem;
+        flex-direction: column;
+        gap: 10px;
+    }
+    
+    .preview-card-container {
+        padding: 20px;
+        min-height: 350px;
+    }
+    
+    .anime-cards__item {
+        width: 180px;
+        height: 250px;
+    }
+    
+    .settings-section {
+        padding: 20px;
+    }
+    
+    .setting-item {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 10px;
+    }
+    
+    .setting-item > label:not(.toggle) {
+        max-width: 100%;
+    }
+    
+    .slider-container {
+        width: 100%;
+        min-width: auto;
+    }
+}
+
+/* Animation for page load */
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.settings-container > * {
+    animation: fadeInUp 0.6s ease-out;
+}
+
+.settings-grid > *:nth-child(1) {
+    animation-delay: 0.1s;
+}
+
+.settings-grid > *:nth-child(2) {
+    animation-delay: 0.2s;
+} 
