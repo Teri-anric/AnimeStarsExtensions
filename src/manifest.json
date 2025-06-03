@@ -5,8 +5,7 @@
     "description": "Enhanced functionality for AnimeStar website",
     "permissions": [
         "storage",
-        "alarms",
-        "tabs"
+        "alarms"
     ],
     "host_permissions": [
         "https://animestars.org/*",
@@ -125,11 +124,7 @@
     },
     "options_page": "pages/settings.html",
     "background": {
-        "page": "pages/background.html"
-    },
-    "browser_specific_settings": {
-        "gecko": {
-            "id": "animestars-extension@teri-anric.github.io"
-        }
+        "service_worker": "./js/background.js",
+        "type": "module"
     }
 }
