@@ -49,12 +49,29 @@ chrome.storage.onChanged.addListener((changes, namespace) => {
     }
 });
 
+
+class FetchError extends Error {
+    constructor(message) {
+        super(message);
+    }
+}
+
+class CardNotFoundError extends Error {
+    constructor(message) {
+        super(message);
+    }
+}
+
+function checkValidCardCache(cached) {
+    return cached && CARD_COUNT_CONFIG.CACHE_ENABLED && (Date.now() - cached.timestamp < CARD_COUNT_CONFIG.CACHE_MAX_LIFETIME);
+}
+
 // Helper – read from cache in chrome.storage.local
 function getCachedCardCounts(cardId) {
     return new Promise((resolve) => {
         chrome.storage.local.get([CARD_COUNT_CACHE_KEY_PREFIX + cardId], (result) => {
             const cached = result[CARD_COUNT_CACHE_KEY_PREFIX + cardId];
-            if (cached && CARD_COUNT_CONFIG.CACHE_ENABLED && (Date.now() - cached.timestamp < CARD_COUNT_CONFIG.CACHE_MAX_LIFETIME)) {
+            if (checkValidCardCache(cached)) {
                 resolve(cached.data);
             } else {
                 resolve(null);
@@ -63,24 +80,42 @@ function getCachedCardCounts(cardId) {
     });
 }
 
+async function getCachedCardsCounts(cardIds) {
+    const keyMap = Object.fromEntries(
+        cardIds.map(id => [`${CARD_COUNT_CACHE_KEY_PREFIX}${id}`, id])
+    );
+
+    const stored = await chrome.storage.local.get(Object.keys(keyMap));
+
+    return Object.fromEntries(
+        Object.entries(stored)
+            .filter(([_, value]) => checkValidCardCache(value))
+            .map(([key, value]) => [keyMap[key], {...value.data, cardId: keyMap[key]}])
+    );
+}
+
+
 // Helper – write to cache
 function setCachedCardCounts(cardId, data) {
-    const record = { timestamp: Date.now(), data };
-    chrome.storage.local.set({ [CARD_COUNT_CACHE_KEY_PREFIX + cardId]: record });
+    const record = { timestamp: Date.now(), data, cardId};
+    chrome.storage.local.set({ [`${CARD_COUNT_CACHE_KEY_PREFIX}${cardId}`]: record });
 }
 
 // Performs the actual network request and parsing
 async function fetchCardCounts(origin, cardId, unlocked = '0') {
     const url = `${origin}/cards/users/?id=${cardId}&unlocked=${unlocked}`;
     const response = await fetch(url);
+    if (!response.ok) throw new FetchError('Failed to fetch card counts');
     const html = await response.text();
 
     const doc = new DOMParser().parseFromString(html, 'text/html');
 
+    if (!doc.querySelector('#owners-count')?.textContent) throw new CardNotFoundError('Card not found');
+
     return {
-        trade: parseInt(doc.querySelector('#owners-trade').textContent),
-        need: parseInt(doc.querySelector('#owners-need').textContent),
-        owner: parseInt(doc.querySelector('#owners-count').textContent),
+        trade: parseInt(doc.querySelector('#owners-trade')?.textContent),
+        need: parseInt(doc.querySelector('#owners-need')?.textContent),
+        owner: parseInt(doc.querySelector('#owners-count')?.textContent),
     };
 }
 
@@ -116,25 +151,24 @@ async function getCardCounts(cardId, origin, parseUnlockedFlag) {
 const fetchQueue = [];
 let queueProcessing = false;
 
-async function processFetchQueue(data = null) {
-    if (data) {
-        if (CARD_COUNT_CONFIG.CACHE_ENABLED) {
-            const cached = await getCachedCardCounts(data.cardId);
-            if (cached) {
-                data.sendResponse(cached);
-                return;
-            }
-        }
-        fetchQueue.push(data);
-    }
 
-    if (queueProcessing || fetchQueue.length === 0) {
+async function processNextFetch() {
+    if (fetchQueue.length === 0) {
         queueProcessing = false;
         return;
-    };
+    }
 
     queueProcessing = true;
     const item = fetchQueue.pop();
+
+    if (CARD_COUNT_CONFIG.CACHE_ENABLED) {
+        const cached = await getCachedCardCounts(item.cardId);
+        if (cached) {
+            item.sendResponse(cached);
+            setTimeout(processNextFetch, 0);
+            return;
+        }
+    }
 
     try {
         const data = await getCardCounts(item.cardId, item.origin, item.parseUnlocked);
@@ -142,30 +176,58 @@ async function processFetchQueue(data = null) {
     } catch (err) {
         item.sendResponse({ error: err?.message || String(err) });
     } finally {
-        setTimeout(processFetchQueue, CARD_COUNT_CONFIG.REQUEST_DELAY);
+        setTimeout(processNextFetch, CARD_COUNT_CONFIG.REQUEST_DELAY);
     }
 }
 
+function enqueueFetchRequest(data) {
+    fetchQueue.push(data);
+    if (!queueProcessing) {
+        processNextFetch();
+    }
+}
+
+function clearCardDataQueue(_, sendResponse) {
+    const length = fetchQueue.length;
+    for (let i = 0; i < length; i++) {
+        fetchQueue.shift();
+    }
+    sendResponse({ success: true });
+    return false;
+}
+
+function fetchCardDataQueue({cardId, origin, parseUnlocked}, sendResponse) {
+    if (!cardId || !origin) {
+        sendResponse({ error: 'Missing cardIds or origin' });
+        return false;
+    }
+    enqueueFetchRequest({ cardId, origin, parseUnlocked, sendResponse });
+    // return true to indicate we will respond asynchronously
+    return true;
+}
+
+function fetchCachedCardData({ cardIds }, sendResponse) {
+    if (!cardIds) {
+        sendResponse({ error: 'Missing cardIds' });
+        return false;
+    }
+    getCachedCardsCounts(cardIds).then(sendResponse).catch((e) => sendResponse({ error: String(e) }));
+    // return true to indicate we will respond asynchronously
+    return true;
+}
+
+const actionMap = {
+    'fetch_card_data_queue': fetchCardDataQueue,
+    'clear_card_data_queue': clearCardDataQueue,
+    'fetch_cached_card_data': fetchCachedCardData,
+};
+
 // Listen for requests from content scripts
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
-    if (message?.action === 'fetch_card_data_queue') {
-        const { cardId, origin, parseUnlocked } = message;
-        if (!cardId || !origin) {
-            sendResponse({ error: 'Missing cardId or origin' });
-            return false;
-        }
-        processFetchQueue({ cardId, origin, parseUnlocked, sendResponse });
-        // return true to indicate we will respond asynchronously
-        return true;
-    }
+    const action = actionMap?.[message?.action];
 
-    if (message?.action === 'clear_card_data_queue') {
-        const length = fetchQueue.length;
-        for (let i = 0; i < length; i++) {
-            fetchQueue.shift();
-        }
-        sendResponse({ success: true });
-        return false;
+    if (action) {
+        return action(message, sendResponse);
     }
     
     return undefined;
