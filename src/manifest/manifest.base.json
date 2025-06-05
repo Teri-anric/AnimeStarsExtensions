@@ -82,11 +82,11 @@
         },
         {
             "matches": [    
-                "https://animestars.org/clubs/boost/",
-                "https://astars.club/clubs/boost/",
-                "https://asstars1.astars.club/clubs/boost/",
-                "https://as1.astars.club/clubs/boost/",
-                "https://asstars.tv/clubs/boost/"
+                "https://animestars.org/clubs/boost/*",
+                "https://astars.club/clubs/boost/*",
+                "https://asstars1.astars.club/clubs/boost/*",
+                "https://as1.astars.club/clubs/boost/*",
+                "https://asstars.tv/clubs/boost/*"
             ],
             "js": [
                 "./scripts/boost_club.js",
@@ -109,6 +109,19 @@
             ],
             "css": [
                 "./styles/card_user_count.css"
+            ],
+            "run_at": "document_end"
+        },
+        {
+            "matches": [
+                "https://animestars.org/cards/users/*",
+                "https://astars.club/cards/users/*",
+                "https://asstars1.astars.club/cards/users/*",
+                "https://as1.astars.club/cards/users/*",
+                "https://asstars.tv/cards/users/*"
+            ],
+            "js": [
+                "./scripts/cards_users_parser.js"
             ],
             "run_at": "document_end"
         }

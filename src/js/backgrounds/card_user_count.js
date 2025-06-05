@@ -216,10 +216,43 @@ function fetchCachedCardData({ cardIds }, sendResponse) {
     return true;
 }
 
+function cacheCardDataFromPage({ cardId, data, unlocked }, sendResponse) {
+    if (!cardId || !data) {
+        sendResponse({ error: 'Missing cardId or data' });
+        return false;
+    }
+
+    // If this is unlocked data, we need to merge it with existing locked data
+    if (unlocked) {
+        // Get existing cached data first
+        getCachedCardCounts(cardId).then(existingData => {
+            const mergedData = existingData ? { ...existingData } : {};
+            
+            // Add unlocked data
+            mergedData.unlockTrade = data.trade;
+            mergedData.unlockNeed = data.need;
+            mergedData.unlockOwner = data.owner;
+            
+            // Cache the merged data
+            setCachedCardCounts(cardId, mergedData);
+            sendResponse({ success: true, cached: mergedData });
+        }).catch(error => {
+            sendResponse({ error: String(error) });
+        });
+    } else {
+        // For locked data, use it as the base
+        setCachedCardCounts(cardId, data);
+        sendResponse({ success: true, cached: data });
+    }
+    
+    return true; // Async response
+}
+
 const actionMap = {
     'fetch_card_data_queue': fetchCardDataQueue,
     'clear_card_data_queue': clearCardDataQueue,
     'fetch_cached_card_data': fetchCachedCardData,
+    'cache_card_data_from_page': cacheCardDataFromPage,
 };
 
 // Listen for requests from content scripts

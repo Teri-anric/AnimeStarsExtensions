@@ -4,7 +4,8 @@
     '.anime-cards__item',
     'a.trade__main-item',
     'a.history__body-item',
-    '.trade__inventory-item'
+    // '.trade__inventory-item' - disabled for not card id only owner id
+    // '.remelt__inventory-item' - disabled for not card id only owner id
   ].join(',');
 
   const CONFIG = {
