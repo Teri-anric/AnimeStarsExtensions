@@ -105,6 +105,7 @@
                 "https://asstars.tv/*"
             ],
             "js": [
+                "./scripts/page_worker.js",
                 "./scripts/card_user_count.js"
             ],
             "css": [

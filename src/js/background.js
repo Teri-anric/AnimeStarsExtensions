@@ -59,7 +59,18 @@ const MIGRATIONS = [
                 }
                 chrome.storage.local.remove(toRemove);
             });
-        }
+        },
+    },
+    {
+        migrateVersion: 2,
+        migrate: () => {
+            chrome.storage.sync.get((settings) => {
+                const AUTOMATIC_EVENT_TARGET = 'automatic';
+                if (settings["card-user-count-event-target"].trim() === AUTOMATIC_EVENT_TARGET) {
+                    chrome.storage.sync.set({"card-user-count-event-target": 'mouseover'});
+                }
+            });
+        },
     }
 ];
 
@@ -75,7 +86,7 @@ function setDefaultSettings() {
 
 function migrate() {
     chrome.storage.sync.get('migrate-version', (result) => {
-        const version = parseInt(result.migrateVersion || 0);
+        const version = parseInt(result['migrate-version'] || 0);
         for (const migration of MIGRATIONS) {
             if (version < migration.migrateVersion) {
                 migration.migrate();

@@ -16,6 +16,7 @@ const AnimeStarExtensionTranslationUkraine = {
     'club-boost-auto': 'Автоматичне підсилення клубу',
     'card-user-count': 'Показати статистику карток',
     'card-user-count-event-target': 'Подія для показу статистики карток',
+    'only-cache': 'Тільки кеш',
     'save-settings': 'Зберегти налаштування',
     'automatic': "Автоматичний",
     'mousedown-0': 'Ліва кнопка миші',

@@ -16,6 +16,7 @@ const AnimeStarExtensionTranslationEnglish = {
     'club-boost-auto': 'Automatic club boost',
     'card-user-count': 'Show card statistics',
     'card-user-count-event-target': 'Event target for showing card statistics',
+    'only-cache': 'Only cache',
     'save-settings': 'Save Settings',
     'automatic': "Automatic",
     'mousedown-0': 'Left mouse button',

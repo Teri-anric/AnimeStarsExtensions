@@ -16,6 +16,7 @@ export const AnimeStarExtensionTranslationRussian = {
     'club-boost-auto': 'Автоматический усиление клуба',
     'card-user-count': 'Показать статистику карточек',
     'card-user-count-event-target': 'Событие для показа статистики карточек',
+    'only-cache': 'Только кэш',
     'save-settings': 'Сохранить настройки',
     'automatic': "Автоматический",
     'mousedown-0': 'Левая кнопка мыши',

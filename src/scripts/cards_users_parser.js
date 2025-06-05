@@ -5,19 +5,7 @@
 
 (async () => {
     function sendMessageBG(message) {
-        return new Promise((resolve, reject) => {
-            try {
-                chrome.runtime.sendMessage(message, (response) => {
-                    if (chrome.runtime.lastError) {
-                        reject(chrome.runtime.lastError);
-                        return;
-                    }
-                    resolve(response);
-                });
-            } catch (err) {
-                reject(err);
-            }
-        });
+        chrome.runtime.sendMessage(message);
     }
 
     // Parse card data from the current page
@@ -59,30 +47,22 @@
     }
 
     // Send parsed data to background script for caching
-    async function updateCardDataCache(cardData) {
+    function updateCardDataCache(cardData) {
         if (!cardData) return;
 
-        try {
-            // Send the parsed data to background script
-            const response = await sendMessageBG({
-                action: 'cache_card_data_from_page',
-                cardId: cardData.cardId,
-                data: {
-                    trade: cardData.trade,
-                    need: cardData.need,
-                    owner: cardData.owner
-                },
-                unlocked: cardData.unlocked
-            });
+        // Send the parsed data to background script
+        sendMessageBG({
+            action: 'update_card_data',
+            cardId: cardData.cardId,
+            data: {
+                trade: cardData.trade,
+                need: cardData.need,
+                owner: cardData.owner
+            },
+            unlocked: cardData.unlocked
+        });
 
-            if (response?.success) {
-                console.log(`Card data cached for card ${cardData.cardId}`);
-            } else {
-                console.log('Failed to cache card data:', response);
-            }
-        } catch (error) {
-            console.error('Error sending card data to background:', error);
-        }
+        console.log(`Card data sent to background for caching: ${cardData.cardId}`);
     }
 
     async function main() {

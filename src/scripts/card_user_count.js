@@ -106,46 +106,45 @@
     }
   };
 
+  // Card map to store all cards on the page: cardId -> [cardElements]
+  const cardMap = new Map();
+  
+
   function sendMessageBG(message) {
-    return new Promise((resolve, reject) => {
-      try {
-        chrome.runtime.sendMessage(message, (response) => {
-          if (chrome.runtime.lastError) {
-            reject(chrome.runtime.lastError);
-            return;
-          }
-          resolve(response);
-        });
-      } catch (err) {
-        reject(err);
-      }
-    });
+    chrome.runtime.sendMessage(message);
   }
 
-  // Delegated fetching via background script queue
-  async function fetchCardsDataBG(cardId) {
-    return await sendMessageBG({
+  chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
+    if (message.type === 'card_data_updated') {
+      if (!message.data) {
+        console.error('Invalid card data updated message:', message);
+        return;
+      }
+      Object.entries(message.data).forEach(([cardId, data]) => {
+        updateCardElements(cardId, data);
+      });
+    }
+  });
+
+  function requestFreshCardData(cardId) {
+    showLoadingState(cardId);
+    sendMessageBG({
       action: "fetch_card_data_queue",
       cardId,
       origin: window.location.origin,
       parseUnlocked: CONFIG.PARSE_UNLOCKED
-    }).catch(err => ( { error: err?.message || String(err) } ));
+    });
   }
 
-  async function fetchCachedCardDataBG(cardIds) {
-    return await sendMessageBG({
+  function requestCachedCardData(cardIds) {
+    if (cardIds.length === 0) return;
+
+    sendMessageBG({
       action: "fetch_cached_card_data",
       cardIds
     });
   }
 
-  async function clearCardDataQueue() {
-    return await sendMessageBG({
-      action: "clear_card_data_queue"
-    });
-  }
-
-  // utils
   function extractCardId(elm) {
     if (!elm) return null;
     if (elm.dataset?.id) return elm.dataset.id;
@@ -242,48 +241,63 @@
       countElm.style.backgroundColor = `rgba(0, 0, 0, ${opacityValue * 0.8})`; // Default is rgba(0,0,0,0.8)
     }
 
+    // Apply text color
     if (CONFIG.TEXT_COLOR) {
       countElm.style.color = CONFIG.TEXT_COLOR;
     }
   }
 
-  async function createCardUserCount(cardElm, cardData = null) {
-    const cardId = cardData?.cardId || extractCardId(cardElm);
-    if (!cardData) {
-      if (!cardId || cardId === cardElm.dataset?.lastId) return;
-      cardElm.setAttribute('data-last-id', cardId);
-      cardData = await fetchCardsDataBG(cardId);
-    }
-    let countElm = cardElm.querySelector('.card-user-count');
-    if (!countElm) {
-      countElm = document.createElement('div');
-      cardElm.appendChild(countElm);
-    }
-    applyCardUserCountStyles(countElm);
-    countElm.innerHTML = cardData?.error ? cardData.error : formatTemplateItems(CONFIG.TEMPLATE_ITEMS, cardData);
-  }
 
-  async function createCardsUserCount(elements, only_cached = false) {
-    if (!Array.isArray(elements)) elements = [elements];
-    const cardMap = Object.fromEntries(elements.map((elm) => [extractCardId(elm), elm]).filter(([cardId, elm]) => cardId && elm && elm.dataset?.lastId !== cardId));
-    const cardsData = await fetchCachedCardDataBG(Object.keys(cardMap));
-    const notCached = [];
-    Object.entries(cardMap).forEach(([cardId, cardElm]) => {
-      const cardData = cardsData[cardId];
-      if (!cardData) {
-        notCached.push(cardId);
-        return;
-      };
-      createCardUserCount(cardElm, cardData);
-    })
-    if (only_cached) return;
-    // load not cached cards
-    notCached.forEach((cardId) => {
-      createCardUserCount(cardMap[cardId]);
+  function updateCardElements(cardId, cardData) {
+    const elements = cardMap.get(cardId);
+    if (!elements) return;
+
+    elements.forEach(cardElm => {
+      cardElm.setAttribute('data-last-card-id', cardId);
+      let countElm = cardElm.querySelector('.card-user-count');
+      if (!countElm) {
+        countElm = document.createElement('div');
+        cardElm.appendChild(countElm);
+      }
+
+      applyCardUserCountStyles(countElm);
+      countElm.innerHTML = cardData?.text || cardData?.error || formatTemplateItems(CONFIG.TEMPLATE_ITEMS, cardData);
     });
   }
 
-  // Update all existing cards when style changes
+  function showLoadingState(cardId) {
+    updateCardElements(cardId, {text: '...'});
+  }
+
+  function collectAllCards() {
+    const cards = document.querySelectorAll(cardContainerSelector);
+    cardMap.clear();
+    
+    cards.forEach(cardElm => {
+      const cardId = extractCardId(cardElm);
+      if (!cardId) return;
+      
+      if (!cardMap.has(cardId)) {
+        cardMap.set(cardId, []);
+      }
+      cardMap.get(cardId).push(cardElm);
+    });
+  }
+
+  function requestCacheForAllCards() {
+    const cardIds = Array.from(cardMap.keys());
+    if (cardIds.length === 0) return;
+
+    requestCachedCardData(cardIds);
+  }
+
+  function processAllCards() {
+    if (!CONFIG.ENABLED) return;
+    
+    collectAllCards();
+    requestCacheForAllCards();
+  }
+
   function updateAllCardStyles() {
     const cards = document.querySelectorAll(cardContainerSelector);
     cards.forEach(card => {
@@ -294,63 +308,87 @@
     });
   }
 
-  // Automatic processing of all visible cards
-  function processAllCards() {
-    const cards = document.querySelectorAll(cardContainerSelector);
-    createCardsUserCount(Array.from(cards).reverse(), !CONFIG.isAutomaticMode());
-  }
-
   // Observer for new cards added to the page
   const cardObserver = new MutationObserver((mutations) => {
-    const updateCards = [];
+    const removedCardElements = [];
+    const newCardElements = [];
 
     mutations.forEach((mutation) => {
       if (mutation.type == "attributes") {
-        updateCards.push(mutation.target);
-        return;
+        const cardElm = mutation.target;
+        if (!cardElm.matches || !cardElm.matches(cardContainerSelector)) return;
+        newCardElements.push(cardElm);
       }
+      
       mutation.addedNodes.forEach((node) => {
-        if (node.nodeType === Node.ELEMENT_NODE) {
-          if (node.matches && node.matches(cardContainerSelector)) {
-            updateCards.push(node);
-          }
-          const nodes = node.querySelectorAll && node.querySelectorAll(cardContainerSelector);
-          if (nodes) {
-            nodes.forEach(card => updateCards.push(card));
-          }
-        }
+        if (node.nodeType !== Node.ELEMENT_NODE || !node.matches || !node.matches(cardContainerSelector)) return;
+        newCardElements.push(node);
+      });
+
+      mutation.removedNodes.forEach((node) => {
+        if (node.nodeType !== Node.ELEMENT_NODE || !node.matches || !node.matches(cardContainerSelector)) return;
+        removedCardElements.push(node);
       });
     });
-    createCardsUserCount(updateCards, !CONFIG.isAutomaticMode());
+
+    removedCardElements.forEach(cardElm => {
+      const cardId = cardElm.dataset.lastCardId || extractCardId(cardElm);
+      if (!cardId || !cardMap.has(cardId)) return;
+
+      const cardElements = cardMap.get(cardId);
+      if (!cardElements) return;
+
+      const index = cardElements.findIndex(elm => elm == cardElm);
+      if (index == -1) return;
+
+      cardElements.splice(index, 1);
+      if (cardElements.length != 0) return;
+      cardMap.delete(cardId);
+    });
+
+    newCardElements.forEach(cardElm => {
+      const cardId = extractCardId(cardElm);
+      if (!cardId) return;
+      if (!cardMap.has(cardId)) cardMap.set(cardId, []);
+      cardMap.get(cardId).push(cardElm);
+    });
   });
 
   // Start/stop automatic processing based on config
   function startDetectingCards() {
     processAllCards();
-    cardObserver.observe(document.body, { childList: true, subtree: true, attributeFilter: ['data-id'], attributes: true });
+    cardObserver.observe(document.body, { 
+      childList: true, 
+      subtree: true, 
+      attributeFilter: ['data-id', 'href'], 
+      attributes: true 
+    });
   }
 
-
-  // event handler
   async function eventHandler(e) {
     if (!CONFIG.checkEvent(e)) return;
+    
     const cardElement = e.target.closest(cardContainerSelector);
     if (!cardElement) return;
-    await createCardsUserCount([cardElement]);
+    
+    const cardId = extractCardId(cardElement);
+    const lastCardId = cardElement.dataset.lastCardId;
+    if (!cardId || lastCardId == cardId) return;
+
+    requestFreshCardData(cardId);
   }
-  // add mouse event listeners
+
   document.addEventListener("mouseover", eventHandler);
   document.addEventListener("mousedown", eventHandler);
 
-  // init
   chrome.storage.sync.get(Object.keys(CONFIG.configMap), async (settings) => {
     CONFIG.initFromSettings(settings);
     startDetectingCards();
   });
 
-  // update
   chrome.storage.onChanged.addListener((changes, namespace) => {
     if (namespace != "sync") return;
+
     const wasStyleChange = changes['card-user-count-position'] ||
       changes['card-user-count-style'] ||
       changes['card-user-count-size'] ||
@@ -368,12 +406,15 @@
 
     if (changes['card-user-count-event-target']) {
       if (changes['card-user-count-event-target'].oldValue == "automatic") {
-        clearCardDataQueue();
+        sendMessageBG({ action: "clear_card_data_queue" });
       }
       if (changes['card-user-count-event-target'].newValue == "automatic") {
         processAllCards();
       }
     }
 
+    if (changes['card-user-count'] && changes['card-user-count'].newValue) {
+      processAllCards();
+    }
   });
 })();
