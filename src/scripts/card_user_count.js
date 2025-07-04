@@ -321,13 +321,29 @@
       }
       
       mutation.addedNodes.forEach((node) => {
-        if (node.nodeType !== Node.ELEMENT_NODE || !node.matches || !node.matches(cardContainerSelector)) return;
-        newCardElements.push(node);
+        if (node.nodeType !== Node.ELEMENT_NODE) return;
+        
+        if (node.matches && node.matches(cardContainerSelector)) {
+          newCardElements.push(node);
+        }
+        
+        const nestedCards = node.querySelectorAll(cardContainerSelector);
+        nestedCards.forEach(cardElm => {
+          newCardElements.push(cardElm);
+        });
       });
 
       mutation.removedNodes.forEach((node) => {
-        if (node.nodeType !== Node.ELEMENT_NODE || !node.matches || !node.matches(cardContainerSelector)) return;
-        removedCardElements.push(node);
+        if (node.nodeType !== Node.ELEMENT_NODE) return;
+        
+        if (node.matches && node.matches(cardContainerSelector)) {
+          removedCardElements.push(node);
+        }
+        
+        const nestedCards = node.querySelectorAll(cardContainerSelector);
+        nestedCards.forEach(cardElm => {
+          removedCardElements.push(cardElm);
+        });
       });
     });
 
