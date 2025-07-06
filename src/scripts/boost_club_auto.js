@@ -1,6 +1,7 @@
 (function () {
     let boostCooldown = 500;
     let refreshCooldown = 600;
+    const BoostLimit = 600;
     let boostIntervalID;
     let refreshIntervalID;
 
@@ -14,7 +15,7 @@
 
     function checkBoostLimit() {
         const boostLimit = document.querySelector(".boost-limit");
-        if (boostLimit && parseInt(boostLimit.textContent) >= 300) {
+        if (boostLimit && parseInt(boostLimit.textContent) >= BoostLimit) {
             stopBoosting();
             return false;
         }
