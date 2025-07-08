@@ -6,24 +6,38 @@
 const ASS_API_CONFIG = {
     BASE_URL: (() => {
         const hostname = typeof window !== 'undefined' ? window.location.hostname : 'unknown';
-        console.log('API Client - Detecting hostname:', hostname);
         
         // Support localhost for testing
         if (hostname === 'localhost' || hostname === '127.0.0.1') {
-            console.log('API Client - Using localhost API URL');
             return 'http://localhost:8000';
         }
-        console.log('API Client - Using production API URL');
         return 'https://ass-api.strawberrycat.dev';
     })(),
     ENDPOINTS: {
+        // Auth endpoints
         LOGIN: '/api/auth/login',
+        LOGOUT: '/api/auth/logout', 
+        REGISTER: '/api/auth/register',
         ME: '/api/auth/me',
+        
+        // Card endpoints
         CARDS: '/api/card/',
         CARD_DETAIL: '/api/card/',
+        
+        // Deck endpoints
+        DECKS: '/api/deck/',
+        DECK_DETAIL: '/api/deck/detail',
+        
+        // Stats endpoints
         CARD_STATS_LAST: '/api/card/stats/last',
-        CARD_STATS_BULK: '/api/card/stats/last/bulk',
+        CARD_STATS_LAST_BULK: '/api/card/stats/last/bulk',
         CARD_STATS_QUERY: '/api/card/stats/',
+        
+        // Extension endpoints
+        EXTENSION_TOKEN: '/api/extension/token',
+        
+        // System endpoints
+        HEALTH: '/health'
     },
     CACHE_PREFIX: 'ass_api_cache_',
     CACHE_DURATION: 5 * 60 * 1000, // 5 minutes
@@ -98,10 +112,8 @@ class ApiCache {
 class TokenManager {
     static async getToken() {
         try {
-            console.log('TokenManager - Getting token from storage...');
             const result = await chrome.storage.sync.get([ASS_API_CONFIG.TOKEN_KEY]);
             const token = result[ASS_API_CONFIG.TOKEN_KEY] || null;
-            console.log('TokenManager - Token retrieved:', token ? 'Token exists' : 'No token');
             return token;
         } catch (error) {
             console.error('TokenManager - Token get error:', error);
@@ -111,9 +123,7 @@ class TokenManager {
     
     static async setToken(token) {
         try {
-            console.log('TokenManager - Setting token in storage...');
             await chrome.storage.sync.set({ [ASS_API_CONFIG.TOKEN_KEY]: token });
-            console.log('TokenManager - Token set successfully');
         } catch (error) {
             console.error('TokenManager - Token set error:', error);
         }
@@ -121,11 +131,9 @@ class TokenManager {
     
     static async removeToken() {
         try {
-            console.log('TokenManager - Removing token from storage...');
             await chrome.storage.sync.remove([ASS_API_CONFIG.TOKEN_KEY]);
             // Also clear API cache when token is removed
             await ApiCache.clear();
-            console.log('TokenManager - Token removed successfully');
         } catch (error) {
             console.error('TokenManager - Token remove error:', error);
         }
@@ -140,14 +148,6 @@ class AssApiClient {
         const token = await TokenManager.getToken();
         const url = ASS_API_CONFIG.BASE_URL + endpoint;
         
-        console.log('API Client - Making request to:', url);
-        console.log('API Client - Token available:', token ? 'Yes' : 'No');
-        if (token) {
-            console.log('API Client - Token type:', typeof token);
-            console.log('API Client - Token length:', token.length);
-            console.log('API Client - Token preview:', token.substring(0, 20) + '...');
-        }
-        
         const headers = {
             'Content-Type': 'application/json',
             ...options.headers
@@ -155,7 +155,6 @@ class AssApiClient {
         
         if (token) {
             headers['Authorization'] = `Bearer ${token}`;
-            console.log('API Client - Authorization header set');
         }
         
         const requestOptions = {
@@ -163,15 +162,11 @@ class AssApiClient {
             headers
         };
         
-        console.log('API Client - Request headers:', Object.keys(headers));
-        
         try {
             const response = await fetch(url, requestOptions);
-            console.log('API Client - Response status:', response.status);
             
             if (!response.ok) {
                 if (response.status === 401) {
-                    console.log('API Client - 401 Unauthorized, removing token');
                     // Token is invalid, remove it
                     await TokenManager.removeToken();
                     throw new Error('Authentication failed - token removed');
@@ -180,7 +175,6 @@ class AssApiClient {
             }
             
             const data = await response.json();
-            console.log('API Client - Request successful');
             return data;
         } catch (error) {
             console.error('API request failed:', error);
@@ -283,7 +277,7 @@ class AssApiClient {
     
     static async getBulkCardStats(cardIds) {
         try {
-            return await this.makeRequest(ASS_API_CONFIG.ENDPOINTS.CARD_STATS_BULK, {
+            return await this.makeRequest(ASS_API_CONFIG.ENDPOINTS.CARD_STATS_LAST_BULK, {
                 method: 'GET',
                 body: JSON.stringify(cardIds)
             });
@@ -362,6 +356,17 @@ class AssApiClient {
     
     static async clearCache() {
         await ApiCache.clear();
+    }
+
+    // Stats Collection
+    static async collectStats(cardId) {
+        try {
+            const statsData = await AssApiClient.getUserCardStats(cardId);
+            return statsData;
+        } catch (error) {
+            console.error('Error collecting stats:', error);
+            return null;
+        }
     }
 }
 
