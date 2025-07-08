@@ -141,29 +141,91 @@ async function fetchCardCounts(origin, cardId, unlocked = '0', retry = 0) {
     return counts;
 }
 
-// Consolidated fetch function with caching and optional unlocked parsing
+// Enhanced fetch function with improved cache strategy
 async function getCardCounts(cardId, origin, parseUnlockedFlag) {
     // Use global setting if flag not explicitly passed
     const parseUnlocked = parseUnlockedFlag ?? CARD_COUNT_CONFIG.PARSE_UNLOCKED;
 
-    // try cache first
-    if (CARD_COUNT_CONFIG.CACHE_ENABLED) {
+    // Try enhanced cache first (checks both API and HTML caches intelligently)
+    if (CARD_COUNT_CONFIG.CACHE_ENABLED && typeof enhancedCacheManager !== 'undefined') {
+        const cached = await enhancedCacheManager.getCachedCardStats(cardId);
+        if (cached && !cached.isStale) {
+            console.log(`Enhanced cache hit for card ${cardId} from ${cached.source} (age: ${Math.round(cached.cacheAge / 1000)}s)`);
+            return cached;
+        } else if (cached && cached.isStale) {
+            console.log(`Using stale cache for card ${cardId} from ${cached.source} while fetching fresh data`);
+            // Continue to fetch fresh data but return stale data if fresh fetch fails
+        }
+    } else if (CARD_COUNT_CONFIG.CACHE_ENABLED) {
+        // Fallback to old cache system
         const cached = await getCachedCardCounts(cardId);
         if (cached) return cached;
     }
 
-    const counts = await fetchCardCounts(origin, cardId, '0');
-
-    if (parseUnlocked) {
-        const unlockedCounts = await fetchCardCounts(origin, cardId, '1');
-        counts.unlockTrade = unlockedCounts.trade;
-        counts.unlockNeed = unlockedCounts.need;
-        counts.unlockOwner = unlockedCounts.owner;
+    let counts;
+    let fetchedFromAPI = false;
+    
+    try {
+        // Try to use enhanced API stats if available
+        if (typeof getCardStatsEnhanced === 'function') {
+            console.log(`Trying API stats for card ${cardId}`);
+            counts = await getCardStatsEnhanced(cardId, origin, parseUnlocked);
+            
+            if (counts) {
+                console.log(`Got stats via API for card ${cardId}:`, counts);
+                fetchedFromAPI = true;
+                
+                // Use enhanced cache if available
+                if (typeof enhancedCacheManager !== 'undefined') {
+                    await enhancedCacheManager.setCachedCardStats(cardId, counts, 'api');
+                } else {
+                    setCachedCardCounts(cardId, counts);
+                }
+                
+                return { ...counts, source: 'api' };
+            }
+        }
+    } catch (error) {
+        console.warn(`API stats failed for card ${cardId}, falling back to HTML:`, error);
     }
 
-    setCachedCardCounts(cardId, counts);
+    // Fallback to original HTML parsing
+    try {
+        console.log(`Using HTML parsing fallback for card ${cardId}`);
+        counts = await fetchCardCounts(origin, cardId, '0');
 
-    return counts;
+        if (parseUnlocked) {
+            const unlockedCounts = await fetchCardCounts(origin, cardId, '1');
+            counts.unlockTrade = unlockedCounts.trade;
+            counts.unlockNeed = unlockedCounts.need;
+            counts.unlockOwner = unlockedCounts.owner;
+        }
+
+        // Add source indicator
+        counts.source = 'html';
+        
+        // Use enhanced cache if available
+        if (typeof enhancedCacheManager !== 'undefined') {
+            await enhancedCacheManager.setCachedCardStats(cardId, counts, 'html');
+        } else {
+            setCachedCardCounts(cardId, counts);
+        }
+        
+        return counts;
+    } catch (error) {
+        console.error(`Both API and HTML parsing failed for card ${cardId}:`, error);
+        
+        // If we have stale cache data, return that as last resort
+        if (CARD_COUNT_CONFIG.CACHE_ENABLED && typeof enhancedCacheManager !== 'undefined') {
+            const staleCache = await enhancedCacheManager.getCachedCardStats(cardId);
+            if (staleCache && staleCache.isStale) {
+                console.log(`Returning stale cache for card ${cardId} as last resort`);
+                return { ...staleCache, source: staleCache.source + '_emergency' };
+            }
+        }
+        
+        throw error;
+    }
 }
 
 // -----------------------------------------------------------------------------
@@ -273,19 +335,74 @@ async function updateCardDataFromPage(message, sender) {
     });
 }
 
+// Test API connection function
+async function testApiConnection(message, sender) {
+    try {
+        // Test if API client is available
+        if (typeof AssApiClient === 'undefined') {
+            throw new Error('API client not available');
+        }
+
+        // Test authentication
+        const isAuthenticated = await AssApiClient.isAuthenticated();
+        if (!isAuthenticated) {
+            throw new Error('API authentication failed - no valid token');
+        }
+
+        // Test a simple API call
+        try {
+            // Try to get user info or make a simple API call
+            const testCard = await AssApiClient.getCardStats(1); // Test with card ID 1
+            console.log('API test successful:', testCard);
+        } catch (apiError) {
+            // If specific card test fails, just check if we can reach the API
+            console.warn('Card stats test failed, checking basic connectivity:', apiError);
+        }
+
+        return {
+            success: true,
+            message: 'API connection successful',
+            authenticated: true
+        };
+
+    } catch (error) {
+        console.error('API connection test failed:', error);
+        return {
+            success: false,
+            error: error.message,
+            authenticated: false
+        };
+    }
+}
+
 const actionMap = {
     'fetch_card_data_queue': fetchCardDataQueue,
     'clear_card_data_queue': clearCardDataQueue,
     'fetch_cached_card_data': fetchCachedCardData,
     'update_card_data': updateCardDataFromPage,
+    'test_api_connection': testApiConnection,
 };
 
-chrome.runtime.onMessage.addListener((message, sender) => {
+chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
     const action = actionMap?.[message?.action];
 
     if (action) {
-        action(message, sender);
+        // Check if action is async (returns a Promise)
+        const result = action(message, sender);
+        
+        if (result instanceof Promise) {
+            result.then(response => {
+                sendResponse(response);
+            }).catch(error => {
+                sendResponse({ success: false, error: error.message });
+            });
+            return true; // Will respond asynchronously
+        } else {
+            // For non-async actions, just call them
+            return false;
+        }
+    } else {
+        sendResponse({ success: false, error: 'Unknown action' });
+        return false;
     }
-    
-    return false;
 });

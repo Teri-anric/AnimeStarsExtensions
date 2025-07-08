@@ -156,6 +156,22 @@
     }
   };
 
+  // Enhanced version that uses image URL lookup
+  async function extractCardIdWithLookup(elm) {
+    // Try enhanced extraction if available
+    if (typeof window.extractCardIdEnhanced === 'function') {
+      try {
+        const cardId = await window.extractCardIdEnhanced(elm);
+        if (cardId) return cardId;
+      } catch (error) {
+        console.error('Enhanced card ID extraction failed:', error);
+      }
+    }
+    
+    // Fallback to original method
+    return extractCardId(elm);
+  };
+
   function formatTemplateItems(templateItems, values) {
     if (!Array.isArray(templateItems)) return "";
 
@@ -269,19 +285,23 @@
     updateCardElements(cardId, {text: '...'});
   }
 
-  function collectAllCards() {
+  async function collectAllCards() {
     const cards = document.querySelectorAll(cardContainerSelector);
     cardMap.clear();
     
-    cards.forEach(cardElm => {
-      const cardId = extractCardId(cardElm);
-      if (!cardId) return;
+    for (const cardElm of cards) {
+      try {
+        const cardId = await extractCardIdWithLookup(cardElm);
+        if (!cardId) continue;
       
       if (!cardMap.has(cardId)) {
         cardMap.set(cardId, []);
       }
       cardMap.get(cardId).push(cardElm);
-    });
+      } catch (error) {
+        console.error('Error collecting card:', error);
+      }
+    }
   }
 
   function requestCacheForAllCards() {
@@ -291,10 +311,10 @@
     requestCachedCardData(cardIds);
   }
 
-  function processAllCards() {
+  async function processAllCards() {
     if (!CONFIG.ENABLED) return;
     
-    collectAllCards();
+    await collectAllCards();
     requestCacheForAllCards();
   }
 
@@ -362,17 +382,22 @@
       cardMap.delete(cardId);
     });
 
-    newCardElements.forEach(cardElm => {
-      const cardId = extractCardId(cardElm);
+    // Process new card elements asynchronously
+    newCardElements.forEach(async (cardElm) => {
+      try {
+        const cardId = await extractCardIdWithLookup(cardElm);
       if (!cardId) return;
       if (!cardMap.has(cardId)) cardMap.set(cardId, []);
       cardMap.get(cardId).push(cardElm);
+      } catch (error) {
+        console.error('Error processing new card element:', error);
+      }
     });
   });
 
   // Start/stop automatic processing based on config
-  function startDetectingCards() {
-    processAllCards();
+  async function startDetectingCards() {
+    await processAllCards();
     cardObserver.observe(document.body, { 
       childList: true, 
       subtree: true, 
@@ -387,7 +412,7 @@
     const cardElement = e.target.closest(cardContainerSelector);
     if (!cardElement) return;
     
-    const cardId = extractCardId(cardElement);
+    const cardId = await extractCardIdWithLookup(cardElement);
     const lastCardId = cardElement.dataset.lastCardId;
     if (!cardId || lastCardId == cardId) return;
 
@@ -399,7 +424,7 @@
 
   chrome.storage.sync.get(Object.keys(CONFIG.configMap), async (settings) => {
     CONFIG.initFromSettings(settings);
-    startDetectingCards();
+    await startDetectingCards();
   });
 
   chrome.storage.onChanged.addListener((changes, namespace) => {

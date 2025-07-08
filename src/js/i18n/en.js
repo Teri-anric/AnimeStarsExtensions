@@ -112,6 +112,13 @@ const AnimeStarExtensionTranslationEnglish = {
     'template-icon-exchange-alt': '🔄',
     'template-icon-eye': '👁',
     'template-icon-hand-paper': '✋',
+    'api-integration-settings': 'API Integration',
+    'api-send-stats': 'Send statistics to website',
+    'api-receive-stats': 'Receive statistics from website',
+    'api-connection-status': 'Connection Status',
+    'test-connection': 'Test Connection',
+    'open-website-to-connect': 'Open website to connect extension',
+    'connect-extension-description': 'Visit the website and authorize extension access in your account settings',
 }
 
 export default AnimeStarExtensionTranslationEnglish;

@@ -114,6 +114,13 @@ export const AnimeStarExtensionTranslationRussian = {
     'template-icon-exchange-alt': 'fas fa-exchange-alt (🔄)',
     'template-icon-eye': 'fas fa-eye (👁)',
     'template-icon-hand-paper': 'fas fa-hand-paper (✋)',
+    'api-integration-settings': 'Интеграция с API',
+    'api-send-stats': 'Отправлять статистику на сайт',
+    'api-receive-stats': 'Получать статистику с сайта',
+    'api-connection-status': 'Статус подключения',
+    'test-connection': 'Тест соединения',
+    'open-website-to-connect': 'Открыть сайт для подключения расширения',
+    'connect-extension-description': 'Посетите сайт и авторизуйте доступ расширения в настройках аккаунта',
 }
 
 export default AnimeStarExtensionTranslationRussian;

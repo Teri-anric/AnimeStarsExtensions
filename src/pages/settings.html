@@ -193,6 +193,46 @@
         </div>
 
         <div class="settings-section">
+            <h2>api-integration-settings</h2>
+            
+            <div class="setting-item">
+                <label for="api-stats-submission-enabled">api-send-stats</label>
+                <label class="toggle">
+                    <input type="checkbox" id="api-stats-submission-enabled">
+                    <span class="slider"></span>
+                </label>
+            </div>
+            
+            <div class="setting-item">
+                <label for="api-stats-receive-enabled">api-receive-stats</label>
+                <label class="toggle">
+                    <input type="checkbox" id="api-stats-receive-enabled">
+                    <span class="slider"></span>
+                </label>
+            </div>
+            
+            <div class="connection-status-box">
+                <div class="connection-header">
+                    <h3>api-connection-status</h3>
+                    <button class="test-api-connection-btn" id="test-api-connection">test-connection</button>
+                </div>
+                
+                <div class="api-status hidden" id="api-status">
+                    <span class="api-status-indicator"></span>
+                    <span class="api-status-text"></span>
+                </div>
+                
+                <div class="connection-link">
+                    <a href="https://ass.strawberrycat.dev/settings" target="_blank" class="website-link">
+                        <i class="fas fa-external-link-alt"></i>
+                        <span>open-website-to-connect</span>
+                    </a>
+                    <small>connect-extension-description</small>
+                </div>
+            </div>
+        </div>
+
+        <div class="settings-section">
             <h2>updates</h2>
             <div class="setting-item">
                 <label for="not-update-check">not-update-check</label>

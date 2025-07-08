@@ -1,4 +1,7 @@
 import { i18n } from './translation.js';
+import './api-client.js';
+import './api-stats-handler.js';
+import './enhanced-cache-manager.js';
 import './backgrounds/card_user_count.js';
 
 // Default settings

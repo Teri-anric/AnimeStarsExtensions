@@ -337,3 +337,190 @@ input:checked + .slider:before {
 .open-card-appearance-btn i {
     font-size: 16px;
 }
+
+/* API Integration Settings */
+.info-display {
+    background-color: rgba(52, 73, 94, 0.3);
+    padding: 8px 12px;
+    border-radius: 4px;
+    border: 1px solid #34495e;
+    margin: 5px 0;
+    font-family: 'Courier New', monospace;
+}
+
+.info-label {
+    color: #95a5a6;
+    font-size: 0.9em;
+    margin-right: 8px;
+}
+
+.info-value {
+    color: #3498db;
+    font-weight: 600;
+}
+
+.setting-item input[type="password"] {
+    width: 100%;
+    padding: 8px 12px;
+    border: 1px solid #34495e;
+    border-radius: 4px;
+    background-color: rgba(52, 73, 94, 0.3);
+    color: white;
+    font-size: 14px;
+    margin: 5px 0;
+    transition: border-color 0.3s ease;
+}
+
+.setting-item input[type="password"]:focus {
+    outline: none;
+    border-color: #3498db;
+    box-shadow: 0 0 0 2px rgba(52, 152, 219, 0.2);
+}
+
+.setting-item input[type="password"]::placeholder {
+    color: #7f8c8d;
+}
+
+.test-api-connection-btn {
+    background: linear-gradient(135deg, #27ae60, #2ecc71);
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 6px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.test-api-connection-btn:hover {
+    background: linear-gradient(135deg, #219a52, #27ae60);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(46, 204, 113, 0.3);
+}
+
+.test-api-connection-btn:active {
+    transform: translateY(0);
+}
+
+.test-api-connection-btn:disabled {
+    background: linear-gradient(135deg, #7f8c8d, #95a5a6);
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: none;
+}
+
+.api-status {
+    margin-top: 10px;
+    padding: 8px 12px;
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 14px;
+    font-weight: 500;
+    transition: all 0.3s ease;
+}
+
+.api-status.success {
+    background-color: rgba(46, 204, 113, 0.1);
+    border: 1px solid rgba(46, 204, 113, 0.3);
+    color: #2ecc71;
+}
+
+.api-status.error {
+    background-color: rgba(231, 76, 60, 0.1);
+    border: 1px solid rgba(231, 76, 60, 0.3);
+    color: #e74c3c;
+}
+
+.api-status.testing {
+    background-color: rgba(241, 196, 15, 0.1);
+    border: 1px solid rgba(241, 196, 15, 0.3);
+    color: #f1c40f;
+}
+
+.api-status-indicator {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    flex-shrink: 0;
+}
+
+.api-status.success .api-status-indicator {
+    background-color: #2ecc71;
+    box-shadow: 0 0 8px rgba(46, 204, 113, 0.5);
+}
+
+.api-status.error .api-status-indicator {
+    background-color: #e74c3c;
+    box-shadow: 0 0 8px rgba(231, 76, 60, 0.5);
+}
+
+.api-status.testing .api-status-indicator {
+    background-color: #f1c40f;
+    animation: pulse-api 1.5s infinite;
+}
+
+@keyframes pulse-api {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.5; }
+}
+
+/* Connection Status Box */
+.connection-status-box {
+    background-color: rgba(52, 73, 94, 0.2);
+    border: 1px solid #34495e;
+    border-radius: 8px;
+    padding: 16px;
+    margin-top: 15px;
+}
+
+.connection-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.connection-header h3 {
+    margin: 0;
+    color: #ecf0f1;
+    font-size: 16px;
+    font-weight: 600;
+}
+
+.connection-link {
+    margin-top: 12px;
+    padding-top: 12px;
+    border-top: 1px solid rgba(52, 73, 94, 0.5);
+}
+
+.website-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    color: #3498db;
+    text-decoration: none;
+    font-weight: 500;
+    transition: color 0.3s ease;
+    margin-bottom: 5px;
+}
+
+.website-link:hover {
+    color: #5dade2;
+}
+
+.website-link i {
+    font-size: 14px;
+}
+
+.connection-link small {
+    display: block;
+    color: #7f8c8d;
+    font-size: 12px;
+    margin-top: 5px;
+    line-height: 1.4;
+}

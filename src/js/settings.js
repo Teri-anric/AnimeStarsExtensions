@@ -15,6 +15,8 @@ document.addEventListener('DOMContentLoaded', () => {
         'add-my-cards-button',
         'add-user-cards-buttons',
         'not-update-check',
+        'api-stats-submission-enabled',
+        'api-stats-receive-enabled',
     ];
 
     const settingsSelects = [
@@ -30,6 +32,9 @@ document.addEventListener('DOMContentLoaded', () => {
     ];
 
     const settingsColorInputs = [
+    ];
+    
+    const settingsTextInputs = [
     ];
 
     const additionalSettings = [
@@ -78,7 +83,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // Combine all settings to load 
-    const allSettings = [...settingsCheckboxes, ...settingsSelects, ...settingsRangeInputs, ...settingsColorInputs];
+    const allSettings = [...settingsCheckboxes, ...settingsSelects, ...settingsRangeInputs, ...settingsColorInputs, ...settingsTextInputs];
 
     // Load saved settings
     chrome.storage.sync.get(allSettings, (settings) => {
@@ -127,6 +132,20 @@ document.addEventListener('DOMContentLoaded', () => {
             });
         });
 
+        // Load text input settings
+        settingsTextInputs.forEach(id => {
+            const input = document.getElementById(id);
+            if (input) {
+                input.value = settings[id] || '';
+            }
+            input.addEventListener('change', (event) => {
+                if (actions[id]) {
+                    actions[id](event.target.value);
+                }
+                chrome.storage.sync.set({ [id]: event.target.value });
+            });
+        });
+
         // Load range input settings
         settingsRangeInputs.forEach(id => {
             const input = document.getElementById(id);
@@ -160,6 +179,43 @@ document.addEventListener('DOMContentLoaded', () => {
                 }
             });
         });
+        
+        // API connection test functionality
+        const testApiBtn = document.getElementById('test-api-connection');
+        const apiStatus = document.getElementById('api-status');
+        
+        if (testApiBtn) {
+            testApiBtn.addEventListener('click', async () => {
+                testApiBtn.disabled = true;
+                testApiBtn.textContent = 'Testing...';
+                
+                // Show testing status
+                apiStatus.className = 'api-status testing';
+                apiStatus.classList.remove('hidden');
+                apiStatus.querySelector('.api-status-text').textContent = 'Testing API connection...';
+                
+                try {
+                    // Test API connection using the background script
+                    const response = await chrome.runtime.sendMessage({
+                        action: 'test_api_connection'
+                    });
+                    
+                    if (response && response.success) {
+                        apiStatus.className = 'api-status success';
+                        apiStatus.querySelector('.api-status-text').textContent = 'API connection successful';
+                    } else {
+                        apiStatus.className = 'api-status error';
+                        apiStatus.querySelector('.api-status-text').textContent = response?.error || 'API connection failed';
+                    }
+                } catch (error) {
+                    apiStatus.className = 'api-status error';
+                    apiStatus.querySelector('.api-status-text').textContent = 'Connection test failed: ' + error.message;
+                }
+                
+                testApiBtn.disabled = false;
+                testApiBtn.textContent = 'Test API Connection';
+            });
+        }
     });
 
     // Update additional settings

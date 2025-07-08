@@ -114,6 +114,13 @@ const AnimeStarExtensionTranslationUkraine = {
     'template-icon-exchange-alt': '🔄',
     'template-icon-eye': '👁',
     'template-icon-hand-paper': '✋',
+    'api-integration-settings': 'Інтеграція з API',
+    'api-send-stats': 'Відправляти статистику на сайт',
+    'api-receive-stats': 'Отримувати статистику з сайту',
+    'api-connection-status': 'Статус підключення',
+    'test-connection': 'Тест з\'єднання',
+    'open-website-to-connect': 'Відкрити сайт для підключення розширення',
+    'connect-extension-description': 'Відвідайте сайт і авторизуйте доступ розширення у налаштуваннях акаунту',
 }
 
 export default AnimeStarExtensionTranslationUkraine;
