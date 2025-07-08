@@ -13,7 +13,11 @@
         "https://asstars1.astars.club/*",
         "https://as1.astars.club/*",
         "https://asstars.tv/*",
-        "https://raw.githubusercontent.com/Teri-anric/AnimeStarsExtensions/*"
+        "https://raw.githubusercontent.com/Teri-anric/AnimeStarsExtensions/*",
+        "https://ass-api.strawberrycat.dev/*",
+        "https://ass.strawberrycat.dev/*",
+        "http://localhost/*",
+        "https://localhost/*"
     ],
     "content_scripts": [
         {
@@ -43,6 +47,9 @@
                 "https://asstars.tv/aniserials/videos/*/*.html"
             ],
             "js": [
+                "./js/api-client.js",
+                "./js/enhanced-cache-manager.js",
+                "./js/api-stats-handler.js",
                 "./scripts/auto_seen_card.js",
                 "./scripts/auto_take_cinema_stone.js"
             ],
@@ -59,6 +66,7 @@
                 "https://asstars.tv/user/*"
             ],
             "js": [
+                "./js/api-client.js",
                 "./scripts/user_card_buttons.js"
             ],
             "css": [
@@ -74,6 +82,7 @@
                 "https://asstars.tv/*"
             ],
             "js": [
+                "./js/api-client.js",
                 "./scripts/fix_header.js"
             ],
             "css": [
@@ -89,6 +98,7 @@
                 "https://asstars.tv/clubs/boost/*"
             ],
             "js": [
+                "./js/api-client.js",
                 "./scripts/boost_club.js",
                 "./scripts/boost_club_auto.js"
             ],
@@ -105,8 +115,12 @@
                 "https://asstars.tv/*"
             ],
             "js": [
+                "./js/api-client.js",
+                "./js/enhanced-cache-manager.js",
+                "./js/api-stats-handler.js",
                 "./scripts/page_worker.js",
-                "./scripts/card_user_count.js"
+                "./scripts/card_user_count.js",
+                "./scripts/card_image_lookup.js"
             ],
             "css": [
                 "./styles/card_user_count.css"
@@ -122,7 +136,22 @@
                 "https://asstars.tv/cards/users/*"
             ],
             "js": [
+                "./js/api-client.js",
+                "./js/enhanced-cache-manager.js",
+                "./js/api-stats-handler.js",
                 "./scripts/cards_users_parser.js"
+            ],
+            "run_at": "document_end"
+        },
+        {
+            "matches": [
+                "https://ass.strawberrycat.dev/*",
+                "http://localhost/*",
+                "https://localhost/*"
+            ],
+            "js": [
+                "./js/api-client.js",
+                "./scripts/token_bridge.js"
             ],
             "run_at": "document_end"
         }
