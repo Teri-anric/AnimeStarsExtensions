@@ -116,8 +116,7 @@
             ],
             "js": [
                 "./js/api-client.js",
-                "./scripts/card_user_count.js",
-                "./scripts/card_image_lookup.js"
+                "./scripts/card_user_count.js"
             ],
             "css": [
                 "./styles/card_user_count.css"

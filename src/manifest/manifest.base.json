@@ -48,7 +48,6 @@
             ],
             "js": [
                 "./js/api-client.js",
-                "./js/api-stats-handler.js",
                 "./scripts/auto_seen_card.js",
                 "./scripts/auto_take_cinema_stone.js"
             ],
@@ -120,9 +119,7 @@
             ],
             "js": [
                 "./js/api-client.js",
-                "./js/api-stats-handler.js",
-                "./scripts/card_user_count.js",
-                "./scripts/card_image_lookup.js"
+                "./scripts/card_user_count.js"
             ],
             "css": [
                 "./styles/card_user_count.css"
@@ -139,7 +136,6 @@
             ],
             "js": [
                 "./js/api-client.js",
-                "./js/api-stats-handler.js",
                 "./scripts/cards_users_parser.js"
             ],
             "run_at": "document_end"
