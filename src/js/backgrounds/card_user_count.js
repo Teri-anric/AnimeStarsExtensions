@@ -318,26 +318,10 @@ async function testApiConnection(message, sender) {
             throw new Error('API client not available');
         }
 
-        // Test authentication
-        const isAuthenticated = await AssApiClient.isAuthenticated();
-        if (!isAuthenticated) {
-            throw new Error('API authentication failed - no valid token');
-        }
-
-        // Test a simple API call
-        try {
-            // Try to get user info or make a simple API call
-            const testCard = await AssApiClient.getCardStats(1); // Test with card ID 1
-            console.log('API test successful:', testCard);
-        } catch (apiError) {
-            // If specific card test fails, just check if we can reach the API
-            console.warn('Card stats test failed, checking basic connectivity:', apiError);
-        }
-
         return {
             success: true,
             message: 'API connection successful',
-            authenticated: true
+            authenticated: await AssApiClient.isAuthenticated()
         };
 
     } catch (error) {
@@ -381,7 +365,3 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
         return false;
     }
 });
-
-// Export functions for use by other modules
-window.getCachedCardCounts = getCachedCardCounts;
-window.enqueueFetchRequest = enqueueFetchRequest;

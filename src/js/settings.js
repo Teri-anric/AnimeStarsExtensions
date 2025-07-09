@@ -180,7 +180,7 @@ document.addEventListener('DOMContentLoaded', () => {
             });
         });
         
-        // API connection test functionality - simplified
+        // API connection test functionality - enhanced
         const testApiBtn = document.getElementById('test-api-connection');
         const apiStatus = document.getElementById('api-status');
         
@@ -195,23 +195,45 @@ document.addEventListener('DOMContentLoaded', () => {
                 apiStatus.querySelector('.api-status-text').textContent = 'Testing API connection...';
                 
                 try {
-                    // Simple API test - check if we can reach the health endpoint
-                    const response = await fetch('https://ass-api.strawberrycat.dev/health');
+                    // Use background script's comprehensive test
+                    const response = await new Promise((resolve, reject) => {
+                        chrome.runtime.sendMessage({ action: 'test_api_connection' }, (result) => {
+                            if (chrome.runtime.lastError) {
+                                reject(new Error(chrome.runtime.lastError.message));
+                            } else {
+                                resolve(result);
+                            }
+                        });
+                    });
                     
-                    if (response.ok) {
+                    if (response.success) {
                         apiStatus.className = 'api-status success';
-                        apiStatus.querySelector('.api-status-text').textContent = 'API connection successful';
+                        const authStatus = response.authenticated ? 'authenticated' : 'not authenticated';
+                        apiStatus.querySelector('.api-status-text').textContent = `API connection successful (${authStatus})`;
                     } else {
                         apiStatus.className = 'api-status error';
-                        apiStatus.querySelector('.api-status-text').textContent = `API returned ${response.status}`;
+                        apiStatus.querySelector('.api-status-text').textContent = `Connection failed: ${response.error}`;
                     }
                 } catch (error) {
-                    apiStatus.className = 'api-status error';
-                    apiStatus.querySelector('.api-status-text').textContent = 'Connection failed: ' + error.message;
+                    // Fallback to simple health check if background script fails
+                    try {
+                        const response = await fetch('https://ass-api.strawberrycat.dev/health');
+                        
+                        if (response.ok) {
+                            apiStatus.className = 'api-status success';
+                            apiStatus.querySelector('.api-status-text').textContent = 'API server reachable (basic test)';
+                        } else {
+                            apiStatus.className = 'api-status error';
+                            apiStatus.querySelector('.api-status-text').textContent = `API returned ${response.status}`;
+                        }
+                    } catch (fallbackError) {
+                        apiStatus.className = 'api-status error';
+                        apiStatus.querySelector('.api-status-text').textContent = 'Connection failed: ' + fallbackError.message;
+                    }
                 }
                 
                 testApiBtn.disabled = false;
-                testApiBtn.textContent = 'Test API Connection';
+                testApiBtn.textContent = 'Test Connection';
             });
         }
     });

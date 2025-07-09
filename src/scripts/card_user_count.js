@@ -156,22 +156,6 @@
     }
   };
 
-  // Enhanced version that uses image URL lookup
-  async function extractCardIdWithLookup(elm) {
-    // Try enhanced extraction if available
-    if (typeof window.extractCardIdEnhanced === 'function') {
-      try {
-        const cardId = await window.extractCardIdEnhanced(elm);
-        if (cardId) return cardId;
-      } catch (error) {
-        console.error('Enhanced card ID extraction failed:', error);
-      }
-    }
-    
-    // Fallback to original method
-    return extractCardId(elm);
-  };
-
   function formatTemplateItems(templateItems, values) {
     if (!Array.isArray(templateItems)) return "";
 
@@ -291,7 +275,7 @@
     
     for (const cardElm of cards) {
       try {
-        const cardId = await extractCardIdWithLookup(cardElm);
+        const cardId = await extractCardId(cardElm);
         if (!cardId) continue;
       
       if (!cardMap.has(cardId)) {
@@ -385,7 +369,7 @@
     // Process new card elements asynchronously
     newCardElements.forEach(async (cardElm) => {
       try {
-        const cardId = await extractCardIdWithLookup(cardElm);
+        const cardId = await extractCardId(cardElm);
       if (!cardId) return;
       if (!cardMap.has(cardId)) cardMap.set(cardId, []);
       cardMap.get(cardId).push(cardElm);
@@ -412,7 +396,7 @@
     const cardElement = e.target.closest(cardContainerSelector);
     if (!cardElement) return;
     
-    const cardId = await extractCardIdWithLookup(cardElement);
+    const cardId = await extractCardId(cardElement);
     const lastCardId = cardElement.dataset.lastCardId;
     if (!cardId || lastCardId == cardId) return;
 
