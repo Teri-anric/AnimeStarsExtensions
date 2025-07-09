@@ -32,6 +32,7 @@ const ASS_API_CONFIG = {
         CARD_STATS_LAST: '/api/card/stats/last',
         CARD_STATS_LAST_BULK: '/api/card/stats/last/bulk',
         CARD_STATS_QUERY: '/api/card/stats/',
+        CARD_STATS_ADD: '/api/card/stats/add', // New endpoint for adding stats
         
         // Extension endpoints
         EXTENSION_TOKEN: '/api/extension/token',
@@ -331,9 +332,28 @@ console.log('API Client - Configuration loaded:', {
         // Method to submit card statistics from extension
         static async submitCardStats(cardId, statsData) {
             try {
-                // Simple stats logging - removed TODO complexity
-                console.log(`Stats collected for card ${cardId}:`, statsData);
-                return { success: true, message: 'Stats logged locally' };
+                // Prepare stats in the format expected by the API
+                const statsPayload = {
+                    stats: [
+                        { card_id: cardId, collection: 'trade', count: statsData.trade },
+                        { card_id: cardId, collection: 'need', count: statsData.need },
+                        { card_id: cardId, collection: 'owned', count: statsData.owner },
+                        { card_id: cardId, collection: 'unlocked_owned', count: statsData.unlockOwner },
+                    ].filter(stat => typeof stat.count === 'number') // Only send stats with numeric counts
+                };
+
+                // Send stats to the API
+                const result = await this.makeRequest(ASS_API_CONFIG.ENDPOINTS.CARD_STATS_ADD, {
+                    method: 'POST',
+                    body: JSON.stringify(statsPayload)
+                });
+
+                console.log(`Stats submitted successfully for card ${cardId}:`, result);
+                return { 
+                    success: true, 
+                    message: `Stats submitted to API for card ${cardId}`, 
+                    result 
+                };
             } catch (error) {
                 console.error('Submit card stats error:', error);
                 throw error;

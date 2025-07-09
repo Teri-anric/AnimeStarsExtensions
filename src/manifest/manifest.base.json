@@ -58,16 +58,7 @@
         },
         {
             "matches": [
-                "https://animestars.org/aniserials/video/*/*.html",
-                "https://astars.club/aniserials/video/*/*.html",
-                "https://asstars1.astars.club/aniserials/video/*/*.html",
-                "https://as1.astars.club/aniserials/video/*/*.html",
-                "https://asstars.tv/aniserials/video/*/*.html",
-                
-                "https://ass-api.strawberrycat.dev/*",
-                "https://ass.strawberrycat.dev/*",
-                "http://localhost/*",
-                "https://localhost/*"
+                "*://*/*"
             ],
             "js": [
                 "./scripts/page_worker.js"
