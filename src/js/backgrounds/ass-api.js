@@ -1,4 +1,4 @@
-import { AssApiClient } from '../api-client.js';
+import { AssApiClient, TokenManager } from '../api-client.js';
 
 // Test API connection function
 async function testApiConnection(message, sender) {
@@ -19,8 +19,57 @@ async function testApiConnection(message, sender) {
     }
 }
 
+// Store token function
+async function storeToken(message, sender) {
+    try {
+        if (!message.token) {
+            throw new Error('Token is required');
+        }
+
+        await TokenManager.setToken(message.token);
+        
+        // Verify the token was stored and is valid
+        const isAuthenticated = await AssApiClient.isAuthenticated();
+        
+        return {
+            success: true,
+            message: 'Token stored successfully',
+            authenticated: isAuthenticated
+        };
+    } catch (error) {
+        console.error('Store token failed:', error);
+        return {
+            success: false,
+            error: error.message,
+            authenticated: false
+        };
+    }
+}
+
+// Remove token function
+async function removeToken(message, sender) {
+    try {
+        await TokenManager.removeToken();
+        
+        return {
+            success: true,
+            message: 'Token removed successfully',
+            authenticated: false
+        };
+    } catch (error) {
+        console.error('Remove token failed:', error);
+        return {
+            success: false,
+            error: error.message,
+            authenticated: false
+        };
+    }
+}
+
 const actionMap = {
     'test_api_connection': testApiConnection,
+    'store_token': storeToken,
+    'remove_token': removeToken,
 };
 
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {

@@ -44,7 +44,6 @@
                 "https://asstars.tv/aniserials/videos/*/*.html"
             ],
             "js": [
-                "./js/api-client.js",
                 "./scripts/auto_seen_card.js",
                 "./scripts/auto_take_cinema_stone.js"
             ],
@@ -115,7 +114,6 @@
                 "https://asstars.tv/*"
             ],
             "js": [
-                "./js/api-client.js",
                 "./scripts/card_user_count.js"
             ],
             "css": [
@@ -132,7 +130,6 @@
                 "https://asstars.tv/cards/users/*"
             ],
             "js": [
-                "./js/api-client.js",
                 "./scripts/cards_users_parser.js"
             ],
             "run_at": "document_end"
@@ -144,7 +141,6 @@
                 "https://localhost/*"
             ],
             "js": [
-                "./js/api-client.js",
                 "./scripts/token_bridge.js"
             ],
             "run_at": "document_end"
@@ -164,7 +160,11 @@
     },
     "options_page": "pages/settings.html",
     "background": {
-        "service_worker": "./js/background.js",
-        "type": "module"
+        "page": "pages/background.html"
+    },
+    "browser_specific_settings": {
+        "gecko": {
+            "id": "animestars-extension@teri-anric.github.io"
+        }
     }
 }

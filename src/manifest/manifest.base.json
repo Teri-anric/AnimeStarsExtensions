@@ -47,7 +47,6 @@
                 "https://asstars.tv/aniserials/videos/*/*.html"
             ],
             "js": [
-                "./js/api-client.js",
                 "./scripts/auto_seen_card.js",
                 "./scripts/auto_take_cinema_stone.js"
             ],
@@ -118,7 +117,6 @@
                 "https://asstars.tv/*"
             ],
             "js": [
-                "./js/api-client.js",
                 "./scripts/card_user_count.js"
             ],
             "css": [
@@ -135,19 +133,15 @@
                 "https://asstars.tv/cards/users/*"
             ],
             "js": [
-                "./js/api-client.js",
                 "./scripts/cards_users_parser.js"
             ],
             "run_at": "document_end"
         },
         {
             "matches": [
-                "https://ass.strawberrycat.dev/*",
-                "http://localhost/*",
-                "https://localhost/*"
+                "https://ass.strawberrycat.dev/*"
             ],
             "js": [
-                "./js/api-client.js",
                 "./scripts/token_bridge.js"
             ],
             "run_at": "document_end"

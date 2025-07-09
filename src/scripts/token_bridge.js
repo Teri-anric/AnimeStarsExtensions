@@ -1,31 +1,10 @@
 // Token Bridge - Simplified version for website-extension communication
 (async () => {
-    if (typeof AssApiClient === 'undefined') {
-        try {
-            await import(chrome.runtime.getURL('js/api-client.js'));
-        } catch (error) {
-            return;
-        }
-    }
-
     const CONFIG = {
-        SUPPORTED_DOMAINS: [
-            'ass.strawberrycat.dev',
-            'localhost',
-            '127.0.0.1'
-        ],
-        REQUEST_TIMEOUT: 30000,
+        REQUEST_TIMEOUT: 30000, 
         EXTENSION_ID: chrome.runtime.id,
         VERSION: chrome.runtime.getManifest().version
     };
-
-    // Check if current domain is supported
-    function isSupportedDomain() {
-        const hostname = window.location.hostname;
-        return CONFIG.SUPPORTED_DOMAINS.some(domain => 
-            hostname === domain || hostname.includes(domain)
-        );
-    }
 
     // Request token from website
     async function requestTokenFromWebsite() {
@@ -69,7 +48,22 @@
     // Check if extension has valid token
     async function hasValidToken() {
         try {
-            return await AssApiClient.isAuthenticated();
+            // Use background script's comprehensive test
+            const response = await new Promise((resolve, reject) => {
+                chrome.runtime.sendMessage({ action: 'test_api_connection' }, (result) => {
+                    if (chrome.runtime.lastError) {
+                        reject(new Error(chrome.runtime.lastError.message));
+                    } else {
+                        resolve(result);
+                    }
+                });
+            });
+            
+            if (response && response.success) {
+                return response.authenticated || false;
+            } else {
+                return false;
+            }
         } catch (error) {
             return false;
         }
@@ -78,9 +72,42 @@
     // Store token in extension
     async function storeToken(token) {
         try {
-            await TokenManager.setToken(token);
-            return true;
+            const response = await new Promise((resolve, reject) => {
+                chrome.runtime.sendMessage({ 
+                    action: 'store_token',
+                    token: token 
+                }, (result) => {
+                    if (chrome.runtime.lastError) {
+                        reject(new Error(chrome.runtime.lastError.message));
+                    } else {
+                        resolve(result);
+                    }
+                });
+            });
+            
+            return response && response.success;
         } catch (error) {
+            console.error('Store token failed:', error);
+            return false;
+        }
+    }
+
+    // Remove token from extension
+    async function removeToken() {
+        try {
+            const response = await new Promise((resolve, reject) => {
+                chrome.runtime.sendMessage({ action: 'remove_token' }, (result) => {
+                    if (chrome.runtime.lastError) {
+                        reject(new Error(chrome.runtime.lastError.message));
+                    } else {
+                        resolve(result);
+                    }
+                });
+            });
+            
+            return response && response.success;
+        } catch (error) {
+            console.error('Remove token failed:', error);
             return false;
         }
     }
@@ -107,7 +134,7 @@
                     chrome.runtime.sendMessage({ type: 'token_acquired', success: true }).catch(() => {});
                     return true;
                 } else {
-                    await TokenManager.removeToken();
+                    await removeToken();
                 }
             }
             
@@ -216,32 +243,29 @@
         }
     });
 
-    // Initialize if on supported domain
-    if (isSupportedDomain()) {
-        // Initial presence notification with connection check
-        setTimeout(async () => {
-            try {
-                const hasToken = await hasValidToken();
+    // Initial presence notification with connection check
+    setTimeout(async () => {
+        try {
+            const hasToken = await hasValidToken();
+            extensionBridgeAPI.isConnected = hasToken;
+            notifyWebsitePresence(hasToken);
+        } catch (error) {
+            notifyWebsitePresence(false);
+        }
+    }, 500);
+
+    // Periodic status updates (less frequent to avoid flashing)
+    setInterval(async () => {
+        try {
+            const hasToken = await hasValidToken();
+            if (extensionBridgeAPI.isConnected !== hasToken) {
                 extensionBridgeAPI.isConnected = hasToken;
                 notifyWebsitePresence(hasToken);
-            } catch (error) {
-                notifyWebsitePresence(false);
             }
-        }, 500);
-        
-        // Periodic status updates (less frequent to avoid flashing)
-        setInterval(async () => {
-            try {
-                const hasToken = await hasValidToken();
-                if (extensionBridgeAPI.isConnected !== hasToken) {
-                    extensionBridgeAPI.isConnected = hasToken;
-                    notifyWebsitePresence(hasToken);
-                }
-            } catch (error) {
-                // Don't immediately change state on error
-            }
-        }, 10000); // Every 10 seconds instead of 5
-    }
+        } catch (error) {
+            // Don't immediately change state on error
+        }
+    }, 10000); // Every 10 seconds instead of 5
 
     // Listen for messages from other extension scripts
     chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
@@ -258,7 +282,7 @@
     // Listen for website logout events
     window.addEventListener('storage', (event) => {
         if (event.key === 'token' && !event.newValue) {
-            TokenManager.removeToken();
+            removeToken();
         }
     });
 
