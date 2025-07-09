@@ -4,6 +4,12 @@
 // -----------------------------------------------------------------------------
 
 (async () => {
+    // Prevent multiple loading
+    if (typeof window.ASS_CARD_IMAGE_LOOKUP_LOADED !== 'undefined') {
+        return;
+    }
+    window.ASS_CARD_IMAGE_LOOKUP_LOADED = true;
+    
     // Import API client
     if (typeof AssApiClient === 'undefined') {
         try {

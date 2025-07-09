@@ -141,57 +141,42 @@ async function fetchCardCounts(origin, cardId, unlocked = '0', retry = 0) {
     return counts;
 }
 
-// Enhanced fetch function with improved cache strategy
-async function getCardCounts(cardId, origin, parseUnlockedFlag) {
-    // Use global setting if flag not explicitly passed
+// Simplified fetch function with basic cache strategy
+async function getCardCounts(cardId, origin, parseUnlockedFlag, needsSubmission = false) {
     const parseUnlocked = parseUnlockedFlag ?? CARD_COUNT_CONFIG.PARSE_UNLOCKED;
 
-    // Try enhanced cache first (checks both API and HTML caches intelligently)
-    if (CARD_COUNT_CONFIG.CACHE_ENABLED && typeof enhancedCacheManager !== 'undefined') {
-        const cached = await enhancedCacheManager.getCachedCardStats(cardId);
-        if (cached && !cached.isStale) {
-            console.log(`Enhanced cache hit for card ${cardId} from ${cached.source} (age: ${Math.round(cached.cacheAge / 1000)}s)`);
-            return cached;
-        } else if (cached && cached.isStale) {
-            console.log(`Using stale cache for card ${cardId} from ${cached.source} while fetching fresh data`);
-            // Continue to fetch fresh data but return stale data if fresh fetch fails
-        }
-    } else if (CARD_COUNT_CONFIG.CACHE_ENABLED) {
-        // Fallback to old cache system
+    // Try cache first (simple caching) - only if not called from queue
+    if (CARD_COUNT_CONFIG.CACHE_ENABLED && !needsSubmission) {
         const cached = await getCachedCardCounts(cardId);
-        if (cached) return cached;
+        if (cached) {
+            console.log(`Cache hit for card ${cardId}`);
+            return cached;
+        }
     }
 
     let counts;
-    let fetchedFromAPI = false;
     
     try {
-        // Try to use enhanced API stats if available
-        if (typeof getCardStatsEnhanced === 'function') {
+        // Try API first if available and not forced to use HTML
+        if (typeof getCardStatsEnhanced === 'function' && !needsSubmission) {
             console.log(`Trying API stats for card ${cardId}`);
             counts = await getCardStatsEnhanced(cardId, origin, parseUnlocked);
             
             if (counts) {
-                console.log(`Got stats via API for card ${cardId}:`, counts);
-                fetchedFromAPI = true;
-                
-                // Use enhanced cache if available
-                if (typeof enhancedCacheManager !== 'undefined') {
-                    await enhancedCacheManager.setCachedCardStats(cardId, counts, 'api');
-                } else {
-                    setCachedCardCounts(cardId, counts);
-                }
-                
+                console.log(`Got stats via API for card ${cardId}`);
+                setCachedCardCounts(cardId, { ...counts, source: 'api' });
                 return { ...counts, source: 'api' };
+            } else {
+                console.log(`API returned empty for card ${cardId}, continuing to HTML parsing`);
             }
         }
     } catch (error) {
         console.warn(`API stats failed for card ${cardId}, falling back to HTML:`, error);
     }
 
-    // Fallback to original HTML parsing
+    // Use HTML parsing (either as fallback or when forced)
     try {
-        console.log(`Using HTML parsing fallback for card ${cardId}`);
+        console.log(`Using HTML parsing for card ${cardId}`);
         counts = await fetchCardCounts(origin, cardId, '0');
 
         if (parseUnlocked) {
@@ -201,29 +186,18 @@ async function getCardCounts(cardId, origin, parseUnlockedFlag) {
             counts.unlockOwner = unlockedCounts.owner;
         }
 
-        // Add source indicator
         counts.source = 'html';
+        setCachedCardCounts(cardId, counts);
         
-        // Use enhanced cache if available
-        if (typeof enhancedCacheManager !== 'undefined') {
-            await enhancedCacheManager.setCachedCardStats(cardId, counts, 'html');
-        } else {
-            setCachedCardCounts(cardId, counts);
+        // Submit to server if requested
+        if (needsSubmission && typeof queueStatsForSubmission === 'function') {
+            console.log(`Queuing stats for submission: card ${cardId}`);
+            queueStatsForSubmission(cardId, counts, 'html_parse');
         }
         
         return counts;
     } catch (error) {
-        console.error(`Both API and HTML parsing failed for card ${cardId}:`, error);
-        
-        // If we have stale cache data, return that as last resort
-        if (CARD_COUNT_CONFIG.CACHE_ENABLED && typeof enhancedCacheManager !== 'undefined') {
-            const staleCache = await enhancedCacheManager.getCachedCardStats(cardId);
-            if (staleCache && staleCache.isStale) {
-                console.log(`Returning stale cache for card ${cardId} as last resort`);
-                return { ...staleCache, source: staleCache.source + '_emergency' };
-            }
-        }
-        
+        console.error(`HTML parsing failed for card ${cardId}:`, error);
         throw error;
     }
 }
@@ -244,7 +218,8 @@ async function processNextFetch() {
     queueProcessing = true;
     const item = fetchQueue.pop();
 
-    if (CARD_COUNT_CONFIG.CACHE_ENABLED) {
+    // Check cache only if this is not a forced submission request
+    if (CARD_COUNT_CONFIG.CACHE_ENABLED && !item.needsSubmission) {
         const cached = await getCachedCardCounts(item.cardId);
         if (cached) {
             await broadcastToAllTabs({
@@ -257,7 +232,7 @@ async function processNextFetch() {
     }
 
     try {
-        const data = await getCardCounts(item.cardId, item.origin, item.parseUnlocked);
+        const data = await getCardCounts(item.cardId, item.origin, item.parseUnlocked, item.needsSubmission);
         await broadcastToAllTabs({
             type: 'card_data_updated',
             data: {[item.cardId]: data}
@@ -406,3 +381,7 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
         return false;
     }
 });
+
+// Export functions for use by other modules
+window.getCachedCardCounts = getCachedCardCounts;
+window.enqueueFetchRequest = enqueueFetchRequest;

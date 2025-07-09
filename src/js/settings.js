@@ -180,11 +180,11 @@ document.addEventListener('DOMContentLoaded', () => {
             });
         });
         
-        // API connection test functionality
+        // API connection test functionality - simplified
         const testApiBtn = document.getElementById('test-api-connection');
         const apiStatus = document.getElementById('api-status');
         
-        if (testApiBtn) {
+        if (testApiBtn && apiStatus) {
             testApiBtn.addEventListener('click', async () => {
                 testApiBtn.disabled = true;
                 testApiBtn.textContent = 'Testing...';
@@ -195,21 +195,19 @@ document.addEventListener('DOMContentLoaded', () => {
                 apiStatus.querySelector('.api-status-text').textContent = 'Testing API connection...';
                 
                 try {
-                    // Test API connection using the background script
-                    const response = await chrome.runtime.sendMessage({
-                        action: 'test_api_connection'
-                    });
+                    // Simple API test - check if we can reach the health endpoint
+                    const response = await fetch('https://ass-api.strawberrycat.dev/health');
                     
-                    if (response && response.success) {
+                    if (response.ok) {
                         apiStatus.className = 'api-status success';
                         apiStatus.querySelector('.api-status-text').textContent = 'API connection successful';
                     } else {
                         apiStatus.className = 'api-status error';
-                        apiStatus.querySelector('.api-status-text').textContent = response?.error || 'API connection failed';
+                        apiStatus.querySelector('.api-status-text').textContent = `API returned ${response.status}`;
                     }
                 } catch (error) {
                     apiStatus.className = 'api-status error';
-                    apiStatus.querySelector('.api-status-text').textContent = 'Connection test failed: ' + error.message;
+                    apiStatus.querySelector('.api-status-text').textContent = 'Connection failed: ' + error.message;
                 }
                 
                 testApiBtn.disabled = false;

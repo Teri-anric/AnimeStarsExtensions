@@ -4,6 +4,11 @@
 // -----------------------------------------------------------------------------
 
 (async () => {
+    // Prevent multiple loading
+    if (typeof window.ASS_API_STATS_HANDLER_LOADED !== 'undefined') {
+        return;
+    }
+    window.ASS_API_STATS_HANDLER_LOADED = true;
     // Import API client
     if (typeof AssApiClient === 'undefined') {
         try {
@@ -31,7 +36,7 @@
 
     // Convert API stats format to extension format
     function convertApiStatsToExtensionFormat(apiStats) {
-        if (!apiStats || !Array.isArray(apiStats)) {
+        if (!apiStats || !Array.isArray(apiStats) || apiStats.length === 0) {
             return null;
         }
 
@@ -54,7 +59,8 @@
             }
         });
 
-        return result;
+        // Return null if no recognized fields were found
+        return Object.keys(result).length > 0 ? result : null;
     }
 
     // Fetch card statistics via API
@@ -69,7 +75,7 @@
                 console.log(`API stats for card ${cardId}:`, convertedStats);
                 return convertedStats;
             } else {
-                console.warn(`No API stats found for card ${cardId}`);
+                console.warn(`API returned empty stats for card ${cardId} - will queue for HTML parsing`);
                 return null;
             }
         } catch (error) {
@@ -78,13 +84,10 @@
         }
     }
 
-    // Fetch multiple card statistics in bulk
+    // Fetch multiple card statistics - simplified individual fetching
     async function fetchBulkCardStatsViaApi(cardIds) {
         try {
-            console.log(`Fetching bulk stats via API for ${cardIds.length} cards`);
-            
-            // TODO: Implement bulk API call when available
-            // For now, fetch individually
+            console.log(`Fetching stats for ${cardIds.length} cards`);
             const results = {};
             
             for (const cardId of cardIds) {
@@ -228,19 +231,50 @@
         }
     }
 
-    // Enhanced stats fetching function that replaces original
+    // Enhanced stats fetching function with cache check and queue handling
     async function getCardStatsEnhanced(cardId, origin, parseUnlocked = false) {
         try {
-            const stats = await fetchCardStatsWithFallback(cardId, origin, parseUnlocked);
-            
-            // Queue stats for submission if they came from HTML parsing
-            if (stats.source === 'html') {
-                queueStatsForSubmission(cardId, stats, 'html_parse');
+            // Check cache first before making any requests
+            if (typeof getCachedCardCounts === 'function') {
+                const cached = await getCachedCardCounts(cardId);
+                if (cached) {
+                    console.log(`Using cached stats for card ${cardId}`);
+                    return cached;
+                }
             }
             
-            return stats;
+            // Try API first
+            const apiStats = await fetchCardStatsViaApi(cardId, parseUnlocked);
+            if (apiStats) {
+                return { ...apiStats, source: 'api' };
+            }
+            
+            // If API returns empty, queue for HTML parsing
+            console.log(`API returned empty for card ${cardId}, queuing for HTML parsing`);
+            if (typeof enqueueFetchRequest === 'function') {
+                enqueueFetchRequest({ 
+                    cardId, 
+                    origin, 
+                    parseUnlocked,
+                    needsSubmission: true // Mark that this should be submitted when parsed
+                });
+            }
+            
+            // Return null to indicate we're queuing it
+            return null;
         } catch (error) {
             console.error(`Enhanced stats fetch failed for card ${cardId}:`, error);
+            
+            // On API error, also queue for HTML parsing
+            if (typeof enqueueFetchRequest === 'function') {
+                enqueueFetchRequest({ 
+                    cardId, 
+                    origin, 
+                    parseUnlocked,
+                    needsSubmission: true
+                });
+            }
+            
             throw error;
         }
     }
@@ -259,6 +293,10 @@
     window.fetchBulkCardStatsViaApi = fetchBulkCardStatsViaApi;
     window.queueStatsForSubmission = queueStatsForSubmission;
     window.apiStatsConfig = API_STATS_CONFIG;
+    
+    // Also expose cache and queue functions for cross-module access
+    window.getCachedCardCounts = window.getCachedCardCounts || function() { return null; };
+    window.enqueueFetchRequest = window.enqueueFetchRequest || function() { console.warn('enqueueFetchRequest not available'); };
 
     // Listen for stats submission requests
     chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
