@@ -4,15 +4,7 @@
 
 // API Configuration
 const ASS_API_CONFIG = {
-    BASE_URL: (() => {
-        const hostname = typeof window !== 'undefined' ? window.location.hostname : 'unknown';
-        
-        // Support localhost for testing
-        if (hostname === 'localhost' || hostname === '127.0.0.1') {
-            return 'http://localhost:8000';
-        }
-        return 'https://ass-api.strawberrycat.dev';
-    })(),
+    BASE_URL: 'https://ass-api.strawberrycat.dev',
     ENDPOINTS: {
         // Auth endpoints
         LOGIN: '/api/auth/login',
@@ -44,11 +36,6 @@ const ASS_API_CONFIG = {
     CACHE_DURATION: 5 * 60 * 1000, // 5 minutes
     TOKEN_KEY: 'ass_api_token'
 };
-
-console.log('API Client - Configuration loaded:', {
-    BASE_URL: ASS_API_CONFIG.BASE_URL,
-    hostname: typeof window !== 'undefined' ? window.location.hostname : 'unknown'
-});
 
 // Prevent multiple declarations if script is loaded multiple times
 (function() {
@@ -398,4 +385,4 @@ console.log('API Client - Configuration loaded:', {
         window.ApiCache = ApiCache;
         window.ASS_API_CONFIG = ASS_API_CONFIG;
     }
-})(); 
+})();

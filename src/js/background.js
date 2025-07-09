@@ -1,7 +1,7 @@
 import { i18n } from './translation.js';
-import './api-client.js';
-import './api-stats-handler.js';
+// Backgrounds
 import './backgrounds/card_user_count.js';
+import './backgrounds/ass-api.js';
 
 // Default settings
 const DEFAULT_SETTINGS = {
@@ -163,5 +163,6 @@ chrome.alarms.onAlarm.addListener((alarm) => {
 
 // Optional: Add listener for settings changes if needed in future
 chrome.storage.onChanged.addListener((changes, namespace) => {
+    if (namespace != 'sync') return;
     console.log('Settings changed:', changes);
 });

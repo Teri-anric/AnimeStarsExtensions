@@ -310,58 +310,32 @@ async function updateCardDataFromPage(message, sender) {
     });
 }
 
-// Test API connection function
-async function testApiConnection(message, sender) {
-    try {
-        // Test if API client is available
-        if (typeof AssApiClient === 'undefined') {
-            throw new Error('API client not available');
-        }
-
-        return {
-            success: true,
-            message: 'API connection successful',
-            authenticated: await AssApiClient.isAuthenticated()
-        };
-
-    } catch (error) {
-        console.error('API connection test failed:', error);
-        return {
-            success: false,
-            error: error.message,
-            authenticated: false
-        };
-    }
-}
 
 const actionMap = {
     'fetch_card_data_queue': fetchCardDataQueue,
     'clear_card_data_queue': clearCardDataQueue,
     'fetch_cached_card_data': fetchCachedCardData,
     'update_card_data': updateCardDataFromPage,
-    'test_api_connection': testApiConnection,
 };
 
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
     const action = actionMap?.[message?.action];
 
-    if (action) {
-        // Check if action is async (returns a Promise)
-        const result = action(message, sender);
-        
-        if (result instanceof Promise) {
-            result.then(response => {
-                sendResponse(response);
-            }).catch(error => {
-                sendResponse({ success: false, error: error.message });
-            });
-            return true; // Will respond asynchronously
-        } else {
-            // For non-async actions, just call them
-            return false;
-        }
+    if (!action) {
+        return;
+    }
+    // Check if action is async (returns a Promise)
+    const result = action(message, sender);
+    
+    if (result instanceof Promise) {
+        result.then(response => {
+            sendResponse(response);
+        }).catch(error => {
+            sendResponse({ success: false, error: error.message });
+        });
+        return true; // Will respond asynchronously
     } else {
-        sendResponse({ success: false, error: 'Unknown action' });
+        // For non-async actions, just call them
         return false;
     }
 });
