@@ -1,8 +1,10 @@
 // -----------------------------------------------------------------------------
 // Card user count – queued fetching logic handled in the background service worker
 // -----------------------------------------------------------------------------
+import { AssApiClient } from '../api-client.js';
 
 const CARD_COUNT_CACHE_KEY_PREFIX = 'cardUserCountV2_';
+
 
 const CARD_COUNT_CONFIG = {
     REQUEST_DELAY: 2000,
@@ -17,6 +19,7 @@ chrome.storage.sync.get([
     'card-user-count-cache-enabled',
     'card-user-count-cache-max-lifetime',
     'card-user-count-parse-unlocked',
+    'api-stats-submission-enabled',
 ], (settings) => {
     if (typeof settings['card-user-count-request-delay'] === 'number') {
         CARD_COUNT_CONFIG.REQUEST_DELAY = settings['card-user-count-request-delay'] * 1000;
@@ -29,6 +32,9 @@ chrome.storage.sync.get([
     }
     if (typeof settings['card-user-count-parse-unlocked'] === 'boolean') {
         CARD_COUNT_CONFIG.PARSE_UNLOCKED = settings['card-user-count-parse-unlocked'];
+    }
+    if (typeof settings['api-stats-submission-enabled'] === 'boolean') {
+        CARD_COUNT_CONFIG.API_STATS_SUBMISSION_ENABLED = settings['api-stats-submission-enabled'];
     }
 });
 
@@ -47,6 +53,9 @@ chrome.storage.onChanged.addListener((changes, namespace) => {
     if (changes['card-user-count-parse-unlocked']?.newValue !== undefined) {
         CARD_COUNT_CONFIG.PARSE_UNLOCKED = changes['card-user-count-parse-unlocked'].newValue;
     }
+    if (changes['api-stats-submission-enabled']?.newValue !== undefined) {
+        CARD_COUNT_CONFIG.API_STATS_SUBMISSION_ENABLED = changes['api-stats-submission-enabled'].newValue;
+    }
 });
 
 // Helper function to send notifications to all content scripts
@@ -62,6 +71,24 @@ async function broadcastToAllTabs(message) {
     } catch (error) {
         console.log('Failed to broadcast message:', error);
     }
+}
+
+async function addStatToUploadQueue(data) {
+    if (!CARD_COUNT_CONFIG.API_STATS_SUBMISSION_ENABLED) return;
+    await AssApiClient.submitCardStats(data);
+}
+
+async function cardDataUpdatedMap(data, source = 'html_parse') {
+    if (source === 'html_parse') addStatToUploadQueue(data);
+    await broadcastToAllTabs({
+        action: 'card_data_updated',
+        data: data,
+        source: source,
+    });
+}
+
+async function cardDataUpdated(cardId, data, source = 'html_parse') {
+    await cardDataUpdatedMap( {[cardId]: data}, source);
 }
 
 async function parseHtmlCardCount(html) {
@@ -222,10 +249,7 @@ async function processNextFetch() {
     if (CARD_COUNT_CONFIG.CACHE_ENABLED && !item.needsSubmission) {
         const cached = await getCachedCardCounts(item.cardId);
         if (cached) {
-            await broadcastToAllTabs({
-                type: 'card_data_updated',
-                data: {[item.cardId]: cached}
-            });
+            await cardDataUpdated(item.cardId, cached, 'cached');
             setTimeout(processNextFetch, 0);
             return;
         }
@@ -233,15 +257,9 @@ async function processNextFetch() {
 
     try {
         const data = await getCardCounts(item.cardId, item.origin, item.parseUnlocked, item.needsSubmission);
-        await broadcastToAllTabs({
-            type: 'card_data_updated',
-            data: {[item.cardId]: data}
-        });
+        await cardDataUpdated(item.cardId, data);
     } catch (err) {
-        await broadcastToAllTabs({
-            type: 'card_data_updated',
-            data: {[item.cardId]: {error: err?.message || String(err)}},
-        });
+        await cardDataUpdated(item.cardId, {error: err?.message || String(err)});
     } finally {
         setTimeout(processNextFetch, CARD_COUNT_CONFIG.REQUEST_DELAY);
     }
@@ -283,10 +301,7 @@ async function fetchCachedCardData(message, sender) {
     
     try {
         const data = await getCachedCardsCounts(cardIds);
-        await broadcastToAllTabs({
-            type: 'card_data_updated',
-            data: data
-        });
+        await cardDataUpdatedMap(data, 'cached');
     } catch (error) {
         console.error('Error fetching cached card data:', error);
     }
@@ -303,11 +318,7 @@ async function updateCardDataFromPage(message, sender) {
 
     const mergedData = { ...existingData, ...dataToUpdate };
     setCachedCardCounts(cardId, mergedData);
-    
-    await broadcastToAllTabs({
-        type: 'card_data_updated',
-        data: {[cardId]: mergedData}
-    });
+    await cardDataUpdated(cardId, mergedData);
 }
 
 
@@ -317,7 +328,6 @@ const actionMap = {
     'fetch_cached_card_data': fetchCachedCardData,
     'update_card_data': updateCardDataFromPage,
 };
-
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
     const action = actionMap?.[message?.action];
 
@@ -339,3 +349,4 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
         return false;
     }
 });
+

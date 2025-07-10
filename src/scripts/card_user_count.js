@@ -114,18 +114,6 @@
     chrome.runtime.sendMessage(message);
   }
 
-  chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
-    if (message.type === 'card_data_updated') {
-      if (!message.data) {
-        console.error('Invalid card data updated message:', message);
-        return;
-      }
-      Object.entries(message.data).forEach(([cardId, data]) => {
-        updateCardElements(cardId, data);
-      });
-    }
-  });
-
   function requestFreshCardData(cardId) {
     showLoadingState(cardId);
     sendMessageBG({
@@ -377,6 +365,7 @@
         console.error('Error processing new card element:', error);
       }
     });
+    requestCachedCardData(newCardElements);
   });
 
   // Start/stop automatic processing based on config
@@ -440,6 +429,19 @@
 
     if (changes['card-user-count'] && changes['card-user-count'].newValue) {
       processAllCards();
+    }
+  });
+
+
+  chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
+    if (message.action === 'card_data_updated') {
+      if (!message.data) {
+        console.error('Invalid card data updated message:', message);
+        return;
+      }
+      Object.entries(message.data).forEach(([cardId, data]) => {
+        updateCardElements(cardId, data);
+      });
     }
   });
 })();

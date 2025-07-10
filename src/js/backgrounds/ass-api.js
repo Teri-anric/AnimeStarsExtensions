@@ -72,6 +72,7 @@ const actionMap = {
     'remove_token': removeToken,
 };
 
+
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
     const action = actionMap?.[message?.action];
 
@@ -92,5 +93,4 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
         // For non-async actions, just call them
         return false;
     }
-
 });
