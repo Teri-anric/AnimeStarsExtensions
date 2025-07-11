@@ -11,6 +11,7 @@ const CARD_COUNT_CONFIG = {
     CACHE_ENABLED: true,
     CACHE_MAX_LIFETIME: 7 * 24 * 60 * 60 * 1000, // 7 days
     PARSE_UNLOCKED: false,                    // updated from settings if needed
+    API_STATS_SUBMISSION_ENABLED: true,
 };
 
 // Initialise config from persisted settings
@@ -151,6 +152,7 @@ async function getCachedCardsCounts(cardIds) {
 function setCachedCardCounts(cardId, data) {
     const record = { timestamp: Date.now(), data, cardId};
     chrome.storage.local.set({ [`${CARD_COUNT_CACHE_KEY_PREFIX}${cardId}`]: record });
+    return record;
 }
 
 // Performs the actual network request and parsing
@@ -168,43 +170,18 @@ async function fetchCardCounts(origin, cardId, unlocked = '0', retry = 0) {
     return counts;
 }
 
-// Simplified fetch function with basic cache strategy
-async function getCardCounts(cardId, origin, parseUnlockedFlag, needsSubmission = false) {
+async function getCardCounts(cardId, origin, parseUnlockedFlag) {
     const parseUnlocked = parseUnlockedFlag ?? CARD_COUNT_CONFIG.PARSE_UNLOCKED;
 
-    // Try cache first (simple caching) - only if not called from queue
-    if (CARD_COUNT_CONFIG.CACHE_ENABLED && !needsSubmission) {
+    if (CARD_COUNT_CONFIG.CACHE_ENABLED) {
         const cached = await getCachedCardCounts(cardId);
         if (cached) {
-            console.log(`Cache hit for card ${cardId}`);
             return cached;
         }
     }
 
-    let counts;
-    
     try {
-        // Try API first if available and not forced to use HTML
-        if (typeof getCardStatsEnhanced === 'function' && !needsSubmission) {
-            console.log(`Trying API stats for card ${cardId}`);
-            counts = await getCardStatsEnhanced(cardId, origin, parseUnlocked);
-            
-            if (counts) {
-                console.log(`Got stats via API for card ${cardId}`);
-                setCachedCardCounts(cardId, { ...counts, source: 'api' });
-                return { ...counts, source: 'api' };
-            } else {
-                console.log(`API returned empty for card ${cardId}, continuing to HTML parsing`);
-            }
-        }
-    } catch (error) {
-        console.warn(`API stats failed for card ${cardId}, falling back to HTML:`, error);
-    }
-
-    // Use HTML parsing (either as fallback or when forced)
-    try {
-        console.log(`Using HTML parsing for card ${cardId}`);
-        counts = await fetchCardCounts(origin, cardId, '0');
+        const counts = await fetchCardCounts(origin, cardId, '0');
 
         if (parseUnlocked) {
             const unlockedCounts = await fetchCardCounts(origin, cardId, '1');
@@ -213,15 +190,7 @@ async function getCardCounts(cardId, origin, parseUnlockedFlag, needsSubmission 
             counts.unlockOwner = unlockedCounts.owner;
         }
 
-        counts.source = 'html';
         setCachedCardCounts(cardId, counts);
-        
-        // Submit to server if requested
-        if (needsSubmission && typeof queueStatsForSubmission === 'function') {
-            console.log(`Queuing stats for submission: card ${cardId}`);
-            queueStatsForSubmission(cardId, counts, 'html_parse');
-        }
-        
         return counts;
     } catch (error) {
         console.error(`HTML parsing failed for card ${cardId}:`, error);
@@ -245,8 +214,7 @@ async function processNextFetch() {
     queueProcessing = true;
     const item = fetchQueue.pop();
 
-    // Check cache only if this is not a forced submission request
-    if (CARD_COUNT_CONFIG.CACHE_ENABLED && !item.needsSubmission) {
+    if (CARD_COUNT_CONFIG.CACHE_ENABLED) {
         const cached = await getCachedCardCounts(item.cardId);
         if (cached) {
             await cardDataUpdated(item.cardId, cached, 'cached');
@@ -256,7 +224,7 @@ async function processNextFetch() {
     }
 
     try {
-        const data = await getCardCounts(item.cardId, item.origin, item.parseUnlocked, item.needsSubmission);
+        const data = await getCardCounts(item.cardId, item.origin, item.parseUnlocked);
         await cardDataUpdated(item.cardId, data);
     } catch (err) {
         await cardDataUpdated(item.cardId, {error: err?.message || String(err)});

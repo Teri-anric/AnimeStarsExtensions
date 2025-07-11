@@ -136,9 +136,7 @@
         },
         {
             "matches": [
-                "https://ass.strawberrycat.dev/*",
-                "http://localhost/*",
-                "https://localhost/*"
+                "https://ass.strawberrycat.dev/*"
             ],
             "js": [
                 "./scripts/token_bridge.js"
@@ -160,11 +158,7 @@
     },
     "options_page": "pages/settings.html",
     "background": {
-        "page": "pages/background.html"
-    },
-    "browser_specific_settings": {
-        "gecko": {
-            "id": "animestars-extension@teri-anric.github.io"
-        }
+        "service_worker": "./js/background.js",
+        "type": "module"
     }
 }

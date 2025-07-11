@@ -66,10 +66,22 @@ async function removeToken(message, sender) {
     }
 }
 
+async function findCardIdByImageUrl(message, sender) {
+    const cards = await AssApiClient.findCardByImageUrls(message.imageUrls);
+    return {
+        success: true,
+        cardImageMap: cards.reduce((acc, card) => {
+            acc[card.image] = card.card_id;
+            return acc;
+        }, {})
+    };
+}
+
 const actionMap = {
     'test_api_connection': testApiConnection,
     'store_token': storeToken,
     'remove_token': removeToken,
+    'find_card_id_by_image_url': findCardIdByImageUrl,
 };
 
 
@@ -88,9 +100,8 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
         }).catch(error => {
             sendResponse({ success: false, error: error.message });
         });
-        return true; // Will respond asynchronously
+        return true;
     } else {
-        // For non-async actions, just call them
-        return false;
+        return result;
     }
 });

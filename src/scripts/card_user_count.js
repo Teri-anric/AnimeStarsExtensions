@@ -4,9 +4,12 @@
     '.anime-cards__item',
     'a.trade__main-item',
     'a.history__body-item',
-    // '.trade__inventory-item' - disabled for not card id only owner id
-    // '.remelt__inventory-item' - disabled for not card id only owner id
+    '.trade__inventory-item',
+    '.remelt__inventory-item',
+    '.remelt__item',
   ].join(',');
+
+  const notIdsSelectors = ['.trade__inventory-item', '.remelt__inventory-item', ".remelt__item"].join(','); // alternative id ( is dataset.cardId)
 
   const CONFIG = {
     ENABLED: false,
@@ -106,17 +109,17 @@
     }
   };
 
-  // Card map to store all cards on the page: cardId -> [cardElements]
   const cardMap = new Map();
-  
 
-  function sendMessageBG(message) {
-    chrome.runtime.sendMessage(message);
+  /* background worker */
+
+  async function requestBG(message) {
+    return await chrome.runtime.sendMessage(message);
   }
 
   function requestFreshCardData(cardId) {
     showLoadingState(cardId);
-    sendMessageBG({
+    chrome.runtime.sendMessage({
       action: "fetch_card_data_queue",
       cardId,
       origin: window.location.origin,
@@ -127,22 +130,114 @@
   function requestCachedCardData(cardIds) {
     if (cardIds.length === 0) return;
 
-    sendMessageBG({
+    chrome.runtime.sendMessage({
       action: "fetch_cached_card_data",
       cardIds
     });
   }
 
-  function extractCardId(elm) {
+  async function requestFindCardIdByImageUrls(imageUrls) {
+    return await requestBG({
+      action: "find_card_id_by_image_url",
+      imageUrls
+    });
+  }
+
+  /* utils functions */
+
+  function getCardsFromMap(cardId) {
+    cardId = parseInt(cardId);
+    if (!cardId || !cardMap.has(cardId)) return [];
+    return cardMap.get(cardId);
+  }
+
+  function addCardToMap(cardId, elm) {
+    if (!cardId || !elm) return;
+    cardId = parseInt(cardId);
+    if (!cardMap.has(cardId)) cardMap.set(cardId, []);
+    cardMap.get(cardId).push(elm);
+  }
+
+  function removeCardFromMap(cardId, elm) {
+    cardId = parseInt(cardId);
+    if (!cardId || !cardMap.has(cardId)) return;
+    const cardElements = cardMap.get(cardId);
+    if (!cardElements) return;
+    const index = cardElements.findIndex(elm => elm == cardElm);
+    if (index == -1) return;
+    cardElements.splice(index, 1);
+    if (cardElements.length != 0) return;
+    cardMap.delete(cardId);
+  }
+
+  function _extractCardId(elm) {
     if (!elm) return null;
-    if (elm.dataset?.id) return elm.dataset.id;
+    if (elm.dataset?.id && !elm.matches(notIdsSelectors)) return elm.dataset.id;
+    if (elm.dataset?.cardId && elm.matches(notIdsSelectors)) return elm.dataset?.cardId;
+    if (!elm.getAttribute('href')) return null;
     try {
       const url = new URL(elm.getAttribute('href'), window.location.origin);
       return url.searchParams.get('id') || null;
     } catch (error) {
       return null;
     }
+  }
+
+  async function _extractCardIdsFromImage(elms) {
+    if (elms.length == 0) return new Map();
+    const imageElmsEntries = elms.map((elm) => [elm.querySelector('img')?.src, elm])
+      .filter(([url, elm]) => url)
+      .map(([url, elm]) => [new URL(url, window.location.origin).pathname, elm])
+    const cardIdsMap = new Map(
+      imageElmsEntries
+        .filter(([url, elm]) => elm.dataset?.lastParsedUrl == url)
+        .map(([url, elm]) => [elm.dataset.lastParsedCardId, elm])
+    );
+
+    if (imageElmsEntries.length - cardIdsMap.size <= 0) return cardIdsMap;
+    try {
+      const imageElmsMap = new Map(imageElmsEntries.filter(([url, elm]) => elm.dataset?.lastParsedUrl != url));
+      const response = await requestFindCardIdByImageUrls(Array.from(imageElmsMap.keys()));
+      if (!response.success) return cardIdsMap;
+      Object.entries(response.cardImageMap).forEach(([imageUrl, cardId]) => {
+        const elm = imageElmsMap.get(imageUrl);
+        if (!elm) return;
+        cardIdsMap.set(cardId, elm);
+        elm.setAttribute('data-last-parsed-url', imageUrl);
+        elm.setAttribute('data-last-parsed-card-id', cardId);
+      });
+    } catch (error) {
+      console.error('Error extracting card ids from image urls:', error);
+      return cardIdsMap;
+    }
+    return cardIdsMap;
+  }
+
+  async function extractCardIds(elms) {
+    if (elms.length == 0) return new Map();
+    const result = new Map();
+    const cardsWithoutIds = []
+    const addCard = (elm, cardId) => {
+      const lastCardId = elm.dataset.lastCardId;
+      if (lastCardId && lastCardId.toString() == cardId.toString()) return;
+      result.set(cardId, elm);
+    }
+    elms.forEach((elm) => {
+      const cardId = _extractCardId(elm);
+      if (!cardId) {
+        cardsWithoutIds.push(elm);
+        return;
+      }
+      addCard(elm, cardId);
+    });
+    const cardIdsMap = await _extractCardIdsFromImage(cardsWithoutIds);
+    cardIdsMap.forEach((elm, cardId) => {
+      addCard(elm, cardId);
+    });
+    return result;
   };
+
+  /* card data display */
 
   function formatTemplateItems(templateItems, values) {
     if (!Array.isArray(templateItems)) return "";
@@ -235,9 +330,18 @@
     }
   }
 
+  function updateAllCardStyles() {
+    const cards = document.querySelectorAll(cardContainerSelector);
+    cards.forEach(card => {
+      const countElm = card.querySelector('.card-user-count');
+      if (countElm) {
+        applyCardUserCountStyles(countElm);
+      }
+    });
+  }
 
   function updateCardElements(cardId, cardData) {
-    const elements = cardMap.get(cardId);
+    const elements = getCardsFromMap(cardId);
     if (!elements) return;
 
     elements.forEach(cardElm => {
@@ -254,26 +358,18 @@
   }
 
   function showLoadingState(cardId) {
-    updateCardElements(cardId, {text: '...'});
+    updateCardElements(cardId, { text: '...' });
   }
+
+  /* card processing */
 
   async function collectAllCards() {
     const cards = document.querySelectorAll(cardContainerSelector);
     cardMap.clear();
-    
-    for (const cardElm of cards) {
-      try {
-        const cardId = await extractCardId(cardElm);
-        if (!cardId) continue;
-      
-      if (!cardMap.has(cardId)) {
-        cardMap.set(cardId, []);
-      }
-      cardMap.get(cardId).push(cardElm);
-      } catch (error) {
-        console.error('Error collecting card:', error);
-      }
-    }
+    const cardIdsMap = await extractCardIds(Array.from(cards));
+    cardIdsMap.forEach((cardElm, cardId) => {
+      addCardToMap(cardId, cardElm);
+    });
   }
 
   function requestCacheForAllCards() {
@@ -285,115 +381,108 @@
 
   async function processAllCards() {
     if (!CONFIG.ENABLED) return;
-    
+
     await collectAllCards();
     requestCacheForAllCards();
   }
 
-  function updateAllCardStyles() {
-    const cards = document.querySelectorAll(cardContainerSelector);
-    cards.forEach(card => {
-      const countElm = card.querySelector('.card-user-count');
-      if (countElm) {
-        applyCardUserCountStyles(countElm);
-      }
-    });
-  }
+  /* card event handling */
 
-  // Observer for new cards added to the page
   const cardObserver = new MutationObserver((mutations) => {
     const removedCardElements = [];
     const newCardElements = [];
 
+    /* collect add/remove card elements */
     mutations.forEach((mutation) => {
       if (mutation.type == "attributes") {
         const cardElm = mutation.target;
         if (!cardElm.matches || !cardElm.matches(cardContainerSelector)) return;
         newCardElements.push(cardElm);
       }
-      
+
       mutation.addedNodes.forEach((node) => {
         if (node.nodeType !== Node.ELEMENT_NODE) return;
-        
+
         if (node.matches && node.matches(cardContainerSelector)) {
           newCardElements.push(node);
         }
-        
+
         const nestedCards = node.querySelectorAll(cardContainerSelector);
         nestedCards.forEach(cardElm => {
           newCardElements.push(cardElm);
         });
+
+        const parentCard = node.closest(cardContainerSelector);
+        if (parentCard) {
+          newCardElements.push(parentCard);
+        }
       });
 
       mutation.removedNodes.forEach((node) => {
         if (node.nodeType !== Node.ELEMENT_NODE) return;
-        
+
         if (node.matches && node.matches(cardContainerSelector)) {
           removedCardElements.push(node);
         }
-        
+
         const nestedCards = node.querySelectorAll(cardContainerSelector);
         nestedCards.forEach(cardElm => {
           removedCardElements.push(cardElm);
         });
+
+        const parentCard = node.closest(cardContainerSelector);
+        if (parentCard) {
+          removedCardElements.push(parentCard);
+        }
       });
     });
 
-    removedCardElements.forEach(cardElm => {
-      const cardId = cardElm.dataset.lastCardId || extractCardId(cardElm);
-      if (!cardId || !cardMap.has(cardId)) return;
+    /* add/remove card elements from map */
+    removedCardElements
+      .filter((elm) => elm.dataset.lastCardId)
+      .forEach((elm) => removeCardFromMap(elm.dataset.lastCardId, elm));
+    extractCardIds(removedCardElements.filter((elm) => !elm.dataset.lastCardId))
+      .then((cardIdsMap) => {
+        cardIdsMap.forEach((cardElm, cardId) => {
+          removeCardFromMap(cardId, cardElm);
+        });
+      });
 
-      const cardElements = cardMap.get(cardId);
-      if (!cardElements) return;
-
-      const index = cardElements.findIndex(elm => elm == cardElm);
-      if (index == -1) return;
-
-      cardElements.splice(index, 1);
-      if (cardElements.length != 0) return;
-      cardMap.delete(cardId);
+    extractCardIds(newCardElements).then((cardIdsMap) => {
+      cardIdsMap.forEach((cardElm, cardId) => {
+        addCardToMap(cardId, cardElm);
+      });
+      requestCachedCardData(Array.from(cardIdsMap.keys()));
     });
-
-    // Process new card elements asynchronously
-    newCardElements.forEach(async (cardElm) => {
-      try {
-        const cardId = await extractCardId(cardElm);
-      if (!cardId) return;
-      if (!cardMap.has(cardId)) cardMap.set(cardId, []);
-      cardMap.get(cardId).push(cardElm);
-      } catch (error) {
-        console.error('Error processing new card element:', error);
-      }
-    });
-    requestCachedCardData(newCardElements);
   });
 
-  // Start/stop automatic processing based on config
   async function startDetectingCards() {
     await processAllCards();
-    cardObserver.observe(document.body, { 
-      childList: true, 
-      subtree: true, 
-      attributeFilter: ['data-id', 'href'], 
-      attributes: true 
+    cardObserver.observe(document.body, {
+      childList: true,
+      subtree: true,
+      attributeFilter: ['data-id', 'href'],
+      attributes: true
     });
   }
 
   async function eventHandler(e) {
     if (!CONFIG.checkEvent(e)) return;
-    
+
     const cardElement = e.target.closest(cardContainerSelector);
     if (!cardElement) return;
-    
-    const cardId = await extractCardId(cardElement);
-    const lastCardId = cardElement.dataset.lastCardId;
-    if (!cardId || lastCardId == cardId) return;
+
+    const cardIdsMap = await extractCardIds([cardElement]);
+    if (cardIdsMap.size == 0) return;
+    const cardId = Array.from(cardIdsMap.keys())[0];
 
     requestFreshCardData(cardId);
   }
 
   document.addEventListener("mouseover", eventHandler);
   document.addEventListener("mousedown", eventHandler);
+
+  /* settings */
 
   chrome.storage.sync.get(Object.keys(CONFIG.configMap), async (settings) => {
     CONFIG.initFromSettings(settings);
@@ -431,7 +520,6 @@
       processAllCards();
     }
   });
-
 
   chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
     if (message.action === 'card_data_updated') {

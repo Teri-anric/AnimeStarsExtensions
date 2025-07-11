@@ -277,33 +277,24 @@ class AssApiClient {
     }
 
     // Method to find card by image URL
-    static async findCardByImageUrl(imageUrl) {
-        const cacheKey = `image_lookup_${btoa(imageUrl)}`;
-
-        // Try cache first
-        const cached = await ApiCache.get(cacheKey);
-        if (cached) {
-            return cached;
-        }
-
+    static async findCardByImageUrls(imageUrls) {
         try {
             // Search for card by image path
             const searchQuery = {
                 filter: {
-                    image: { contains: imageUrl }
+                    or: imageUrls.map(imageUrl => ({ image: { eq: imageUrl } }))
                 },
                 page: 1,
-                per_page: 1
+                per_page: imageUrls.length
             };
 
             const result = await this.searchCards(searchQuery);
 
             if (result.items && result.items.length > 0) {
-                await ApiCache.set(cacheKey, result.items[0]);
-                return result.items[0];
+                return result.items;
             }
 
-            return null;
+            return [];
         } catch (error) {
             console.error('Find card by image URL error:', error);
             throw error;
@@ -325,24 +316,16 @@ class AssApiClient {
                 ].filter(stat => typeof stat.count === 'number'))
             });
             if (statsPayload.stats.length === 0) {
-                return {
-                    success: true,
-                    message: 'No stats to submit'
-                };
+                return false;
             }
 
             // Send stats to the API
-            const result = await this.makeRequest(ASS_API_CONFIG.ENDPOINTS.CARD_STATS_ADD, {
+            await this.makeRequest(ASS_API_CONFIG.ENDPOINTS.CARD_STATS_ADD, {
                 method: 'POST',
                 body: JSON.stringify(statsPayload)
             });
 
-            console.log(`Stats submitted successfully for card ${cardId}:`, result);
-            return {
-                success: true,
-                message: `Stats submitted to API for card ${cardId}`,
-                result
-            };
+            return true;
         } catch (error) {
             console.error('Submit card stats error:', error);
             throw error;
