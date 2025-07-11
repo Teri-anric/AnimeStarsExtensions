@@ -1,7 +1,12 @@
-# AnimeStar Extension v0.0.17
+# AnimeStar Extension v0.0.18
 
 ## Overview
-Fix chrome card user count loading and fixed some bugs.
+Bug fixes and improvements to boost functionality and card user count handling.
+
+## Changes
+- Introduce BoostLimit constant for improved boost limit checks in boost_club_auto.js
+- Refactor card user count script to improve node handling
+- Added support for additional AnimeStar domains
 
 ## Important Notes
 ⚠️ Firefox users: Ensure you download the `animestars_extension-firefox.xpi` file for proper installation.
