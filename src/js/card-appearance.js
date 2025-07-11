@@ -172,7 +172,7 @@ function setupEventListeners() {
  * Initialize the card appearance page
  */
 function initializeCardAppearancePage() {
-    console.log('Initializing card appearance page'); // Debug
+    // Card appearance page initialization
     
     // Load settings
     loadSettings();
@@ -197,21 +197,21 @@ function initializeCardAppearancePage() {
  * Update the card preview with current settings
  */
 function updateCardPreview() {
-    console.log('updateCardPreview called'); // Debug
+    // Update card preview
     
     const previewCard = document.getElementById('preview-card');
     if (!previewCard) {
-        console.log('Preview card not found'); // Debug
+        // Preview card not found
         return;
     }
 
-    console.log('Preview card found:', previewCard); // Debug
+    // Preview card found
 
     // Remove existing count element
     const existingCount = previewCard.querySelector('.card-user-count');
     if (existingCount) {
         existingCount.remove();
-        console.log('Removed existing count'); // Debug
+        // Removed existing count
     }
 
     // For preview, always show the statistics (ignore enabled checkbox)
@@ -228,13 +228,13 @@ function updateCardPreview() {
     const opacity = document.getElementById('card-user-count-opacity')?.value || '80';
     const hoverAction = document.getElementById('card-user-count-hover-action')?.value || 'none';
 
-    console.log('Settings:', { position, style, size, backgroundColor, textColor, opacity, hoverAction }); // Debug
+    // Apply settings
 
     // Get template items (either from template editor or from storage)
     let templateItems = [];
     if (templateEditor) {
         templateItems = templateEditor.getItems();
-        console.log('Got template items from editor:', templateItems); // Debug
+        // Got template items from editor
     } else {
         // Fallback to default template
         templateItems = [
@@ -244,7 +244,7 @@ function updateCardPreview() {
             { type: 'text', text: ' | ' },
             { type: 'variable', variable: 'trade' }
         ];
-        console.log('Using default template items:', templateItems); // Debug
+        // Using default template items
     }
 
     // Mock data for preview
@@ -259,7 +259,7 @@ function updateCardPreview() {
 
     // Format template content
     const content = formatTemplateItems(templateItems, mockData);
-    console.log('Formatted content:', content); // Debug
+    // Format content
     
     // Create count element
     const countElement = document.createElement('div');
@@ -325,28 +325,26 @@ function updateCardPreview() {
     // Set content
     countElement.innerHTML = content;
     
-    console.log('Created count element:', countElement); // Debug
-    console.log('Element classes:', countElement.className); // Debug
-    console.log('Element style:', countElement.style.cssText); // Debug
+    // Created count element
     
     // Add to preview card
     if (position === 'under') {
         previewCard.appendChild(countElement);
-        console.log('Added count under card'); // Debug
+        // Added count under card
     } else {
         const cardItem = previewCard.querySelector('.anime-cards__item');
         if (cardItem) {
             cardItem.appendChild(countElement);
-            console.log('Added count to card item'); // Debug
+            // Added count to card item
         } else {
-            console.log('Card item not found'); // Debug
+            // Card item not found
         }
     }
     
     // Double check if element was added
     setTimeout(() => {
         const addedElement = previewCard.querySelector('.card-user-count');
-        console.log('Element after adding:', addedElement); // Debug
+        // Element added to DOM
     }, 100);
 }
 

@@ -31,7 +31,9 @@
         "https://asstars1.asstars.club/*",
         "https://asstars1.astars.club/*",
         "https://asstars2.astars.club/*",
-        "https://raw.githubusercontent.com/Teri-anric/AnimeStarsExtensions/*"
+        "https://raw.githubusercontent.com/Teri-anric/AnimeStarsExtensions/*",
+        "https://ass-api.strawberrycat.dev/*",
+        "https://ass.strawberrycat.dev/*"
     ],
     "content_scripts": [
         {
@@ -138,6 +140,14 @@
             ],
             "css": [
                 "./styles/auto_seen_card.css"
+            ]
+        },
+        {
+            "matches": [
+                "*://*/*"
+            ],
+            "js": [
+                "./scripts/page_worker.js"
             ]
         },
         {
@@ -267,7 +277,6 @@
                 "https://asstars2.astars.club/*"
             ],
             "js": [
-                "./scripts/page_worker.js",
                 "./scripts/card_user_count.js"
             ],
             "css": [
@@ -303,6 +312,15 @@
             ],
             "js": [
                 "./scripts/cards_users_parser.js"
+            ],
+            "run_at": "document_end"
+        },
+        {
+            "matches": [
+                "https://ass.strawberrycat.dev/*"
+            ],
+            "js": [
+                "./scripts/token_bridge.js"
             ],
             "run_at": "document_end"
         }
