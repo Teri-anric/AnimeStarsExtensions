@@ -109,8 +109,6 @@
     }
   };
 
-  const cardMap = new Map();
-
   /* background worker */
 
   async function requestBG(message) {
@@ -145,29 +143,15 @@
 
   /* utils functions */
 
-  function getCardsFromMap(cardId) {
+  function getCardsByCardId(cardId) {
     cardId = parseInt(cardId);
-    if (!cardId || !cardMap.has(cardId)) return [];
-    return cardMap.get(cardId);
+    if (!cardId) return [];
+    return Array.from(document.querySelectorAll(`[data-index-card-id="${cardId}"]`));
   }
 
-  function addCardToMap(cardId, elm) {
-    if (!cardId || !elm) return;
-    cardId = parseInt(cardId);
-    if (!cardMap.has(cardId)) cardMap.set(cardId, []);
-    cardMap.get(cardId).push(elm);
-  }
-
-  function removeCardFromMap(cardId, elm) {
-    cardId = parseInt(cardId);
-    if (!cardId || !cardMap.has(cardId)) return;
-    const cardElements = cardMap.get(cardId);
-    if (!cardElements) return;
-    const index = cardElements.findIndex(elm => elm == cardElm);
-    if (index == -1) return;
-    cardElements.splice(index, 1);
-    if (cardElements.length != 0) return;
-    cardMap.delete(cardId);
+  function setCardIdIndex(elm, cardId) {
+    if (!elm || !cardId) return;
+    elm.setAttribute('data-index-card-id', cardId);
   }
 
   function _extractCardId(elm) {
@@ -214,13 +198,14 @@
   }
 
   async function extractCardIds(elms) {
-    if (elms.length == 0) return new Map();
-    const result = new Map();
+    const cardIds = new Set();
+    if (elms.length == 0) return [];
     const cardsWithoutIds = []
     const addCard = (elm, cardId) => {
       const lastCardId = elm.dataset.lastCardId;
       if (lastCardId && lastCardId.toString() == cardId.toString()) return;
-      result.set(cardId, elm);
+      cardIds.add(cardId);
+      setCardIdIndex(elm, cardId);
     }
     elms.forEach((elm) => {
       const cardId = _extractCardId(elm);
@@ -234,8 +219,8 @@
     cardIdsMap.forEach((elm, cardId) => {
       addCard(elm, cardId);
     });
-    return result;
-  };
+    return Array.from(cardIds);
+  }
 
   /* card data display */
 
@@ -341,8 +326,8 @@
   }
 
   function updateCardElements(cardId, cardData) {
-    const elements = getCardsFromMap(cardId);
-    if (!elements) return;
+    const elements = getCardsByCardId(cardId);
+    if (elements.length === 0) return;
 
     elements.forEach(cardElm => {
       cardElm.setAttribute('data-last-card-id', cardId);
@@ -365,34 +350,23 @@
 
   async function collectAllCards() {
     const cards = document.querySelectorAll(cardContainerSelector);
-    cardMap.clear();
-    const cardIdsMap = await extractCardIds(Array.from(cards));
-    cardIdsMap.forEach((cardElm, cardId) => {
-      addCardToMap(cardId, cardElm);
-    });
-  }
-
-  function requestCacheForAllCards() {
-    const cardIds = Array.from(cardMap.keys());
-    if (cardIds.length === 0) return;
-
-    requestCachedCardData(cardIds);
+    return await extractCardIds(Array.from(cards));
   }
 
   async function processAllCards() {
     if (!CONFIG.ENABLED) return;
 
-    await collectAllCards();
-    requestCacheForAllCards();
+    const cardIds = await collectAllCards();
+    if (cardIds.length == 0) return;
+    requestCachedCardData(cardIds);
   }
 
   /* card event handling */
 
   const cardObserver = new MutationObserver((mutations) => {
-    const removedCardElements = [];
     const newCardElements = [];
 
-    /* collect add/remove card elements */
+    /* collect new card elements */
     mutations.forEach((mutation) => {
       if (mutation.type == "attributes") {
         const cardElm = mutation.target;
@@ -402,58 +376,22 @@
 
       mutation.addedNodes.forEach((node) => {
         if (node.nodeType !== Node.ELEMENT_NODE) return;
-
-        if (node.matches && node.matches(cardContainerSelector)) {
-          newCardElements.push(node);
+        
+        const parentCard = node.closest(cardContainerSelector);
+        if (parentCard) {
+          newCardElements.push(parentCard);
         }
 
         const nestedCards = node.querySelectorAll(cardContainerSelector);
         nestedCards.forEach(cardElm => {
           newCardElements.push(cardElm);
         });
-
-        const parentCard = node.closest(cardContainerSelector);
-        if (parentCard) {
-          newCardElements.push(parentCard);
-        }
-      });
-
-      mutation.removedNodes.forEach((node) => {
-        if (node.nodeType !== Node.ELEMENT_NODE) return;
-
-        if (node.matches && node.matches(cardContainerSelector)) {
-          removedCardElements.push(node);
-        }
-
-        const nestedCards = node.querySelectorAll(cardContainerSelector);
-        nestedCards.forEach(cardElm => {
-          removedCardElements.push(cardElm);
-        });
-
-        const parentCard = node.closest(cardContainerSelector);
-        if (parentCard) {
-          removedCardElements.push(parentCard);
-        }
       });
     });
 
-    /* add/remove card elements from map */
-    removedCardElements
-      .filter((elm) => elm.dataset.lastCardId)
-      .forEach((elm) => removeCardFromMap(elm.dataset.lastCardId, elm));
-    extractCardIds(removedCardElements.filter((elm) => !elm.dataset.lastCardId))
-      .then((cardIdsMap) => {
-        cardIdsMap.forEach((cardElm, cardId) => {
-          removeCardFromMap(cardId, cardElm);
-        });
-      });
-
-    extractCardIds(newCardElements).then((cardIdsMap) => {
-      cardIdsMap.forEach((cardElm, cardId) => {
-        addCardToMap(cardId, cardElm);
-      });
-      requestCachedCardData(Array.from(cardIdsMap.keys()));
-    });
+    /* process new card elements */
+    if (newCardElements.length == 0) return;
+    extractCardIds(newCardElements).then(cardIds => requestCachedCardData(cardIds));
   });
 
   async function startDetectingCards() {
@@ -472,11 +410,9 @@
     const cardElement = e.target.closest(cardContainerSelector);
     if (!cardElement) return;
 
-    const cardIdsMap = await extractCardIds([cardElement]);
-    if (cardIdsMap.size == 0) return;
-    const cardId = Array.from(cardIdsMap.keys())[0];
-
-    requestFreshCardData(cardId);
+    const cardIds = await extractCardIds([cardElement]);
+    if (cardIds.length == 0) return;
+    requestFreshCardData(cardIds[0]);
   }
 
   document.addEventListener("mouseover", eventHandler);
