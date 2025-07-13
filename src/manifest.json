@@ -141,7 +141,32 @@
         },
         {
             "matches": [
-                "*://*/*"
+                "https://animestars.org/*",
+                "https://astars.club/*",
+                "https://asstars1.astars.club/*",
+                "https://as1.astars.club/*",
+                "https://asstars.tv/*",
+                "https://as1.asstars.tv/*",
+                "https://as2.asstars.tv/*",
+                "https://asstars.onl/*",
+                "https://asstars.club/*",
+                "https://insights.asstars.club/*",
+                "https://a1.asstars.club/*",
+                "https://as2.astars.club/*",
+                "https://ass.astars.club/*",
+                "https://ass.asstars.club/*",
+                "https://ass1.asstars.club/*",
+                "https://ass2.asstars.club/*",
+                "https://ass3.asstars.club/*",
+                "https://astars.asstars.club/*",
+                "https://astars1.asstars.club/*",
+                "https://asstars.asstars.club/*",
+                "https://asstars1.asstars.club/*",
+                "https://asstars1.astars.club/*",
+                "https://asstars2.astars.club/*",
+                "https://raw.githubusercontent.com/Teri-anric/AnimeStarsExtensions/*",
+                "https://ass-api.strawberrycat.dev/*",
+                "https://ass.strawberrycat.dev/*"
             ],
             "js": [
                 "./scripts/page_worker.js"

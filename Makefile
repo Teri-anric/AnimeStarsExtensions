@@ -8,9 +8,7 @@ build-firefox:
 	@mkdir -p dist
 	@echo "Copying files..."
 	@echo "Merging manifest.json..."
-	@python3 scripts/merge-json.py \
-		src/manifest/manifest.base.json src/manifest/manifest.firefox.json \
-		-o src/manifest.json
+	@python3 scripts/build-manifest.py firefox src
 	@cp -r src/* dist/
 	@echo "Removing manifest directory..."
 	@rm -rf dist/manifest
@@ -27,9 +25,7 @@ build-chrome:
 	@mkdir -p build
 	@mkdir -p dist
 	@echo "Merging manifest.json..."
-	@python3 scripts/merge-json.py \
-		src/manifest/manifest.base.json src/manifest/manifest.chrome.json \
-		-o src/manifest.json
+	@python3 scripts/build-manifest.py chrome src
 	@echo "Copying files..."
 	@cp -r src/* dist/
 	@echo "Removing manifest directory..."
