@@ -283,10 +283,13 @@
             if (changes['cards-search-integration'].newValue) {
                 createSearchElements();
             } else {
-                const searchForm = document.querySelector('.card-filter-form__controls');
-                if (searchForm) searchForm.remove();
                 const searchTabButton = document.querySelector('.tabs__item.tabs__search-toggle');
                 if (searchTabButton) searchTabButton.remove();
+                const searchForm = document.querySelector('.card-filter-form__controls');
+                if (searchForm) {
+                    searchForm.remove();
+                    if (searchForm.style.display === 'block') window.location.reload();
+                }
             }
         }
     });

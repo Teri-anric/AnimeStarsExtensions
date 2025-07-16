@@ -4,9 +4,12 @@
         AUTO_WATCHLIST_FIX: false,
         AUTO_TAKE_HEAVENLY_STONE: false,
     }
-    const USERNAME = document.querySelector(".lgn__name > span").textContent.trim();
+    const USERNAME_ELEMENT = document.querySelector(".lgn__name > span");
+    const USERNAME = USERNAME_ELEMENT ? USERNAME_ELEMENT.textContent.trim() : null;
 
     function createMyCardsButton() {
+        if (!USERNAME) return;
+
         const buttonLink = document.createElement('a');
         buttonLink.href = `https://${window.location.hostname}/user/cards/?name=${USERNAME}`;
         buttonLink.title = "Cards";
