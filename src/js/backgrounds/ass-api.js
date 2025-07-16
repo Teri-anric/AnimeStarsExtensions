@@ -77,11 +77,28 @@ async function findCardIdByImageUrl(message, sender) {
     };
 }
 
+async function searchCards(message, sender) {
+    try {
+        const data = await AssApiClient.searchCards(message.searchQuery);
+        return {
+            success: true,
+            data: data
+        };
+    } catch (error) {
+        console.error('Search cards failed:', error);
+        return {
+            success: false,
+            error: error.message
+        };
+    }
+}
+
 const actionMap = {
     'test_api_connection': testApiConnection,
     'store_token': storeToken,
     'remove_token': removeToken,
     'find_card_id_by_image_url': findCardIdByImageUrl,
+    'search_cards': searchCards,
 };
 
 

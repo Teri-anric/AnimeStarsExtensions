@@ -119,6 +119,9 @@ const AnimeStarExtensionTranslationEnglish = {
     'test-connection': 'Test Connection',
     'open-website-to-connect': 'Open website to connect extension',
     'connect-extension-description': 'Visit the website and authorize extension access in your account settings',
+    'cards-search-settings': 'Cards Search Settings',
+    'cards-search-integration': 'Cards Search Integration',
+    'cards-search-integration-description': 'Adds a search button to the cards page for quick search via API',
 }
 
 export default AnimeStarExtensionTranslationEnglish;

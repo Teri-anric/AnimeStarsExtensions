@@ -97,6 +97,18 @@
         },
         {
             "matches": [
+                "https://[HOST]/cards/*"
+            ],
+            "js": [
+                "./scripts/cards_search_integration.js"
+            ],
+            "css": [
+                "./styles/cards_search_integration.css"
+            ],
+            "run_at": "document_end"
+        },
+        {
+            "matches": [
                 "https://ass.strawberrycat.dev/*"
             ],
             "js": [

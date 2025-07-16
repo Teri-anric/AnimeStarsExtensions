@@ -339,6 +339,40 @@
         },
         {
             "matches": [
+                "https://animestars.org/cards/*",
+                "https://astars.club/cards/*",
+                "https://asstars1.astars.club/cards/*",
+                "https://as1.astars.club/cards/*",
+                "https://asstars.tv/cards/*",
+                "https://as1.asstars.tv/cards/*",
+                "https://as2.asstars.tv/cards/*",
+                "https://asstars.onl/cards/*",
+                "https://asstars.club/cards/*",
+                "https://insights.asstars.club/cards/*",
+                "https://a1.asstars.club/cards/*",
+                "https://as2.astars.club/cards/*",
+                "https://ass.astars.club/cards/*",
+                "https://ass.asstars.club/cards/*",
+                "https://ass1.asstars.club/cards/*",
+                "https://ass2.asstars.club/cards/*",
+                "https://ass3.asstars.club/cards/*",
+                "https://astars.asstars.club/cards/*",
+                "https://astars1.asstars.club/cards/*",
+                "https://asstars.asstars.club/cards/*",
+                "https://asstars1.asstars.club/cards/*",
+                "https://asstars1.astars.club/cards/*",
+                "https://asstars2.astars.club/cards/*"
+            ],
+            "js": [
+                "./scripts/cards_search_integration.js"
+            ],
+            "css": [
+                "./styles/cards_search_integration.css"
+            ],
+            "run_at": "document_end"
+        },
+        {
+            "matches": [
                 "https://ass.strawberrycat.dev/*"
             ],
             "js": [

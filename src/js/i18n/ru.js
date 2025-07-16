@@ -121,6 +121,9 @@ export const AnimeStarExtensionTranslationRussian = {
     'test-connection': 'Тест соединения',
     'open-website-to-connect': 'Открыть сайт для подключения расширения',
     'connect-extension-description': 'Посетите сайт и авторизуйте доступ расширения в настройках аккаунта',
+    'cards-search-settings': 'Настройки поиска карт',
+    'cards-search-integration': 'Интеграция поиска карт',
+    'cards-search-integration-description': 'Добавляет кнопку поиска на страницу карт для быстрого поиска через API',
 }
 
 export default AnimeStarExtensionTranslationRussian;

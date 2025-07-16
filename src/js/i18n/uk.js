@@ -121,6 +121,9 @@ const AnimeStarExtensionTranslationUkraine = {
     'test-connection': 'Тест з\'єднання',
     'open-website-to-connect': 'Відкрити сайт для підключення розширення',
     'connect-extension-description': 'Відвідайте сайт і авторизуйте доступ розширення у налаштуваннях акаунту',
+    'cards-search-settings': 'Налаштування пошуку карт',
+    'cards-search-integration': 'Інтеграція пошуку карт',
+    'cards-search-integration-description': 'Додає кнопку пошуку до сторінки карт для швидкого пошуку через API',
 }
 
 export default AnimeStarExtensionTranslationUkraine;

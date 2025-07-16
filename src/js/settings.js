@@ -14,6 +14,7 @@ document.addEventListener('DOMContentLoaded', () => {
         'card-user-count-cache-enabled',
         'add-my-cards-button',
         'add-user-cards-buttons',
+        'cards-search-integration',
         'not-update-check',
         'api-stats-submission-enabled',
         'api-stats-receive-enabled',

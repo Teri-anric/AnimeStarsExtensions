@@ -1,0 +1,35 @@
+.card-filter__search-btn {
+    position: absolute;
+    right: 0;
+    top: 0;
+    height: 40px;
+    width: 50px;
+    font-size: 18px;
+}
+
+.card-filter-form__controls {
+    position: relative;
+}
+
+
+/* Search results states */
+.no-results {
+    text-align: center;
+    padding: 40px 20px;
+    color: var(--text-muted, #888);
+    font-size: 16px;
+}
+
+.search-error {
+    text-align: center;
+    padding: 40px 20px;
+    color: var(--error-color, #dc3545);
+    font-size: 16px;
+}
+
+.loading {
+    text-align: center;
+    padding: 40px 20px;
+    color: var(--text-muted, #888);
+    font-size: 16px;
+}
