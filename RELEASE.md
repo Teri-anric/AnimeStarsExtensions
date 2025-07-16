@@ -1,17 +1,11 @@
-# AnimeStar Extension v0.0.19
+# AnimeStar Extension v0.0.20
 
 ## Overview
-Major update introducing API integration features, enhanced card detection system, and improved user experience across all supported domains.
+This release introduces a powerful new cards search integration feature, and improves overall code organization for better maintainability.
 
 ## Changes
-- **New API Integration System**: Introduced comprehensive API integration with external services, allowing the extension to connect with strawberrycat.dev for enhanced functionality
-- **Enhanced Card Detection**: Completely redesigned card user count system with improved reliability and support for additional card types (trade inventory, remelt items)
-- **Smart Card Recognition**: Added intelligent card identification through image URLs when traditional methods fail, ensuring more cards are properly detected
-- **Extended Domain Support**: Added support for new API domains (ass-api.strawberrycat.dev, ass.strawberrycat.dev) for expanded functionality
-- **Token Bridge System**: Implemented secure token-based authentication system for seamless website-extension communication
-- **Improved Settings Interface**: Added new API integration settings section with connection testing and status monitoring
-- **Better Performance**: Optimized card processing with asynchronous operations and improved memory management
-- **Enhanced User Interface**: New API connection status indicators and improved visual feedback for users
+- **New Cards Search Integration**: Added comprehensive search functionality for cards pages, allowing users to search by character name, anime title, author, or card ID with real-time results
+- **Code Optimization**: Simplified card user count system by removing complex card mapping logic and improving performance with more efficient DOM queries
 
 ## Important Notes
 ⚠️ Firefox users: Ensure you download the `animestars_extension-firefox.xpi` file for proper installation.
