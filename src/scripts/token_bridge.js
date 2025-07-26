@@ -133,8 +133,6 @@
                     // Notify other extension scripts
                     chrome.runtime.sendMessage({ type: 'token_acquired', success: true }).catch(() => {});
                     return true;
-                } else {
-                    await removeToken();
                 }
             }
             
@@ -276,13 +274,6 @@
                 sendResponse({ success: false, error: error.message });
             });
             return true;
-        }
-    });
-
-    // Listen for website logout events
-    window.addEventListener('storage', (event) => {
-        if (event.key === 'token' && !event.newValue) {
-            removeToken();
         }
     });
 
