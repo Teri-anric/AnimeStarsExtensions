@@ -1,6 +1,7 @@
 (function () {
     const CONFIG = {
-        ENABLED: false
+        ENABLED: false,
+        REMOVE_CARD_LIST_AND_CLUB_RATING_IN_CARD_BASE: false,
     };
 
     function createSearchElements() {
@@ -326,8 +327,14 @@
 
 
     // Load settings and initialize
-    chrome.storage.sync.get(['cards-search-integration'], (settings) => {
+    chrome.storage.sync.get(['cards-search-integration', 'remove-card-list-and-club-rating-in-card-base'], (settings) => {
         CONFIG.ENABLED = settings['cards-search-integration'] || false;
+        CONFIG.REMOVE_CARD_LIST_AND_CLUB_RATING_IN_CARD_BASE = settings['remove-card-list-and-club-rating-in-card-base'] || false;
+        if (CONFIG.REMOVE_CARD_LIST_AND_CLUB_RATING_IN_CARD_BASE) {
+            const paramsSize = new URL(window.location.href)?.searchParams.size;
+            if (paramsSize == 0) window.location = '/cards/?rank=';
+        }
+
         if (CONFIG.ENABLED) {
             createSearchElements();
             const search = new URL(window.location.href)?.searchParams?.get?.('search');
@@ -341,6 +348,14 @@
     // Listen for settings changes
     chrome.storage.onChanged.addListener((changes, namespace) => {
         if (namespace !== 'sync') return;
+
+        if (changes['remove-card-list-and-club-rating-in-card-base'] && changes['remove-card-list-and-club-rating-in-card-base'].oldValue !== changes['remove-card-list-and-club-rating-in-card-base'].newValue) {
+            CONFIG.REMOVE_CARD_LIST_AND_CLUB_RATING_IN_CARD_BASE = changes['remove-card-list-and-club-rating-in-card-base'].newValue;
+            if (CONFIG.REMOVE_CARD_LIST_AND_CLUB_RATING_IN_CARD_BASE) {
+                const paramsSize = new URL(window.location.href)?.searchParams.size;
+                if (paramsSize == 0) window.location = '/cards/?rank=';
+            }
+        }
 
         if (changes['cards-search-integration'] && changes['cards-search-integration'].oldValue !== changes['cards-search-integration'].newValue) {
             if (changes['cards-search-integration'].newValue) {

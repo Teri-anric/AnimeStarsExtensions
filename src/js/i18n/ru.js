@@ -128,6 +128,7 @@ export const AnimeStarExtensionTranslationRussian = {
     'not-add-need-btn-to-card-dialog': 'Не добавлять',
     'add-need-btn-to-card-dialog-can': 'Добавлять, если можно установить',
     'add-need-btn-to-card-dialog-force': 'Добавлять всегда',
+    'remove-card-list-and-club-rating-in-card-base': 'Убрать ленту карт и тижневой рейтинг клубов в базе карт',
 }
 
 export default AnimeStarExtensionTranslationRussian;

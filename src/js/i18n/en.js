@@ -126,6 +126,7 @@ const AnimeStarExtensionTranslationEnglish = {
     'not-add-need-btn-to-card-dialog': 'Not add',
     'add-need-btn-to-card-dialog-can': 'Add if can set',
     'add-need-btn-to-card-dialog-force': 'Add always',
+    'remove-card-list-and-club-rating-in-card-base': 'Remove card list and club rating in card base',
 }
 
 export default AnimeStarExtensionTranslationEnglish;

@@ -128,6 +128,7 @@ const AnimeStarExtensionTranslationUkraine = {
     'not-add-need-btn-to-card-dialog': 'Не додавати',
     'add-need-btn-to-card-dialog-can': 'Додавати, якщо можна встановити',
     'add-need-btn-to-card-dialog-force': 'Додавати завжди',
+    'remove-card-list-and-club-rating-in-card-base': 'Прибрати стрічку карт і тижневий рейтинг клубів в базі карт',
 }
 
 export default AnimeStarExtensionTranslationUkraine;
