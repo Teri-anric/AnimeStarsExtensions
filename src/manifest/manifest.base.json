@@ -97,7 +97,7 @@
         },
         {
             "matches": [
-                "https://[HOST]/cards/*"
+                "https://[HOST]/cards*"
             ],
             "js": [
                 "./scripts/cards_search_integration.js"

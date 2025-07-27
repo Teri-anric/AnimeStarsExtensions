@@ -1,4 +1,4 @@
-(function() {
+(function () {
     const CONFIG = {
         ENABLED: false
     };
@@ -48,22 +48,75 @@
     }
 
     function toggleSearchInput() {
+        const url = new URL(window.location.href);
         const searchForm = document.querySelector('.card-filter-form__controls');
         const searchTabButton = document.querySelector('.tabs__item.tabs__search-toggle');
-        if (searchForm.style.display === 'block') return window.location.reload();
+        if (searchForm.style.display === 'block') {
+            url.searchParams.delete('search');
+            window.location = url.toString();
+            return;
+        }
+
+        if (url.searchParams.get('rank') == null) {
+            url.searchParams.append('rank', '');
+            if (url.searchParams.get('search') == null) url.searchParams.append('search', '');
+            window.location = url.toString();
+            return;
+        }
 
         searchForm.style.display = 'block';
         document.querySelectorAll(".tabs__item--active").forEach(tab => {
-            tab.classList.remove('tabs__item--active');
             const tabCount = tab.querySelector("span");
             if (tabCount) tabCount.remove();
+            if (!tab.classList.contains('tabs__navigate__rank')) {
+                tab.classList.remove('tabs__item--active');
+                return;
+            }
+        });
+        document.querySelectorAll(".tabs__navigate__rank").forEach(tab => {
+            let newTab = tab.cloneNode(true)
+            tab.replaceWith(newTab);
+            newTab.addEventListener('click', handleRankClick);
         });
         searchTabButton.classList.add('tabs__item--active');
+    }
+
+    function handleRankClick(e) {
+        if (!this.classList.contains('tabs__item--active')) {
+            if (this.dataset.rank != "") {
+                this.classList.add('tabs__item--active');
+                const allRankTab = document.querySelector(".tabs__item--active[data-rank='']")
+                if (allRankTab) allRankTab.classList.remove('tabs__item--active');
+            } else {
+                const activeTabs = document.querySelectorAll(".tabs__item--active");
+                activeTabs.forEach(tab => {
+                    tab.classList.remove('tabs__item--active');
+                });
+                this.classList.add('tabs__item--active');
+            }
+        } else {
+            if (this.dataset.rank != "") {
+                this.classList.remove('tabs__item--active');
+            }
+        }
+        e.preventDefault();
+        handleSearchInput(e);
     }
 
     function handleSearchInput(event) {
         const searchInput = document.querySelector(".card-filter-form__search");
         searchResults(searchInput.value, 1);
+    }
+
+    function getActiveRanks() {
+        let rank = [];
+        const activeTabs = document.querySelectorAll(".tabs__item--active");
+        activeTabs.forEach(tab => {
+            if (tab.classList.contains('tabs__navigate__rank') && tab.dataset.rank) {
+                rank.push(tab.dataset.rank);
+            }
+        });
+        return rank.length > 0 ? rank : null;
     }
 
 
@@ -75,11 +128,16 @@
         try {
             const searchQuery = {
                 filter: {
-                    or: [
-                        { card_id: { eq: parseInt(query) || 0 } },
-                        { name: { icontains: query } },
-                        { anime_name: { icontains: query } },
-                        { author: { eq: query } },
+                    and: [
+                        {
+                            or: [
+                                { card_id: { eq: parseInt(query) || 0 } },
+                                { name: { icontains: query } },
+                                { anime_name: { icontains: query } },
+                                { author: { eq: query } },
+                            ]
+                        },
+                        { rank: { in: (getActiveRanks() || ["ass", "s", "a", "b", "c", "d", "e"]) } }
                     ]
                 },
                 page: page,
@@ -156,7 +214,7 @@
 
         const pagesContainer = paginationContainer.querySelector('.pagination__pages');
         if (!pagesContainer) return;
-        
+
         // Clear existing pagination
         pagesContainer.innerHTML = '';
 
@@ -272,13 +330,18 @@
         CONFIG.ENABLED = settings['cards-search-integration'] || false;
         if (CONFIG.ENABLED) {
             createSearchElements();
+            const search = new URL(window.location.href)?.searchParams?.get?.('search');
+            if (search != null) {
+                toggleSearchInput();
+                searchResults(search, 1);
+            }
         }
     });
 
     // Listen for settings changes
     chrome.storage.onChanged.addListener((changes, namespace) => {
         if (namespace !== 'sync') return;
-        
+
         if (changes['cards-search-integration'] && changes['cards-search-integration'].oldValue !== changes['cards-search-integration'].newValue) {
             if (changes['cards-search-integration'].newValue) {
                 createSearchElements();
