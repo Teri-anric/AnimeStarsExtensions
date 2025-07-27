@@ -121,7 +121,11 @@ const AnimeStarExtensionTranslationEnglish = {
     'connect-extension-description': 'Visit the website and authorize extension access in your account settings',
     'cards-search-settings': 'Cards Search Settings',
     'cards-search-integration': 'Cards Search Integration',
-    'cards-search-integration-description': 'Adds a search button to the cards page for quick search via API',
+    'cards-search-integration-description': 'Adds a search button to the cards base page for quick search via API',
+    'add-need-btn-to-card-dialog': 'Add "Need" button to card dialog',
+    'not-add-need-btn-to-card-dialog': 'Not add',
+    'add-need-btn-to-card-dialog-can': 'Add if can set',
+    'add-need-btn-to-card-dialog-force': 'Add always',
 }
 
 export default AnimeStarExtensionTranslationEnglish;

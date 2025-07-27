@@ -39,6 +39,7 @@ const DEFAULT_SETTINGS = {
     'club-boost-highlight': true,
     'auto-take-heavenly-stone': true,
     'auto-take-cinema-stone': true,
+    'add-need-btn-to-card-dialog': 'can',
 };
 
 const MIGRATIONS = [

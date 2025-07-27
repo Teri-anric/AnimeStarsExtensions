@@ -29,6 +29,7 @@
     TEXT_COLOR: "",
     OPACITY: 80,
     HOVER_ACTION: "none",
+    ADD_NEED_BTN_TO_CARD_DIALOG: "can",
     // functions
     checkEvent: (e) => {
       if (!CONFIG.ENABLED) return false;
@@ -56,6 +57,7 @@
       "card-user-count-text-color": "TEXT_COLOR",
       "card-user-count-opacity": "OPACITY",
       "card-user-count-hover-action": "HOVER_ACTION",
+      "add-need-btn-to-card-dialog": "ADD_NEED_BTN_TO_CARD_DIALOG",
     },
     // update from settings
     setConfig: (configKey, value) => {
@@ -154,6 +156,19 @@
     elm.setAttribute('data-index-card-id', cardId);
   }
 
+  function _setShowNeedbtn(elm) {
+    if (CONFIG.ADD_NEED_BTN_TO_CARD_DIALOG == "none") return;
+    if (!elm || elm.classList.contains('show-need_button')) return;
+    let canNotSet = elm.classList.contains('show-trade_button') || elm.dataset?.canTrade == "1";
+    if (CONFIG.ADD_NEED_BTN_TO_CARD_DIALOG == "can" && canNotSet) return;
+    elm.classList.add('show-need_button');
+  }
+
+  function setShowNeedbtns(elms) {
+    if (!Array.isArray(elms) || elms.length == 0) return;
+    elms.forEach(_setShowNeedbtn);
+  }
+
   function _extractCardId(elm) {
     if (!elm) return null;
     if (elm.dataset?.id && !elm.matches(notIdsSelectors)) return elm.dataset.id;
@@ -198,6 +213,7 @@
   }
 
   async function extractCardIds(elms) {
+    setShowNeedbtns(elms);
     const cardIds = new Set();
     if (elms.length == 0) return [];
     const cardsWithoutIds = []
@@ -376,7 +392,7 @@
 
       mutation.addedNodes.forEach((node) => {
         if (node.nodeType !== Node.ELEMENT_NODE) return;
-        
+
         const parentCard = node.closest(cardContainerSelector);
         if (parentCard) {
           newCardElements.push(parentCard);
@@ -435,7 +451,8 @@
       changes['card-user-count-background-color'] ||
       changes['card-user-count-text-color'] ||
       changes['card-user-count-opacity'] ||
-      changes['card-user-count-hover-action'];
+      changes['card-user-count-hover-action'] ||
+      changes['add-need-btn-to-card-dialog'];
 
     CONFIG.updateFromSettings(changes);
 

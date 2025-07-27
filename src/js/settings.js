@@ -23,6 +23,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const settingsSelects = [
         'language',
         'card-user-count-event-target',
+        'add-need-btn-to-card-dialog',
     ];
 
     const settingsRangeInputs = [

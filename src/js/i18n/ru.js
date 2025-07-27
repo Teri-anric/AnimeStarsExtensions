@@ -123,7 +123,11 @@ export const AnimeStarExtensionTranslationRussian = {
     'connect-extension-description': 'Посетите сайт и авторизуйте доступ расширения в настройках аккаунта',
     'cards-search-settings': 'Настройки поиска карт',
     'cards-search-integration': 'Интеграция поиска карт',
-    'cards-search-integration-description': 'Добавляет кнопку поиска на страницу карт для быстрого поиска через API',
+    'cards-search-integration-description': 'Добавляет кнопку поиска на страницу базы карт для быстрого поиска через API',
+    'add-need-btn-to-card-dialog': 'Добавить кнопку "Хочу картку" в диалоговом окне карточки',
+    'not-add-need-btn-to-card-dialog': 'Не добавлять',
+    'add-need-btn-to-card-dialog-can': 'Добавлять, если можно установить',
+    'add-need-btn-to-card-dialog-force': 'Добавлять всегда',
 }
 
 export default AnimeStarExtensionTranslationRussian;

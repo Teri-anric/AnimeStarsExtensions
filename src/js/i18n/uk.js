@@ -123,7 +123,11 @@ const AnimeStarExtensionTranslationUkraine = {
     'connect-extension-description': 'Відвідайте сайт і авторизуйте доступ розширення у налаштуваннях акаунту',
     'cards-search-settings': 'Налаштування пошуку карт',
     'cards-search-integration': 'Інтеграція пошуку карт',
-    'cards-search-integration-description': 'Додає кнопку пошуку до сторінки карт для швидкого пошуку через API',
+    'cards-search-integration-description': 'Додає кнопку пошуку до сторінки бази карт для швидкого пошуку через API',
+    'add-need-btn-to-card-dialog': 'Додати кнопку "Хочу картку" в діалоговому вікні картки',
+    'not-add-need-btn-to-card-dialog': 'Не додавати',
+    'add-need-btn-to-card-dialog-can': 'Додавати, якщо можна встановити',
+    'add-need-btn-to-card-dialog-force': 'Додавати завжди',
 }
 
 export default AnimeStarExtensionTranslationUkraine;
