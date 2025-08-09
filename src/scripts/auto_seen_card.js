@@ -59,6 +59,7 @@
     chrome.storage.sync.get(['auto-seen-card', 'auto-seen-card-stack'], (settings) => {
         CONFIG.ENABLED = settings['auto-seen-card']
         CONFIG.TO_STACK = settings['auto-seen-card-stack']
+        setInterval(clickCardNotification, 1000);
     });
     chrome.storage.onChanged.addListener((changes, namespace) => {
         if (namespace != "sync") return;
