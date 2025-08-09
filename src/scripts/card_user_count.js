@@ -1,15 +1,5 @@
 (async () => {
-  const cardContainerSelector = [
-    '.lootbox__card',
-    '.anime-cards__item',
-    'a.trade__main-item',
-    'a.history__body-item',
-    '.trade__inventory-item',
-    '.remelt__inventory-item',
-    '.remelt__item',
-  ].join(',');
-
-  const notIdsSelectors = ['.trade__inventory-item', '.remelt__inventory-item', ".remelt__item"].join(','); // alternative id ( is dataset.cardId)
+  const indexedCardSelector = '[data-index-card-id]';
 
   const CONFIG = {
     ENABLED: false,
@@ -29,7 +19,6 @@
     TEXT_COLOR: "",
     OPACITY: 80,
     HOVER_ACTION: "none",
-    ADD_NEED_BTN_TO_CARD_DIALOG: "can",
     // functions
     checkEvent: (e) => {
       if (!CONFIG.ENABLED) return false;
@@ -57,7 +46,6 @@
       "card-user-count-text-color": "TEXT_COLOR",
       "card-user-count-opacity": "OPACITY",
       "card-user-count-hover-action": "HOVER_ACTION",
-      "add-need-btn-to-card-dialog": "ADD_NEED_BTN_TO_CARD_DIALOG",
     },
     // update from settings
     setConfig: (configKey, value) => {
@@ -113,10 +101,6 @@
 
   /* background worker */
 
-  async function requestBG(message) {
-    return await chrome.runtime.sendMessage(message);
-  }
-
   function requestFreshCardData(cardId) {
     showLoadingState(cardId);
     chrome.runtime.sendMessage({
@@ -136,12 +120,6 @@
     });
   }
 
-  async function requestFindCardIdByImageUrls(imageUrls) {
-    return await requestBG({
-      action: "find_card_id_by_image_url",
-      imageUrls
-    });
-  }
 
   /* utils functions */
 
@@ -151,91 +129,16 @@
     return Array.from(document.querySelectorAll(`[data-index-card-id="${cardId}"]`));
   }
 
-  function setCardIdIndex(elm, cardId) {
-    if (!elm || !cardId) return;
-    elm.setAttribute('data-index-card-id', cardId);
-  }
 
-  function _setShowNeedbtn(elm) {
-    if (CONFIG.ADD_NEED_BTN_TO_CARD_DIALOG == "none") return;
-    if (!elm || elm.classList.contains('show-need_button')) return;
-    let canNotSet = elm.classList.contains('show-trade_button') || elm.dataset?.canTrade == "1";
-    if (CONFIG.ADD_NEED_BTN_TO_CARD_DIALOG == "can" && canNotSet) return;
-    elm.classList.add('show-need_button');
-  }
 
-  function setShowNeedbtns(elms) {
-    if (!Array.isArray(elms) || elms.length == 0) return;
-    elms.forEach(_setShowNeedbtn);
-  }
-
-  function _extractCardId(elm) {
-    if (!elm) return null;
-    if (elm.dataset?.id && !elm.matches(notIdsSelectors)) return elm.dataset.id;
-    if (elm.dataset?.cardId && elm.matches(notIdsSelectors)) return elm.dataset?.cardId;
-    if (!elm.getAttribute('href')) return null;
-    try {
-      const url = new URL(elm.getAttribute('href'), window.location.origin);
-      return url.searchParams.get('id') || null;
-    } catch (error) {
-      return null;
-    }
-  }
-
-  async function _extractCardIdsFromImage(elms) {
-    if (elms.length == 0) return new Map();
-    const imageElmsEntries = elms.map((elm) => [elm.querySelector('img')?.src, elm])
-      .filter(([url, elm]) => url)
-      .map(([url, elm]) => [new URL(url, window.location.origin).pathname, elm])
-    const cardIdsMap = new Map(
-      imageElmsEntries
-        .filter(([url, elm]) => elm.dataset?.lastParsedUrl == url)
-        .map(([url, elm]) => [elm.dataset.lastParsedCardId, elm])
-    );
-
-    if (imageElmsEntries.length - cardIdsMap.size <= 0) return cardIdsMap;
-    try {
-      const imageElmsMap = new Map(imageElmsEntries.filter(([url, elm]) => elm.dataset?.lastParsedUrl != url));
-      const response = await requestFindCardIdByImageUrls(Array.from(imageElmsMap.keys()));
-      if (!response.success) return cardIdsMap;
-      Object.entries(response.cardImageMap).forEach(([imageUrl, cardId]) => {
-        const elm = imageElmsMap.get(imageUrl);
-        if (!elm) return;
-        cardIdsMap.set(cardId, elm);
-        elm.setAttribute('data-last-parsed-url', imageUrl);
-        elm.setAttribute('data-last-parsed-card-id', cardId);
-      });
-    } catch (error) {
-      console.error('Error extracting card ids from image urls:', error);
-      return cardIdsMap;
-    }
-    return cardIdsMap;
-  }
-
-  async function extractCardIds(elms) {
-    setShowNeedbtns(elms);
-    const cardIds = new Set();
-    if (elms.length == 0) return [];
-    const cardsWithoutIds = []
-    const addCard = (elm, cardId) => {
-      const lastCardId = elm.dataset.lastCardId;
-      if (lastCardId && lastCardId.toString() == cardId.toString()) return;
-      cardIds.add(cardId);
-      setCardIdIndex(elm, cardId);
-    }
+  function collectCardIdsFromElements(elms) {
+    if (!Array.isArray(elms) || elms.length === 0) return [];
+    const ids = new Set();
     elms.forEach((elm) => {
-      const cardId = _extractCardId(elm);
-      if (!cardId) {
-        cardsWithoutIds.push(elm);
-        return;
-      }
-      addCard(elm, cardId);
+      const id = elm?.getAttribute?.('data-index-card-id');
+      if (id) ids.add(id);
     });
-    const cardIdsMap = await _extractCardIdsFromImage(cardsWithoutIds);
-    cardIdsMap.forEach((elm, cardId) => {
-      addCard(elm, cardId);
-    });
-    return Array.from(cardIds);
+    return Array.from(ids);
   }
 
   /* card data display */
@@ -332,7 +235,7 @@
   }
 
   function updateAllCardStyles() {
-    const cards = document.querySelectorAll(cardContainerSelector);
+    const cards = document.querySelectorAll(indexedCardSelector);
     cards.forEach(card => {
       const countElm = card.querySelector('.card-user-count');
       if (countElm) {
@@ -365,8 +268,8 @@
   /* card processing */
 
   async function collectAllCards() {
-    const cards = document.querySelectorAll(cardContainerSelector);
-    return await extractCardIds(Array.from(cards));
+    const cards = Array.from(document.querySelectorAll(indexedCardSelector));
+    return collectCardIdsFromElements(cards);
   }
 
   async function processAllCards() {
@@ -384,30 +287,27 @@
 
     /* collect new card elements */
     mutations.forEach((mutation) => {
-      if (mutation.type == "attributes") {
-        const cardElm = mutation.target;
-        if (!cardElm.matches || !cardElm.matches(cardContainerSelector)) return;
-        newCardElements.push(cardElm);
+      if (mutation.type === 'attributes') {
+        const target = mutation.target;
+        if (mutation.attributeName === 'data-index-card-id' && target.matches && target.matches(indexedCardSelector)) {
+          newCardElements.push(target);
+        }
       }
 
       mutation.addedNodes.forEach((node) => {
         if (node.nodeType !== Node.ELEMENT_NODE) return;
-
-        const parentCard = node.closest(cardContainerSelector);
-        if (parentCard) {
-          newCardElements.push(parentCard);
+        if (node.matches && node.matches(indexedCardSelector)) {
+          newCardElements.push(node);
         }
-
-        const nestedCards = node.querySelectorAll(cardContainerSelector);
-        nestedCards.forEach(cardElm => {
-          newCardElements.push(cardElm);
-        });
+        const nestedIndexed = node.querySelectorAll ? node.querySelectorAll(indexedCardSelector) : [];
+        nestedIndexed.forEach(cardElm => newCardElements.push(cardElm));
       });
     });
 
     /* process new card elements */
     if (newCardElements.length == 0) return;
-    extractCardIds(newCardElements).then(cardIds => requestCachedCardData(cardIds));
+    const cardIds = collectCardIdsFromElements(newCardElements);
+    requestCachedCardData(cardIds);
   });
 
   async function startDetectingCards() {
@@ -415,7 +315,7 @@
     cardObserver.observe(document.body, {
       childList: true,
       subtree: true,
-      attributeFilter: ['data-id', 'href'],
+      attributeFilter: ['data-index-card-id'],
       attributes: true
     });
   }
@@ -423,12 +323,13 @@
   async function eventHandler(e) {
     if (!CONFIG.checkEvent(e)) return;
 
-    const cardElement = e.target.closest(cardContainerSelector);
+    const cardElement = e.target.closest(indexedCardSelector);
     if (!cardElement) return;
 
-    const cardIds = await extractCardIds([cardElement]);
-    if (cardIds.length == 0) return;
-    requestFreshCardData(cardIds[0]);
+    const cardId = cardElement.getAttribute('data-index-card-id');
+    const lastCardId = cardElement.getAttribute('data-last-card-id');
+    if (!cardId || cardId == lastCardId) return;
+    requestFreshCardData(cardId);
   }
 
   document.addEventListener("mouseover", eventHandler);
@@ -452,7 +353,6 @@
       changes['card-user-count-text-color'] ||
       changes['card-user-count-opacity'] ||
       changes['card-user-count-hover-action'] ||
-      changes['add-need-btn-to-card-dialog'];
 
     CONFIG.updateFromSettings(changes);
 

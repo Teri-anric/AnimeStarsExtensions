@@ -132,6 +132,7 @@
                 "https://asstars2.astars.club/*"
             ],
             "js": [
+                "./scripts/card_indexer.js",
                 "./scripts/card_user_count.js"
             ],
             "css": [
