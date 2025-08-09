@@ -3,16 +3,22 @@
         ENABLED: false,
         TO_STACK: false,
     }
-    const notificationRoot = document.querySelector(".fscr");
-    if (!notificationRoot) return console.log('auto_seen_card: notificationRoot not found');
 
-    const cardNotifications = document.createElement('div');
-    cardNotifications.classList.add('card-notifications');
-    notificationRoot.appendChild(cardNotifications);
+    function getCardNotifications() {
+        let cardNotifications = document.querySelector('.card-notifications');
+        if (!cardNotifications) {
+            cardNotifications = document.createElement('div');
+            cardNotifications.className = 'card-notifications';
+
+            const body = document.querySelector('body');
+            body.appendChild(cardNotifications);
+        }
+        return cardNotifications;
+    }
 
     function toStack(dataset) {
         const cardNotification = document.createElement("div");
-        cardNotification.classList.add("card-notification-item");
+        cardNotification.className = "card-notification-item";
         cardNotification.setAttribute('data-card-image', dataset.cardImage);
         cardNotification.setAttribute('data-card-name', dataset.cardName);
         cardNotification.setAttribute('data-card-owner_id', dataset.cardOwner_id);
@@ -27,7 +33,7 @@
         cardNotification.addEventListener('click', () => {
             cardNotification.classList.add('card-notification');
         });
-        cardNotifications.appendChild(cardNotification);
+        getCardNotifications().appendChild(cardNotification);
     }
 
     function clickCardNotification() {
@@ -48,13 +54,6 @@
         }
     }
 
-    const observer = new MutationObserver((mutations) => {
-        mutations.forEach((mutation) => {
-            if (!Array.from(mutation.addedNodes).some(node => node?.classList && node.classList.contains('card-notification'))) return;
-            clickCardNotification();
-        });
-    });
-    observer.observe(notificationRoot, { childList: true });
     // init
     chrome.storage.sync.get(['auto-seen-card', 'auto-seen-card-stack'], (settings) => {
         CONFIG.ENABLED = settings['auto-seen-card']
@@ -71,7 +70,7 @@
                 CONFIG.TO_STACK = true;
             } else {
                 CONFIG.TO_STACK = false;
-                cardNotifications.innerHTML = '';
+                getCardNotifications().innerHTML = '';
             }
         }
     });
