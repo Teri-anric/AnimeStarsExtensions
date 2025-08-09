@@ -109,6 +109,13 @@ input:checked + .slider:before {
     gap: 10px;
 }
 
+.slider-container input[type="number"] {
+    width: 90px;
+    padding: 6px 8px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+}
+
 .slider-container input[type="range"] {
     flex-grow: 1;
     -webkit-appearance: none;

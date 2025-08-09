@@ -149,24 +149,53 @@ document.addEventListener('DOMContentLoaded', () => {
             });
         });
 
-        // Load range input settings
+        // Load range + number input settings (keep in sync)
         settingsRangeInputs.forEach(id => {
-            const input = document.getElementById(id);
-            const valueSpan = input.nextElementSibling;
+            const rangeInput = document.getElementById(id);
+            const numberInput = document.getElementById(`${id}-number`);
 
-            if (input) {
-                input.value = settings[id];
-                valueSpan.textContent = input.value;
-            }
+            if (!rangeInput) return;
 
-            input.addEventListener('input', (event) => {
-                const value = parseInt(event.target.value);
-                if (actions[id]) {
-                    actions[id](value);
-                }
-                valueSpan.textContent = value;
+            const min = rangeInput.min ? Number(rangeInput.min) : undefined;
+            const max = rangeInput.max ? Number(rangeInput.max) : undefined;
+
+            const clampToBounds = (val) => {
+                let result = Number(val);
+                if (Number.isNaN(result)) result = Number(rangeInput.value) || 0;
+                if (min !== undefined && result < min) result = min;
+                if (max !== undefined && result > max) result = max;
+                return result;
+            };
+
+            // Initialize from storage or defaults already in DOM
+            const initial = settings[id] !== undefined ? settings[id] : Number(rangeInput.value);
+            const initValue = clampToBounds(initial);
+            rangeInput.value = String(initValue);
+            if (numberInput) numberInput.value = String(initValue);
+
+            const persist = (value) => {
                 chrome.storage.sync.set({ [id]: value });
+            };
+
+            const notify = (value) => {
+                if (actions[id]) actions[id](value);
+            };
+
+            rangeInput.addEventListener('input', (event) => {
+                const value = clampToBounds(event.target.value);
+                if (numberInput) numberInput.value = String(value);
+                notify(value);
+                persist(value);
             });
+
+            if (numberInput) {
+                numberInput.addEventListener('input', (event) => {
+                    const value = clampToBounds(event.target.value);
+                    rangeInput.value = String(value);
+                    notify(value);
+                    persist(value);
+                });
+            }
         });
 
         // Load additional settings
