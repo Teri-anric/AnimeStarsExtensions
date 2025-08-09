@@ -63,7 +63,7 @@ chrome.storage.onChanged.addListener((changes, namespace) => {
 async function broadcastToAllTabs(message) {
     try {
         const tabs = await chrome.tabs.query({ url: "*://*/*" });
-        const promises = tabs.map(tab => 
+        const promises = tabs.map(tab =>
             chrome.tabs.sendMessage(tab.id, message).catch(() => {
                 // Tab might be closed or not available, ignore silently
             })
@@ -89,7 +89,7 @@ async function cardDataUpdatedMap(data, source = 'html_parse') {
 }
 
 async function cardDataUpdated(cardId, data, source = 'html_parse') {
-    await cardDataUpdatedMap( {[cardId]: data}, source);
+    await cardDataUpdatedMap({ [cardId]: data }, source);
 }
 
 async function parseHtmlCardCount(html) {
@@ -144,13 +144,13 @@ async function getCachedCardsCounts(cardIds) {
     return Object.fromEntries(
         Object.entries(stored)
             .filter(([_, value]) => checkValidCardCache(value))
-            .map(([key, value]) => [keyMap[key], {...value.data, cardId: keyMap[key]}])
+            .map(([key, value]) => [keyMap[key], { ...value.data, cardId: keyMap[key] }])
     );
 }
 
 // Helper – write to cache
 function setCachedCardCounts(cardId, data) {
-    const record = { timestamp: Date.now(), data, cardId};
+    const record = { timestamp: Date.now(), data, cardId };
     chrome.storage.local.set({ [`${CARD_COUNT_CACHE_KEY_PREFIX}${cardId}`]: record });
     return record;
 }
@@ -159,8 +159,12 @@ function setCachedCardCounts(cardId, data) {
 async function fetchCardCounts(origin, cardId, unlocked = '0', retry = 0) {
     const url = `${origin}/cards/users/?id=${cardId}&unlocked=${unlocked}`;
     const response = await fetch(url);
+    if (response.redirected && response.url.includes("do=register")) {
+        throw new FetchError("User not logged in");
+    }
     if (response.status == 403 && retry < 1) {
-        fetchCardCounts(origin, cardId, unlocked, retry + 1);
+        await new Promise(resolve => setTimeout(resolve, CARD_COUNT_CONFIG.REQUEST_DELAY));
+        return await fetchCardCounts(origin, cardId, unlocked, retry + 1);
     }
     if (!response.ok) throw new FetchError("Failed to fetch card counts");
     const html = await response.text();
@@ -180,22 +184,17 @@ async function getCardCounts(cardId, origin, parseUnlockedFlag) {
         }
     }
 
-    try {
-        const counts = await fetchCardCounts(origin, cardId, '0');
+    const counts = await fetchCardCounts(origin, cardId, '0');
 
-        if (parseUnlocked) {
-            const unlockedCounts = await fetchCardCounts(origin, cardId, '1');
-            counts.unlockTrade = unlockedCounts.trade;
-            counts.unlockNeed = unlockedCounts.need;
-            counts.unlockOwner = unlockedCounts.owner;
-        }
-
-        setCachedCardCounts(cardId, counts);
-        return counts;
-    } catch (error) {
-        console.error(`HTML parsing failed for card ${cardId}:`, error);
-        throw error;
+    if (parseUnlocked) {
+        const unlockedCounts = await fetchCardCounts(origin, cardId, '1');
+        counts.unlockTrade = unlockedCounts.trade;
+        counts.unlockNeed = unlockedCounts.need;
+        counts.unlockOwner = unlockedCounts.owner;
     }
+
+    setCachedCardCounts(cardId, counts);
+    return counts;
 }
 
 // -----------------------------------------------------------------------------
@@ -227,7 +226,7 @@ async function processNextFetch() {
         const data = await getCardCounts(item.cardId, item.origin, item.parseUnlocked);
         await cardDataUpdated(item.cardId, data);
     } catch (err) {
-        await cardDataUpdated(item.cardId, {error: err?.message || String(err)});
+        await cardDataUpdated(item.cardId, { error: err?.message || String(err) }, "error");
     } finally {
         setTimeout(processNextFetch, CARD_COUNT_CONFIG.REQUEST_DELAY);
     }
@@ -248,14 +247,14 @@ function clearCardDataQueue(message, sender) {
 }
 
 function fetchCardDataQueue(message, sender) {
-    const {cardId, origin, parseUnlocked} = message;
+    const { cardId, origin, parseUnlocked } = message;
     if (!cardId || !origin) {
         console.error("Missing cardId or origin");
         return;
     }
-    enqueueFetchRequest({ 
-        cardId, 
-        origin, 
+    enqueueFetchRequest({
+        cardId,
+        origin,
         parseUnlocked
     });
 }
@@ -266,7 +265,7 @@ async function fetchCachedCardData(message, sender) {
         console.error("Missing cardIds");
         return;
     }
-    
+
     try {
         const data = await getCachedCardsCounts(cardIds);
         await cardDataUpdatedMap(data, 'cached');
@@ -282,7 +281,7 @@ async function updateCardDataFromPage(message, sender) {
         return;
     }
     const existingData = await getCachedCardCounts(cardId) || {};
-    const dataToUpdate = unlocked ? {unlockTrade: data.trade, unlockNeed: data.need, unlockOwner: data.owner} : data;
+    const dataToUpdate = unlocked ? { unlockTrade: data.trade, unlockNeed: data.need, unlockOwner: data.owner } : data;
 
     const mergedData = { ...existingData, ...dataToUpdate };
     setCachedCardCounts(cardId, mergedData);
@@ -304,7 +303,7 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
     }
     // Check if action is async (returns a Promise)
     const result = action(message, sender);
-    
+
     if (result instanceof Promise) {
         result.then(response => {
             sendResponse(response);
