@@ -326,16 +326,21 @@
         }
     }
 
+    function removeCardListAndClubRatingInCardBase() {
+        if (!CONFIG.REMOVE_CARD_LIST_AND_CLUB_RATING_IN_CARD_BASE) return;
+        const _url = new URL(window.location.href);
+        const paramsSize = _url?.searchParams?.size;
+        if (paramsSize == 0 && ['/cards/', '/cards'].includes(_url?.pathname)) {
+            window.location = '/cards/?rank=';
+        }
+    }
+
 
     // Load settings and initialize
     chrome.storage.sync.get(['cards-search-integration', 'remove-card-list-and-club-rating-in-card-base'], (settings) => {
         CONFIG.ENABLED = settings['cards-search-integration'] || false;
         CONFIG.REMOVE_CARD_LIST_AND_CLUB_RATING_IN_CARD_BASE = settings['remove-card-list-and-club-rating-in-card-base'] || false;
-        if (CONFIG.REMOVE_CARD_LIST_AND_CLUB_RATING_IN_CARD_BASE) {
-            const url = new URL(window.location.href);
-            const paramsSize = url?.searchParams?.size;
-            if (paramsSize == 0 || url?.pathname in ['/cards/', '/cards']) window.location = '/cards/?rank=';
-        }
+        removeCardListAndClubRatingInCardBase();
 
         if (CONFIG.ENABLED) {
             createSearchElements();
@@ -353,11 +358,7 @@
 
         if (changes['remove-card-list-and-club-rating-in-card-base'] && changes['remove-card-list-and-club-rating-in-card-base'].oldValue !== changes['remove-card-list-and-club-rating-in-card-base'].newValue) {
             CONFIG.REMOVE_CARD_LIST_AND_CLUB_RATING_IN_CARD_BASE = changes['remove-card-list-and-club-rating-in-card-base'].newValue;
-            if (CONFIG.REMOVE_CARD_LIST_AND_CLUB_RATING_IN_CARD_BASE) {
-                const url = new URL(window.location.href)
-                const paramsSize = url?.searchParams?.size;
-                if (paramsSize == 0 && url?.pathname == '/cards/') window.location = '/cards/?rank=';
-            }
+            removeCardListAndClubRatingInCardBase();
         }
 
         if (changes['cards-search-integration'] && changes['cards-search-integration'].oldValue !== changes['cards-search-integration'].newValue) {
