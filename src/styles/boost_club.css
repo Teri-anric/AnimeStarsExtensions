@@ -3,3 +3,8 @@
     border-radius: 7px;
     padding: 5px;
 }
+
+.boost-active .club-boost--content .club-boost__inner {
+    border: 5px solid #216d2b;
+    border-radius: 7px;
+}

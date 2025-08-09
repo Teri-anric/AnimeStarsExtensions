@@ -13,10 +13,10 @@
         }
     }
 
-    function checkBoostLimit() {
+    function checkBoostLimit(isStart) {
         const boostLimit = document.querySelector(".boost-limit");
         if (boostLimit && parseInt(boostLimit.textContent) >= BoostLimit) {
-            stopBoosting();
+            stopBoosting(isStart);
             return false;
         }
         return true;
@@ -34,15 +34,24 @@
         refreshBtn?.click();
     }
     function startBoosting() {
-        if (!checkBoostLimit()) return;
+        setBoostActiveStatus(true);
+        if (!checkBoostLimit(true)) return;
         refreshIntervalID = setInterval(refreshClub, refreshCooldown);
         boostIntervalID = setInterval(boostClub, boostCooldown);
     }
-    function stopBoosting() {
+    function stopBoosting(isStart = false) {
         if (boostIntervalID) clearInterval(boostIntervalID);
         if (refreshIntervalID) clearInterval(refreshIntervalID);
         boostIntervalID = null;
         refreshIntervalID = null;
+        if (!isStart) setBoostActiveStatus(false);
+        if (isStart) {
+            setTimeout(() => setBoostActiveStatus(false), 50);
+        }
+    }
+
+    function setBoostActiveStatus(isActive) {
+        document.querySelector("body").classList.toggle('boost-active', isActive);
     }
 
     chrome.storage.sync.get([
@@ -65,12 +74,8 @@
         if (changes['club-boost-action-cooldown'] != undefined) {
             boostCooldown = changes['club-boost-action-cooldown'].newValue;
         }
-        isActive = refreshIntervalID || boostIntervalID;
-        onAutoBoost = changes['club-boost-auto']?.newValue;
-        isNewCooldown = changes['club-boost-refresh-cooldown'] || changes['club-boost-action-cooldown'];
-        isRestart = isActive && isNewCooldown;
         stopBoosting();
-        if (onAutoBoost || isRestart) {
+        if (changes['club-boost-auto']?.newValue) {
             startBoosting();
         }
     });
