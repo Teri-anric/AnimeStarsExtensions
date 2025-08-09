@@ -3,7 +3,9 @@
 // -----------------------------------------------------------------------------
 import { AssApiClient } from '../api-client.js';
 
-const CARD_COUNT_CACHE_KEY_PREFIX = 'cardUserCountV2_';
+const _CARD_COUNT_CACHE_KEY_PREFIX_BASE = 'cardUserCount';
+const _CARD_COUNT_CACHE_KEY_PREFIX_VERSION = 'V3';
+const CARD_COUNT_CACHE_KEY_PREFIX = `${_CARD_COUNT_CACHE_KEY_PREFIX_BASE}${_CARD_COUNT_CACHE_KEY_PREFIX_VERSION}_`;
 
 
 const CARD_COUNT_CONFIG = {
@@ -244,6 +246,10 @@ function clearCardDataQueue(message, sender) {
     for (let i = 0; i < length; i++) {
         fetchQueue.shift();
     }
+    broadcastToAllTabs({
+        action: 'card_data_queue_cleared',
+    });
+    return { success: true };
 }
 
 function fetchCardDataQueue(message, sender) {
@@ -288,12 +294,33 @@ async function updateCardDataFromPage(message, sender) {
     await cardDataUpdated(cardId, mergedData);
 }
 
+// New: report current queue size
+async function getCardDataQueueSize() {
+    return { size: fetchQueue.length };
+}
+
+// New: clear all cached card data in local storage
+async function clearAllCardCaches() {
+    return new Promise((resolve) => {
+        chrome.storage.local.get(null, (items) => {
+            const keysToRemove = Object.keys(items).filter(key => key.startsWith(_CARD_COUNT_CACHE_KEY_PREFIX_BASE));
+            if (keysToRemove.length > 0) {
+                chrome.storage.local.remove(keysToRemove, () => resolve({ cleared: true, removed: keysToRemove.length }));
+            } else {
+                resolve({ cleared: false, removed: 0 });
+            }
+        });
+    });
+}
+
 
 const actionMap = {
     'fetch_card_data_queue': fetchCardDataQueue,
     'clear_card_data_queue': clearCardDataQueue,
     'fetch_cached_card_data': fetchCachedCardData,
     'update_card_data': updateCardDataFromPage,
+    'get_card_data_queue_size': getCardDataQueueSize,
+    'clear_all_card_caches': clearAllCardCaches,
 };
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
     const action = actionMap?.[message?.action];

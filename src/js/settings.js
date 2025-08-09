@@ -212,6 +212,40 @@ document.addEventListener('DOMContentLoaded', () => {
             });
         });
         
+        // Card queue size indicator and controls
+        const queueSizeEl = document.getElementById('card-user-count-queue-size');
+        const queueRefresh = () => {
+            if (!queueSizeEl) return;
+                chrome.runtime.sendMessage({ action: 'get_card_data_queue_size' }).then(resp => {
+                    queueSizeEl.textContent = String(resp?.size ?? 0);
+                }).catch(() => {
+                    queueSizeEl.textContent = '0';
+                }); 
+        };
+        queueRefresh();
+        setInterval(queueRefresh, 1000);
+
+        const clearQueueBtn = document.getElementById('card-user-count-clear-queue');
+        if (clearQueueBtn) {
+            clearQueueBtn.addEventListener('click', async () => {
+                clearQueueBtn.disabled = true;
+                chrome.runtime.sendMessage({ action: 'clear_card_data_queue' }).finally(() => {
+                    clearQueueBtn.disabled = false;
+                    queueRefresh();
+                });
+            });
+        }
+
+        const clearCacheBtn = document.getElementById('clear-card-cache');
+        if (clearCacheBtn) {
+            clearCacheBtn.addEventListener('click', () => {
+                clearCacheBtn.disabled = true;
+                chrome.runtime.sendMessage({ action: 'clear_all_card_caches' }).finally(() => {
+                    clearCacheBtn.disabled = false;
+                });
+            });
+        }
+
         // API connection test functionality - enhanced
         const testApiBtn = document.getElementById('test-api-connection');
         const apiStatus = document.getElementById('api-status');

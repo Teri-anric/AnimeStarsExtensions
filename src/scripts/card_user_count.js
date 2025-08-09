@@ -171,9 +171,12 @@
     }).join('');
   }
 
-  function applyCardUserCountStyles(countElm) {
+  function applyCardUserCountStyles(countElm, addClasses) {
     // Clear existing classes
-    countElm.className = 'card-user-count';
+    countElm.className = 'card-user-count'; 
+    if (addClasses) {
+      countElm.classList.add(...addClasses);
+    }
 
     // Apply position class
     countElm.classList.add(`position-${CONFIG.POSITION}`);
@@ -256,13 +259,20 @@
         cardElm.appendChild(countElm);
       }
 
-      applyCardUserCountStyles(countElm);
+      applyCardUserCountStyles(countElm, cardData?.addClasses);
       countElm.innerHTML = cardData?.text || cardData?.error || formatTemplateItems(CONFIG.TEMPLATE_ITEMS, cardData);
     });
   }
 
   function showLoadingState(cardId) {
-    updateCardElements(cardId, { text: '...' });
+    updateCardElements(cardId, { text: '...', addClasses: ['card-user-count-loading'] });
+  }
+
+  function removeLoadingElements() {
+    const cards = document.querySelectorAll('.card-user-count.card-user-count-loading');
+    cards.forEach(cardCountElm => {
+      cardCountElm.remove();
+    });
   }
 
   /* card processing */
@@ -383,6 +393,10 @@
       Object.entries(message.data).forEach(([cardId, data]) => {
         updateCardElements(cardId, data);
       });
+    }
+
+    if (message.action === 'card_data_queue_cleared') {
+      removeLoadingElements();
     }
   });
 })();
