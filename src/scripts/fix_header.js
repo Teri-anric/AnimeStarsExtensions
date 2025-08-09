@@ -25,6 +25,18 @@
         }
     }
 
+    function updateWatchlistFix(enabled) {
+        const headerLink = document.querySelector(".header__group-menu > a:nth-child(2)");
+        if (!headerLink) return console.log("Watchlist fix: header link not found");
+        if (enabled) {
+            if (!headerLink.href.includes("watchlist/watching/")) {
+                headerLink.href += "watchlist/watching/";
+            }
+        } else {
+            headerLink.href = headerLink.href.replace("watchlist/watching/", "");
+        }
+    }
+
     setInterval(() => {
         if (CONFIG.AUTO_TAKE_HEAVENLY_STONE) {
             const heavenlyStone = document.querySelector("#gift-icon");
@@ -36,9 +48,7 @@
 
     // init
     chrome.storage.sync.get(['auto-watchlist-fix', 'add-my-cards-button', 'auto-take-heavenly-stone'], (settings) => {
-        if (settings['auto-watchlist-fix']) {
-            document.querySelector(".header__group-menu > a:nth-child(2)").href += "watchlist/watching/";
-        }
+        updateWatchlistFix(settings['auto-watchlist-fix']);
         if (settings['add-my-cards-button']) {
             createMyCardsButton();
         }
@@ -51,11 +61,7 @@
         if (namespace != "sync") return;
         // watchlist fix
         if (changes['auto-watchlist-fix'] && changes['auto-watchlist-fix'].newValue != changes['auto-watchlist-fix'].oldValue) {
-            if (changes['auto-watchlist-fix'].newValue) {
-                document.querySelector(".header__group-menu > a:nth-child(2)").href += "watchlist/watching/";
-            } else {
-                document.querySelector(".header__group-menu > a:nth-child(2)").href = document.querySelector(".header__group-menu > a:nth-child(2)").href.replace("watchlist/watching/", "");
-            }
+            updateWatchlistFix(changes['auto-watchlist-fix'].newValue);
         }
         // add my cards button
         if (changes['add-my-cards-button'] && changes['add-my-cards-button'].newValue != changes['add-my-cards-button'].oldValue) {
