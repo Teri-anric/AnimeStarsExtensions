@@ -4,6 +4,11 @@
         REMOVE_CARD_LIST_AND_CLUB_RATING_IN_CARD_BASE: false,
     };
 
+    const PAGE_STATE = {
+        query: '',
+        page: 1,
+    };
+
     function createSearchElements() {
         const tabsContainer = document.querySelector('.tabs.tabs--center');
         if (!tabsContainer) return;
@@ -107,7 +112,9 @@
 
     function handleSearchInput(event) {
         const searchInput = document.querySelector(".card-filter-form__search");
-        searchResults(searchInput.value, 1);
+        PAGE_STATE.query = searchInput.value;
+        PAGE_STATE.page = 1;
+        searchResults();
     }
 
     function getActiveRanks() {
@@ -121,28 +128,39 @@
         return rank.length > 0 ? rank : null;
     }
 
+    function buildFilterQuery(query) {
+        if (query.startsWith("{")) {
+            try {
+                return JSON.parse(query);
+            } catch (e) {
+                alert("Invalid query");
+                return null;
+            }
+        }
+        return {
+            and: [
+                {
+                    or: [
+                        { card_id: { eq: parseInt(query) || 0 } },
+                        { name: { icontains: query } },
+                        { anime_name: { icontains: query } },
+                        { author: { eq: query } },
+                    ]
+                },
+                { rank: { in: (getActiveRanks() || ["ass", "s", "a", "b", "c", "d", "e"]) } }
+            ]
+        }
+    }
 
-    async function searchResults(query, page = 1) {
+    async function searchResults() {
         const searchTabCount = document.querySelector('.tabs__item.tabs__search-toggle span');
         searchTabCount.textContent = "(0)";
         searchTabCount.hidden = false;
 
         try {
             const searchQuery = {
-                filter: {
-                    and: [
-                        {
-                            or: [
-                                { card_id: { eq: parseInt(query) || 0 } },
-                                { name: { icontains: query } },
-                                { anime_name: { icontains: query } },
-                                { author: { eq: query } },
-                            ]
-                        },
-                        { rank: { in: (getActiveRanks() || ["ass", "s", "a", "b", "c", "d", "e"]) } }
-                    ]
-                },
-                page: page,
+                filter: buildFilterQuery(PAGE_STATE.query),
+                page: PAGE_STATE.page,
                 per_page: 63
             };
 
@@ -152,7 +170,7 @@
             });
 
             if (response.success) {
-                displaySearchResults(response.data, query);
+                displaySearchResults(response.data);
                 searchTabCount.textContent = `(${response.data.total})`;
             } else {
                 console.error('Search failed:', response.error);
@@ -164,12 +182,12 @@
         }
     }
 
-    function displaySearchResults(data, query) {
+    function displaySearchResults(data) {
         const cardsContainer = document.querySelector('.anime-cards.anime-cards--full-page');
         if (!cardsContainer) return;
 
         cardsContainer.innerHTML = '';
-        updatePaginationForSearch(data, query);
+        updatePaginationForSearch(data);
 
         if (data.items.length === 0) {
             cardsContainer.innerHTML = '<div class="no-results">Карты не найдены</div>';
@@ -210,7 +228,7 @@
         });
     }
 
-    function updatePaginationForSearch(data, query) {
+    function updatePaginationForSearch(data) {
         const paginationContainer = document.querySelector('.pagination');
         if (!paginationContainer) return;
 
@@ -245,7 +263,8 @@
             prevButton.innerHTML = '<span class="fal fa-long-arrow-left"></span>';
             prevButton.addEventListener('click', (e) => {
                 e.preventDefault();
-                searchResults(query, data.page - 1);
+                PAGE_STATE.page = data.page - 1;
+                searchResults();
             });
             pagesContainer.appendChild(prevButton);
         }
@@ -257,7 +276,8 @@
             firstPage.textContent = '1';
             firstPage.addEventListener('click', (e) => {
                 e.preventDefault();
-                searchResults(query, 1);
+                PAGE_STATE.page = 1;
+                searchResults();
             });
             pagesContainer.appendChild(firstPage);
 
@@ -281,7 +301,8 @@
                 pageLink.textContent = i.toString();
                 pageLink.addEventListener('click', (e) => {
                     e.preventDefault();
-                    searchResults(query, i);
+                    PAGE_STATE.page = i;
+                    searchResults();
                 });
                 pagesContainer.appendChild(pageLink);
             }
@@ -301,7 +322,8 @@
             lastPage.textContent = data.total_pages.toString();
             lastPage.addEventListener('click', (e) => {
                 e.preventDefault();
-                searchResults(query, data.total_pages);
+                PAGE_STATE.page = data.total_pages;
+                searchResults();
             });
             pagesContainer.appendChild(lastPage);
         }
@@ -313,7 +335,8 @@
             nextButton.innerHTML = '<span class="fal fa-long-arrow-right"></span>';
             nextButton.addEventListener('click', (e) => {
                 e.preventDefault();
-                searchResults(query, data.page + 1);
+                PAGE_STATE.page = data.page + 1;
+                searchResults();
             });
             pagesContainer.appendChild(nextButton);
         }
@@ -347,7 +370,11 @@
             const search = new URL(window.location.href)?.searchParams?.get?.('search');
             if (search != null) {
                 toggleSearchInput();
-                searchResults(search, 1);
+                PAGE_STATE.query = search;
+                PAGE_STATE.page = 1;
+                const searchInput = document.querySelector('.card-filter-form__search');
+                if (searchInput) searchInput.value = search;
+                searchResults();
             }
         }
     });
