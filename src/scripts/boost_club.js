@@ -1,6 +1,6 @@
 (function () {
     let isHighlighted = false;
-    const USERNAME = document.querySelector(".lgn__name > span")?.textContent.trim();
+    const USERNAME = document.querySelector(".lgn__name > span")?.textContent?.trim?.();
 
     function highlightUserTopItem() {
         if (!USERNAME || !isHighlighted) return;

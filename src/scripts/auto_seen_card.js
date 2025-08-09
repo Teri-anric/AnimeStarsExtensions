@@ -3,7 +3,8 @@
         ENABLED: false,
         TO_STACK: false,
     }
-    const notificationRoot = document.querySelector(".fscr")
+    const notificationRoot = document.querySelector(".fscr");
+    if (!notificationRoot) return console.log('auto_seen_card: notificationRoot not found');
 
     const cardNotifications = document.createElement('div');
     cardNotifications.classList.add('card-notifications');

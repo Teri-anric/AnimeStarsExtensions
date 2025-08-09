@@ -16,10 +16,7 @@
     "content_scripts": [
         {
             "matches": [
-                "https://[HOST]/aniserials/video/*/*.html",
-                "https://[HOST]/aniserials/ova/*.html",
-                "https://[HOST]/aniserials/film-vvv/*.html",
-                "https://[HOST]/aniserials/videos/*/*.html"
+                "https://[HOST]/*"
             ],
             "js": [
                 "./scripts/auto_seen_card.js",
@@ -27,29 +24,8 @@
             ],
             "css": [
                 "./styles/auto_seen_card.css"
-            ]
-        },
-        {
-            "matches": [
-                "https://[HOST]/*",
-                "https://raw.githubusercontent.com/Teri-anric/AnimeStarsExtensions/*",
-                "https://ass-api.strawberrycat.dev/*",
-                "https://ass.strawberrycat.dev/*"
             ],
-            "js": [
-                "./scripts/page_worker.js"
-            ]
-        },
-        {
-            "matches": [
-                "https://[HOST]/user/*"
-            ],
-            "js": [
-                "./scripts/user_card_buttons.js"
-            ],
-            "css": [
-                "./styles/user_card_buttons.css"
-            ]
+            "run_at": "document_end"
         },
         {
             "matches": [
@@ -60,19 +36,8 @@
             ],
             "css": [
                 "./styles/fix_header.css"
-            ]
-        },
-        {
-            "matches": [
-                "https://[HOST]/clubs/boost/*"
             ],
-            "js": [
-                "./scripts/boost_club.js",
-                "./scripts/boost_club_auto.js"
-            ],
-            "css": [
-                "./styles/boost_club.css"
-            ]
+            "run_at": "document_idle"
         },
         {
             "matches": [
@@ -84,16 +49,19 @@
             "css": [
                 "./styles/card_user_count.css"
             ],
-            "run_at": "document_end"
+            "run_at": "document_idle"
         },
         {
             "matches": [
-                "https://[HOST]/cards/users/*"
+                "https://[HOST]/user/*"
             ],
             "js": [
-                "./scripts/cards_users_parser.js"
+                "./scripts/user_card_buttons.js"
             ],
-            "run_at": "document_end"
+            "css": [
+                "./styles/user_card_buttons.css"
+            ],
+            "run_at": "document_idle"
         },
         {
             "matches": [
@@ -109,12 +77,44 @@
         },
         {
             "matches": [
+                "https://[HOST]/cards/users/*"
+            ],
+            "js": [
+                "./scripts/cards_users_parser.js"
+            ],
+            "run_at": "document_end"
+        },
+        {
+            "matches": [
+                "https://[HOST]/clubs/boost/*"
+            ],
+            "js": [
+                "./scripts/boost_club.js",
+                "./scripts/boost_club_auto.js"
+            ],
+            "css": [
+                "./styles/boost_club.css"
+            ]
+        },
+        {
+            "matches": [
                 "https://ass.strawberrycat.dev/*"
             ],
             "js": [
                 "./scripts/token_bridge.js"
             ],
             "run_at": "document_end"
+        },
+        {
+            "matches": [
+                "https://[HOST]/*",
+                "https://raw.githubusercontent.com/Teri-anric/AnimeStarsExtensions/*",
+                "https://ass-api.strawberrycat.dev/*",
+                "https://ass.strawberrycat.dev/*"
+            ],
+            "js": [
+                "./scripts/page_worker.js"
+            ]
         }
     ],
     "icons": {

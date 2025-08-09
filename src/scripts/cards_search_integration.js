@@ -6,8 +6,9 @@
 
     function createSearchElements() {
         const tabsContainer = document.querySelector('.tabs.tabs--center');
+        if (!tabsContainer) return;
         const tabsMenu = tabsContainer.querySelector('.justify-center .tab__menu');
-        if (!tabsContainer || !tabsMenu) return;
+        if (!tabsMenu) return;
 
         // Create search button
         const searchTabButton = document.createElement('button');
@@ -331,8 +332,9 @@
         CONFIG.ENABLED = settings['cards-search-integration'] || false;
         CONFIG.REMOVE_CARD_LIST_AND_CLUB_RATING_IN_CARD_BASE = settings['remove-card-list-and-club-rating-in-card-base'] || false;
         if (CONFIG.REMOVE_CARD_LIST_AND_CLUB_RATING_IN_CARD_BASE) {
-            const paramsSize = new URL(window.location.href)?.searchParams.size;
-            if (paramsSize == 0) window.location = '/cards/?rank=';
+            const url = new URL(window.location.href);
+            const paramsSize = url?.searchParams?.size;
+            if (paramsSize == 0 || url?.pathname in ['/cards/', '/cards']) window.location = '/cards/?rank=';
         }
 
         if (CONFIG.ENABLED) {
@@ -352,8 +354,9 @@
         if (changes['remove-card-list-and-club-rating-in-card-base'] && changes['remove-card-list-and-club-rating-in-card-base'].oldValue !== changes['remove-card-list-and-club-rating-in-card-base'].newValue) {
             CONFIG.REMOVE_CARD_LIST_AND_CLUB_RATING_IN_CARD_BASE = changes['remove-card-list-and-club-rating-in-card-base'].newValue;
             if (CONFIG.REMOVE_CARD_LIST_AND_CLUB_RATING_IN_CARD_BASE) {
-                const paramsSize = new URL(window.location.href)?.searchParams.size;
-                if (paramsSize == 0) window.location = '/cards/?rank=';
+                const url = new URL(window.location.href)
+                const paramsSize = url?.searchParams?.size;
+                if (paramsSize == 0 && url?.pathname == '/cards/') window.location = '/cards/?rank=';
             }
         }
 

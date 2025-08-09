@@ -1,5 +1,6 @@
 (function () {
-    let USERNAME = document.querySelector(".usn__name > h1")?.textContent
+    let USERNAME = document.querySelector(".usn__name > h1")?.textContent?.trim?.();
+    if (!USERNAME) return console.log('user_card_buttons: USERNAME not found');
 
     function createUserCardButtons() {
         const cardButton = document.querySelector(".usn-sect__header");
