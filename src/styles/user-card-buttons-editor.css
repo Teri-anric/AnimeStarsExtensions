@@ -1,0 +1,689 @@
+/**
+ * User Card Buttons Editor Styles
+ * Styles for the user card buttons configuration editor
+ */
+
+/* Import base card appearance styles */
+@import url('./card-appearance.css');
+
+/* Buttons Editor Specific Styles */
+.buttons-editor {
+    border: 2px solid #e1e8ed;
+    border-radius: 12px;
+    background: #ffffff;
+    padding: 24px;
+    margin: 20px 0;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.08);
+    transition: box-shadow 0.3s ease;
+}
+
+.buttons-editor:hover {
+    box-shadow: 0 8px 24px rgba(0,0,0,0.12);
+}
+
+.buttons-items-container {
+    min-height: 80px;
+    margin-bottom: 20px;
+    position: relative;
+}
+
+/* Empty State */
+.empty-state {
+    text-align: center;
+    padding: 40px 20px;
+    color: #6c757d;
+    border: 2px dashed #dee2e6;
+    border-radius: 8px;
+    background: #f8f9fa;
+}
+
+.empty-state i {
+    font-size: 32px;
+    color: #adb5bd;
+    margin-bottom: 12px;
+    display: block;
+}
+
+.empty-state p {
+    margin: 8px 0 4px 0;
+    font-weight: 600;
+    font-size: 16px;
+}
+
+.empty-state small {
+    font-size: 14px;
+    color: #8fa0a7;
+}
+
+/* Button Items */
+.button-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 12px;
+    padding: 16px 20px;
+    background: linear-gradient(135deg, #f8f9fa 0%, #ffffff 100%);
+    border: 2px solid #e9ecef;
+    border-radius: 10px;
+    transition: all 0.3s ease;
+    cursor: grab;
+    position: relative;
+    min-height: 60px;
+}
+
+.button-item:hover {
+    background: linear-gradient(135deg, #e9ecef 0%, #f8f9fa 100%);
+    border-color: #007bff;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0,123,255,0.15);
+}
+
+.button-item.dragging {
+    opacity: 0.5;
+    transform: rotate(3deg) scale(0.98);
+    cursor: grabbing;
+    z-index: 1000;
+}
+
+.button-item.disabled {
+    opacity: 0.5;
+    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+}
+
+/* Drag Drop Visual Feedback */
+.button-item.drag-over-top {
+    border-top: 4px solid #007bff;
+    margin-top: 4px;
+}
+
+.button-item.drag-over-bottom {
+    border-bottom: 4px solid #007bff;
+    margin-bottom: 4px;
+}
+
+/* Drag Handle */
+.drag-handle {
+    color: #adb5bd;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: grab;
+    padding: 4px;
+    transition: color 0.2s ease;
+    user-select: none;
+    min-width: 20px;
+    text-align: center;
+}
+
+.drag-handle:hover {
+    color: #007bff;
+}
+
+.button-item.dragging .drag-handle {
+    cursor: grabbing;
+}
+
+/* Button Item Content */
+.button-item-content {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex: 1;
+    flex-wrap: wrap;
+}
+
+.button-icon-preview {
+    min-width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, #007bff, #0056b3);
+    border-radius: 8px;
+    color: white;
+    font-size: 18px;
+}
+
+
+/* Form Elements in Button Item */
+.button-item .item-input,
+.button-item .item-select {
+    flex: 2;
+    min-width: 260px;
+    padding: 10px 14px;
+    border: 2px solid #ced4da;
+    border-radius: 8px;
+    font-size: 14px;
+    transition: all 0.2s ease;
+    background: white;
+}
+
+.button-item .item-input:focus,
+.button-item .item-select:focus {
+    outline: none;
+    border-color: #007bff;
+    box-shadow: 0 0 0 3px rgba(0,123,255,0.1);
+}
+
+.button-item .item-input.url-input {
+    font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+    font-size: 12px;
+    min-width: 100%;
+}
+
+.button-item .item-input.text-input {
+    max-width: 150px;
+}
+
+.button-item .item-input.rank-input {
+    max-width: 80px;
+    text-transform: uppercase;
+}
+
+/* Toggle Switch in Button Item */
+.button-item .toggle-switch {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.button-item .toggle-switch input[type="checkbox"] {
+    width: 40px;
+    height: 20px;
+    appearance: none;
+    background: #ccc;
+    border-radius: 20px;
+    position: relative;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.button-item .toggle-switch input[type="checkbox"]:checked {
+    background: #28a745;
+}
+
+.button-item .toggle-switch input[type="checkbox"]::before {
+    content: '';
+    position: absolute;
+    width: 16px;
+    height: 16px;
+    background: white;
+    border-radius: 50%;
+    top: 2px;
+    left: 2px;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+}
+
+.button-item .toggle-switch input[type="checkbox"]:checked::before {
+    left: 22px;
+}
+
+/* Remove Button */
+.remove-btn {
+    background: linear-gradient(135deg, #dc3545, #c82333);
+    color: white;
+    border: none;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 20px;
+    font-weight: bold;
+    transition: all 0.3s ease;
+    margin-left: auto;
+    flex-shrink: 0;
+}
+
+.remove-btn:hover {
+    background: linear-gradient(135deg, #c82333, #bd2130);
+    transform: scale(1.1) rotate(90deg);
+    box-shadow: 0 4px 12px rgba(220,53,69,0.4);
+}
+
+.remove-btn:active {
+    transform: scale(0.95) rotate(90deg);
+}
+
+/* Add Button Section */
+.add-button-section {
+    margin-top: 30px;
+    padding: 25px;
+    background: linear-gradient(135deg, #f8f9fa 0%, #ffffff 100%);
+    border-radius: 12px;
+    border: 2px solid #e9ecef;
+    display: flex;
+    justify-content: center;
+}
+
+/* Main Add Button */
+.add-custom-btn.main-add-btn {
+    background: linear-gradient(135deg, #28a745, #20c997);
+    color: white;
+    border: none;
+    padding: 16px 32px;
+    border-radius: 12px;
+    cursor: pointer;
+    font-size: 16px;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 12px rgba(40,167,69,0.3);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    min-width: 200px;
+}
+
+.add-custom-btn.main-add-btn:hover {
+    background: linear-gradient(135deg, #218838, #1e7e34);
+    transform: translateY(-3px);
+    box-shadow: 0 8px 20px rgba(40,167,69,0.4);
+}
+
+.add-custom-btn.main-add-btn:active {
+    transform: translateY(-1px);
+}
+
+.add-custom-btn.main-add-btn i {
+    font-size: 20px;
+}
+
+/* Import/Export Section */
+.import-export-section {
+    margin-top: 30px;
+    padding: 25px;
+    background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
+    border-radius: 12px;
+    border: 2px solid #e9ecef;
+}
+
+.import-export-section h3 {
+    color: #495057;
+    font-size: 1.1rem;
+    margin-bottom: 15px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.import-export-section h3 i {
+    color: #007bff;
+}
+
+.import-export-buttons {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+}
+
+.import-export-buttons button {
+    background: linear-gradient(135deg, #007bff, #0056b3);
+    color: white;
+    border: none;
+    padding: 12px 20px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    box-shadow: 0 3px 8px rgba(0,123,255,0.25);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.import-export-buttons button:hover {
+    background: linear-gradient(135deg, #0056b3, #004085);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(0,123,255,0.35);
+}
+
+.import-export-buttons button:active {
+    transform: translateY(0);
+}
+
+.import-export-buttons button i {
+    font-size: 16px;
+}
+
+#reset-config {
+    background: linear-gradient(135deg, #dc3545, #c82333);
+}
+
+#reset-config:hover {
+    background: linear-gradient(135deg, #c82333, #bd2130);
+}
+
+/* Preview Buttons Container */
+.preview-buttons-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100px;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border-radius: 12px;
+    padding: 30px;
+    box-shadow: inset 0 2px 10px rgba(0,0,0,0.1);
+}
+
+.user-card-buttons {
+    display: flex;
+    flex-flow: row wrap;
+    gap: 10px;
+    font-size: 16px;
+    font-weight: 700;
+    color: #9d274d;
+}
+
+.user-card-buttons a {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 8px 12px;
+    background: white;
+    border-radius: 8px;
+    text-decoration: none;
+    color: #9d274d;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+    min-width: 40px;
+    min-height: 40px;
+}
+
+.user-card-buttons a:hover {
+    background: #f8f9fa;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+}
+
+.user-card-buttons a i {
+    font-size: 18px;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .buttons-editor {
+        padding: 16px;
+        margin: 10px 0;
+    }
+    
+    .button-item {
+        padding: 12px 16px;
+        flex-wrap: wrap;
+        gap: 8px;
+    }
+    
+    .button-item-content {
+        gap: 8px;
+        width: 100%;
+    }
+    
+    .button-item .item-input,
+    .button-item .item-select {
+        min-width: 100px;
+        flex: 1;
+    }
+    
+    .predefined-buttons {
+        grid-template-columns: 1fr;
+    }
+    
+    .import-export-buttons {
+        flex-direction: column;
+    }
+    
+    .import-export-buttons button {
+        width: 100%;
+    }
+    
+    .add-custom-btn {
+        max-width: 100%;
+    }
+}
+
+/* Animation for adding/removing items */
+@keyframes slideInFromTop {
+    from {
+        opacity: 0;
+        transform: translateY(-20px) scale(0.95);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+.button-item {
+    animation: slideInFromTop 0.3s ease-out;
+}
+
+/* Focus states for accessibility */
+.button-item:focus-within {
+    border-color: #007bff;
+    box-shadow: 0 0 0 3px rgba(0,123,255,0.1);
+}
+
+/* Field Labels */
+.field-label {
+    font-size: 11px;
+    color: #6c757d;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 4px;
+    font-weight: 600;
+}
+
+.form-field {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.form-field.url-field {
+    width: 100%;
+}
+
+/* Icon Controls */
+.icon-controls {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    width: 100%;
+}
+
+.icon-picker-btn {
+    background: linear-gradient(135deg, #007bff, #0056b3);
+    color: white;
+    border: none;
+    padding: 10px 16px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 18px;
+    transition: all 0.3s ease;
+    box-shadow: 0 3px 8px rgba(0,123,255,0.25);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 40px;
+    min-width: 60px;
+    flex-shrink: 0;
+}
+
+.icon-picker-btn:hover {
+    background: linear-gradient(135deg, #0056b3, #004085);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(0,123,255,0.35);
+}
+
+.icon-picker-btn i {
+    font-size: 20px;
+}
+
+.icon-input {
+    flex: 1;
+    font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+    font-size: 12px;
+}
+
+/* Icon Picker Modal */
+.icon-picker-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.7);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 10000;
+    animation: fadeIn 0.3s ease;
+}
+
+.icon-picker-modal.hidden {
+    display: none;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+.icon-picker-content {
+    background: white;
+    border-radius: 16px;
+    max-width: 600px;
+    width: 90%;
+    max-height: 80vh;
+    display: flex;
+    flex-direction: column;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+    animation: slideUp 0.3s ease;
+}
+
+@keyframes slideUp {
+    from {
+        transform: translateY(50px);
+        opacity: 0;
+    }
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+.icon-picker-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px 25px;
+    border-bottom: 2px solid #e9ecef;
+}
+
+.icon-picker-header h3 {
+    margin: 0;
+    color: #2c3e50;
+    font-size: 1.3rem;
+}
+
+.icon-picker-close {
+    background: none;
+    border: none;
+    font-size: 32px;
+    color: #6c757d;
+    cursor: pointer;
+    width: 36px;
+    height: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    transition: all 0.3s ease;
+}
+
+.icon-picker-close:hover {
+    background: #f8f9fa;
+    color: #dc3545;
+    transform: rotate(90deg);
+}
+
+.icons-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(60px, 1fr));
+    gap: 10px;
+    padding: 20px;
+    overflow-y: auto;
+    max-height: calc(80vh - 100px);
+}
+.custom-icon-wrap {
+    display: flex;
+    gap: 10px;
+    padding: 12px 20px 0 20px;
+}
+
+.custom-icon-input {
+    flex: 1;
+    border: 2px solid #e9ecef;
+    border-radius: 8px;
+    padding: 10px 12px;
+    font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+}
+
+
+.icon-option {
+    background: linear-gradient(135deg, #f8f9fa 0%, #ffffff 100%);
+    border: 2px solid #e9ecef;
+    border-radius: 10px;
+    padding: 15px;
+    cursor: pointer;
+    font-size: 24px;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 60px;
+    color: #495057;
+}
+
+.icon-option:hover {
+    background: linear-gradient(135deg, #007bff, #0056b3);
+    border-color: #007bff;
+    color: white;
+    transform: translateY(-3px);
+    box-shadow: 0 6px 16px rgba(0,123,255,0.3);
+}
+
+.icon-option:active {
+    transform: translateY(-1px);
+}
+
+.icon-option i {
+    font-size: 24px;
+}
+
+/* Scrollbar styling for icons grid */
+.icons-grid::-webkit-scrollbar {
+    width: 8px;
+}
+
+.icons-grid::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 4px;
+}
+
+.icons-grid::-webkit-scrollbar-thumb {
+    background: #007bff;
+    border-radius: 4px;
+}
+
+.icons-grid::-webkit-scrollbar-thumb:hover {
+    background: #0056b3;
+}
+
