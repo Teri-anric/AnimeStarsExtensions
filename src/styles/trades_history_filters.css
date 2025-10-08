@@ -1,0 +1,12 @@
+.ass-thf__user-search.tabs__item {
+  width: 150px !important;
+  padding: 2px 6px !important;
+  font-size: 12px !important;
+  border-radius: 6px !important;
+  border: 1px solid #ddd !important;
+  flex: 0 0 auto !important;
+}
+
+@media (max-width: 600px) {
+  .ass-thf__user-search.tabs__item { width: 120px !important; }
+}

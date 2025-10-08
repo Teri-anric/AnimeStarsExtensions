@@ -126,6 +126,7 @@ const AnimeStarExtensionTranslationEnglish = {
     'cards-search-settings': 'Cards Search Settings',
     'cards-search-integration': 'Cards Search Integration',
     'cards-search-integration-description': 'Adds a search button to the cards base page for quick search via API',
+    'trades-history-filters': 'Trades history filters (rank and user)',
     'add-need-btn-to-card-dialog': 'Add "Need" button to card dialog',
     'not-add-need-btn-to-card-dialog': 'Not add',
     'add-need-btn-to-card-dialog-can': 'Add if can set',

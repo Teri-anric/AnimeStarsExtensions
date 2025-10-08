@@ -78,6 +78,18 @@
         },
         {
             "matches": [
+                "https://[HOST]/trades/history*"
+            ],
+            "js": [
+                "./scripts/trades_history_filters.js"
+            ],
+            "css": [
+                "./styles/trades_history_filters.css"
+            ],
+            "run_at": "document_end"
+        },
+        {
+            "matches": [
                 "https://[HOST]/cards/users/*"
             ],
             "js": [

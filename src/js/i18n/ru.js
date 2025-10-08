@@ -128,6 +128,7 @@ export const AnimeStarExtensionTranslationRussian = {
     'cards-search-settings': 'Настройки поиска карт',
     'cards-search-integration': 'Интеграция поиска карт',
     'cards-search-integration-description': 'Добавляет кнопку поиска на страницу базы карт для быстрого поиска через API',
+    'trades-history-filters': 'Фильтры истории обменов (ранг и пользователь)',
     'add-need-btn-to-card-dialog': 'Добавить кнопку "Хочу картку" в диалоговом окне карточки',
     'not-add-need-btn-to-card-dialog': 'Не добавлять',
     'add-need-btn-to-card-dialog-can': 'Добавлять, если можно установить',

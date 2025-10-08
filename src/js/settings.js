@@ -19,6 +19,7 @@ document.addEventListener('DOMContentLoaded', () => {
         'api-stats-submission-enabled',
         'api-stats-receive-enabled',
         'remove-card-list-and-club-rating-in-card-base',
+        'trades-history-filters',
     ];
 
     const settingsSelects = [

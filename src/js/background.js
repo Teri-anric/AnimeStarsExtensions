@@ -41,6 +41,7 @@ const DEFAULT_SETTINGS = {
     'auto-take-cinema-stone': true,
     'add-need-btn-to-card-dialog': 'can',
     'remove-card-list-and-club-rating-in-card-base': false,
+    'trades-history-filters': true,
 };
 
 const MIGRATIONS = [

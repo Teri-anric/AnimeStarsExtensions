@@ -314,35 +314,38 @@ input:checked + .slider:before {
 
 /* Card Appearance Button */
 .open-card-appearance-btn {
-    background: linear-gradient(135deg, #007bff, #0056b3);
-    color: white;
-    border: none;
-    padding: 12px 24px;
-    border-radius: 8px;
-    cursor: pointer;
-    font-size: 14px;
-    font-weight: 600;
-    display: flex;
+    display: inline-flex;
     align-items: center;
-    gap: 8px;
-    transition: all 0.3s ease;
-    box-shadow: 0 2px 8px rgba(0,123,255,0.2);
+    gap: 6px;
+    padding: 6px 12px;
+    font-size: 13px;
+    font-weight: 500;
+    color: #3498db;
+    background-color: rgba(52, 152, 219, 0.08);
+    border: 1px solid #3498db;
+    border-radius: 4px;
     text-decoration: none;
+    cursor: pointer;
+    transition: background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease;
+    box-shadow: none;
 }
 
 .open-card-appearance-btn:hover {
-    background: linear-gradient(135deg, #0056b3, #004085);
-    transform: translateY(-2px);
-    box-shadow: 0 4px 16px rgba(0,123,255,0.3);
+    color: #5dade2;
+    border-color: #5dade2;
+    background-color: rgba(93, 173, 226, 0.12);
+    transform: none;
+    box-shadow: none;
 }
 
 .open-card-appearance-btn:active {
-    transform: translateY(0);
-    box-shadow: 0 2px 8px rgba(0,123,255,0.2);
+    background-color: rgba(93, 173, 226, 0.2);
+    transform: none;
+    box-shadow: none;
 }
 
 .open-card-appearance-btn i {
-    font-size: 16px;
+    font-size: 14px;
 }
 
 /* API Integration Settings */

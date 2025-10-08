@@ -128,6 +128,7 @@ const AnimeStarExtensionTranslationUkraine = {
     'cards-search-settings': 'Налаштування пошуку карт',
     'cards-search-integration': 'Інтеграція пошуку карт',
     'cards-search-integration-description': 'Додає кнопку пошуку до сторінки бази карт для швидкого пошуку через API',
+    'trades-history-filters': 'Фільтри історії обміну (ранг і користувач)',
     'add-need-btn-to-card-dialog': 'Додати кнопку "Хочу картку" в діалоговому вікні картки',
     'not-add-need-btn-to-card-dialog': 'Не додавати',
     'add-need-btn-to-card-dialog-can': 'Додавати, якщо можна встановити',
