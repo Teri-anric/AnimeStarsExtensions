@@ -20,6 +20,8 @@ document.addEventListener('DOMContentLoaded', () => {
         'api-stats-receive-enabled',
         'remove-card-list-and-club-rating-in-card-base',
         'trades-history-filters',
+        'trades-preview-enabled',
+        'trades-preview-auto-parse',
     ];
 
     const settingsSelects = [
@@ -33,6 +35,8 @@ document.addEventListener('DOMContentLoaded', () => {
         'club-boost-action-cooldown',
         'card-user-count-request-delay',
         'card-user-count-cache-max-lifetime',
+        'trades-preview-auto-start-delay',
+        'trades-preview-auto-interval',
     ];
 
     const settingsColorInputs = [
@@ -60,6 +64,23 @@ document.addEventListener('DOMContentLoaded', () => {
                 "card-user-count-request-delay",
                 "card-user-count-cache-enabled",
                 "card-user-count-cache-max-lifetime",
+            ]
+        },
+        {
+            condition: {
+                "trades-preview-enabled": true,
+            },
+            targets: [
+                "trades-preview-auto-parse",
+            ]
+        },
+        {
+            condition: {
+                "trades-preview-enabled": true,
+                "trades-preview-auto-parse": true,
+            },
+            targets: [
+                "trades-preview-auto-subsettings",
             ]
         },
     ];

@@ -15,6 +15,7 @@
   const CONFIG = {
     ADD_NEED_BTN_TO_CARD_DIALOG: 'can',
   };
+  const CARD_OWNER_USERNAME = getOwnerContext();
 
   async function requestBG(message) {
     return await chrome.runtime.sendMessage(message);
@@ -25,6 +26,22 @@
       action: 'find_card_id_by_image_url',
       imageUrls,
     });
+  }
+
+  function getOwnerContext() {
+    try {
+      const url = new URL(window.location.href);
+      if (url.pathname.startsWith('/user/cards/')) {
+        const name = url.searchParams.get('name');
+        return name ? name : null;
+      }
+    } catch { }
+    return null;
+  }
+
+  function sendOwnerInstanceMap(items) {
+    if (!Array.isArray(items) || items.length === 0) return;
+    chrome.runtime.sendMessage({ action: 'owner_instance_map_add', items });
   }
 
   function setCardIdIndex(elm, cardId) {
@@ -94,6 +111,21 @@
     }
   }
 
+  async function indexOwnerIds(elms) {
+    if (!Array.isArray(elms) || elms.length === 0) return [];
+    const instanceRecords = [];
+    elms.forEach((elm) => {
+      const id = elm.getAttribute('data-index-card-id');
+      const ownerId = elm.dataset?.ownerId;
+      if (id && ownerId) instanceRecords.push({ ownerId, cardId: parseInt(id), username: CARD_OWNER_USERNAME });
+    });
+
+    if (instanceRecords.length > 0) {
+      sendOwnerInstanceMap(instanceRecords);
+    }
+
+  }
+
   async function indexElements(elms) {
     if (!Array.isArray(elms) || elms.length === 0) return [];
 
@@ -113,6 +145,7 @@
 
     await indexElementsFromImages(needImageLookup);
 
+    // indexOwnerIds(elms); DISABLED
   }
 
   async function indexAllOnPage() {
@@ -146,7 +179,6 @@
     if (candidates.size === 0) return;
     indexElements(Array.from(candidates));
   });
-
 
   function start() {
     indexAllOnPage();

@@ -1,0 +1,19 @@
+.trade__list .trade__list-item {
+  position: relative;
+}
+
+.ass-trade-preview {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-left: auto;
+}
+
+.trade__list .trade__list-item .ass-trade-preview img {
+  width: 50px;
+  height: auto;
+  border-radius: 5px;
+  border: 1px solid #444;
+}
+
+

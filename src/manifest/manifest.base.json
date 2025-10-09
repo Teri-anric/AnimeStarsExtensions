@@ -90,6 +90,20 @@
         },
         {
             "matches": [
+                "https://[HOST]/trades/*/",
+                "https://[HOST]/trades/offers/*/",
+                "https://[HOST]/trades/",
+                "https://[HOST]/trades/offers/"
+            ],
+            "js": [
+                "./scripts/trade_previews.js"
+            ],
+            "css": [
+                "./styles/trade_previews.css"
+            ]
+        },
+        {
+            "matches": [
                 "https://[HOST]/cards/users/*"
             ],
             "js": [

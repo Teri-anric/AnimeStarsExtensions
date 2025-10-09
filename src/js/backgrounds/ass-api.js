@@ -93,12 +93,25 @@ async function searchCards(message, sender) {
     }
 }
 
+async function getCardDetail(message, sender) {
+    try {
+        const id = message?.cardId;
+        if (!id) return { success: false, error: 'cardId required' };
+        const data = await AssApiClient.getCard(id);
+        return { success: true, data };
+    } catch (error) {
+        console.error('Get card detail failed:', error);
+        return { success: false, error: error.message };
+    }
+}
+
 const actionMap = {
     'test_api_connection': testApiConnection,
     'store_token': storeToken,
     'remove_token': removeToken,
     'find_card_id_by_image_url': findCardIdByImageUrl,
     'search_cards': searchCards,
+    'get_card_detail': getCardDetail,
 };
 
 

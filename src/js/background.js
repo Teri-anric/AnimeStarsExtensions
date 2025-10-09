@@ -2,6 +2,7 @@ import { i18n } from './translation.js';
 // Backgrounds
 import './backgrounds/card_user_count.js';
 import './backgrounds/ass-api.js';
+// import './backgrounds/owner_card_map.js'; # DISABLED
 
 // Default settings
 const DEFAULT_SETTINGS = {
@@ -42,6 +43,11 @@ const DEFAULT_SETTINGS = {
     'add-need-btn-to-card-dialog': 'can',
     'remove-card-list-and-club-rating-in-card-base': false,
     'trades-history-filters': true,
+    'owner-card-map-sync-enabled': false,
+    'trades-preview-enabled': true,
+    'trades-preview-auto-parse': true,
+    'trades-preview-auto-start-delay': 500,
+    'trades-preview-auto-interval': 1200,
 };
 
 const MIGRATIONS = [

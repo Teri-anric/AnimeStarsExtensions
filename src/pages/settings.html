@@ -66,6 +66,38 @@
                 </label>
             </div>
             <div class="setting-item">
+                <label for="trades-preview-enabled">trades-preview-enabled</label>
+                <label class="toggle">
+                    <input type="checkbox" id="trades-preview-enabled">
+                    <span class="slider"></span>
+                </label>
+            </div>
+            <div class="setting-item">
+                <label for="trades-preview-auto-parse">trades-preview-auto-parse</label>
+                <label class="toggle">
+                    <input type="checkbox" id="trades-preview-auto-parse">
+                    <span class="slider"></span>
+                </label>
+            </div>
+            <div class="settings-sub-section hidden" id="trades-preview-auto-subsettings">
+                <div class="setting-item">
+                    <label for="trades-preview-auto-start-delay">trades-preview-auto-start-delay</label>
+                    <div class="slider-container">
+                        <input type="range" id="trades-preview-auto-start-delay" min="0" max="10000" step="50" value="500">
+                        <input type="number" id="trades-preview-auto-start-delay-number" min="0" max="10000" step="50" value="500">
+                        <span>ms</span>
+                    </div>
+                </div>
+                <div class="setting-item">
+                    <label for="trades-preview-auto-interval">trades-preview-auto-interval</label>
+                    <div class="slider-container">
+                        <input type="range" id="trades-preview-auto-interval" min="100" max="5000" step="50" value="1200">
+                        <input type="number" id="trades-preview-auto-interval-number" min="100" max="5000" step="50" value="1200">
+                        <span>ms</span>
+                    </div>
+                </div>
+            </div>
+            <div class="setting-item">
                 <label for="add-user-cards-buttons">add-user-cards-buttons</label>
                 <label class="toggle">
                     <input type="checkbox" id="add-user-cards-buttons">
