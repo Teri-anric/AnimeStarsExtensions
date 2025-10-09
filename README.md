@@ -15,6 +15,8 @@ This browser extension provides enhanced functionality for the AnimeStar website
     - Automatically takes stone in cinema mode
 2. **User Card Buttons**: 
     - Adds quick navigation buttons to user profile pages
+    - Configure which quick buttons appear on user cards
+    - Drag-and-drop ordering, import/export configuration, live preview
 3. **Watchlist Fix**: 
     - Improves watchlist navigation button
     - Adds a quick cards button
@@ -34,7 +36,13 @@ This browser extension provides enhanced functionality for the AnimeStar website
     - set refresh and action cooldowns
     - disable update check
     - set language
-6. **Language Support**: 
+7. **Trades History Filters**:
+    - Filter trades history by rank and by user
+    - Preserves filters when switching subtabs, quick clear button
+8. **Trade Previews**:
+    - Shows small card previews in trade lists
+    - Optional auto-parse to fetch missing previews with configurable timings
+9. **Language Support**: 
     - English
     - Ukrainian
     - Russian
@@ -43,15 +51,17 @@ This browser extension provides enhanced functionality for the AnimeStar website
 
 ### Chrome
 Easy: [Donwnload in store 👾](https://chromewebstore.google.com/detail/animestar-extension/ocpbplnohadkjdindnodcmpmjboifjae)
+For developers:
 1. Open Chrome and go to `chrome://extensions/`
 2. Enable "Developer mode"
 3. Click "Load unpacked" and select the `src` directory
 
 ### Firefox
-1. Open [release page](https://github.com/Teri-anric/AnimeStarsExtensions/releases/)
-2. Scroll to Assets
-3. Click `animestars_extension-firefox.xpi`
-4. Apply install extension
+Easy: [Download in Firefox Add-ons 🦊](https://addons.mozilla.org/firefox/addon/animestar-extension/)
+For developers:
+1. Open Firefox and go to `about:addons`
+2. Open debug mode (settings icon)
+3. Click "Load Temporary Add-on..." and select the `src` directory
 
 ## Permissions
 
