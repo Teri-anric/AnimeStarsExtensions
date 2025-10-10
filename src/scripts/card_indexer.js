@@ -7,7 +7,7 @@
     '.trade__inventory-item',
     'div.trade__main-item',
     '.remelt__inventory-item',
-    '.remelt__item',
+    '.remelt__item'
   ].join(',');
 
   const notIdsSelectors = ['.trade__inventory-item', '.remelt__inventory-item', '.remelt__item', 'div.trade__main-item'].join(',');

@@ -13,7 +13,7 @@
         // Get card ID from URL parameters
         const urlParams = new URLSearchParams(window.location.search);
         const cardId = urlParams.get('id');
-        const unlockedParam = urlParams.get('unlocked') || '0';
+        const unlockedParam = (urlParams.get('unlocked') || '0') !== '0';
         
         if (!cardId) {
             console.log('Card ID not found in URL');
@@ -53,13 +53,13 @@
         // Send the parsed data to background script
         sendMessageBG({
             action: 'update_card_data',
-            cardId: cardData.cardId,
             data: {
+                cardId: cardData.cardId,
                 trade: cardData.trade,
                 need: cardData.need,
-                owner: cardData.owner
+                owner: cardData.owner,
+                parseType: cardData.unlocked ? "counts" : "unlocked"
             },
-            unlocked: cardData.unlocked
         });
 
         console.log(`Card data sent to background for caching: ${cardData.cardId}`);

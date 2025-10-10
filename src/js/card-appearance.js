@@ -59,6 +59,118 @@ function saveWidgets() {
     chrome.storage.sync.set({ 'card-widgets': JSON.stringify(widgetsState.list) });
 }
 
+function getSelectedWidget() {
+    return widgetsState.list.find(x => x.id === widgetsState.selectedId);
+}
+
+function renderConditionsEditor() {
+    const container = document.getElementById('conditions-editor');
+    const addBtn = document.getElementById('add-condition-btn');
+    if (!container) return;
+
+    // Clear
+    while (container.firstChild) container.removeChild(container.firstChild);
+
+    const w = getSelectedWidget();
+    if (!w) return;
+
+    if (!Array.isArray(w.conditions)) w.conditions = [];
+
+    // Helper to create input controls for one condition
+    function createConditionRow(cond, index) {
+        const row = document.createElement('div');
+        row.style.display = 'grid';
+        row.style.gridTemplateColumns = '120px 110px 1fr 140px 140px 36px';
+        row.style.gap = '8px';
+        row.style.alignItems = 'center';
+
+        const field = document.createElement('select');
+        field.innerHTML = `
+            <option value="rank">rank</option>
+            <option value="name">name</option>
+            <option value="anime-name">anime-name</option>
+            <option value="owner-id">owner-id</option>
+            <option value="can-trade">can-trade</option>`;
+        field.value = cond.field || 'rank';
+
+        const op = document.createElement('select');
+        op.innerHTML = `
+            <option value="eq">=</option>
+            <option value="neq">!=</option>`;
+        op.value = cond.op || 'eq';
+
+        const val = document.createElement('input');
+        val.type = 'text';
+        val.placeholder = 'value';
+        val.value = cond.value ?? '';
+
+        const bg = document.createElement('input');
+        bg.type = 'color';
+        bg.value = cond.backgroundColor || '#000000';
+        bg.title = 'background color';
+
+        const text = document.createElement('input');
+        text.type = 'color';
+        text.value = cond.textColor || '#ffffff';
+        text.title = 'text color';
+
+        const remove = document.createElement('button');
+        remove.className = 'tab-btn';
+        remove.innerHTML = '<i class="fas fa-trash" style="color:#e74c3c"></i>';
+        remove.title = 'remove';
+
+        function commit() {
+            const target = getSelectedWidget();
+            if (!target) return;
+            target.conditions[index] = {
+                field: field.value,
+                op: op.value,
+                value: val.value,
+                backgroundColor: bg.value,
+                textColor: text.value
+            };
+            saveWidgets();
+            updateCardPreview();
+        }
+
+        field.addEventListener('change', commit);
+        op.addEventListener('change', commit);
+        val.addEventListener('input', commit);
+        bg.addEventListener('change', commit);
+        text.addEventListener('change', commit);
+
+        remove.addEventListener('click', () => {
+            const target = getSelectedWidget();
+            if (!target) return;
+            target.conditions.splice(index, 1);
+            saveWidgets();
+            renderConditionsEditor();
+            updateCardPreview();
+        });
+
+        row.appendChild(field);
+        row.appendChild(op);
+        row.appendChild(val);
+        row.appendChild(bg);
+        row.appendChild(text);
+        row.appendChild(remove);
+        return row;
+    }
+
+    w.conditions.forEach((c, i) => container.appendChild(createConditionRow(c, i)));
+
+    if (addBtn) {
+        addBtn.onclick = () => {
+            const target = getSelectedWidget();
+            if (!target) return;
+            target.conditions.push({ field: 'rank', op: 'eq', value: 'a', backgroundColor: '#000000', textColor: '#ffffff' });
+            saveWidgets();
+            renderConditionsEditor();
+            updateCardPreview();
+        };
+    }
+}
+
 function renderWidgetsList() {
     const tabs = document.getElementById('widgets-tabs');
     if (!tabs) return;
@@ -135,6 +247,7 @@ function syncSelectedWidgetToControls() {
     });
 
     if (templateEditor) templateEditor.setItems(w.templateItems || []);
+    renderConditionsEditor();
 }
 
 function saveControlsToSelectedWidget() {
@@ -255,7 +368,6 @@ function loadSettings() {
         widgetsState.selectedId = widgets[0].id;
         renderWidgetsList();
         syncSelectedWidgetToControls();
-        // Update preview after loading settings
         setTimeout(updateCardPreview, 100);
     });
 }
@@ -317,9 +429,7 @@ function initializeCardAppearancePage() {
     
     // Setup event listeners
     setupEventListeners();
-    
-    // Initialize template editor
-    setTimeout(initializeTemplateEditor, 100);
+    initializeTemplateEditor();
 
     const addWidgetBtn = document.getElementById('add-widget-btn');
     if (addWidgetBtn) {
@@ -359,6 +469,7 @@ function initializeCardAppearancePage() {
             const t = btn.getAttribute('data-subtab');
             const content = document.getElementById(`tab-${t}`);
             if (content) content.classList.add('active');
+            if (t === 'conditions') renderConditionsEditor();
         }));
     }
     bindSubtabs();
@@ -408,12 +519,14 @@ function updateCardPreview() {
 
     // Mock data for preview
     const mockData = {
-        need: 14,
-        owner: 642,
-        trade: 46,
-        unlockNeed: 5,
-        unlockOwner: 200,
-        unlockTrade: 12
+        cardId: 4779,
+        need: 9,
+        owner: 583,
+        trade: 28,
+        unlockNeed: 9,
+        unlockOwner: 383,
+        unlockTrade: 28,
+        duplicates: 2,
     };
 
     // Format template content

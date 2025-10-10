@@ -12,7 +12,6 @@ class TemplateEditor {
         this.container = document.getElementById(containerId);
         this.options = {
             previewId: 'template-preview',
-            storageKey: 'card-user-count-template-items',
             onChange: null,
             ...options
         };
@@ -25,7 +24,7 @@ class TemplateEditor {
             { type: 'variable', variable: 'trade' }
         ];
 
-        this.availableVariables = ['need', 'owner', 'trade', 'unlockNeed', 'unlockOwner', 'unlockTrade'];
+        this.availableVariables = ['cardId', 'need', 'owner', 'trade', 'unlockNeed', 'unlockOwner', 'unlockTrade', 'duplicates'];
         this.availableIcons = [
             { value: '', key: 'template-icon-no-icon' },
             { value: 'fas fa-users', key: 'template-icon-users' },
@@ -56,8 +55,10 @@ class TemplateEditor {
             console.error(`Template editor container with id "${this.containerId}" not found`);
             return;
         }
+        this.render();
+    }
 
-        this.loadSavedItems();
+    postInit() {
         this.render();
         this.attachEventListeners();
     }
@@ -465,42 +466,9 @@ class TemplateEditor {
     }
 
     saveItems() {
-        if (typeof chrome !== 'undefined' && chrome.storage) {
-            chrome.storage.sync.set({ [this.options.storageKey]: JSON.stringify(this.currentItems) });
-        }
-        
+        if (this.currentItems.length === 0) return;
         if (this.options.onChange) {
             this.options.onChange(this.currentItems);
-        }
-    }
-
-    loadSavedItems() {
-        if (typeof chrome !== 'undefined' && chrome.storage) {
-            chrome.storage.sync.get([this.options.storageKey], (settings) => {
-                if (settings[this.options.storageKey]) {
-                    try {
-                        let loadedItems = JSON.parse(settings[this.options.storageKey]);
-                        
-                        // Check if migration is needed (old format with icons in variables)
-                        const needsMigration = loadedItems.some(item => 
-                            item.type === 'variable' && item.icon
-                        );
-                        
-                        if (needsMigration) {
-                            console.log('Migrating old template format...');
-                            loadedItems = this.migrateOldData(loadedItems);
-                            // Save migrated data
-                            this.currentItems = loadedItems;
-                            this.saveItems();
-                        } else {
-                            this.currentItems = loadedItems;
-                        }
-                    } catch (e) {
-                        console.error('Failed to parse template items:', e);
-                    }
-                }
-                this.render();
-            });
         }
     }
 

@@ -4,8 +4,17 @@
 import { AssApiClient } from '../api-client.js';
 
 const _CARD_COUNT_CACHE_KEY_PREFIX_BASE = 'cardUserCount';
-const _CARD_COUNT_CACHE_KEY_PREFIX_VERSION = 'V3';
+const _CARD_COUNT_CACHE_KEY_PREFIX_VERSION = 'V4';
 const CARD_COUNT_CACHE_KEY_PREFIX = `${_CARD_COUNT_CACHE_KEY_PREFIX_BASE}${_CARD_COUNT_CACHE_KEY_PREFIX_VERSION}_`;
+const CARD_COUNT_COUNTS_KEY = (cardId, parseType = "counts", username = "") => {
+    if (parseType === "counts") return `${CARD_COUNT_CACHE_KEY_PREFIX}_${cardId}`;
+    if (parseType === "unlocked") return `${CARD_COUNT_CACHE_KEY_PREFIX}_unlocked_${cardId}`;
+    if (parseType === "duplicates") {
+        if (!username) throw new Error("Username is required for duplicates");
+        return `${CARD_COUNT_CACHE_KEY_PREFIX}_duplicates_${cardId}_${username}`;
+    }
+    throw new Error(`Invalid parseType: ${parseType}`);
+};
 
 
 const CARD_COUNT_CONFIG = {
@@ -74,17 +83,11 @@ async function addStatToUploadQueue(data) {
     await AssApiClient.submitCardStats(data);
 }
 
-async function cardDataUpdatedMap(data, source = 'html_parse') {
-    if (source === 'html_parse') addStatToUploadQueue(data);
+async function cardDataUpdated(items) {
     await broadcastToAllTabs({
         action: 'card_data_updated',
-        data: data,
-        source: source,
+        items: items,
     });
-}
-
-async function cardDataUpdated(cardId, data, source = 'html_parse') {
-    await cardDataUpdatedMap({ [cardId]: data }, source);
 }
 
 async function parseHtmlCardCount(html) {
@@ -92,6 +95,17 @@ async function parseHtmlCardCount(html) {
     const tab = tabs[0];
     const response = await chrome.tabs.sendMessage(tab.id, {
         type: 'parse-html-card-count',
+        html
+    });
+    if (response.error) throw new CardNotFoundError(response.error);
+    return response.data;
+}
+
+async function parseHtmlDuplicates(html) {
+    const tabs = await chrome.tabs.query({ url: "*://*/*" });
+    const tab = tabs[0];
+    const response = await chrome.tabs.sendMessage(tab.id, {
+        type: 'parse-html-duplicates',
         html
     });
     if (response.error) throw new CardNotFoundError(response.error);
@@ -115,82 +129,72 @@ function checkValidCardCache(cached) {
     return cached && CARD_COUNT_CONFIG.CACHE_ENABLED && (Date.now() - cached.timestamp < CARD_COUNT_CONFIG.CACHE_MAX_LIFETIME);
 }
 
-// Helper – read from cache in chrome.storage.local
-function getCachedCardCounts(cardId) {
-    return new Promise((resolve) => {
-        chrome.storage.local.get([CARD_COUNT_CACHE_KEY_PREFIX + cardId], (result) => {
-            const cached = result[CARD_COUNT_CACHE_KEY_PREFIX + cardId];
-            if (checkValidCardCache(cached)) {
-                resolve(cached.data);
-            } else {
-                resolve(null);
-            }
-        });
-    });
+async function getCachedCounts(cardIds, parseTypes = ["counts"], username = "") {
+    const cacheKeys = [];
+    for (const cardId of cardIds) {
+        for (const parseType of parseTypes) {
+            cacheKeys.push(CARD_COUNT_COUNTS_KEY(cardId, parseType, username));
+        }
+    }
+    const result = await chrome.storage.local.get(cacheKeys);
+    return Object.entries(result).map(([_, value]) => {
+        if (!checkValidCardCache(value)) return null;
+        return value;
+    }).filter((x) => x !== null);
 }
 
-async function getCachedCardsCounts(cardIds) {
-    const keyMap = Object.fromEntries(
-        cardIds.map(id => [`${CARD_COUNT_CACHE_KEY_PREFIX}${id}`, id])
-    );
-
-    const stored = await chrome.storage.local.get(Object.keys(keyMap));
-
-    return Object.fromEntries(
-        Object.entries(stored)
-            .filter(([_, value]) => checkValidCardCache(value))
-            .map(([key, value]) => [keyMap[key], { ...value.data, cardId: keyMap[key] }])
-    );
-}
-
-// Helper – write to cache
-function setCachedCardCounts(cardId, data) {
-    const record = { timestamp: Date.now(), data, cardId };
-    chrome.storage.local.set({ [`${CARD_COUNT_CACHE_KEY_PREFIX}${cardId}`]: record });
-    return record;
+function setCachedCounts(data) {
+    const key = CARD_COUNT_COUNTS_KEY(data.cardId, data.parseType, data.username);
+    chrome.storage.local.set({ [key]: { ...data, timestamp: Date.now() } });
 }
 
 // Performs the actual network request and parsing
-async function fetchCardCounts(origin, cardId, unlocked = '0', retry = 0) {
-    const url = `${origin}/cards/users/?id=${cardId}&unlocked=${unlocked}`;
+async function fetchPage(url, parseFunction, retry = 0) {
     const response = await fetch(url);
     if (response.redirected && response.url.includes("do=register")) {
         throw new FetchError("User not logged in");
     }
     if (response.status == 403 && retry < 1) {
         await new Promise(resolve => setTimeout(resolve, CARD_COUNT_CONFIG.REQUEST_DELAY));
-        return await fetchCardCounts(origin, cardId, unlocked, retry + 1);
+        return await fetchPage(url, parseFunction, retry + 1);
     }
     if (!response.ok) throw new FetchError("Failed to fetch card counts");
     const html = await response.text();
-    const counts = await parseHtmlCardCount(html);
+    const counts = await parseFunction(html);
     if (!counts) throw new CardNotFoundError("Card not found");
 
     return counts;
 }
 
-async function getCardCounts(cardId, origin, parseUnlockedFlag) {
-    const parseUnlocked = parseUnlockedFlag ?? CARD_COUNT_CONFIG.PARSE_UNLOCKED;
 
+async function fetchCounts(item) {
+    const { cardId, origin, parseType, username } = item;
     if (CARD_COUNT_CONFIG.CACHE_ENABLED) {
-        const cached = await getCachedCardCounts(cardId);
-        if (cached) {
-            return cached;
-        }
+        const cached = await getCachedCounts([cardId], [parseType], username);
+        if (cached && cached.length > 0) return cached[0];
     }
-
-    const counts = await fetchCardCounts(origin, cardId, '0');
-
-    if (parseUnlocked) {
-        const unlockedCounts = await fetchCardCounts(origin, cardId, '1');
-        counts.unlockTrade = unlockedCounts.trade;
-        counts.unlockNeed = unlockedCounts.need;
-        counts.unlockOwner = unlockedCounts.owner;
+    let url = `${origin}/cards/users/?id=${cardId}`;
+    let parseFunction = parseHtmlCardCount;
+    if (parseType === "unlocked") {
+        url = `${origin}/cards/users/?id=${cardId}&unlocked=1`;
     }
-
-    setCachedCardCounts(cardId, counts);
-    return counts;
+    if (parseType === "duplicates") {
+        if (!username) throw new FetchError("Username is required for duplicates");
+        url = `${origin}/user/cards/?name=${encodeURIComponent(username)}&card_id=${cardId}`;
+        parseFunction = parseHtmlDuplicates;
+    }
+    const counts = await fetchPage(url, parseFunction, 3);
+    const data = {
+        cardId,
+        parseType,
+        data: counts,
+        username,
+    }
+    setCachedCounts(data);
+    addStatToUploadQueue(data);
+    return data;
 }
+
 
 // -----------------------------------------------------------------------------
 // Queue implementation
@@ -208,25 +212,16 @@ async function processNextFetch() {
     queueProcessing = true;
     const item = fetchQueue.pop();
 
-    if (CARD_COUNT_CONFIG.CACHE_ENABLED) {
-        const cached = await getCachedCardCounts(item.cardId);
-        if (cached) {
-            await cardDataUpdated(item.cardId, cached, 'cached');
-            setTimeout(processNextFetch, 0);
-            return;
-        }
-    }
-
     try {
-        const data = await getCardCounts(item.cardId, item.origin, item.parseUnlocked);
-        await cardDataUpdated(item.cardId, data);
+        await cardDataUpdated([await fetchCounts(item)]);
     } catch (err) {
-        await cardDataUpdated(item.cardId, { error: err?.message || String(err) }, "error");
+        await cardDataUpdated({ ...item, error: err?.message || String(err) });
+        throw err;
     } finally {
         setTimeout(processNextFetch, CARD_COUNT_CONFIG.REQUEST_DELAY);
     }
 }
-
+аа
 function enqueueFetchRequest(data) {
     fetchQueue.push(data);
     if (!queueProcessing) {
@@ -246,45 +241,31 @@ function clearCardDataQueue(message, sender) {
 }
 
 function fetchCardDataQueue(message, sender) {
-    const { cardId, origin, parseUnlocked } = message;
-    if (!cardId || !origin) {
+    const { cardIds, origin, parseTypes, username } = message.data;
+    if (!cardIds || !origin) {
         console.error("Missing cardId or origin");
         return;
     }
-    enqueueFetchRequest({
-        cardId,
-        origin,
-        parseUnlocked
-    });
+    for (const cardId of cardIds) {
+        for (const parseType of parseTypes) {
+            enqueueFetchRequest({ cardId, origin, parseType, username });
+        }
+    }
 }
 
 async function fetchCachedCardData(message, sender) {
-    const { cardIds } = message;
+    const { cardIds, parseTypes, username } = message.data;
     if (!cardIds) {
         console.error("Missing cardIds");
         return;
     }
 
-    try {
-        const data = await getCachedCardsCounts(cardIds);
-        await cardDataUpdatedMap(data, 'cached');
-    } catch (error) {
-        console.error('Error fetching cached card data:', error);
-    }
+    const data = await getCachedCounts(cardIds, parseTypes, username);
+    await cardDataUpdated(data);
 }
 
 async function updateCardDataFromPage(message, sender) {
-    const { cardId, data, unlocked } = message;
-    if (!cardId || !data) {
-        console.error("Missing cardId or data");
-        return;
-    }
-    const existingData = await getCachedCardCounts(cardId) || {};
-    const dataToUpdate = unlocked ? { unlockTrade: data.trade, unlockNeed: data.need, unlockOwner: data.owner } : data;
-
-    const mergedData = { ...existingData, ...dataToUpdate };
-    setCachedCardCounts(cardId, mergedData);
-    await cardDataUpdated(cardId, mergedData);
+    enqueueFetchRequest(message.data)
 }
 
 // New: report current queue size
