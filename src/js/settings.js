@@ -10,7 +10,6 @@ document.addEventListener('DOMContentLoaded', () => {
         'club-boost-auto',
         'club-boost-highlight',
         'card-user-count',
-        'card-user-count-parse-unlocked',
         'card-user-count-cache-enabled',
         'add-my-cards-button',
         'add-user-cards-buttons',
@@ -60,7 +59,6 @@ document.addEventListener('DOMContentLoaded', () => {
             },
             targets: [
                 "card-user-count-event-target", 
-                "card-user-count-parse-unlocked",
                 "card-user-count-request-delay",
                 "card-user-count-cache-enabled",
                 "card-user-count-cache-max-lifetime",

@@ -21,7 +21,6 @@ chrome.storage.sync.get([
     'card-user-count-request-delay',
     'card-user-count-cache-enabled',
     'card-user-count-cache-max-lifetime',
-    'card-user-count-parse-unlocked',
     'api-stats-submission-enabled',
 ], (settings) => {
     if (typeof settings['card-user-count-request-delay'] === 'number') {
@@ -32,9 +31,6 @@ chrome.storage.sync.get([
     }
     if (typeof settings['card-user-count-cache-max-lifetime'] === 'number') {
         CARD_COUNT_CONFIG.CACHE_MAX_LIFETIME = settings['card-user-count-cache-max-lifetime'] * 60 * 60 * 1000; // Convert hours to milliseconds
-    }
-    if (typeof settings['card-user-count-parse-unlocked'] === 'boolean') {
-        CARD_COUNT_CONFIG.PARSE_UNLOCKED = settings['card-user-count-parse-unlocked'];
     }
     if (typeof settings['api-stats-submission-enabled'] === 'boolean') {
         CARD_COUNT_CONFIG.API_STATS_SUBMISSION_ENABLED = settings['api-stats-submission-enabled'];
@@ -52,9 +48,6 @@ chrome.storage.onChanged.addListener((changes, namespace) => {
     }
     if (changes['card-user-count-cache-max-lifetime']?.newValue !== undefined) {
         CARD_COUNT_CONFIG.CACHE_MAX_LIFETIME = changes['card-user-count-cache-max-lifetime'].newValue * 60 * 60 * 1000; // Convert hours to milliseconds
-    }
-    if (changes['card-user-count-parse-unlocked']?.newValue !== undefined) {
-        CARD_COUNT_CONFIG.PARSE_UNLOCKED = changes['card-user-count-parse-unlocked'].newValue;
     }
     if (changes['api-stats-submission-enabled']?.newValue !== undefined) {
         CARD_COUNT_CONFIG.API_STATS_SUBMISSION_ENABLED = changes['api-stats-submission-enabled'].newValue;

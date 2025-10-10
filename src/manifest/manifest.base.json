@@ -45,7 +45,7 @@
             ],
             "js": [
                 "./scripts/card_indexer.js",
-                "./scripts/card_user_count.js"
+                "./scripts/card_widgets.js"
             ],
             "css": [
                 "./styles/card_user_count.css"

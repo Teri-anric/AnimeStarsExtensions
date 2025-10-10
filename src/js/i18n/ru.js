@@ -49,7 +49,6 @@ export const AnimeStarExtensionTranslationRussian = {
     'card-user-count-template': 'Шаблон текста статистики карточек',
     'card-user-count-cache-enabled': 'Включить кэширование',
     'card-user-count-cache-max-lifetime': 'Максимальное время жизни кэша (часы)',
-    'card-user-count-parse-unlocked': 'Парсить статистику открытых карточек',
     'card-user-count-queue': 'Размер очереди карточек',
     'clear-queue': 'Очистить очередь',
     'card-cache-controls': 'Кэш карточек',

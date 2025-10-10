@@ -49,7 +49,6 @@ const AnimeStarExtensionTranslationUkraine = {
     'card-user-count-template': 'Шаблон текста статистики карток',
     'card-user-count-cache-enabled': 'Включити кешування',
     'card-user-count-cache-max-lifetime': 'Максимальний час життя кешу (години)',
-    'card-user-count-parse-unlocked': 'Парсити статистику відкритих карток',
     'card-user-count-queue': 'Розмір черги карток',
     'clear-queue': 'Очистити чергу',
     'card-cache-controls': 'Кеш карток',

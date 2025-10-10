@@ -35,7 +35,6 @@ const DEFAULT_SETTINGS = {
     'card-user-count-text-color': '',
     'card-user-count-opacity': 80,
     'card-user-count-hover-action': 'none',
-    'card-user-count-parse-unlocked': false,
     'not-update-check': false,
     'club-boost-highlight': true,
     'auto-take-heavenly-stone': true,
