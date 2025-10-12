@@ -215,13 +215,13 @@ async function processNextFetch() {
     try {
         await cardDataUpdated([await fetchCounts(item)]);
     } catch (err) {
-        await cardDataUpdated({ ...item, error: err?.message || String(err) });
+        await cardDataUpdated([{ ...item, error: err?.message || String(err) }]);
         throw err;
     } finally {
         setTimeout(processNextFetch, CARD_COUNT_CONFIG.REQUEST_DELAY);
     }
 }
-аа
+
 function enqueueFetchRequest(data) {
     fetchQueue.push(data);
     if (!queueProcessing) {

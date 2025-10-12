@@ -543,22 +543,6 @@ function updateCardPreview() {
         const opacity = typeof w.opacity === 'number' ? w.opacity : 80;
         const hoverAction = w.hoverAction || 'none';
 
-        // Apply simple conditions for preview (mock data available in this scope)
-        if (Array.isArray(w.conditions)) {
-            w.conditions.forEach(c => {
-                try {
-                    // minimal condition: { field: 'rank', op: 'eq', value: 'a', backgroundColor: '#ff0000', textColor: '#fff' }
-                    const fieldVal = document.querySelector('#preview-card .anime-cards__item')?.getAttribute(`data-${c.field}`);
-                    let match = false;
-                    if (c.op === 'eq') match = String(fieldVal).toLowerCase() === String(c.value).toLowerCase();
-                    if (c.op === 'neq') match = String(fieldVal).toLowerCase() !== String(c.value).toLowerCase();
-                    if (match) {
-                        if (c.backgroundColor) backgroundColor = c.backgroundColor;
-                        if (c.textColor) textColor = c.textColor;
-                    }
-                } catch {}
-            });
-        }
 
         const countElement = document.createElement('div');
         countElement.className = 'card-user-count';

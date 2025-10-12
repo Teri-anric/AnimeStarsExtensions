@@ -179,25 +179,6 @@
     let text = widget.textColor;
     const opacity = typeof widget.opacity === 'number' ? widget.opacity : 80;
 
-    // Simple conditions based on card attributes (e.g., rank/name)
-    try {
-      if (Array.isArray(widget.conditions)) {
-        const cardItem = elm.closest('.anime-cards__item');
-        if (cardItem) {
-          widget.conditions.forEach((c) => {
-            const fieldVal = cardItem.getAttribute(`data-${c.field}`);
-            let match = false;
-            if (c.op === 'eq') match = String(fieldVal).toLowerCase() === String(c.value).toLowerCase();
-            if (c.op === 'neq') match = String(fieldVal).toLowerCase() !== String(c.value).toLowerCase();
-            if (match) {
-              if (c.backgroundColor) bg = c.backgroundColor;
-              if (c.textColor) text = c.textColor;
-            }
-          });
-        }
-      }
-    } catch { }
-
     if (bg) {
       const opacityValue = opacity / 100;
       let r, g, b;
