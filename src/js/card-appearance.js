@@ -38,6 +38,10 @@ function newWidgetDefaults() {
         name: '',
         enabled: true,
         position: 'bottom-right',
+        positionTopPercent: null,
+        positionLeftPercent: null,
+        positionRightPercent: null,
+        positionBottomPercent: null,
         style: 'default',
         size: 'medium',
         backgroundColor: '#000000',
@@ -246,6 +250,21 @@ function syncSelectedWidgetToControls() {
         }
     });
 
+    // Custom position controls visibility and values
+    const customControls = document.getElementById('custom-position-controls');
+    if (customControls) {
+        customControls.style.display = (w.position === 'custom') ? '' : 'none';
+    }
+
+    const topInput = document.getElementById('card-user-count-position-top');
+    const leftInput = document.getElementById('card-user-count-position-left');
+    const rightInput = document.getElementById('card-user-count-position-right');
+    const bottomInput = document.getElementById('card-user-count-position-bottom');
+    if (topInput) topInput.value = (w.positionTopPercent ?? '') === null ? '' : (w.positionTopPercent ?? '');
+    if (leftInput) leftInput.value = (w.positionLeftPercent ?? '') === null ? '' : (w.positionLeftPercent ?? '');
+    if (rightInput) rightInput.value = (w.positionRightPercent ?? '') === null ? '' : (w.positionRightPercent ?? '');
+    if (bottomInput) bottomInput.value = (w.positionBottomPercent ?? '') === null ? '' : (w.positionBottomPercent ?? '');
+
     if (templateEditor) templateEditor.setItems(w.templateItems || []);
     renderConditionsEditor();
 }
@@ -262,13 +281,28 @@ function saveControlsToSelectedWidget() {
         ['card-user-count-text-color', 'textColor'],
         ['card-user-count-opacity', 'opacity'],
         ['card-user-count-hover-action', 'hoverAction'],
+        ['card-user-count-position-top', 'positionTopPercent'],
+        ['card-user-count-position-left', 'positionLeftPercent'],
+        ['card-user-count-position-right', 'positionRightPercent'],
+        ['card-user-count-position-bottom', 'positionBottomPercent'],
     ]);
     m.forEach((wk, elId) => {
         const el = document.getElementById(elId);
         if (!el) return;
-        if (el.type === 'color' || el.tagName === 'SELECT' || el.type === 'range') {
-            if (el.type === 'range') w[wk] = parseInt(el.value);
-            else w[wk] = el.value;
+        if (el.type === 'color' || el.tagName === 'SELECT' || el.type === 'range' || el.type === 'number') {
+            if (el.type === 'range') {
+                w[wk] = parseInt(el.value);
+            } else if (el.type === 'number') {
+                const n = el.value === '' ? null : Number(el.value);
+                if (n === null || Number.isNaN(n)) {
+                    w[wk] = null;
+                } else {
+                    const clamped = Math.max(0, Math.min(100, n));
+                    w[wk] = clamped;
+                }
+            } else {
+                w[wk] = el.value;
+            }
         }
     });
 
@@ -397,7 +431,7 @@ function saveSettings() {
  */
 function setupEventListeners() {
     // Add event listeners for preview updates
-    const settingInputs = document.querySelectorAll('select, input[type="color"], input[type="range"], input[type="checkbox"]');
+    const settingInputs = document.querySelectorAll('select, input[type="color"], input[type="range"], input[type="checkbox"], input[type="number"]');
     settingInputs.forEach(input => {
         input.addEventListener('change', () => {
             saveControlsToSelectedWidget();
@@ -413,6 +447,16 @@ function setupEventListeners() {
                 }
                 updateCardPreview();
                 saveSettings();
+            });
+        }
+
+        if (input.id === 'card-user-count-position') {
+            input.addEventListener('change', () => {
+                // Toggle custom controls
+                const el = document.getElementById('custom-position-controls');
+                if (el) {
+                    el.style.display = input.value === 'custom' ? '' : 'none';
+                }
             });
         }
     });
@@ -557,7 +601,9 @@ function updateCardPreview() {
 
         const countElement = document.createElement('div');
         countElement.className = 'card-user-count';
-        countElement.classList.add(`position-${position}`);
+        if (position !== 'custom') {
+            countElement.classList.add(`position-${position}`);
+        }
         if (style !== 'default') countElement.classList.add(`style-${style}`);
         if (size !== 'medium') countElement.classList.add(`size-${size}`);
         if (hoverAction !== 'none') countElement.classList.add(`hover-${hoverAction}`);
@@ -604,6 +650,22 @@ function updateCardPreview() {
         // Use the selected widget's current template items to preview small variations
         const renderItems = w.id === widgetsState.selectedId ? templateItems : (w.templateItems || []);
         countElement.innerHTML = formatTemplateItems(renderItems, mockData);
+
+        // Apply custom percent-based positioning inline when position is custom
+        if (position === 'custom') {
+            countElement.style.top = '';
+            countElement.style.left = '';
+            countElement.style.right = '';
+            countElement.style.bottom = '';
+            const topP = (typeof w.positionTopPercent === 'number') ? w.positionTopPercent : null;
+            const leftP = (typeof w.positionLeftPercent === 'number') ? w.positionLeftPercent : null;
+            const rightP = (typeof w.positionRightPercent === 'number') ? w.positionRightPercent : null;
+            const bottomP = (typeof w.positionBottomPercent === 'number') ? w.positionBottomPercent : null;
+            if (topP !== null) countElement.style.top = `${topP}%`;
+            if (leftP !== null) countElement.style.left = `${leftP}%`;
+            if (rightP !== null) countElement.style.right = `${rightP}%`;
+            if (bottomP !== null) countElement.style.bottom = `${bottomP}%`;
+        }
 
         if (position === 'under') {
             previewCard.appendChild(countElement);

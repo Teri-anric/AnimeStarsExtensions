@@ -170,7 +170,35 @@
 
     // Position
     const position = widget.position || 'bottom-right';
-    elm.classList.add(`position-${position}`);
+    if (position !== 'custom') {
+      elm.classList.add(`position-${position}`);
+      // Clear any inline overrides from previous state
+      elm.style.top = '';
+      elm.style.left = '';
+      elm.style.right = '';
+      elm.style.bottom = '';
+      elm.style.transform = '';
+    } else {
+      // Custom percentage-based positions
+      elm.classList.remove(
+        'position-top-left','position-top-center','position-top-right',
+        'position-bottom-left','position-bottom-center','position-bottom-right','position-under'
+      );
+      // Ensure absolute positioning for custom
+      elm.style.position = 'absolute';
+      elm.style.top = '';
+      elm.style.left = '';
+      elm.style.right = '';
+      elm.style.bottom = '';
+      const topP = typeof widget.positionTopPercent === 'number' ? widget.positionTopPercent : null;
+      const leftP = typeof widget.positionLeftPercent === 'number' ? widget.positionLeftPercent : null;
+      const rightP = typeof widget.positionRightPercent === 'number' ? widget.positionRightPercent : null;
+      const bottomP = typeof widget.positionBottomPercent === 'number' ? widget.positionBottomPercent : null;
+      if (topP !== null) elm.style.top = `${topP}%`;
+      if (leftP !== null) elm.style.left = `${leftP}%`;
+      if (rightP !== null) elm.style.right = `${rightP}%`;
+      if (bottomP !== null) elm.style.bottom = `${bottomP}%`;
+    }
 
     // Style variant
     const style = widget.style || 'default';
@@ -227,6 +255,7 @@
   }
 
   function renderWidgetElement(cardElm, widget, setLoading = false) {
+    if (!CONFIG.hasEnabledWidgets()) return;
     let elm = cardElm.querySelector(`.card-user-count[data-widget-id="${widget.id}"]`);
     if (!elm) {
       if (!setLoading && widgetDataNotLoaded(cardElm, widget)) {
@@ -429,6 +458,10 @@
       id: w.id || `w${idx + 1}`,
       enabled: !!w.enabled,
       position: w.position || 'bottom-right',
+      positionTopPercent: Number.isFinite(w.positionTopPercent) ? Math.max(0, Math.min(100, Number(w.positionTopPercent))) : null,
+      positionLeftPercent: Number.isFinite(w.positionLeftPercent) ? Math.max(0, Math.min(100, Number(w.positionLeftPercent))) : null,
+      positionRightPercent: Number.isFinite(w.positionRightPercent) ? Math.max(0, Math.min(100, Number(w.positionRightPercent))) : null,
+      positionBottomPercent: Number.isFinite(w.positionBottomPercent) ? Math.max(0, Math.min(100, Number(w.positionBottomPercent))) : null,
       style: w.style || 'default',
       size: w.size || 'medium',
       backgroundColor: w.backgroundColor || '',

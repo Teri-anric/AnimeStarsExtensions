@@ -59,8 +59,36 @@
                                     <option value="bottom-left">bottom-left</option>
                                     <option value="bottom-center">bottom-center</option>
                                     <option value="bottom-right">bottom-right</option>
+                                    <option value="custom">custom</option>
                                     <option value="under">under</option>
                                 </select>
+                            </div>
+                            
+                            <!-- Custom Position (percent) -->
+                            <div class="setting-item" id="custom-position-controls" style="display:none;">
+                                <label>custom-position (%)</label>
+                                <div style="display:grid; grid-template-columns: repeat(2, minmax(140px, 1fr)); gap:10px; width:100%;">
+                                    <div style="display:flex; align-items:center; gap:8px;">
+                                        <span style="min-width:60px;">top</span>
+                                        <input type="number" id="card-user-count-position-top" min="0" max="100" step="1" placeholder="0-100" />
+                                        <span>%</span>
+                                    </div>
+                                    <div style="display:flex; align-items:center; gap:8px;">
+                                        <span style="min-width:60px;">left</span>
+                                        <input type="number" id="card-user-count-position-left" min="0" max="100" step="1" placeholder="0-100" />
+                                        <span>%</span>
+                                    </div>
+                                    <div style="display:flex; align-items:center; gap:8px;">
+                                        <span style="min-width:60px;">bottom</span>
+                                        <input type="number" id="card-user-count-position-bottom" min="0" max="100" step="1" placeholder="0-100" />
+                                        <span>%</span>
+                                    </div>
+                                    <div style="display:flex; align-items:center; gap:8px;">
+                                        <span style="min-width:60px;">right</span>
+                                        <input type="number" id="card-user-count-position-right" min="0" max="100" step="1" placeholder="0-100" />
+                                        <span>%</span>
+                                    </div>
+                                </div>
                             </div>
                             
                             <!-- Style Settings -->
