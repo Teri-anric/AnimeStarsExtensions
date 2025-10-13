@@ -264,6 +264,37 @@ class AssApiClient {
         }
     }
 
+    static async getDeckByCardId(cardId) {
+        const numericId = parseInt(cardId);
+        if (!numericId) throw new Error('cardId required');
+        const cacheKey = `deck_by_card_${numericId}`;
+
+        const cached = await ApiCache.get(cacheKey);
+        if (cached) return cached;
+
+        try {
+            const query = {
+                filter: {
+                    cards: { any: { card_id: { eq: numericId } } }
+                },
+                page: 1,
+                per_page: 1
+            };
+            const data = await this.makeRequest(ASS_API_CONFIG.ENDPOINTS.DECKS, {
+                method: 'POST',
+                body: JSON.stringify(query)
+            });
+            const deck = Array.isArray(data?.items) && data.items.length > 0 ? data.items[0] : null;
+            if (deck) {
+                await ApiCache.set(cacheKey, deck);
+            }
+            return deck;
+        } catch (error) {
+            console.error('Get deck by cardId error:', error);
+            throw error;
+        }
+    }
+
     static async getBulkCardStats(cardIds) {
         try {
             return await this.makeRequest(ASS_API_CONFIG.ENDPOINTS.CARD_STATS_LAST_BULK, {
@@ -302,22 +333,24 @@ class AssApiClient {
     }
 
     // Method to submit card statistics from extension map[cardId, statsData]
-    static async submitCardStats(statsMap) {
+    static async submitCardStats(cardData) {
         try {
             const statsPayload = {
                 stats: []
             }
-            Object.entries(statsMap).forEach(([cardId, statsData]) => {
+            if (cardData.parseType === 'counts') {
                 statsPayload.stats.push(...[
-                    { card_id: cardId, collection: 'trade', count: statsData.trade },
-                    { card_id: cardId, collection: 'need', count: statsData.need },
-                    { card_id: cardId, collection: 'owned', count: statsData.owner },
-                    { card_id: cardId, collection: 'unlocked_owned', count: statsData.unlockOwner },
-                ].filter(stat => typeof stat.count === 'number'))
-            });
-            if (statsPayload.stats.length === 0) {
-                return false;
+                    { card_id: cardData.cardId, collection: 'trade', count: cardData.data.trade },
+                    { card_id: cardData.cardId, collection: 'need', count: cardData.data.need },
+                    { card_id: cardData.cardId, collection: 'owned', count: cardData.data.owner },
+                ]);
             }
+            if (cardData.parseType === 'unlocked') {
+                statsPayload.stats.push(...[
+                    { card_id: cardData.cardId, collection: 'unlocked_owned', count: cardData.data.owner },
+                ]);
+            }
+            if (statsPayload.stats.length === 0) return false;
 
             // Send stats to the API
             await this.makeRequest(ASS_API_CONFIG.ENDPOINTS.CARD_STATS_ADD, {

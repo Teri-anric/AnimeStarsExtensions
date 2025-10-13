@@ -35,7 +35,6 @@ const DEFAULT_SETTINGS = {
     'card-user-count-text-color': '',
     'card-user-count-opacity': 80,
     'card-user-count-hover-action': 'none',
-    'card-user-count-parse-unlocked': false,
     'not-update-check': false,
     'club-boost-highlight': true,
     'auto-take-heavenly-stone': true,
@@ -48,6 +47,8 @@ const DEFAULT_SETTINGS = {
     'trades-preview-auto-parse': true,
     'trades-preview-auto-start-delay': 500,
     'trades-preview-auto-interval': 1200,
+    'trades-preview-full-exchange': false,
+    'trades-history-big-images': false,
 };
 
 const MIGRATIONS = [
@@ -58,15 +59,15 @@ const MIGRATIONS = [
                 const OLD_TEMPLATE = "{need}{needHasMorePages?+} | {ownerHasMorePages?[ownerPages]P:[owner]} | {trade}{tradeHasMorePages?+[tradePages]P}";
                 const NEW_TEMPLATE = '{need} | {owner} | {trade}';
                 if (settings["card-user-count-template"].trim() === OLD_TEMPLATE.trim()) {
-                    chrome.storage.sync.set({"card-user-count-template": NEW_TEMPLATE});
+                    chrome.storage.sync.set({ "card-user-count-template": NEW_TEMPLATE });
                 }
             });
-            chrome.storage.local.get((items) => {   
+            chrome.storage.local.get((items) => {
                 const toRemove = [];
                 for (const key in items) {
                     if (key.startsWith('cardUserCount_')) {
-                    toRemove.push(key);
-                }
+                        toRemove.push(key);
+                    }
                 }
                 chrome.storage.local.remove(toRemove);
             });
@@ -78,8 +79,63 @@ const MIGRATIONS = [
             chrome.storage.sync.get((settings) => {
                 const AUTOMATIC_EVENT_TARGET = 'automatic';
                 if (settings["card-user-count-event-target"].trim() === AUTOMATIC_EVENT_TARGET) {
-                    chrome.storage.sync.set({"card-user-count-event-target": 'mouseover'});
+                    chrome.storage.sync.set({ "card-user-count-event-target": 'mouseover' });
                 }
+            });
+        },
+    },
+    {
+        migrateVersion: 3,
+        migrate: () => {
+            chrome.storage.local.get((items) => {
+                const toRemove = [];
+                for (const key in items) {
+                    if (key.startsWith('cardUserCountV2_')) {
+                        toRemove.push(key);
+                    }
+                }
+                chrome.storage.local.remove(toRemove);
+            });
+            chrome.storage.sync.get((settings) => {
+                // Create a single widget from legacy card-user-count settings
+                const templateItemsRaw = settings['card-user-count-template-items'];
+                let templateItems = [
+                    { type: 'variable', variable: 'need' },
+                    { type: 'text', text: ' | ' },
+                    { type: 'variable', variable: 'owner' },
+                    { type: 'text', text: ' | ' },
+                    { type: 'variable', variable: 'trade' },
+                ];
+                if (typeof templateItemsRaw === 'string') {
+                    try { templateItems = JSON.parse(templateItemsRaw); } catch { }
+                } else if (Array.isArray(templateItemsRaw)) {
+                    templateItems = templateItemsRaw;
+                }
+                chrome.storage.sync.set({
+                    "card-widgets": JSON.stringify([{
+                        id: 'default-widget',
+                        name: 'Default',
+                        enabled: !!(settings['card-user-count'] ?? true),
+                        position: settings['card-user-count-position'] || 'bottom-right',
+                        style: settings['card-user-count-style'] || 'default',
+                        size: settings['card-user-count-size'] || 'medium',
+                        backgroundColor: settings['card-user-count-background-color'] || '',
+                        textColor: settings['card-user-count-text-color'] || '',
+                        opacity: typeof settings['card-user-count-opacity'] === 'number' ? settings['card-user-count-opacity'] : 80,
+                        hoverAction: settings['card-user-count-hover-action'] || 'none',
+                        templateItems,
+                    }])
+                });
+                chrome.storage.sync.remove([
+                    'card-user-count-template-items',
+                    'card-user-count-position',
+                    'card-user-count-style',
+                    'card-user-count-size',
+                    'card-user-count-background-color',
+                    'card-user-count-text-color',
+                    'card-user-count-opacity',
+                    'card-user-count-hover-action',
+                ]);
             });
         },
     }
@@ -120,17 +176,17 @@ async function checkForUpdates() {
             const githubManifest = await response.json();
             const currentVersion = chrome.runtime.getManifest().version;
 
-        // Compare versions
-        if (compareVersions(githubManifest.version, currentVersion) > 0) {
-            // New version available
-            chrome.storage.sync.set({
-                'update-available': true,
-                'new-version': githubManifest.version,
-            });
-        } else {
-            // No update available, clear update flags
-            chrome.storage.sync.remove(['update-available', 'new-version', 'update-checked-at']);
-        }
+            // Compare versions
+            if (compareVersions(githubManifest.version, currentVersion) > 0) {
+                // New version available
+                chrome.storage.sync.set({
+                    'update-available': true,
+                    'new-version': githubManifest.version,
+                });
+            } else {
+                // No update available, clear update flags
+                chrome.storage.sync.remove(['update-available', 'new-version', 'update-checked-at']);
+            }
         } catch (error) {
             console.error('Update check failed:', error);
         }
@@ -141,15 +197,15 @@ async function checkForUpdates() {
 function compareVersions(v1, v2) {
     const parts1 = v1.split('.').map(Number);
     const parts2 = v2.split('.').map(Number);
-    
+
     for (let i = 0; i < Math.max(parts1.length, parts2.length); i++) {
         const num1 = parts1[i] || 0;
         const num2 = parts2[i] || 0;
-        
+
         if (num1 > num2) return 1;
         if (num1 < num2) return -1;
     }
-    
+
     return 0;
 }
 

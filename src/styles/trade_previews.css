@@ -16,4 +16,21 @@
   border: 1px solid #444;
 }
 
+.ass-trade-cached-list, .history__list.big-images {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(49%, 1fr));
+  gap: 16px;
+  padding: 10px;
+}
 
+.history__list.big-images .history__body-item {
+  width: 144px !important;
+}
+
+.ass-trade-cached-list .history__body-item {
+  width: 144px;
+}
+
+.history__inner:has(.history__list.big-images) {
+  width: 100% !important;
+}

@@ -5,6 +5,25 @@
 
 // Import translation system
 import i18n from './translation.js';
+import IconPicker from './icon-picker.js';
+
+
+const parseTypeToVariablesMap = {
+    unlocked: ["unlockNeed", "unlockOwner", "unlockTrade"],
+    counts: ["need", "owner", "trade"],
+    duplicates: ["duplicates"],
+    siteCard: ["cardName", "cardRank", "cardAnime", "cardAnimeLink", "cardAuthor"],
+    siteDeck: [
+      "deckCountASS",
+      "deckCountS",
+      "deckCountA",
+      "deckCountB",
+      "deckCountC",
+      "deckCountD",
+      "deckCountE",
+      "deckCountTotal"
+    ]
+  };
 
 class TemplateEditor {
     constructor(containerId, options = {}) {
@@ -12,7 +31,6 @@ class TemplateEditor {
         this.container = document.getElementById(containerId);
         this.options = {
             previewId: 'template-preview',
-            storageKey: 'card-user-count-template-items',
             onChange: null,
             ...options
         };
@@ -25,25 +43,34 @@ class TemplateEditor {
             { type: 'variable', variable: 'trade' }
         ];
 
-        this.availableVariables = ['need', 'owner', 'trade', 'unlockNeed', 'unlockOwner', 'unlockTrade'];
+        this.availableVariables = Object.values(parseTypeToVariablesMap).flat().concat(['cardId', 'newLine']);
         this.availableIcons = [
-            { value: '', key: 'template-icon-no-icon' },
-            { value: 'fas fa-users', key: 'template-icon-users' },
-            { value: 'fas fa-heart', key: 'template-icon-heart' },
-            { value: 'fas fa-sync-alt', key: 'template-icon-sync-alt' },
-            { value: 'fas fa-search', key: 'template-icon-search' },
-            { value: 'fas fa-user', key: 'template-icon-user' },
-            { value: 'fas fa-star', key: 'template-icon-star' },
-            { value: 'fas fa-fire', key: 'template-icon-fire' },
-            { value: 'fas fa-bolt', key: 'template-icon-bolt' },
-            { value: 'fas fa-gem', key: 'template-icon-gem' },
-            { value: 'fas fa-circle', key: 'template-icon-circle' },
-            { value: 'fas fa-square', key: 'template-icon-square' },
-            { value: 'fas fa-play', key: 'template-icon-play' },
-            { value: 'fas fa-exchange-alt', key: 'template-icon-exchange-alt' },
-            { value: 'fas fa-eye', key: 'template-icon-eye' },
-            { value: 'fas fa-hand-paper', key: 'template-icon-hand-paper' },
+            'fal fa-search',
+            'fal fa-heart',
+            'fal fa-unlock',
+            'fal fa-lock',
+            'fal fa-trophy',
+            'fal fa-star',
+            'fal fa-fire',
+            'fal fa-gem',
+            'fal fa-list',
+            'fal fa-user',
+            'fal fa-users',
+            'fal fa-exchange-alt',
+            'fal fa-eye',
+            'fal fa-plus',
+            'fal fa-minus',
+            'fal fa-check',
+            'fal fa-times',
+            'fal fa-filter',
+            'fal fa-sort',
+            'fal fa-bookmark',
+            'fal fa-tag',
+            'fal fa-link',
+            'fa fa-arrow-right',
+            'fa fa-arrow-left'
         ];
+        this.iconPicker = null;
 
         this.draggedItem = null;
         this.draggedIndex = -1;
@@ -56,8 +83,17 @@ class TemplateEditor {
             console.error(`Template editor container with id "${this.containerId}" not found`);
             return;
         }
+        this.render();
+        this.attachEventListeners();
+        // Create shared icon picker once
+        this.iconPicker = new IconPicker({
+            icons: this.availableIcons,
+            translate: (key) => this.getTranslatedText(key, this.getCurrentLanguage()),
+            resolveIconClass: (cls) => this.resolveIconClass(cls)
+        });
+    }
 
-        this.loadSavedItems();
+    postInit() {
         this.render();
         this.attachEventListeners();
     }
@@ -77,6 +113,14 @@ class TemplateEditor {
             return htmlLang || 'en';
         }
         return 'en';
+    }
+
+    resolveIconClass(iconClass) {
+        if (!iconClass) return '';
+        if (iconClass.startsWith('fal ')) {
+            return 'fas ' + iconClass.slice(4);
+        }
+        return iconClass;
     }
 
     createTemplateItem(item, index) {
@@ -111,22 +155,28 @@ class TemplateEditor {
             const typeLabel = document.createElement('span');
             typeLabel.className = 'item-type-label';
             typeLabel.textContent = this.getTranslatedText('template-item-type-icon', currentLang);
-            
-            const select = document.createElement('select');
-            select.className = 'item-select';
-            
-            this.availableIcons.forEach(icon => {
-                const option = document.createElement('option');
-                option.value = icon.value;
-                option.textContent = this.getTranslatedText(icon.key, currentLang);
-                if (icon.value === item.icon) {
-                    option.selected = true;
-                }
-                select.appendChild(option);
-            });
-            
+
+            const iconControls = document.createElement('div');
+            iconControls.className = 'icon-controls';
+
+            const iconPickerBtn = document.createElement('button');
+            iconPickerBtn.type = 'button';
+            iconPickerBtn.className = 'icon-picker-btn';
+            iconPickerBtn.dataset.index = index;
+            if (item.icon) {
+                const icon = document.createElement('i');
+                icon.className = this.resolveIconClass(item.icon);
+                iconPickerBtn.appendChild(icon);
+            } else {
+                // default indicator to ensure visible click target
+                const icon = document.createElement('i');
+                icon.className = 'fas fa-icons';
+                iconPickerBtn.appendChild(icon);
+            }
+            iconControls.appendChild(iconPickerBtn);
+
             content.appendChild(typeLabel);
-            content.appendChild(select);
+            content.appendChild(iconControls);
         } else if (item.type === 'variable') {
             const typeLabel = document.createElement('span');
             typeLabel.className = 'item-type-label';
@@ -156,6 +206,11 @@ class TemplateEditor {
             e.preventDefault();
             this.removeItem(index);
         };
+
+        // Persist current icon in dataset for later DOM -> state sync
+        if (item.type === 'icon') {
+            itemDiv.dataset.icon = item.icon || '';
+        }
 
         itemDiv.appendChild(dragHandle);
         itemDiv.appendChild(content);
@@ -304,6 +359,26 @@ class TemplateEditor {
     attachEventListeners() {
         // Button event listeners
         this.container.addEventListener('click', (e) => {
+            const iconPickerBtn = e.target.closest('.icon-picker-btn');
+            if (iconPickerBtn) {
+                e.preventDefault();
+                const idx = parseInt(iconPickerBtn.dataset.index);
+                const current = this.currentItems[idx]?.icon || '';
+                if (this.iconPicker) {
+                    this.iconPicker.open(current, (iconClass) => {
+                        // Update state and DOM dataset for sync
+                        if (this.currentItems[idx]) {
+                            this.currentItems[idx].icon = iconClass || '';
+                            // Update dataset on element if still present
+                            const el = this.container.querySelector(`.template-item[data-index="${idx}"]`);
+                            if (el) el.dataset.icon = iconClass || '';
+                            this.saveItems();
+                            this.render();
+                        }
+                    });
+                }
+                return;
+            }
             if (e.target.closest('.add-text')) {
                 this.addItem('text');
             } else if (e.target.closest('.add-icon')) {
@@ -376,7 +451,7 @@ class TemplateEditor {
                 const text = itemDiv.querySelector('.item-input').value;
                 newItems.push({ type: 'text', text });
             } else if (typeLabel === this.getTranslatedText('template-item-type-icon', currentLang)) {
-                const icon = itemDiv.querySelector('.item-select').value;
+                const icon = itemDiv.dataset.icon || '';
                 newItems.push({ type: 'icon', icon });
             } else if (typeLabel === this.getTranslatedText('template-item-type-variable', currentLang)) {
                 const variable = itemDiv.querySelector('.variable-select').value;
@@ -395,12 +470,27 @@ class TemplateEditor {
 
         const currentLang = this.getCurrentLanguage();
         const mockData = { 
+            cardId: 4779,
             need: 14, 
             owner: 642, 
             trade: 46, 
             unlockNeed: 5, 
             unlockOwner: 200, 
-            unlockTrade: 12 
+            unlockTrade: 12,
+            duplicates: 2,
+            cardName: 'Кируко',
+            cardRank: 'A',
+            cardAnime: 'Великая небесная стена',
+            cardAnimeLink: '/1811-velikaja-nebesnaja-stena-2023.html',
+            cardAuthor: 'declover',
+            deckCountASS: 0,
+            deckCountS: 1,
+            deckCountA: 2,
+            deckCountB: 4,
+            deckCountC: 6,
+            deckCountD: 17,
+            deckCountE: 20,
+            deckCountTotal: 50,
         };
         
         let preview = '';
@@ -409,9 +499,14 @@ class TemplateEditor {
             if (item.type === 'text') {
                 preview += this.escapeHtml(item.text || '');
             } else if (item.type === 'icon') {
-                preview += item.icon ? `<i class="${this.escapeHtml(item.icon)}"></i>` : '';
+                const cls = this.resolveIconClass(item.icon || '');
+                preview += item.icon ? `<i class="${this.escapeHtml(cls)}"></i>` : '';
             } else if (item.type === 'variable') {
-                preview += mockData[item.variable] || '?';
+                if (item.variable === 'newLine') {
+                    preview += "<br>";
+                    return;
+                }
+                preview += this.escapeHtml((mockData[item.variable]) || '?');
             }
         });
 
@@ -465,42 +560,9 @@ class TemplateEditor {
     }
 
     saveItems() {
-        if (typeof chrome !== 'undefined' && chrome.storage) {
-            chrome.storage.sync.set({ [this.options.storageKey]: JSON.stringify(this.currentItems) });
-        }
-        
+        if (this.currentItems.length === 0) return;
         if (this.options.onChange) {
             this.options.onChange(this.currentItems);
-        }
-    }
-
-    loadSavedItems() {
-        if (typeof chrome !== 'undefined' && chrome.storage) {
-            chrome.storage.sync.get([this.options.storageKey], (settings) => {
-                if (settings[this.options.storageKey]) {
-                    try {
-                        let loadedItems = JSON.parse(settings[this.options.storageKey]);
-                        
-                        // Check if migration is needed (old format with icons in variables)
-                        const needsMigration = loadedItems.some(item => 
-                            item.type === 'variable' && item.icon
-                        );
-                        
-                        if (needsMigration) {
-                            console.log('Migrating old template format...');
-                            loadedItems = this.migrateOldData(loadedItems);
-                            // Save migrated data
-                            this.currentItems = loadedItems;
-                            this.saveItems();
-                        } else {
-                            this.currentItems = loadedItems;
-                        }
-                    } catch (e) {
-                        console.error('Failed to parse template items:', e);
-                    }
-                }
-                this.render();
-            });
         }
     }
 

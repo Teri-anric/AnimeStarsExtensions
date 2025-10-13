@@ -21,6 +21,140 @@ body {
     min-height: 100vh;
 }
 
+.appearance-layout {
+    display: grid;
+    grid-template-columns: 1fr 320px;
+    gap: 24px;
+}
+
+.appearance-layout.preview-left {
+    grid-template-columns: 320px 1fr;
+}
+
+.appearance-layout.preview-left .sidebar {
+    order: 2;
+}
+
+.appearance-layout.preview-left .main {
+    order: 1;
+}
+
+.sidebar {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    background: #ffffff;
+    border-radius: 16px;
+    padding: 16px;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.08);
+    border: 1px solid rgba(255,255,255,0.6);
+    position: sticky;
+    top: 24px;
+    align-self: start;
+    overflow: auto;
+}
+
+.sidebar .tabs {
+    display: flex;
+    gap: 8px;
+}
+
+.subtabs { margin-top: 6px; }
+
+/* Widgets top bar */
+.widgets-bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    padding: 6px;
+    background: #f8fbff;
+    border-radius: 10px;
+}
+
+.widgets-tabs {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+}
+
+.widget-tab {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    padding: 6px 8px;
+    background: #ffffff;
+    border: 1px solid #e6effa;
+    border-radius: 10px;
+    cursor: pointer;
+}
+
+.widget-tab.active {
+    background: #eaf3ff;
+    border-color: #3498db;
+}
+
+.widget-tab__label {
+    margin: 0;
+    padding: 0;
+}
+
+.add-widget-btn {
+    padding: 6px 10px;
+    background: #2ecc71;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+}
+
+/* Widget tab buttons */
+.widgets-tabs .tab-btn {
+    border: none;
+    background: #ffffff;
+    border-radius: 8px;
+    padding: 6px 10px;
+}
+
+.widgets-tabs .tab-btn.active {
+    background: #eaf3ff;
+    box-shadow: none;
+}
+
+.widget-name-row label { min-width: 80px; }
+.widget-name-row input {
+    flex: 1;
+    padding: 6px 8px;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+}
+
+.tab-btn {
+    padding: 8px 12px;
+    border: 1px solid #e1e8ed;
+    background: #fff;
+    border-radius: 8px;
+    cursor: pointer;
+}
+
+.tab-btn.active {
+    background: #eef6ff;
+    border-color: #3498db;
+    color: #2c3e50;
+}
+
+.tab-content { display: none; }
+.tab-content.active { display: block; }
+
+.sidebar-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 8px;
+}
+
+.main { min-width: 0; }
+
 /* Page title */
 .section-title {
     color: #2c3e50;
@@ -42,19 +176,20 @@ body {
 }
 
 /* Preview section */
-.preview-section {
+.main .preview-section {
     background: white;
-    border-radius: 16px;
-    padding: 30px;
-    margin-bottom: 30px;
-    box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+    border-radius: 12px;
+    padding: 16px;
+    margin-bottom: 16px;
+    box-shadow: 0 6px 20px rgba(0,0,0,0.08);
     border: 1px solid rgba(255,255,255,0.2);
+    max-width: 640px;
 }
 
 .preview-section h2 {
     color: #34495e;
-    margin-bottom: 25px;
-    font-size: 1.5rem;
+    margin-bottom: 12px;
+    font-size: 1.25rem;
     font-weight: 500;
     display: flex;
     align-items: center;
@@ -66,24 +201,25 @@ body {
 }
 
 /* Preview container */
-.preview-card-container {
+.main .preview-card-container {
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 20px;
-    min-height: 400px;
+    gap: 12px;
+    min-height: 220px;
     background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
     border-radius: 12px;
-    padding: 30px;
+    padding: 12px;
     position: relative;
-    box-shadow: inset 0 2px 10px rgba(0,0,0,0.1);
+    box-shadow: inset 0 2px 8px rgba(0,0,0,0.06);
+    max-width: 420px;
 }
 
 
 .preview-description {
     color: #666;
-    font-size: 14px;
-    margin-bottom: 20px;
+    font-size: 13px;
+    margin-bottom: 10px;
     text-align: center;
     font-style: italic;
 }
@@ -95,9 +231,9 @@ body {
     filter: drop-shadow(0 8px 16px rgba(0,0,0,0.3));
 }
 
-.anime-cards__item {
-    width: 144px;
-    height: 216px;
+.main .anime-cards__item {
+    width: 112px;
+    height: 168px;
     border-radius: 12px;
     overflow: hidden;
     transition: transform 0.3s ease;
@@ -309,6 +445,9 @@ body {
     .settings-container {
         padding: 20px;
     }
+    .appearance-layout { grid-template-columns: 1fr; }
+    .sidebar { position: static; max-height: none; }
+    .preview-card-container { max-width: 100%; }
 }
 
 /* Settings sections */

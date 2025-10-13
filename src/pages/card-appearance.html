@@ -6,11 +6,11 @@
     <title>Card Appearance Settings - AnimeStar Extension</title>
     <link rel="stylesheet" href="../styles/card-appearance.css">
     <link rel="stylesheet" href="../styles/template-editor.css">
+    <link rel="stylesheet" href="../styles/user-card-buttons-editor.css">
     <link rel="stylesheet" href="../styles/card_user_count.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <script src="../js/translation.js" type="module"></script>
     <script src="../js/template-editor.js" type="module"></script>
-    <script src="../scripts/card_user_count.js"></script>
 </head>
 
 <body>
@@ -20,125 +20,170 @@
                 <i class="fas fa-palette"></i> 
                 <span>card-appearance-settings</span>
             </h1>
-            
-            <!-- Preview Section -->
-            <div class="preview-section">
-                <h2>
-                    <i class="fas fa-eye"></i>
-                    <span>card-preview</span>
-                </h2>
-                <p class="preview-description">
-                    <span>card-preview-description</span>
-                </p>
-                
-                <div class="preview-card-container">
-                    <div class="anime-cards__item-wrapper rank-a" id="preview-card">
-                        <div class="anime-cards__item" data-name="Кируко" data-id="4779" data-rank="a" data-anime-name="Великая небесная стена" data-anime-link="/aniserials/videos/adventure/1811-velikaja-nebesnaja-stena-2023.html" data-author="declover" data-image="/uploads/cards_image/1811/a/kiruko-1748351962-160833.webp" data-owner-id="21701569" data-can-trade="0" data-favourite="0" data-stars="0" data-last-id="4779">
-                            <div class="anime-cards__image">
-                                <img loading="lazy" src="https://animestars.org/uploads/cards_image/1811/a/kiruko-1748351962-160833.webp" 
-                                     alt="Карточка персонажа Кируко" class="lazy-loaded">
+
+            <div class="appearance-layout preview-right" id="appearance-layout">
+                <aside class="sidebar" style="width:95%">
+                    
+
+                    <!-- Top-level tabs: each widget is a tab -->
+                    <div class="tabs widgets-bar" id="widgets-tabs-container">
+                        <div id="widgets-tabs" class="widgets-tabs"></div>
+                        <button id="add-widget-btn" class="add-widget-btn" title="add-widget">
+                            <i class="fas fa-plus"></i>
+                        </button>
+                    </div>
+
+                    <!-- Quick meta for selected widget -->
+                    <div class="setting-item widget-name-row" id="widget-name-row">
+                        <label for="widget-name-input">name</label>
+                        <input id="widget-name-input" type="text">
+                    </div>
+
+                    <!-- Second row of tabs: settings groups for the selected widget -->
+                    <div class="tabs subtabs" style="margin-top:6px;">
+                        <button class="tab-btn subtab-btn active" data-subtab="style"><i class="fas fa-cog"></i> <span>style</span></button>
+                        <button class="tab-btn subtab-btn" data-subtab="template"><i class="fas fa-code"></i> <span>template</span></button>
+                        <!-- Conditions tab temporarily hidden -->
+                        <!-- <button class="tab-btn subtab-btn" data-subtab="conditions"><i class="fas fa-filter"></i> <span>conditions</span></button> -->
+                    </div>
+
+                    <div class="tab-content active" id="tab-style">
+                        <div class="settings-section">
+                            <!-- Position Settings -->
+                            <div class="setting-item">
+                                <label for="card-user-count-position">card-user-count-position</label>
+                                <select id="card-user-count-position">
+                                    <option value="top-left">top-left</option>
+                                    <option value="top-center">top-center</option>
+                                    <option value="top-right">top-right</option>
+                                    <option value="bottom-left">bottom-left</option>
+                                    <option value="bottom-center">bottom-center</option>
+                                    <option value="bottom-right">bottom-right</option>
+                                    <option value="custom">custom</option>
+                                    <option value="under">under</option>
+                                </select>
+                            </div>
+                            
+                            <!-- Custom Position (percent) -->
+                            <div class="setting-item" id="custom-position-controls" style="display:none;">
+                                <label>custom-position (%)</label>
+                                <div style="display:grid; grid-template-columns: repeat(2, minmax(140px, 1fr)); gap:10px; width:100%;">
+                                    <div style="display:flex; align-items:center; gap:8px;">
+                                        <span style="min-width:60px;">top</span>
+                                        <input type="number" id="card-user-count-position-top" min="0" max="100" step="1" placeholder="0-100" />
+                                        <span>%</span>
+                                    </div>
+                                    <div style="display:flex; align-items:center; gap:8px;">
+                                        <span style="min-width:60px;">left</span>
+                                        <input type="number" id="card-user-count-position-left" min="0" max="100" step="1" placeholder="0-100" />
+                                        <span>%</span>
+                                    </div>
+                                    <div style="display:flex; align-items:center; gap:8px;">
+                                        <span style="min-width:60px;">bottom</span>
+                                        <input type="number" id="card-user-count-position-bottom" min="0" max="100" step="1" placeholder="0-100" />
+                                        <span>%</span>
+                                    </div>
+                                    <div style="display:flex; align-items:center; gap:8px;">
+                                        <span style="min-width:60px;">right</span>
+                                        <input type="number" id="card-user-count-position-right" min="0" max="100" step="1" placeholder="0-100" />
+                                        <span>%</span>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Style Settings -->
+                            <div class="setting-item">
+                                <label for="card-user-count-style">card-user-count-style</label>
+                                <select id="card-user-count-style">
+                                    <option value="default">default</option>
+                                    <option value="minimal">minimal</option>
+                                    <option value="bordered">bordered</option>
+                                    <option value="pill">pill</option>
+                                    <option value="badge">badge</option>
+                                </select>
+                            </div>
+                            
+                            <!-- Size Settings -->
+                            <div class="setting-item">
+                                <label for="card-user-count-size">card-user-count-size</label>
+                                <select id="card-user-count-size">
+                                    <option value="small">small</option>
+                                    <option value="medium">medium</option>
+                                    <option value="large">large</option>
+                                </select>
+                            </div>
+
+                            <!-- Color Settings -->
+                            <div class="setting-item">
+                                <label for="card-user-count-background-color">card-user-count-background-color</label>
+                                <input type="color" id="card-user-count-background-color" value="#000000">
+                            </div>
+
+                            <div class="setting-item">
+                                <label for="card-user-count-text-color">card-user-count-text-color</label>
+                                <input type="color" id="card-user-count-text-color" value="#ffffff">
+                            </div>
+
+                            <!-- Opacity Settings -->
+                            <div class="setting-item">
+                                <label for="card-user-count-opacity">card-user-count-opacity</label>
+                                <div class="slider-container">
+                                    <input type="range" id="card-user-count-opacity" min="0" max="100" value="80" step="5">
+                                    <span class="slider-value">80</span>
+                                    <span>%</span>
+                                </div>
                             </div>
                         </div>
                     </div>
-                    
-                    <!-- Test button for manual preview update -->
-                    <button onclick="updateCardPreview()" style="margin-top: 10px; padding: 10px 20px; background: #3498db; color: white; border: none; border-radius: 5px; cursor: pointer;">
-                        Update Preview
-                    </button>
-                </div>
-            </div>
-            
-            <div class="settings-grid">
-                <div class="settings-section">
-                    <h2>
-                        <i class="fas fa-cog"></i>
-                        <span>card-user-count-settings</span>
-                    </h2>
-                    
-                    <!-- Position Settings -->
-                    <div class="setting-item">
-                        <label for="card-user-count-position">card-user-count-position</label>
-                        <select id="card-user-count-position">
-                            <option value="top-left">top-left</option>
-                            <option value="top-center">top-center</option>
-                            <option value="top-right">top-right</option>
-                            <option value="bottom-left">bottom-left</option>
-                            <option value="bottom-center">bottom-center</option>
-                            <option value="bottom-right">bottom-right</option>
-                            <option value="under">under</option>
-                        </select>
-                    </div>
-                    
-                    <!-- Style Settings -->
-                    <div class="setting-item">
-                        <label for="card-user-count-style">card-user-count-style</label>
-                        <select id="card-user-count-style">
-                            <option value="default">default</option>
-                            <option value="minimal">minimal</option>
-                            <option value="bordered">bordered</option>
-                            <option value="pill">pill</option>
-                            <option value="badge">badge</option>
-                        </select>
-                    </div>
-                    
-                    <!-- Size Settings -->
-                    <div class="setting-item">
-                        <label for="card-user-count-size">card-user-count-size</label>
-                        <select id="card-user-count-size">
-                            <option value="small">small</option>
-                            <option value="medium">medium</option>
-                            <option value="large">large</option>
-                        </select>
-                    </div>
 
-                    <!-- Color Settings -->
-                    <div class="setting-item">
-                        <label for="card-user-count-background-color">card-user-count-background-color</label>
-                        <input type="color" id="card-user-count-background-color" value="#000000">
-                    </div>
-
-                    <div class="setting-item">
-                        <label for="card-user-count-text-color">card-user-count-text-color</label>
-                        <input type="color" id="card-user-count-text-color" value="#ffffff">
-                    </div>
-
-                    <!-- Opacity Settings -->
-                    <div class="setting-item">
-                        <label for="card-user-count-opacity">card-user-count-opacity</label>
-                        <div class="slider-container">
-                            <input type="range" id="card-user-count-opacity" min="0" max="100" value="80" step="5">
-                            <span class="slider-value">80</span>
-                            <span>%</span>
+                    <div class="tab-content" id="tab-template">
+                        <div class="settings-section">
+                            <div class="setting-item multi-line" id="card-user-count-template-editor">
+                                <div id="template-editor" class="template-editor">
+                                </div>
+                            </div>
                         </div>
                     </div>
 
-                    <!-- Hover Action Settings -->
-                    <!-- <div class="setting-item">
-                        <label for="card-user-count-hover-action">card-user-count-hover-action</label>
-                        <select id="card-user-count-hover-action">
-                            <option value="none">hover-action-none</option>
-                            <option value="scale-up">hover-action-scale-up</option>
-                            <option value="scale-down">hover-action-scale-down</option>
-                            <option value="fade-out">hover-action-fade-out</option>
-                            <option value="hide">hover-action-hide</option>
-                            <option value="brighten">hover-action-brighten</option>
-                        </select>
+                    <!-- Conditions editor temporarily removed -->
+                    <!-- <div class="tab-content" id="tab-conditions">
+                        <div class="settings-section">
+                            <div class="setting-item multi-line">
+                                <div id="conditions-editor" style="width:100%; display:flex; flex-direction:column; gap:10px;"></div>
+                                <button id="add-condition-btn" style="padding:6px 10px; background:#3498db; color:white; border:none; border-radius:6px; cursor:pointer; align-self:flex-start;">
+                                    <i class="fas fa-plus"></i> <span>add-condition</span>
+                                </button>
+                            </div>
+                        </div>
                     </div> -->
-                </div>
-                
-                <div class="settings-section">
-                    <h2>
-                        <i class="fas fa-code"></i> 
-                        <span>template-editor</span>
-                    </h2>
-                    
-                    <!-- Template Editor -->
-                    <div class="setting-item multi-line" id="card-user-count-template-editor">
-                        <div id="template-editor" class="template-editor">
-                            <!-- Template editor content will be dynamically created -->
+                </aside>
+
+                <main class="main" style="max-width: 360px;">
+                    <div class="preview-section">
+                        <h2>
+                            <i class="fas fa-eye"></i>
+                            <span>card-preview</span>
+                        </h2>
+                        <p class="preview-description">
+                            <span>card-preview-description</span>
+                        </p>
+                        
+                        <div class="preview-card-container">
+                            <div class="anime-cards__item-wrapper rank-a" id="preview-card">
+                                <div class="anime-cards__item" data-name="Кируко" data-id="4779" data-rank="a" data-anime-name="Великая небесная стена" data-anime-link="/aniserials/videos/adventure/1811-velikaja-nebesnaja-stena-2023.html" data-author="declover" data-image="/uploads/cards_image/1811/a/kiruko-1748351962-160833.webp" data-owner-id="21701569" data-can-trade="0" data-favourite="0" data-stars="0" data-last-id="4779">
+                                    <div class="anime-cards__image">
+                                        <img loading="lazy" src="https://animestars.org/uploads/cards_image/1811/a/kiruko-1748351962-160833.webp" 
+                                             alt="Карточка персонажа Кируко" class="lazy-loaded">
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <button onclick="updateCardPreview()" style="margin-top: 10px; padding: 10px 20px; background: #3498db; color: white; border: none; border-radius: 5px; cursor: pointer;">
+                                Update Preview
+                            </button>
                         </div>
                     </div>
-                </div>і
+                </main>
             </div>
         </translate-text>
     </div>
