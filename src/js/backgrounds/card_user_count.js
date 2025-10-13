@@ -15,7 +15,7 @@ const CARD_COUNT_COUNTS_KEY = (cardId, parseType = "counts", username = "") => {
     }
     throw new Error(`Invalid parseType: ${parseType}`);
 };
-
+const SITE_CARD_PARSE_TYPES = ["siteCard", "siteDeck"];
 
 const CARD_COUNT_CONFIG = {
     REQUEST_DELAY: 2000,
@@ -83,6 +83,52 @@ async function addStatToUploadQueue(data) {
     await AssApiClient.submitCardStats(data);
 }
 
+
+
+async function getSiteCardData(cardId, parseType) {
+    if (parseType === "siteCard") {
+        const detail = await AssApiClient.getCard(cardId);
+        return { cardId, parseType, data: detail };
+    }
+    if (parseType === "siteDeck") {
+        const deck = await AssApiClient.getDeckByCardId(cardId);
+        return {
+            cardId,
+            parseType,
+            data: {
+                ASSCardCount: deck.cards.filter(c => c.rank === 'ass').length,
+                SCardCount: deck.cards.filter(c => c.rank === 's').length,
+                ACardCount: deck.cards.filter(c => c.rank === 'a').length,
+                BCardCount: deck.cards.filter(c => c.rank === 'b').length,
+                CCardCount: deck.cards.filter(c => c.rank === 'c').length,
+                DCardCount: deck.cards.filter(c => c.rank === 'd').length,
+                ECardCount: deck.cards.filter(c => c.rank === 'e').length,
+                TotalCardCount: deck.cards.length,
+            }
+        };
+    }
+    throw new Error(`Invalid parseType: ${parseType}`);
+}
+
+async function getSiteCardDatas(cardIds, parseTypes) {
+    const data = [];
+    // get site card data
+    const siteParseTypes = parseTypes.filter(x => SITE_CARD_PARSE_TYPES.includes(x));
+    if (siteParseTypes.length == 0) return [];
+    for (const cardId of cardIds) {
+        for (const parseType of siteParseTypes) {
+            data.push(getSiteCardData(cardId, parseType).catch(() => {
+                return {
+                    cardId,
+                    parseType,
+                    data: null,
+                }
+            }));
+        }
+    }
+    return await Promise.all(data);
+}
+
 async function cardDataUpdated(items) {
     await broadcastToAllTabs({
         action: 'card_data_updated',
@@ -133,6 +179,8 @@ async function getCachedCounts(cardIds, parseTypes = ["counts"], username = "") 
     const cacheKeys = [];
     for (const cardId of cardIds) {
         for (const parseType of parseTypes) {
+            // skip site card parse types
+            if (SITE_CARD_PARSE_TYPES.includes(parseType)) continue;
             cacheKeys.push(CARD_COUNT_COUNTS_KEY(cardId, parseType, username));
         }
     }
@@ -223,6 +271,8 @@ async function processNextFetch() {
 }
 
 function enqueueFetchRequest(data) {
+    // skip site card parse types
+    if (SITE_CARD_PARSE_TYPES.includes(data.parseType)) return;
     fetchQueue.push(data);
     if (!queueProcessing) {
         processNextFetch();
@@ -261,11 +311,15 @@ async function fetchCachedCardData(message, sender) {
     }
 
     const data = await getCachedCounts(cardIds, parseTypes, username);
-    await cardDataUpdated(data);
+    cardDataUpdated(data);
+    const siteData = await getSiteCardDatas(cardIds, parseTypes);
+    cardDataUpdated(siteData);
 }
 
 async function updateCardDataFromPage(message, sender) {
-    enqueueFetchRequest(message.data)
+    setCachedCounts(message.data);
+    cardDataUpdated([message.data]);
+    addStatToUploadQueue(message.data);
 }
 
 // New: report current queue size

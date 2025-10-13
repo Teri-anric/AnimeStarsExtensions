@@ -7,6 +7,24 @@
 import i18n from './translation.js';
 import IconPicker from './icon-picker.js';
 
+
+const parseTypeToVariablesMap = {
+    unlocked: ["unlockNeed", "unlockOwner", "unlockTrade"],
+    counts: ["need", "owner", "trade"],
+    duplicates: ["duplicates"],
+    siteCard: ["cardName", "cardRank", "cardAnime", "cardAnimeLink", "cardAuthor"],
+    siteDeck: [
+      "deckCountASS",
+      "deckCountS",
+      "deckCountA",
+      "deckCountB",
+      "deckCountC",
+      "deckCountD",
+      "deckCountE",
+      "deckCountTotal"
+    ]
+  };
+
 class TemplateEditor {
     constructor(containerId, options = {}) {
         this.containerId = containerId;
@@ -25,7 +43,7 @@ class TemplateEditor {
             { type: 'variable', variable: 'trade' }
         ];
 
-        this.availableVariables = ['cardId', 'need', 'owner', 'trade', 'unlockNeed', 'unlockOwner', 'unlockTrade', 'duplicates'];
+        this.availableVariables = Object.values(parseTypeToVariablesMap).flat().concat(['cardId', 'newLine']);
         this.availableIcons = [
             'fal fa-search',
             'fal fa-heart',
@@ -452,12 +470,27 @@ class TemplateEditor {
 
         const currentLang = this.getCurrentLanguage();
         const mockData = { 
+            cardId: 4779,
             need: 14, 
             owner: 642, 
             trade: 46, 
             unlockNeed: 5, 
             unlockOwner: 200, 
-            unlockTrade: 12 
+            unlockTrade: 12,
+            duplicates: 2,
+            cardName: 'Кируко',
+            cardRank: 'A',
+            cardAnime: 'Великая небесная стена',
+            cardAnimeLink: '/1811-velikaja-nebesnaja-stena-2023.html',
+            cardAuthor: 'declover',
+            deckCountASS: 0,
+            deckCountS: 1,
+            deckCountA: 2,
+            deckCountB: 4,
+            deckCountC: 6,
+            deckCountD: 17,
+            deckCountE: 20,
+            deckCountTotal: 50,
         };
         
         let preview = '';
@@ -469,7 +502,11 @@ class TemplateEditor {
                 const cls = this.resolveIconClass(item.icon || '');
                 preview += item.icon ? `<i class="${this.escapeHtml(cls)}"></i>` : '';
             } else if (item.type === 'variable') {
-                preview += mockData[item.variable] || '?';
+                if (item.variable === 'newLine') {
+                    preview += "<br>";
+                    return;
+                }
+                preview += this.escapeHtml((mockData[item.variable]) || '?');
             }
         });
 

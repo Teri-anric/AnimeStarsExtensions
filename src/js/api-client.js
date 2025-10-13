@@ -264,6 +264,37 @@ class AssApiClient {
         }
     }
 
+    static async getDeckByCardId(cardId) {
+        const numericId = parseInt(cardId);
+        if (!numericId) throw new Error('cardId required');
+        const cacheKey = `deck_by_card_${numericId}`;
+
+        const cached = await ApiCache.get(cacheKey);
+        if (cached) return cached;
+
+        try {
+            const query = {
+                filter: {
+                    cards: { any: { card_id: { eq: numericId } } }
+                },
+                page: 1,
+                per_page: 1
+            };
+            const data = await this.makeRequest(ASS_API_CONFIG.ENDPOINTS.DECKS, {
+                method: 'POST',
+                body: JSON.stringify(query)
+            });
+            const deck = Array.isArray(data?.items) && data.items.length > 0 ? data.items[0] : null;
+            if (deck) {
+                await ApiCache.set(cacheKey, deck);
+            }
+            return deck;
+        } catch (error) {
+            console.error('Get deck by cardId error:', error);
+            throw error;
+        }
+    }
+
     static async getBulkCardStats(cardIds) {
         try {
             return await this.makeRequest(ASS_API_CONFIG.ENDPOINTS.CARD_STATS_LAST_BULK, {

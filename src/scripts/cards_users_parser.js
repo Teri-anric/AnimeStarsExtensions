@@ -55,9 +55,11 @@
             action: 'update_card_data',
             data: {
                 cardId: cardData.cardId,
-                trade: cardData.trade,
-                need: cardData.need,
-                owner: cardData.owner,
+                data: {
+                    trade: cardData.trade,
+                    need: cardData.need,
+                    owner: cardData.owner,
+                },
                 parseType: cardData.unlocked ? "unlocked" : "counts"
             },
         });

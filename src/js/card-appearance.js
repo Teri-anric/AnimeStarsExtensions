@@ -285,7 +285,7 @@ function saveControlsToSelectedWidget() {
 function initializeTemplateEditor() {
     // Since TemplateEditor is loaded as a module, it should be available on window
     const TemplateEditorClass = window.TemplateEditor;
-    
+
     if (TemplateEditorClass) {
         templateEditor = new TemplateEditorClass('template-editor', {
             onChange: () => { saveControlsToSelectedWidget(); updateCardPreview(); },
@@ -313,8 +313,8 @@ function loadSettings() {
         'card-widgets',
         'language'
     ];
-    
-    chrome.storage.sync.get(allSettings, function(settings) {
+
+    chrome.storage.sync.get(allSettings, function (settings) {
         // Load language settings
         window.i18n.changeLang(settings.language);
         // Load checkbox settings
@@ -324,7 +324,7 @@ function loadSettings() {
                 element.checked = settings[key] || false;
             }
         });
-        
+
         // Load select settings
         SETTINGS_CONFIG.selects.forEach(key => {
             const element = document.getElementById(key);
@@ -332,7 +332,7 @@ function loadSettings() {
                 element.value = settings[key] || '';
             }
         });
-        
+
         // Load range settings
         SETTINGS_CONFIG.ranges.forEach(key => {
             const element = document.getElementById(key);
@@ -344,7 +344,7 @@ function loadSettings() {
                 }
             }
         });
-        
+
         // Load color settings
         SETTINGS_CONFIG.colors.forEach(key => {
             const element = document.getElementById(key);
@@ -353,13 +353,13 @@ function loadSettings() {
                 element.value = settings[key] || defaultValue;
             }
         });
-        
+
         // Load widgets
         let widgets = [];
         if (settings['card-widgets']) {
             try {
                 widgets = typeof settings['card-widgets'] === 'string' ? JSON.parse(settings['card-widgets']) : settings['card-widgets'];
-            } catch {}
+            } catch { }
         }
         if (!Array.isArray(widgets) || widgets.length === 0) {
             widgets = [newWidgetDefaults()];
@@ -378,7 +378,7 @@ function loadSettings() {
 function saveSettings() {
     const settings = {};
     const inputs = document.querySelectorAll('input, select');
-    
+
     inputs.forEach(input => {
         if (input.id) {
             if (input.type === 'checkbox') {
@@ -388,7 +388,7 @@ function saveSettings() {
             }
         }
     });
-    
+
     chrome.storage.sync.set(settings);
 }
 
@@ -404,7 +404,7 @@ function setupEventListeners() {
             updateCardPreview();
             saveSettings();
         });
-        
+
         if (input.type === 'range') {
             input.addEventListener('input', (e) => {
                 const valueSpan = e.target.parentNode.querySelector('.slider-value');
@@ -423,10 +423,10 @@ function setupEventListeners() {
  */
 function initializeCardAppearancePage() {
     // Card appearance page initialization
-    
+
     // Load settings
     loadSettings();
-    
+
     // Setup event listeners
     setupEventListeners();
     initializeTemplateEditor();
@@ -477,10 +477,10 @@ function initializeCardAppearancePage() {
     // Force right-side preview always
     const layout = document.getElementById('appearance-layout');
     if (layout) layout.classList.remove('preview-left');
-    
+
     // Update preview after template editor is loaded
     setTimeout(updateCardPreview, 500);
-    
+
     // Also update preview immediately for testing
     setTimeout(() => {
         console.log('Force updating preview for testing');
@@ -493,7 +493,7 @@ function initializeCardAppearancePage() {
  */
 function updateCardPreview() {
     // Update card preview
-    
+
     const previewCard = document.getElementById('preview-card');
     if (!previewCard) {
         // Preview card not found
@@ -520,6 +520,7 @@ function updateCardPreview() {
     // Mock data for preview
     const mockData = {
         cardId: 4779,
+        newLine: "\n",
         need: 9,
         owner: 583,
         trade: 28,
@@ -527,12 +528,22 @@ function updateCardPreview() {
         unlockOwner: 383,
         unlockTrade: 28,
         duplicates: 2,
+        cardName: 'Кируко',
+        cardRank: 'A',
+        cardAnime: 'Великая небесная стена',
+        cardAnimeLink: '/1811-velikaja-nebesnaja-stena-2023.html',
+        cardAuthor: 'declover',
+        deckCountASS: 0,
+        deckCountS: 1,
+        deckCountA: 2,
+        deckCountB: 4,
+        deckCountC: 6,
+        deckCountD: 17,
+        deckCountE: 20,
+        deckCountTotal: 50,
     };
 
-    // Format template content
-    const content = formatTemplateItems(templateItems, mockData);
-    // Format content
-    
+
     // Render all enabled widgets in consistent order
     widgetsState.list.filter(w => w.enabled).forEach(w => {
         const position = w.position || 'bottom-right';
@@ -552,40 +563,40 @@ function updateCardPreview() {
         if (hoverAction !== 'none') countElement.classList.add(`hover-${hoverAction}`);
 
         // Apply custom colors
-    if (backgroundColor) {
-        // Apply opacity to background color only
-        const bgColor = backgroundColor;
+        if (backgroundColor) {
+            // Apply opacity to background color only
+            const bgColor = backgroundColor;
             const opacityValue = parseInt(opacity) / 100;
-        
-        // Convert hex to rgba if needed
-        let r, g, b;
-        if (bgColor.startsWith('#')) {
-            const hex = bgColor.slice(1);
-            r = parseInt(hex.substr(0, 2), 16);
-            g = parseInt(hex.substr(2, 2), 16);
-            b = parseInt(hex.substr(4, 2), 16);
-        } else {
-            // If already in rgb format, extract values
-            const match = bgColor.match(/rgb\((\d+),\s*(\d+),\s*(\d+)\)/);
-            if (match) {
-                r = parseInt(match[1]);
-                g = parseInt(match[2]);
-                b = parseInt(match[3]);
+
+            // Convert hex to rgba if needed
+            let r, g, b;
+            if (bgColor.startsWith('#')) {
+                const hex = bgColor.slice(1);
+                r = parseInt(hex.substr(0, 2), 16);
+                g = parseInt(hex.substr(2, 2), 16);
+                b = parseInt(hex.substr(4, 2), 16);
             } else {
-                // Fallback to solid color
-                countElement.style.backgroundColor = bgColor;
+                // If already in rgb format, extract values
+                const match = bgColor.match(/rgb\((\d+),\s*(\d+),\s*(\d+)\)/);
+                if (match) {
+                    r = parseInt(match[1]);
+                    g = parseInt(match[2]);
+                    b = parseInt(match[3]);
+                } else {
+                    // Fallback to solid color
+                    countElement.style.backgroundColor = bgColor;
+                }
             }
-        }
-        
-        if (r !== undefined && g !== undefined && b !== undefined) {
-            countElement.style.backgroundColor = `rgba(${r}, ${g}, ${b}, ${opacityValue})`;
-        }
-    } else {
-        // Apply opacity to default background color
+
+            if (r !== undefined && g !== undefined && b !== undefined) {
+                countElement.style.backgroundColor = `rgba(${r}, ${g}, ${b}, ${opacityValue})`;
+            }
+        } else {
+            // Apply opacity to default background color
             const opacityValue = parseInt(opacity) / 100;
-        countElement.style.backgroundColor = `rgba(0, 0, 0, ${opacityValue * 0.8})`; // Default is rgba(0,0,0,0.8)
-    }
-    
+            countElement.style.backgroundColor = `rgba(0, 0, 0, ${opacityValue * 0.8})`; // Default is rgba(0,0,0,0.8)
+        }
+
         if (textColor) {
             countElement.style.color = textColor;
         }
@@ -601,7 +612,7 @@ function updateCardPreview() {
             if (cardItem) cardItem.appendChild(countElement);
         }
     });
-    
+
     // Double check if element was added
     setTimeout(() => { /* preview rendered */ }, 100);
 }
@@ -611,33 +622,30 @@ function updateCardPreview() {
  * (Simplified version of the function from card_user_count.js)
  */
 function formatTemplateItems(templateItems, values) {
-    if (!Array.isArray(templateItems)) return "";
-    
+    if (!Array.isArray(templateItems)) return '';
+
     return templateItems.map(item => {
         if (item.type === 'text') {
             return item.text || '';
         } else if (item.type === 'icon') {
             return item.icon ? `<i class="${item.icon.trim()}"></i>` : '';
         } else if (item.type === 'variable') {
-            const value = values[item.variable];
-            if (value === undefined) return "?";
-            
+            if (item.variable === 'newLine') {
+                return '<br>';
+            }
+            const value = values[item.variable] || '?';
+            if (value === undefined) return '?';
+
             let result = '';
-            
-            // Add icon if specified
             if (item.icon && item.icon.trim()) {
                 result += `<i class="${item.icon.trim()}"></i>`;
             }
-            
-            // Add value
             result += value;
-            
             return result;
         }
         return '';
     }).join('');
 }
-
 // Initialize when page loads
 document.addEventListener('DOMContentLoaded', initializeCardAppearancePage);
 

@@ -4,8 +4,20 @@
   const parseTypeToVariablesMap = {
     unlocked: ["unlockNeed", "unlockOwner", "unlockTrade"],
     counts: ["need", "owner", "trade"],
-    duplicates: ["duplicates"]
+    duplicates: ["duplicates"],
+    siteCard: ["cardName", "cardRank", "cardAnime", "cardAnimeLink", "cardAuthor"],
+    siteDeck: [
+      "deckCountASS",
+      "deckCountS",
+      "deckCountA",
+      "deckCountB",
+      "deckCountC",
+      "deckCountD",
+      "deckCountE",
+      "deckCountTotal"
+    ]
   };
+
 
   const LOGGED_IN_USERNAME = (() => {
     try {
@@ -90,6 +102,9 @@
       } else if (item.type === 'icon') {
         return item.icon ? `<i class="${item.icon.trim()}"></i>` : '';
       } else if (item.type === 'variable') {
+        if (item.variable === 'newLine') {
+          return '<br>';
+        }
         const value = values[item.variable];
         if (value === undefined) return '?';
 
@@ -97,7 +112,7 @@
         if (item.icon && item.icon.trim()) {
           result += `<i class="${item.icon.trim()}"></i>`;
         }
-        result += value;
+        result += value;      
         return result;
       }
       return '';
@@ -116,6 +131,7 @@
     const cardDatas = loadCardDatasFromCardElm(elm) || [];
     const parseTypes = cardDatas.map(data => data.parseType);
     const needParseTypes = computeNeedWidgetsParseTypes([widget]);
+    if (needParseTypes.length === 0) return false;
     return needParseTypes.every(type => !parseTypes.includes(type));
   }
 
@@ -123,7 +139,7 @@
     const parseTypes = Object.entries(parseTypeToVariablesMap).map(([parseType, variables]) => {
       if (!widgetsNeedAny(variables, widgets)) return;
       return parseType;
-    }).filter(Boolean);
+    }).filter((x) => x !== undefined);
 
     return parseTypes;
   }
@@ -222,7 +238,7 @@
     }
     applyWidgetStyles(elm, widget, setLoading);
 
-    elm.innerHTML = formatTemplateItems(widget.templateItems || [], buildVariablesFromCardElm(cardElm, elm));
+    elm.innerHTML = formatTemplateItems(widget.templateItems || [], buildVariablesFromCardElm(cardElm, elm, widget));
 
     return elm;
   }
@@ -263,20 +279,12 @@
     cardElm.setAttribute('data-counts', JSON.stringify(CountsData));
   }
 
-  function buildVariablesFromCardElm(cardElm, widget) {
+  function buildVariablesFromCardElm(cardElm, widgetElm, widget) {
     const variables = {
       cardId: cardElm.getAttribute('data-index-card-id'),
     };
-    if (widget.classList.contains('card-user-count-loading')) {
-      Object.assign(variables, {
-        need: '...',
-        owner: '...',
-        trade: '...',
-        unlockNeed: '...',
-        unlockOwner: '...',
-        unlockTrade: '...',
-        duplicates: '...',
-      });
+    if (widgetElm.classList.contains('card-user-count-loading')) {
+      Object.assign(variables, Object.fromEntries(Object.values(parseTypeToVariablesMap).map(v => [v, widget?.loadingText || '...'])));
     }
 
     const cardDatas = loadCardDatasFromCardElm(cardElm);
@@ -296,7 +304,26 @@
       if (cardData.parseType === 'duplicates') {
         variables.duplicates = cardData.data?.duplicates;
       }
+      if (cardData.parseType === 'siteCard') {
+        variables.cardName = cardData.data?.name;
+        variables.cardRank = cardData.data?.rank;
+        variables.cardAnime = cardData.data?.anime_name;
+        variables.cardAnimeLink = cardData.data?.anime_link;
+        variables.cardAuthor = cardData.data?.author;
+      }
+      if (cardData.parseType === 'siteDeck') {
+        const d = cardData.data || {};
+        variables.deckCountASS = d?.ASSCardCount;
+        variables.deckCountS = d?.SCardCount;
+        variables.deckCountA = d?.ACardCount;
+        variables.deckCountB = d?.BCardCount;
+        variables.deckCountC = d?.CCardCount;
+        variables.deckCountD = d?.DCardCount;
+        variables.deckCountE = d?.ECardCount;
+        variables.deckCountTotal = d?.TotalCardCount;
+      }
     });
+    console.log(variables);
     return variables;
   }
 
