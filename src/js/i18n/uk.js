@@ -132,6 +132,8 @@ const AnimeStarExtensionTranslationUkraine = {
     'trades-preview-auto-parse': 'Авто-завантаження превʼю через парсинг відсутніх обмінів',
     'trades-preview-auto-start-delay': 'Затримка перед стартом авто-парсингу',
     'trades-preview-auto-interval': 'Інтервал авто-парсингу',
+    'trades-preview-full-exchange': 'Показувати повний обмін (усі картки) у списках',
+    'trades-history-big-images': 'Більші зображення в історії обмінів',
     'add-need-btn-to-card-dialog': 'Додати кнопку "Хочу картку" в діалоговому вікні картки',
     'not-add-need-btn-to-card-dialog': 'Не додавати',
     'add-need-btn-to-card-dialog-can': 'Додавати, якщо можна встановити',

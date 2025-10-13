@@ -47,6 +47,8 @@ const DEFAULT_SETTINGS = {
     'trades-preview-auto-parse': true,
     'trades-preview-auto-start-delay': 500,
     'trades-preview-auto-interval': 1200,
+    'trades-preview-full-exchange': false,
+    'trades-history-big-images': false,
 };
 
 const MIGRATIONS = [

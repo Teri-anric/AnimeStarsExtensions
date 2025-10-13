@@ -14,7 +14,7 @@
         const urlParams = new URLSearchParams(window.location.search);
         const cardId = urlParams.get('id');
         const unlockedParam = (urlParams.get('unlocked') || '0') !== '0';
-        
+
         if (!cardId) {
             console.log('Card ID not found in URL');
             return null;
@@ -58,7 +58,7 @@
                 trade: cardData.trade,
                 need: cardData.need,
                 owner: cardData.owner,
-                parseType: cardData.unlocked ? "counts" : "unlocked"
+                parseType: cardData.unlocked ? "unlocked" : "counts"
             },
         });
 

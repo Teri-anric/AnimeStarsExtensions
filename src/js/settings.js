@@ -21,6 +21,8 @@ document.addEventListener('DOMContentLoaded', () => {
         'trades-history-filters',
         'trades-preview-enabled',
         'trades-preview-auto-parse',
+        'trades-preview-full-exchange',
+        'trades-history-big-images',
     ];
 
     const settingsSelects = [
@@ -70,6 +72,7 @@ document.addEventListener('DOMContentLoaded', () => {
             },
             targets: [
                 "trades-preview-auto-parse",
+                "trades-preview-full-exchange",
             ]
         },
         {
