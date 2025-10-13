@@ -1,0 +1,21 @@
+.remelt-ext__topbar {display: flex; gap: 16px; align-items: center; justify-content: space-between; margin: 10px 0; padding: 10px; background: var(--bg-2); border: 1px solid var(--bdc); border-radius: 10px}
+.remelt-ext__slots {display: flex; gap: 10px; align-items: stretch}
+.remelt-ext__slot {display: flex}
+.remelt-ext__slot .remelt__item {width: 100px; height: 150px}
+.remelt-ext__result {display: flex; align-items: center; justify-content: center}
+.remelt-ext__result-holder {display: flex}
+.remelt-ext__result-holder .remelt__item--result {width: 120px; height: 180px}
+@media screen and (max-width: 600px) {
+  .remelt-ext__topbar {flex-wrap: wrap}
+  .remelt-ext__slots {flex: 1 1 100%}
+  .remelt-ext__result {order: 3; flex: 1 1 100%}
+}
+
+
+.remelt-ext--enabled .remelt__wrapper {display: none}
+
+/* Visual alignment tweaks to better match site */
+.remelt-ext__slot img {display: block; border-radius: 8px; width: 100px; height: 150px; object-fit: cover}
+.remelt-ext__result img {display: block; border-radius: 8px; width: 120px; height: 180px; object-fit: cover}
+.remelt-ext__action {display: flex; align-items: center}
+.remelt-ext__start-btn {height: 60px; min-width: 220px; font-weight: 600; font-size: 16px; letter-spacing: 1px}

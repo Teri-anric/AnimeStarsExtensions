@@ -23,6 +23,7 @@ document.addEventListener('DOMContentLoaded', () => {
         'trades-preview-auto-parse',
         'trades-preview-full-exchange',
         'trades-history-big-images',
+        'remelt-topbar-enabled',
     ];
 
     const settingsSelects = [

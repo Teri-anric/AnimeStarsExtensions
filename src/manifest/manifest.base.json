@@ -78,6 +78,19 @@
         },
         {
             "matches": [
+                "https://[HOST]/cards_remelt/",
+                "https://[HOST]/cards_remelt/*"
+            ],
+            "js": [
+                "./scripts/remelt_topbar.js"
+            ],
+            "css": [
+                "./styles/remelt_topbar.css"
+            ],
+            "run_at": "document_end"
+        },
+        {
+            "matches": [
                 "https://[HOST]/trades/history*"
             ],
             "js": [

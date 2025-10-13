@@ -352,7 +352,6 @@
         variables.deckCountTotal = d?.TotalCardCount;
       }
     });
-    console.log(variables);
     return variables;
   }
 

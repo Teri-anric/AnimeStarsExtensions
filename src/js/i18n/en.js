@@ -132,6 +132,7 @@ const AnimeStarExtensionTranslationEnglish = {
     'trades-preview-auto-interval': 'Auto-parse interval',
     'trades-preview-full-exchange': 'Show full exchange (all cards) in lists',
     'trades-history-big-images': 'Bigger images in trades history',
+    'remelt-topbar-enabled': 'Remelt: show top bar layout',
     'add-need-btn-to-card-dialog': 'Add "Need" button to card dialog',
     'not-add-need-btn-to-card-dialog': 'Not add',
     'add-need-btn-to-card-dialog-can': 'Add if can set',
