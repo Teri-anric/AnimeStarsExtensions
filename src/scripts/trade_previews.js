@@ -10,13 +10,6 @@
     'trades-preview-full-exchange'
   ];
 
-
-  function getCardDetail(cardId) {
-    return new Promise((resolve) => {
-      chrome.runtime.sendMessage({ action: 'get_card_detail', cardId: parseInt(cardId) }, (resp) => resolve(resp));
-    });
-  }
-
   function buildTradeKey(tradeId) {
     return `${TRADE_STORAGE_PREFIX}${tradeId}`;
   }
@@ -25,7 +18,6 @@
     console.log('tradeIds', tradeIds);
     const keys = tradeIds.map(buildTradeKey);
     const stored = await chrome.storage.local.get(keys);
-    console.log('stored', stored);
     return Object.fromEntries(
       Object.entries(stored).map(([key, value]) => [value?.tradeId, value])
     );
@@ -70,25 +62,23 @@
     // Batch mapping fetch
     const records = await getTradeRecords(tradeIds);
 
-    // Group anchors by cardId for single fetch per id
-    const idToAnchors = new Map();
     links.forEach((a) => {
       try {
         const url = new URL(a.getAttribute('href'), window.location.origin);
         const tradeId = url.pathname.split('/').filter(Boolean).pop();
         const rec = records[tradeId];
+        if (!rec) return;
+
+        // Find image URL from gainedCardData or lostCardData
+        const gainedCardData = rec.gainedCardData || [];
+        const lostCardData = rec.lostCardData || [];
         const cardId = parseInt(rec?.cardId || (rec?.gainedCardIds && rec.gainedCardIds[0]));
         if (!cardId) return;
-        if (!idToAnchors.has(cardId)) idToAnchors.set(cardId, []);
-        idToAnchors.get(cardId).push(a);
-      } catch { }
-    });
 
-    for (const [cardId, anchors] of idToAnchors.entries()) {
-      const detail = await getCardDetail(cardId);
-      if (!detail?.success || !detail?.data) continue;
-      const image = detail.data?.image || detail.data?.card?.image;
-      anchors.forEach((a) => {
+        // Find the image URL for the preview card
+        const cardData = [...gainedCardData, ...lostCardData].find(data => data.cardId === cardId);
+        const imageUrl = cardData?.imageUrl;
+
         let mount = a; // mount preview at list item level to align right
         let preview = mount.querySelector('.ass-trade-preview');
         if (!preview) {
@@ -96,9 +86,9 @@
           preview.className = 'ass-trade-preview';
           mount.appendChild(preview);
         }
-        renderImage(preview, image);
-      });
-    }
+        renderImage(preview, imageUrl);
+      } catch { }
+    });
   }
 
   function sleep(ms) {
@@ -177,13 +167,31 @@
       const firstItems = (itemBlocks[0] ? Array.from(itemBlocks[0].querySelectorAll(tradeMainItemSelector)) : []);
       const secondItems = (itemBlocks[1] ? Array.from(itemBlocks[1].querySelectorAll(tradeMainItemSelector)) : []);
 
-      const firstIds = firstItems.map(extractCardIdFromElement).filter(Boolean).map((x) => parseInt(x));
-      const secondIds = secondItems.map(extractCardIdFromElement).filter(Boolean).map((x) => parseInt(x));
+      function extractCardDataFromElement(elm) {
+        if (!elm) return null;
+        const cardId = extractCardIdFromElement(elm);
+        if (!cardId) return null;
+
+        // Extract image URL from data-src attribute
+        const img = elm.querySelector('img');
+        const imageUrl = img?.getAttribute('data-src') || img?.src;
+
+        return { cardId: parseInt(cardId), imageUrl };
+      }
+
+      const firstCardData = firstItems.map(extractCardDataFromElement).filter(Boolean);
+      const secondCardData = secondItems.map(extractCardDataFromElement).filter(Boolean);
+
+      const firstIds = firstCardData.map(data => data.cardId);
+      const secondIds = secondCardData.map(data => data.cardId);
 
       // Determine gained/lost from page type: on received trade page you gain first block
       // on offers trade page you lose first block
-      const gainedCardIds = isOffersDetail ? secondIds : firstIds;
-      const lostCardIds = isOffersDetail ? firstIds : secondIds;
+      const gainedCardData = isOffersDetail ? secondCardData : firstCardData;
+      const lostCardData = isOffersDetail ? firstCardData : secondCardData;
+
+      const gainedCardIds = gainedCardData.map(data => data.cardId);
+      const lostCardIds = lostCardData.map(data => data.cardId);
 
       const previewCardId = (gainedCardIds && gainedCardIds[0]) || (lostCardIds && lostCardIds[0]) || null;
 
@@ -195,6 +203,8 @@
         cardId: previewCardId ? parseInt(previewCardId) : undefined,
         gainedCardIds,
         lostCardIds,
+        gainedCardData,
+        lostCardData,
         savedAt: Date.now()
       };
 
@@ -320,9 +330,7 @@
       openBtn.href = a.getAttribute('href');
 
       // Helper to create card thumb
-      async function createCardThumb(cardId) {
-        const detail = await getCardDetail(cardId);
-        const imgUrl = detail?.data?.image || detail?.data?.card?.image;
+      function createCardThumb(cardId, imageUrl) {
         const href = `/cards/users/?id=${cardId}`;
         const item = document.createElement('a');
         item.className = 'history__body-item show-need_button';
@@ -332,19 +340,19 @@
         img.loading = 'lazy';
         img.decoding = 'async';
         img.alt = 'Карточка';
-        if (imgUrl) img.src = imgUrl;
+        if (imageUrl) img.src = imageUrl;
         item.appendChild(img);
         return item;
       }
 
-      const gainedIds = full ? (Array.isArray(rec.gainedCardIds) ? rec.gainedCardIds : []) : (rec.gainedCardIds?.slice(0, 1) || []);
-      const lostIds = full ? (Array.isArray(rec.lostCardIds) ? rec.lostCardIds : []) : (rec.lostCardIds?.slice(0, 1) || []);
+      const gainedCardData = full ? (Array.isArray(rec.gainedCardData) ? rec.gainedCardData : []) : ((rec.gainedCardData || []).slice(0, 1));
+      const lostCardData = full ? (Array.isArray(rec.lostCardData) ? rec.lostCardData : []) : ((rec.lostCardData || []).slice(0, 1));
 
-      for (const cid of gainedIds) {
-        try { gained.appendChild(await createCardThumb(cid)); } catch { }
+      for (const cardData of gainedCardData) {
+        try { gained.appendChild(createCardThumb(cardData.cardId, cardData.imageUrl)); } catch { }
       }
-      for (const cid of lostIds) {
-        try { lost.appendChild(await createCardThumb(cid)); } catch { }
+      for (const cardData of lostCardData) {
+        try { lost.appendChild(createCardThumb(cardData.cardId, cardData.imageUrl)); } catch { }
       }
 
       container.appendChild(wrap);
@@ -366,7 +374,7 @@
       if (tradeRoot) {
         let debounce = null;
         const handler = () => {
-          if (debounce) clearTimeout(debounce);
+          if (debounce) return;
           debounce = setTimeout(() => {
             try {
               parseTradePage(document, window.location.href);
@@ -379,7 +387,7 @@
           }, 100);
         };
         const observer = new MutationObserver(handler);
-        observer.observe(tradeRoot, { childList: true, subtree: true });
+        observer.observe(tradeRoot, { childList: false, subtree: true });
       }
     } catch {}
     if (autoParseEnabled) {
