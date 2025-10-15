@@ -110,23 +110,20 @@ async function getSiteCardData(cardId, parseType) {
     throw new Error(`Invalid parseType: ${parseType}`);
 }
 
-async function getSiteCardDatas(cardIds, parseTypes) {
-    const data = [];
-    // get site card data
+async function getSiteCardDatas(cardIds, parseTypes, callback) {
     const siteParseTypes = parseTypes.filter(x => SITE_CARD_PARSE_TYPES.includes(x));
-    if (siteParseTypes.length == 0) return [];
+    if (siteParseTypes.length == 0) return;
     for (const cardId of cardIds) {
         for (const parseType of siteParseTypes) {
-            data.push(getSiteCardData(cardId, parseType).catch(() => {
+            getSiteCardData(cardId, parseType).catch(() => {
                 return {
                     cardId,
                     parseType,
                     data: null,
                 }
-            }));
+            }).then(callback);
         }
     }
-    return await Promise.all(data);
 }
 
 async function cardDataUpdated(items) {
@@ -312,8 +309,7 @@ async function fetchCachedCardData(message, sender) {
 
     const data = await getCachedCounts(cardIds, parseTypes, username);
     cardDataUpdated(data);
-    const siteData = await getSiteCardDatas(cardIds, parseTypes);
-    cardDataUpdated(siteData);
+    getSiteCardDatas(cardIds, parseTypes, (data) => cardDataUpdated([data]));
 }
 
 async function updateCardDataFromPage(message, sender) {

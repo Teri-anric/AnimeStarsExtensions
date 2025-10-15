@@ -287,11 +287,11 @@
   }
 
   function previousRenderWidgetsElement(cardElm) {
-    CONFIG.WIDGETS.filter(w => canPreviousRenderWidget(cardElm, w)).forEach(w => {
+    CONFIG.WIDGETS.filter(w => w.enabled && canPreviousRenderWidget(cardElm, w)).forEach(w => {
       renderWidgetElement(cardElm, w);
     });
   }
-
+  
   function loadCardDatasFromCardElm(cardElm) {
     // Load card datas from card elm
     try {

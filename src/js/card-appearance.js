@@ -185,13 +185,6 @@ function renderWidgetsList() {
         label.className = 'widget-tab__label';
         label.textContent = (w.name && w.name.trim()) ? w.name : w.id;
 
-        const enable = document.createElement('input');
-        enable.type = 'checkbox';
-        enable.checked = !!w.enabled;
-        enable.title = 'enabled';
-        enable.addEventListener('click', (e) => e.stopPropagation());
-        enable.addEventListener('change', () => { w.enabled = enable.checked; saveWidgets(); updateCardPreview(); });
-
         const del = document.createElement('button');
         del.className = 'tab-btn';
         del.innerHTML = '<i class="fas fa-trash" style="color:#e74c3c"></i>';
@@ -214,7 +207,6 @@ function renderWidgetsList() {
             syncSelectedWidgetToControls();
         });
         holder.appendChild(label);
-        holder.appendChild(enable);
         holder.appendChild(del);
         tabs.appendChild(holder);
     });
@@ -230,6 +222,7 @@ function syncSelectedWidgetToControls() {
     }
 
     const m = new Map([
+        ['card-user-count-enabled', 'enabled'],
         ['card-user-count-position', 'position'],
         ['card-user-count-style', 'style'],
         ['card-user-count-size', 'size'],
@@ -243,6 +236,8 @@ function syncSelectedWidgetToControls() {
         if (!el) return;
         if (el.type === 'color' || el.tagName === 'SELECT' || el.type === 'range') {
             el.value = w[wk] ?? el.value;
+        } else if (el.type === 'checkbox') {
+            el.checked = !!w[wk];
         }
         if (el.type === 'range') {
             const span = el.parentNode.querySelector('.slider-value');
@@ -274,6 +269,7 @@ function saveControlsToSelectedWidget() {
     if (!w) return;
     const idForSave = w.id; // stabilize target
     const m = new Map([
+        ['card-user-count-enabled', 'enabled'],
         ['card-user-count-position', 'position'],
         ['card-user-count-style', 'style'],
         ['card-user-count-size', 'size'],
@@ -303,6 +299,8 @@ function saveControlsToSelectedWidget() {
             } else {
                 w[wk] = el.value;
             }
+        } else if (el.type === 'checkbox') {
+            w[wk] = el.checked;
         }
     });
 

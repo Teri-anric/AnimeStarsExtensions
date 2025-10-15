@@ -155,11 +155,6 @@ class AssApiClient {
             const response = await fetch(url, requestOptions);
 
             if (!response.ok) {
-                if (response.status === 401) {
-                    // Token is invalid, remove it
-                    await TokenManager.removeToken();
-                    throw new Error('Authentication failed - token removed');
-                }
                 throw new Error(`HTTP ${response.status}: ${response.statusText}`);
             }
 
