@@ -112,10 +112,25 @@
     });
   }
 
-  function setup() {
+  function toggleBigImages(enabled) {
+    try {
+      const isHistoryPage = /\/trades\/history\//.test(new URL(window.location.href).pathname);
+      if (isHistoryPage) {
+        const root = document.querySelector('.history__list') || document.body;
+        if (enabled) {
+          root.classList.add('big-images');
+        } else {
+          root.classList.remove('big-images');
+        }
+      }
+    } catch {}
+  }
+
+  function setup(settings = {}) {
     injectControls();
     fixSubtabsLinks();
     applyClientSideFiltering();
+    toggleBigImages(!!settings['trades-history-big-images']);
   }
 
   function fixSubtabsLinks() {
@@ -136,26 +151,35 @@
   }
 
   // Init immediately; extension runs after page load. Also react to runtime setting changes.
-  chrome.storage.sync.get(['trades-history-filters'], (settings) => {
+  chrome.storage.sync.get(['trades-history-filters', 'trades-history-big-images'], (settings) => {
     const enabled = settings['trades-history-filters'];
     if (enabled === false) return; // default ON
-    setup();
+    setup(settings);
   });
 
   chrome.storage.onChanged.addListener((changes, namespace) => {
     if (namespace !== 'sync') return;
-    if (!changes['trades-history-filters']) return;
-    const enabled = changes['trades-history-filters'].newValue;
-    const toolbar = document.querySelector('.ass-thf__toolbar');
-    if (enabled === false) {
-      if (toolbar) toolbar.remove();
-      // show all items again
-      const historyContainer = document.querySelector(HISTORY_CONTAINER_SELECTOR);
-      if (historyContainer) Array.from(historyContainer.children || []).forEach(e => e.style && (e.style.display = ''));
-    } else {
-      // re-inject if missing
-      const exists = document.querySelector('.ass-thf__toolbar');
-      if (!exists) setup();
+
+    // Handle trades-history-filters changes
+    if (changes['trades-history-filters']) {
+      const enabled = changes['trades-history-filters'].newValue;
+      const toolbar = document.querySelector('.ass-thf__toolbar');
+      if (enabled === false) {
+        if (toolbar) toolbar.remove();
+        // show all items again
+        const historyContainer = document.querySelector(HISTORY_CONTAINER_SELECTOR);
+        if (historyContainer) Array.from(historyContainer.children || []).forEach(e => e.style && (e.style.display = ''));
+      } else {
+        // re-inject if missing
+        const exists = document.querySelector('.ass-thf__toolbar');
+        if (!exists) setup();
+      }
+    }
+
+    // Handle trades-history-big-images changes
+    if (changes['trades-history-big-images']) {
+      const bigImagesEnabled = changes['trades-history-big-images'].newValue;
+      toggleBigImages(!!bigImagesEnabled);
     }
   });
 })();

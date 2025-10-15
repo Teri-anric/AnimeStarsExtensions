@@ -10,3 +10,19 @@
 @media (max-width: 600px) {
   .ass-thf__user-search.tabs__item { width: 120px !important; }
 }
+
+
+.history__list.big-images {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(49%, 1fr));
+  gap: 16px;
+  padding: 10px;
+}
+
+.history__list.big-images .history__body-item {
+  width: 144px !important;
+}
+
+.history__inner:has(.history__list.big-images) {
+  width: 100% !important;
+}

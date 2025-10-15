@@ -7,8 +7,7 @@
     'trades-preview-auto-parse',
     'trades-preview-auto-start-delay',
     'trades-preview-auto-interval',
-    'trades-preview-full-exchange',
-    'trades-history-big-images'
+    'trades-preview-full-exchange'
   ];
 
 
@@ -239,7 +238,6 @@
     const openBtn = document.createElement('a');
     openBtn.className = 'btn flex-grow-1';
     openBtn.textContent = 'Открыть ордер';
-    openBtn.target = '_blank';
     controls.appendChild(openBtn);
     wrap.appendChild(controls);
 
@@ -361,19 +359,6 @@
 
     processOffersList();
     renderCachedListForPage(settings);
-    // Toggle big images class for history pages, controlled by settings
-    const bigHistory = !!settings['trades-history-big-images'];
-    try {
-      const isHistoryPage = /\/trades\/history\//.test(new URL(window.location.href).pathname);
-      if (isHistoryPage) {
-        const root = document.querySelector('.history__list') || document.body;
-        if (bigHistory) {
-          root.classList.add('big-images');
-        } else {
-          root.classList.remove('big-images');
-        }
-      }
-    } catch {}
     parseTradePage(document, window.location.href);
     // Observe .trade content changes (accept/cancel flow updates DOM before URL changes)
     try {

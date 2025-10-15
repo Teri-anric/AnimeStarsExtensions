@@ -91,7 +91,8 @@
         },
         {
             "matches": [
-                "https://[HOST]/trades/history*"
+                "https://[HOST]/trades/history*",
+                "https://[HOST]/trades/history/*"
             ],
             "js": [
                 "./scripts/trades_history_filters.js"
