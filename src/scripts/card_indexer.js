@@ -9,6 +9,7 @@
     '.remelt__inventory-item',
     '.remelt__item',
     '.remelt-ext__slot',
+    '.anime-cards__placeholder',
   ].join(',');
 
   const notIdsSelectors = [
@@ -166,9 +167,24 @@
     // indexOwnerIds(elms); DISABLED
   }
 
+  async function createStatOverlays() {
+    const statCardSelectors = [
+      '.noffer__img',
+    ].join(',');
+
+    const statCards = document.querySelectorAll(statCardSelectors);
+    statCards.forEach((elm) => {
+      const statOverlay = elm.querySelector('.card-stat-overlay') || document.createElement('div');
+      statOverlay.className = 'card-stat-overlay';
+      setCardIdIndex(statOverlay, extractCardIdFromElement(elm))
+      if (!elm.contains(statOverlay)) elm.appendChild(statOverlay);
+    });
+  }
+
   async function indexAllOnPage() {
     const cards = Array.from(document.querySelectorAll(cardContainerSelector));
     indexElements(cards);
+    createStatOverlays();
   }
 
   const cardIndexerObserver = new MutationObserver((mutations) => {

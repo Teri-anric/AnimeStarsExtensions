@@ -9,3 +9,8 @@
 .user-card-buttons a {
     margin-left: 10px;
 }
+
+.card-stat-overlay {
+    position: absolute;
+    inset: 0;  
+}
