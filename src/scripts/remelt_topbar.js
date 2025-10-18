@@ -43,17 +43,23 @@
   function syncSlotsFromWrapper(topbar) {
     const slotsWrap = topbar.querySelector('.remelt-ext__slots');
     if (!slotsWrap) return;
+    // Clear all slots
+    slotsWrap.innerHTML = '';
+    
     const mapping = [
       { name: 'one', selector: '.remelt__item--one img' },
       { name: 'two', selector: '.remelt__item--two img' },
       { name: 'three', selector: '.remelt__item--three img' },
     ];
+
     for (const { name, selector } of mapping) {
       const srcImg = document.querySelector(selector);
-      const dst = slotsWrap.querySelector('.remelt-ext__slot[data-slot="' + name + '"]');
-      if (!dst) continue;
-      // Clear previous
-      while (dst.firstChild) dst.removeChild(dst.firstChild);
+      
+      // Create new slot
+      const slot = document.createElement('div');
+      slot.className = 'remelt-ext__slot';
+      slot.setAttribute('data-slot', name);
+      
       if (srcImg) {
         const img = document.createElement('img');
         img.src = srcImg.getAttribute('src');
@@ -63,8 +69,10 @@
           // Forward click to original image to trigger site removal logic
           try { srcImg.click(); } catch {}
         });
-        dst.appendChild(img);
+        slot.appendChild(img);
       }
+      
+      slotsWrap.appendChild(slot);
     }
   }
 

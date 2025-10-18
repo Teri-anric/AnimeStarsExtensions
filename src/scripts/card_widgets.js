@@ -295,7 +295,8 @@
   function loadCardDatasFromCardElm(cardElm) {
     // Load card datas from card elm
     try {
-      return JSON.parse(cardElm.getAttribute('data-counts'));
+      const id = cardElm?.getAttribute?.('data-index-card-id');
+      return JSON.parse(cardElm.getAttribute('data-counts')).filter(d => d.cardId == id);
     } catch {
       return null;
     }
@@ -417,8 +418,14 @@
     });
 
     if (newCardElements.length === 0) return;
+    newCardElements.forEach(cardElm => previousRenderWidgetsElement(cardElm));
+
     const cardIds = collectCardIdsFromElements(newCardElements);
     requestCachedCardData(cardIds);
+    if (CONFIG.EVENT_TARGET == "automatic") {
+      cardIds.forEach(cardId => requestFetchCardData(cardId));
+      return;
+    }
   });
 
   async function startDetectingCards() {
@@ -437,11 +444,10 @@
     if (!cardElement) return;
     const cardId = cardElement.getAttribute('data-index-card-id');
     const lastCardId = cardElement.getAttribute('data-last-card-id');
+    previousRenderWidgetsElement(cardElement);
     if (!cardId || cardId == lastCardId) {
-      if (CONFIG.WIDGETS.every(w => hasWidgetOnCardElm(cardElement, w))) {
-        return;
-      }
       const notLoadedParseTypes = computeNeedWidgetsParseTypes(CONFIG.WIDGETS.filter(w => !hasWidgetOnCardElm(cardElement, w)));
+      if (notLoadedParseTypes.length === 0) return;
       requestFetchCardData(cardId, notLoadedParseTypes);
     }
     requestFetchCardData(cardId);

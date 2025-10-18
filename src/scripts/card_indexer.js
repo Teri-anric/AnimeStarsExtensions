@@ -7,10 +7,17 @@
     '.trade__inventory-item',
     'div.trade__main-item',
     '.remelt__inventory-item',
-    '.remelt__item'
+    '.remelt__item',
+    '.remelt-ext__slot',
   ].join(',');
 
-  const notIdsSelectors = ['.trade__inventory-item', '.remelt__inventory-item', '.remelt__item', 'div.trade__main-item'].join(',');
+  const notIdsSelectors = [
+    '.trade__inventory-item',
+    '.remelt__inventory-item',
+    '.remelt__item',
+    'div.trade__main-item',
+    '.remelt-ext__slot',
+  ].join(',');
 
   const CONFIG = {
     ADD_NEED_BTN_TO_CARD_DIALOG: 'can',
@@ -51,6 +58,11 @@
     elm.setAttribute('data-index-card-id', cardId);
   }
 
+  function removeCardIdIndex(elm) {
+    if (!elm) return;
+    elm.removeAttribute('data-index-card-id');
+  }
+
   function setShowNeedBtn(elm) {
     if (CONFIG.ADD_NEED_BTN_TO_CARD_DIALOG === 'none') return;
     if (!elm || elm.classList.contains('show-need_button')) return;
@@ -79,7 +91,7 @@
   }
 
   async function indexElementsFromImages(elms) {
-    if (elms.length === 0) return new Map();
+    if (elms.length === 0) return;
 
     const imageElmsEntries = elms
       .map((elm) => [elm.querySelector('img')?.src, elm])
@@ -96,6 +108,7 @@
       });
       const response = await requestFindCardIdByImageUrls(Array.from(imageElmsMap.keys()));
       if (!response?.success) return;
+      const findedElms = [];
       Object.entries(response.cardImageMap).forEach(([imageUrl, cardId]) => {
         const elms = imageElmsMap.get(imageUrl);
         if (!elms) return;
@@ -104,8 +117,10 @@
           elm.setAttribute('data-last-parsed-url', imageUrl);
           elm.setAttribute('data-last-parsed-card-id', cardId);
           setCardIdIndex(elm, cardId);
+          findedElms.push(elm);
         });
       });
+      return elms.filter(elm => !elm.querySelector('img') || (!findedElms.includes(elm) && imageElmsEntries.some(([url, mapElm]) => mapElm == elm)));
     } catch (error) {
       console.error('Error extracting card ids from image urls:', error);
     }
@@ -143,7 +158,10 @@
       needImageLookup.push(elm);
     });
 
-    await indexElementsFromImages(needImageLookup);
+    const notFindedElms = await indexElementsFromImages(needImageLookup);
+    if (notFindedElms && notFindedElms.length > 0) {
+      notFindedElms.forEach(removeCardIdIndex);
+    }
 
     // indexOwnerIds(elms); DISABLED
   }
