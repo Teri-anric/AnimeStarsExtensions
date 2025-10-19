@@ -4,12 +4,14 @@
 <head>
     <meta charset="UTF-8">
     <title>Card Appearance Settings - AnimeStar Extension</title>
+    <link rel="stylesheet" href="../styles/dark-theme.css">
     <link rel="stylesheet" href="../styles/card-appearance.css">
     <link rel="stylesheet" href="../styles/template-editor.css">
     <link rel="stylesheet" href="../styles/user-card-buttons-editor.css">
     <link rel="stylesheet" href="../styles/card_user_count.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <script src="../js/translation.js" type="module"></script>
+    <script src="../js/dark-theme.js" type="module"></script>
     <script src="../js/template-editor.js" type="module"></script>
 </head>
 
@@ -162,6 +164,37 @@
                             </div>
                         </div>
                     </div> -->
+
+                    <!-- Import/Export Configuration Section -->
+                    <div class="settings-section import-export-section">
+                        <h3><i class="fas fa-download"></i> <span>import-export-config</span></h3>
+                        
+                        <div class="setting-item">
+                            <button id="export-widgets-config" class="export-btn">
+                                <i class="fas fa-download"></i>
+                                <span>export-config</span>
+                            </button>
+                        </div>
+                        
+                        <div class="setting-item">
+                            <label for="import-widgets-config-file" class="import-label">
+                                <i class="fas fa-upload"></i>
+                                <span>import-config</span>
+                            </label>
+                            <input type="file" id="import-widgets-config-file" accept=".json" style="display: none;">
+                            <button id="import-widgets-config" class="import-btn">
+                                <i class="fas fa-upload"></i>
+                                <span>import-config</span>
+                            </button>
+                        </div>
+                        
+                        <div class="setting-item">
+                            <button id="reset-widgets-config" class="reset-btn">
+                                <i class="fas fa-undo"></i>
+                                <span>reset-to-default</span>
+                            </button>
+                        </div>
+                    </div>
                 </aside>
 
                 <main class="main" style="max-width: 360px;">

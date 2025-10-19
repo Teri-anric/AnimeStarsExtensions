@@ -528,6 +528,45 @@ function initializeCardAppearancePage() {
         console.log('Force updating preview for testing');
         updateCardPreview();
     }, 1000);
+
+    // Setup import/export event listeners
+    setupImportExportListeners();
+}
+
+/**
+ * Setup event listeners for import/export functionality
+ */
+function setupImportExportListeners() {
+    // Export button
+    const exportBtn = document.getElementById('export-widgets-config');
+    if (exportBtn) {
+        exportBtn.addEventListener('click', exportWidgetsConfig);
+    }
+
+    // Import button and file input
+    const importBtn = document.getElementById('import-widgets-config');
+    const importFileInput = document.getElementById('import-widgets-config-file');
+    
+    if (importBtn && importFileInput) {
+        importBtn.addEventListener('click', () => {
+            importFileInput.click();
+        });
+        
+        importFileInput.addEventListener('change', (e) => {
+            const file = e.target.files[0];
+            if (file) {
+                importWidgetsConfig(file);
+                // Reset file input
+                e.target.value = '';
+            }
+        });
+    }
+
+    // Reset button
+    const resetBtn = document.getElementById('reset-widgets-config');
+    if (resetBtn) {
+        resetBtn.addEventListener('click', resetWidgetsConfig);
+    }
 }
 
 /**
@@ -709,5 +748,202 @@ function formatTemplateItems(templateItems, values) {
 // Initialize when page loads
 document.addEventListener('DOMContentLoaded', initializeCardAppearancePage);
 
-// Also add a global function for manual testing
-window.testPreview = updateCardPreview; 
+    // Also add a global function for manual testing
+    window.testPreview = updateCardPreview;
+
+/**
+ * Export widgets configuration to JSON file
+ */
+function exportWidgetsConfig() {
+    try {
+        const config = {
+            version: '1.0',
+            timestamp: new Date().toISOString(),
+            widgets: widgetsState.list,
+            settings: {
+                'card-user-count': document.getElementById('card-user-count')?.checked || false,
+                'card-user-count-cache-enabled': document.getElementById('card-user-count-cache-enabled')?.checked || false,
+                'card-user-count-event-target': document.getElementById('card-user-count-event-target')?.value || 'only-cache',
+                'card-user-count-position': document.getElementById('card-user-count-position')?.value || 'bottom-right',
+                'card-user-count-style': document.getElementById('card-user-count-style')?.value || 'default',
+                'card-user-count-size': document.getElementById('card-user-count-size')?.value || 'medium',
+                'card-user-count-background-color': document.getElementById('card-user-count-background-color')?.value || '#000000',
+                'card-user-count-text-color': document.getElementById('card-user-count-text-color')?.value || '#ffffff',
+                'card-user-count-opacity': document.getElementById('card-user-count-opacity')?.value || 80,
+                'card-user-count-hover-action': document.getElementById('card-user-count-hover-action')?.value || 'none'
+            }
+        };
+
+        const dataStr = JSON.stringify(config, null, 2);
+        const dataBlob = new Blob([dataStr], { type: 'application/json' });
+        const url = URL.createObjectURL(dataBlob);
+        
+        const link = document.createElement('a');
+        link.href = url;
+        link.download = `card-widgets-config-${new Date().toISOString().split('T')[0]}.json`;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        URL.revokeObjectURL(url);
+
+        // Show success message
+        showNotification('export-success', 'success');
+    } catch (error) {
+        console.error('Export error:', error);
+        showNotification('export-error', 'error');
+    }
+}
+
+/**
+ * Import widgets configuration from JSON file
+ */
+function importWidgetsConfig(file) {
+    const reader = new FileReader();
+    reader.onload = function(e) {
+        try {
+            const config = JSON.parse(e.target.result);
+            
+            // Validate config structure
+            if (!config.widgets || !Array.isArray(config.widgets)) {
+                throw new Error('Invalid configuration format');
+            }
+
+            // Import widgets
+            widgetsState.list = config.widgets.map(widget => ({
+                ...newWidgetDefaults(),
+                ...widget,
+                id: `w${Date.now()}_${Math.random().toString(36).substr(2, 9)}` // Generate new IDs
+            }));
+
+            // Import settings if available
+            if (config.settings) {
+                Object.keys(config.settings).forEach(key => {
+                    const element = document.getElementById(key);
+                    if (element) {
+                        if (element.type === 'checkbox') {
+                            element.checked = config.settings[key];
+                        } else {
+                            element.value = config.settings[key];
+                        }
+                    }
+                });
+            }
+
+            // Save to storage
+            saveWidgets();
+            saveSettings();
+
+            // Update UI
+            widgetsState.selectedId = widgetsState.list[0]?.id || null;
+            renderWidgetsList();
+            syncSelectedWidgetToControls();
+            updateCardPreview();
+
+            showNotification('import-success', 'success');
+        } catch (error) {
+            console.error('Import error:', error);
+            showNotification('invalid-config-file', 'error');
+        }
+    };
+    reader.readAsText(file);
+}
+
+/**
+ * Reset widgets to default configuration
+ */
+function resetWidgetsConfig() {
+    if (confirm(window.i18n?.getTranslateText('reset-widgets-confirm', 'en') || 'Are you sure you want to reset all widgets to default?')) {
+        widgetsState.list = [newWidgetDefaults()];
+        widgetsState.selectedId = widgetsState.list[0].id;
+        
+        // Reset settings to default
+        const defaultSettings = {
+            'card-user-count': false,
+            'card-user-count-cache-enabled': false,
+            'card-user-count-event-target': 'only-cache',
+            'card-user-count-position': 'bottom-right',
+            'card-user-count-style': 'default',
+            'card-user-count-size': 'medium',
+            'card-user-count-background-color': '#000000',
+            'card-user-count-text-color': '#ffffff',
+            'card-user-count-opacity': 80,
+            'card-user-count-hover-action': 'none'
+        };
+
+        Object.keys(defaultSettings).forEach(key => {
+            const element = document.getElementById(key);
+            if (element) {
+                if (element.type === 'checkbox') {
+                    element.checked = defaultSettings[key];
+                } else {
+                    element.value = defaultSettings[key];
+                }
+            }
+        });
+
+        saveWidgets();
+        saveSettings();
+        renderWidgetsList();
+        syncSelectedWidgetToControls();
+        updateCardPreview();
+
+        showNotification('Configuration reset to default', 'success');
+    }
+}
+
+/**
+ * Show notification message
+ */
+function showNotification(message, type = 'info') {
+    // Create notification element
+    const notification = document.createElement('div');
+    notification.className = `notification notification-${type}`;
+    notification.style.cssText = `
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        padding: 12px 20px;
+        border-radius: 6px;
+        color: white;
+        font-weight: 500;
+        z-index: 10000;
+        max-width: 300px;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+        transform: translateX(100%);
+        transition: transform 0.3s ease;
+    `;
+
+    // Set background color based on type
+    switch (type) {
+        case 'success':
+            notification.style.backgroundColor = '#27ae60';
+            break;
+        case 'error':
+            notification.style.backgroundColor = '#e74c3c';
+            break;
+        default:
+            notification.style.backgroundColor = '#3498db';
+    }
+
+    // Set message text
+    const messageText = window.i18n?.getTranslateText(message, 'en') || message;
+    notification.textContent = messageText;
+
+    // Add to page
+    document.body.appendChild(notification);
+
+    // Animate in
+    setTimeout(() => {
+        notification.style.transform = 'translateX(0)';
+    }, 100);
+
+    // Remove after 3 seconds
+    setTimeout(() => {
+        notification.style.transform = 'translateX(100%)';
+        setTimeout(() => {
+            if (notification.parentNode) {
+                notification.parentNode.removeChild(notification);
+            }
+        }, 300);
+    }, 3000);
+}

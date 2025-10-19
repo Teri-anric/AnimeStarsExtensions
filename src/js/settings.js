@@ -2,6 +2,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const RELEASES_URL = 'https://github.com/Teri-anric/AnimeStarsExtensions/releases';
 
     const settingsCheckboxes = [
+        'dark-theme',
         'auto-seen-card',
         'auto-seen-card-stack',
         'auto-watchlist-fix',
@@ -88,6 +89,9 @@ document.addEventListener('DOMContentLoaded', () => {
     ];
 
     const actions = {
+        "dark-theme": (value) => {
+            document.body.classList.toggle('dark-theme', value);
+        },
         "auto-seen-card": (value) => {
             if (value == true) {
                 const autoSeenCardStack = document.getElementById("auto-seen-card-stack");
@@ -116,6 +120,11 @@ document.addEventListener('DOMContentLoaded', () => {
     chrome.storage.sync.get(allSettings, (settings) => {
         // Load language settings
         window.i18n.changeLang(settings.language);
+        
+        // Load dark theme
+        if (settings['dark-theme']) {
+            document.body.classList.add('dark-theme');
+        }
 
         // Load checkbox settings
         settingsCheckboxes.forEach(id => {

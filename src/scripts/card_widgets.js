@@ -112,7 +112,7 @@
         if (item.icon && item.icon.trim()) {
           result += `<i class="${item.icon.trim()}"></i>`;
         }
-        result += value;      
+        result += value;
         return result;
       }
       return '';
@@ -120,6 +120,9 @@
   }
 
   function widgetNeedIsLoading(elm, widget) {
+    const widgetElm = elm.querySelector(`.card-user-count[data-widget-id="${widget.id}"]`);
+    if (widgetElm && widgetElm.classList.contains('card-user-count-loading')) return false;
+
     const cardDatas = loadCardDatasFromCardElm(elm) || [];
     const parseTypes = cardDatas.map(data => data.parseType);
     const needParseTypes = computeNeedWidgetsParseTypes([widget]);
@@ -142,6 +145,13 @@
     }).filter((x) => x !== undefined);
 
     return parseTypes;
+  }
+
+  function computeNotLoadedNeedWidgetsParseTypes(elm, widgets) {
+    const cardDatas = loadCardDatasFromCardElm(elm) || [];
+    const parseTypes = cardDatas.map(data => data.parseType);
+    const needParseTypes = computeNeedWidgetsParseTypes(widgets);
+    return needParseTypes.filter(type => !parseTypes.includes(type));
   }
 
   function widgetsNeedAny(variables, widgets) {
@@ -181,8 +191,8 @@
     } else {
       // Custom percentage-based positions
       elm.classList.remove(
-        'position-top-left','position-top-center','position-top-right',
-        'position-bottom-left','position-bottom-center','position-bottom-right','position-under'
+        'position-top-left', 'position-top-center', 'position-top-right',
+        'position-bottom-left', 'position-bottom-center', 'position-bottom-right', 'position-under'
       );
       // Ensure absolute positioning for custom
       elm.style.position = 'absolute';
@@ -291,7 +301,7 @@
       renderWidgetElement(cardElm, w);
     });
   }
-  
+
   function loadCardDatasFromCardElm(cardElm) {
     // Load card datas from card elm
     try {
@@ -314,7 +324,11 @@
       cardId: cardElm.getAttribute('data-index-card-id'),
     };
     if (widgetElm.classList.contains('card-user-count-loading')) {
-      Object.assign(variables, Object.fromEntries(Object.values(parseTypeToVariablesMap).map(v => [v, widget?.loadingText || '...'])));
+      Object.values(parseTypeToVariablesMap).forEach(vs => {
+        vs.forEach(v => {
+          variables[v] = widget?.loadingText || '...';
+        });
+      });
     }
 
     const cardDatas = loadCardDatasFromCardElm(cardElm);
@@ -378,6 +392,10 @@
     cards.forEach(elm => elm.classList.remove('card-user-count-loading'));
   }
 
+  function removeWidgetsFromCards() {
+    document.querySelectorAll('.card-user-count').forEach(elm => elm.remove());
+  }
+
   /* card processing */
   async function processAllCards() {
     if (!CONFIG.hasEnabledWidgets()) return;
@@ -429,7 +447,7 @@
   });
 
   async function startDetectingCards() {
-    await processAllCards();
+    processAllCards();
     cardObserver.observe(document.body, {
       childList: true,
       subtree: true,
@@ -445,12 +463,9 @@
     const cardId = cardElement.getAttribute('data-index-card-id');
     const lastCardId = cardElement.getAttribute('data-last-card-id');
     previousRenderWidgetsElement(cardElement);
-    if (!cardId || cardId == lastCardId) {
-      const notLoadedParseTypes = computeNeedWidgetsParseTypes(CONFIG.WIDGETS.filter(w => !hasWidgetOnCardElm(cardElement, w)));
-      if (notLoadedParseTypes.length === 0) return;
-      requestFetchCardData(cardId, notLoadedParseTypes);
-    }
-    requestFetchCardData(cardId);
+    const notLoadedParseTypes = computeNotLoadedNeedWidgetsParseTypes(cardElement, CONFIG.WIDGETS.filter(w => w.enabled && widgetNeedIsLoading(cardElement, w)));
+    if (notLoadedParseTypes.length === 0) return;
+    requestFetchCardData(cardId, notLoadedParseTypes);
   }
 
   document.addEventListener('mouseover', eventHandler);
@@ -522,14 +537,17 @@
     if (changes['card-user-count-event-target']?.newValue) {
       CONFIG.EVENT_TARGET = changes['card-user-count-event-target'].newValue;
     }
+    if (changes['card-user-count'] && changes['card-user-count'].newValue !== changes['card-user-count'].oldValue) {
+      CONFIG.ENABLED = changes['card-user-count'].newValue;
+      widgetsChanged = true;
+    }
 
-    if (widgetsChanged) {
-      // Re-apply styles of existing widgets on the page
-      const cards = document.querySelectorAll(indexedCardSelector);
-      cards.forEach(card => {
-        previousRenderWidgetsElement(card);
-      });
+    if (!widgetsChanged) return;
+
+    if (CONFIG.hasEnabledWidgets()) {
       processAllCards();
+    } else {
+      removeWidgetsFromCards();
     }
   }
 

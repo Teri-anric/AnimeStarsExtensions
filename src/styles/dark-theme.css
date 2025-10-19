@@ -1,0 +1,346 @@
+/**
+ * Dark Theme Variables
+ * Shared CSS variables for dark theme across all extension pages
+ */
+
+:root {
+    /* Light theme (default) */
+    --bg-primary: #f4f4f4;
+    --bg-secondary: #ffffff;
+    --bg-tertiary: #f4f4f4;
+    --text-primary: #333;
+    --text-secondary: #2c3e50;
+    --text-muted: #7f8c8d;
+    --border-color: #ddd;
+    --shadow-color: rgba(0,0,0,0.1);
+    --slider-bg: #ccc;
+    --slider-active: #2196F3;
+    --tooltip-bg: #333;
+    --tooltip-text: #fff;
+    --button-bg: #2c3e50;
+    --button-hover: #34495e;
+    --button-success: #2ecc71;
+    --button-success-hover: #27ae60;
+    --button-danger: #e74c3c;
+    --button-danger-hover: #c0392b;
+    --button-warning: #f39c12;
+    --button-warning-hover: #e67e22;
+    --range-bg: #d3d3d3;
+    --range-thumb: #4CAF50;
+    --api-success: #2ecc71;
+    --api-error: #e74c3c;
+    --api-warning: #f1c40f;
+    --link-color: #3498db;
+    --link-hover: #5dade2;
+    --accent-color: #3498db;
+    --accent-hover: #2980b9;
+    --card-bg: #ffffff;
+    --card-border: #e1e8ed;
+    --input-bg: #ffffff;
+    --input-border: #ddd;
+    --input-focus: #3498db;
+    --gradient-primary: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+    --gradient-card: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    --gradient-button: linear-gradient(135deg, #3498db, #2980b9);
+    --gradient-slider: linear-gradient(135deg, #bdc3c7, #95a5a6);
+    --gradient-range: linear-gradient(135deg, #ecf0f1, #bdc3c7);
+}
+
+/* Dark theme */
+body.dark-theme {
+    --bg-primary: #1a1a1a;
+    --bg-secondary: #2d2d2d;
+    --bg-tertiary: #3a3a3a;
+    --text-primary: #e0e0e0;
+    --text-secondary: #ffffff;
+    --text-muted: #a0a0a0;
+    --border-color: #555;
+    --shadow-color: rgba(0,0,0,0.3);
+    --slider-bg: #555;
+    --slider-active: #4CAF50;
+    --tooltip-bg: #000;
+    --tooltip-text: #fff;
+    --button-bg: #4CAF50;
+    --button-hover: #45a049;
+    --button-success: #4CAF50;
+    --button-success-hover: #45a049;
+    --button-danger: #f44336;
+    --button-danger-hover: #d32f2f;
+    --button-warning: #ff9800;
+    --button-warning-hover: #f57c00;
+    --range-bg: #555;
+    --range-thumb: #4CAF50;
+    --api-success: #4CAF50;
+    --api-error: #f44336;
+    --api-warning: #ff9800;
+    --link-color: #81c784;
+    --link-hover: #a5d6a7;
+    --accent-color: #4CAF50;
+    --accent-hover: #45a049;
+    --card-bg: #2d2d2d;
+    --card-border: #555;
+    --input-bg: #2d2d2d;
+    --input-border: #555;
+    --input-focus: #4CAF50;
+    --gradient-primary: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
+    --gradient-card: linear-gradient(135deg, #4a5568 0%, #2d3748 100%);
+    --gradient-button: linear-gradient(135deg, #4CAF50, #45a049);
+    --gradient-slider: linear-gradient(135deg, #555, #666);
+    --gradient-range: linear-gradient(135deg, #555, #666);
+}
+
+/* Common dark theme styles */
+body.dark-theme {
+    background-color: var(--bg-primary);
+    color: var(--text-primary);
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+body.dark-theme .settings-container {
+    background: var(--gradient-primary);
+}
+
+body.dark-theme .settings-section {
+    background-color: var(--card-bg);
+    border: 1px solid var(--card-border);
+    box-shadow: 0 8px 32px var(--shadow-color);
+}
+
+body.dark-theme .sidebar {
+    background-color: var(--card-bg);
+    border: 1px solid var(--card-border);
+    box-shadow: 0 8px 32px var(--shadow-color);
+}
+
+body.dark-theme .preview-section {
+    background-color: var(--card-bg);
+    border: 1px solid var(--card-border);
+    box-shadow: 0 6px 20px var(--shadow-color);
+}
+
+body.dark-theme .section-title {
+    color: var(--text-secondary);
+    border-bottom-color: var(--accent-color);
+}
+
+body.dark-theme .section-title i {
+    color: var(--accent-color);
+}
+
+body.dark-theme .setting-item {
+    border-bottom-color: var(--border-color);
+}
+
+body.dark-theme .setting-item > label {
+    color: var(--text-primary);
+}
+
+body.dark-theme .setting-item small {
+    color: var(--text-muted);
+}
+
+body.dark-theme input[type="text"],
+body.dark-theme input[type="number"],
+body.dark-theme input[type="email"],
+body.dark-theme input[type="password"],
+body.dark-theme textarea,
+body.dark-theme select {
+    background-color: var(--input-bg);
+    color: var(--text-primary);
+    border-color: var(--input-border);
+}
+
+body.dark-theme input[type="text"]:focus,
+body.dark-theme input[type="number"]:focus,
+body.dark-theme input[type="email"]:focus,
+body.dark-theme input[type="password"]:focus,
+body.dark-theme textarea:focus,
+body.dark-theme select:focus {
+    border-color: var(--input-focus);
+    box-shadow: 0 0 0 2px rgba(76, 175, 80, 0.2);
+}
+
+body.dark-theme .slider {
+    background: var(--gradient-slider);
+}
+
+body.dark-theme input:checked + .slider {
+    background: var(--gradient-button);
+}
+
+body.dark-theme .slider-container input[type="range"] {
+    background: var(--gradient-range);
+}
+
+body.dark-theme .slider-container input[type="range"]::-webkit-slider-thumb {
+    background: var(--gradient-button);
+}
+
+body.dark-theme .slider-container input[type="range"]::-moz-range-thumb {
+    background: var(--gradient-button);
+}
+
+body.dark-theme .slider-container .slider-value {
+    color: var(--accent-color);
+}
+
+body.dark-theme .tab-btn {
+    background-color: var(--card-bg);
+    border-color: var(--card-border);
+    color: var(--text-primary);
+}
+
+body.dark-theme .tab-btn.active {
+    background-color: var(--accent-color);
+    border-color: var(--accent-color);
+    color: white;
+}
+
+body.dark-theme .widget-tab {
+    background-color: var(--card-bg);
+    border-color: var(--card-border);
+    color: var(--text-primary);
+}
+
+body.dark-theme .widget-tab.active {
+    background-color: var(--accent-color);
+    border-color: var(--accent-color);
+    color: white;
+}
+
+body.dark-theme .add-widget-btn,
+body.dark-theme .add-custom-btn,
+body.dark-theme .main-add-btn {
+    background-color: var(--button-success);
+    color: white;
+}
+
+body.dark-theme .add-widget-btn:hover,
+body.dark-theme .add-custom-btn:hover,
+body.dark-theme .main-add-btn:hover {
+    background-color: var(--button-success-hover);
+}
+
+body.dark-theme .preview-card-container {
+    background: var(--gradient-card);
+}
+
+body.dark-theme .anime-cards__item {
+    background: var(--card-bg);
+}
+
+body.dark-theme .card-user-count {
+    background: rgba(0, 0, 0, 0.8);
+    color: white;
+}
+
+body.dark-theme .card-user-count.style-minimal {
+    background: transparent;
+    color: white;
+    text-shadow: 1px 1px 2px rgba(0,0,0,0.8);
+}
+
+body.dark-theme .card-user-count.style-bordered {
+    background: rgba(0, 0, 0, 0.8);
+    border: 2px solid white;
+}
+
+body.dark-theme .card-user-count.style-badge {
+    background: var(--gradient-button);
+    box-shadow: 0 2px 4px rgba(0,0,0,0.3);
+}
+
+body.dark-theme .preview-description {
+    color: var(--text-muted);
+}
+
+body.dark-theme .import-export-section h3 {
+    color: var(--text-secondary);
+}
+
+body.dark-theme .import-export-buttons button {
+    background-color: var(--button-bg);
+    color: white;
+    border: 1px solid var(--border-color);
+}
+
+body.dark-theme .import-export-buttons button:hover {
+    background-color: var(--button-hover);
+}
+
+body.dark-theme .import-export-buttons button#reset-config {
+    background-color: var(--button-danger);
+}
+
+body.dark-theme .import-export-buttons button#reset-config:hover {
+    background-color: var(--button-danger-hover);
+}
+
+body.dark-theme .import-export-buttons button#export-config {
+    background-color: var(--button-success);
+}
+
+body.dark-theme .import-export-buttons button#export-config:hover {
+    background-color: var(--button-success-hover);
+}
+
+body.dark-theme .import-export-buttons button#import-config {
+    background-color: var(--button-warning);
+}
+
+body.dark-theme .import-export-buttons button#import-config:hover {
+    background-color: var(--button-warning-hover);
+}
+
+body.dark-theme .user-card-buttons {
+    background-color: var(--card-bg);
+    border: 1px solid var(--card-border);
+}
+
+body.dark-theme .user-card-buttons .user-card-button {
+    background-color: var(--button-bg);
+    color: white;
+    border: 1px solid var(--border-color);
+}
+
+body.dark-theme .user-card-buttons .user-card-button:hover {
+    background-color: var(--button-hover);
+}
+
+body.dark-theme .buttons-editor {
+    background-color: var(--card-bg);
+    border: 1px solid var(--card-border);
+}
+
+body.dark-theme .button-editor-item {
+    background-color: var(--bg-tertiary);
+    border: 1px solid var(--border-color);
+}
+
+body.dark-theme .button-editor-item .button-editor-header {
+    background-color: var(--bg-secondary);
+    border-bottom: 1px solid var(--border-color);
+}
+
+body.dark-theme .button-editor-item .button-editor-content {
+    background-color: var(--card-bg);
+}
+
+body.dark-theme .button-editor-item .button-editor-controls button {
+    background-color: var(--button-danger);
+    color: white;
+}
+
+body.dark-theme .button-editor-item .button-editor-controls button:hover {
+    background-color: var(--button-danger-hover);
+}
+
+body.dark-theme .button-editor-item .button-editor-controls button.move-up,
+body.dark-theme .button-editor-item .button-editor-controls button.move-down {
+    background-color: var(--button-warning);
+}
+
+body.dark-theme .button-editor-item .button-editor-controls button.move-up:hover,
+body.dark-theme .button-editor-item .button-editor-controls button.move-down:hover {
+    background-color: var(--button-warning-hover);
+}
