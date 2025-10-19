@@ -36,13 +36,29 @@ This browser extension provides enhanced functionality for the AnimeStar website
     - set refresh and action cooldowns
     - disable update check
     - set language
+    - enable/disable remelt top bar
+    - configure card widget positioning
+    - big images in trade history
+    - enable/disable full/preview exchange details
 7. **Trades History Filters**:
     - Filter trades history by rank and by user
     - Preserves filters when switching subtabs, quick clear button
+    - Big images toggle for enhanced visual clarity
 8. **Trade Previews**:
     - Shows small card previews in trade lists
     - Optional auto-parse to fetch missing previews with configurable timings
-9. **Language Support**: 
+    - Full exchange details display option
+    - Shows card previews in trade dialogs
+9. **Remelt Top Bar**:
+    - Simplifies and elevates remelt slots to the top
+    - User-configurable settings for enable/disable
+10. **Advanced Card Widgets**:
+    - Custom positioning controls with percentage-based placement
+    - Enhanced template variables for card and deck details
+    - Improved widget management and customization options
+    - Shows card previews on cards you're offering in trades
+    - Displays card previews in trade dialogs
+13. **Language Support**: 
     - English
     - Ukrainian
     - Russian

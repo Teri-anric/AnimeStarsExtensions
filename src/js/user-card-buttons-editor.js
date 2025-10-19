@@ -82,7 +82,7 @@ const DEFAULT_BUTTONS = [
         id: 'trades-history',
         enabled: false,
         text: '',
-        icon: 'fal fa-clock-rotate-left',
+        icon: 'fal fa-history',
         url: 'https://animestars.org/trades/history/?kind=calsel_reciever&user={USER}'
     }
 ];
@@ -128,8 +128,7 @@ class UserCardButtonsEditor {
             'fal fa-bookmark',
             'fal fa-tag',
             'fal fa-link',
-            'fa fa-arrow-right',
-            'fa fa-arrow-left',
+            'fal fa-history'
         ];
         
         this.init();

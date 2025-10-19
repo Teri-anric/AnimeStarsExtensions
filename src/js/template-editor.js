@@ -67,8 +67,7 @@ class TemplateEditor {
             'fal fa-bookmark',
             'fal fa-tag',
             'fal fa-link',
-            'fa fa-arrow-right',
-            'fa fa-arrow-left'
+            'fal fa-history'
         ];
         this.iconPicker = null;
 

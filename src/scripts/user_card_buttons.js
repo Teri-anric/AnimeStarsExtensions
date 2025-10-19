@@ -6,7 +6,7 @@
 
     function resolveIconClass(iconClass) {
         if (!iconClass) return '';
-        if (iconClass.startsWith('fal ')) return 'fas ' + iconClass.slice(4);
+        if (iconClass.startsWith('fas ')) return 'fal ' + iconClass.slice(4);
         return iconClass;
     }
 
