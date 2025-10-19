@@ -56,8 +56,6 @@ This browser extension provides enhanced functionality for the AnimeStar website
     - Custom positioning controls with percentage-based placement
     - Enhanced template variables for card and deck details
     - Improved widget management and customization options
-    - Shows card previews on cards you're offering in trades
-    - Displays card previews in trade dialogs
 13. **Language Support**: 
     - English
     - Ukrainian

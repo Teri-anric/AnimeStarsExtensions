@@ -26,8 +26,8 @@
 
 - Сard Statistics
   - Update cache system and data storage
-  - Shows card previews on cards you're offering in trades
-  - Displays card previews in trade dialogs
+  - Shows card statistics on cards you're offering in trades
+  - Displays card previews in modal dialogs
 
 ## For the ASS site
 - I am opening the API to all users, now you don't need an account on ass.strawberrycat.dev to use all the extension features
