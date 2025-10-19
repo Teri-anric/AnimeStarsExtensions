@@ -1,4 +1,4 @@
-# AnimeStar Extension v0.0.22
+# AnimeStar Extension v0.0.23
 
 ## New Features
 
