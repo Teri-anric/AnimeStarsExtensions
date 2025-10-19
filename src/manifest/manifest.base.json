@@ -156,6 +156,14 @@
             "js": [
                 "./scripts/page_worker.js"
             ]
+        },
+        {
+            "matches": [
+                "https://[HOST]/pm/*"
+            ],
+            "js": [
+                "./scripts/pm.js"
+            ]
         }
     ],
     "icons": {

@@ -160,6 +160,7 @@ export const AnimeStarExtensionTranslationRussian = {
     'config-exported': 'Конфигурация экспортирована в файл',
     'config-imported': 'Конфигурация импортирована из файла',
     'reset-widgets-confirm': 'Вы уверены, что хотите сбросить все виджеты к стандартным? Это действие нельзя отменить.',
+    'pm-card-preview-enabled': 'Показывать превью карточек в PM Посикунчик',
 }
 
 export default AnimeStarExtensionTranslationRussian;

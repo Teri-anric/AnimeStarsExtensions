@@ -160,6 +160,7 @@ const AnimeStarExtensionTranslationUkraine = {
     'config-exported': 'Конфігурацію експортовано в файл',
     'config-imported': 'Конфігурацію імпортовано з файлу',
     'reset-widgets-confirm': 'Ви впевнені, що хочете скинути всі віджети до стандартних? Цю дію неможливо скасувати.',
+    'pm-card-preview-enabled': 'Показувати превʼю карток в PM Посикунчик',
 }
 
 export default AnimeStarExtensionTranslationUkraine;

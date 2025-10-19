@@ -530,6 +530,36 @@
             "js": [
                 "./scripts/page_worker.js"
             ]
+        },
+        {
+            "matches": [
+                "https://animestars.org/pm/*",
+                "https://astars.club/pm/*",
+                "https://asstars1.astars.club/pm/*",
+                "https://as1.astars.club/pm/*",
+                "https://asstars.tv/pm/*",
+                "https://as1.asstars.tv/pm/*",
+                "https://as2.asstars.tv/pm/*",
+                "https://asstars.onl/pm/*",
+                "https://asstars.club/pm/*",
+                "https://insights.asstars.club/pm/*",
+                "https://a1.asstars.club/pm/*",
+                "https://as2.astars.club/pm/*",
+                "https://ass.astars.club/pm/*",
+                "https://ass.asstars.club/pm/*",
+                "https://ass1.asstars.club/pm/*",
+                "https://ass2.asstars.club/pm/*",
+                "https://ass3.asstars.club/pm/*",
+                "https://astars.asstars.club/pm/*",
+                "https://astars1.asstars.club/pm/*",
+                "https://asstars.asstars.club/pm/*",
+                "https://asstars1.asstars.club/pm/*",
+                "https://asstars1.astars.club/pm/*",
+                "https://asstars2.astars.club/pm/*"
+            ],
+            "js": [
+                "./scripts/pm.js"
+            ]
         }
     ],
     "icons": {

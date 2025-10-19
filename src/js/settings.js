@@ -25,6 +25,7 @@ document.addEventListener('DOMContentLoaded', () => {
         'trades-preview-full-exchange',
         'trades-history-big-images',
         'remelt-topbar-enabled',
+        'pm-card-preview-enabled',
     ];
 
     const settingsSelects = [

@@ -158,6 +158,7 @@ const AnimeStarExtensionTranslationEnglish = {
     'config-exported': 'Configuration exported to file',
     'config-imported': 'Configuration imported from file',
     'reset-widgets-confirm': 'Are you sure you want to reset all widgets to default? This action cannot be undone.',
+    'pm-card-preview-enabled': 'Show card previews in PM Postikuncik',
 }
 
 export default AnimeStarExtensionTranslationEnglish;
