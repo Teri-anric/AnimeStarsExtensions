@@ -31,15 +31,15 @@
         }
         return true;
     }
-    function boostClub() {
-        if (!checkBoostLimit()) return;
+    function boostClub(force = false) {
+        if (!force && !checkBoostLimit()) return;
         const boostBtn = document.querySelector(".club__boost-btn");
         clearDLEPush();
         if (!boostBtn) console.log("Boost button not found");
         boostBtn?.click();
     }
-    function refreshClub() {
-        if (!checkBoostLimit()) return;
+    function refreshClub(force = false) {
+        if (!force && !checkBoostLimit()) return;
         const refreshBtn = document.querySelector(".club__boost__refresh-btn");
         clearDLEPush();
         if (!refreshBtn) console.log("Refresh button not found");
@@ -51,7 +51,8 @@
             if (!checkBoostLimit()) return;
         }
         if (force) {
-            setBoostActiveStatus(true);
+            refreshClub(true);
+            boostClub(true);
         }
         refreshIntervalID = setInterval(refreshClub, refreshCooldown);
         boostIntervalID = setInterval(boostClub, boostCooldown);
@@ -83,7 +84,7 @@
         console.log("Scheduling auto start in " + new Date(new Date().getTime() + delay) + " (" + delay + "ms)");
         setTimeout(() => {
             if (CONFIG.boostActive && !CONFIG.isCurrentBoosting()) {
-                startBoosting();
+                startBoosting(true);
             }
         }, delay);
     }
