@@ -80,15 +80,20 @@ chrome.storage.sync.get(['custom-hosts'], (data) => {
     function scheduleAutoStart() {
         const now = new Date();
         const target = new Date();
-        target.setUTCHours(18, 1, 50, 0);
+        target.setUTCHours(18, 1, 0, 0);
         let delay = target.getTime() - now.getTime();
         if (delay <= 0) {
             delay += 24 * 60 * 60 * 1000;
         }
+        let addTime = 30 * 1000; // 30 seconds delay
+        if (now < target) {
+            addTime = 10 * 1000; // 10 seconds delay
+        }
+        delay += addTime;
         console.log("Scheduling auto start in " + new Date(new Date().getTime() + delay) + " (" + delay + "ms)");
         setTimeout(() => {
             if (CONFIG.boostActive && !CONFIG.isCurrentBoosting()) {
-                startBoosting(true);
+                window.location.reload();
             }
         }, delay);
     }
