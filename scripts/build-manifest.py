@@ -3,9 +3,6 @@ import click
 from typing import Literal
 from pathlib import Path
 
-HOSTS = json.load(open(Path(__file__).parent / "site-host.json"))
-
-
 def get_manifest(source: Path, scope: str):
     manifest_path = source / "manifest" / f"manifest.{scope}.json"
     return json.load(open(manifest_path))
