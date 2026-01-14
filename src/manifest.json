@@ -18,15 +18,6 @@
                 "https://*/*"
             ],
             "js": [
-                "./scripts/page_worker.js"
-            ],
-            "run_at": "document_idle"
-        },
-        {
-            "matches": [
-                "https://*/*"
-            ],
-            "js": [
                 "./scripts/auto_seen_card.js",
                 "./scripts/auto_take_cinema_stone.js"
             ],

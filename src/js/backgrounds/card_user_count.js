@@ -133,26 +133,52 @@ async function cardDataUpdated(items) {
     });
 }
 
+function _parseIntLoose(input) {
+    if (input === null || input === undefined) return 0;
+    const cleaned = String(input).replace(/[^\d-]/g, '').trim();
+    const n = parseInt(cleaned, 10);
+    return Number.isFinite(n) ? n : 0;
+}
+
+function _extractTextById(html, id) {
+    if (typeof html !== 'string' || !html) return '';
+
+    // Fast path: common "<tag id='x'>TEXT<"
+    const reFast = new RegExp(`id=["']${id}["'][^>]*>\\s*([^<]*)\\s*<`, 'i');
+    const mFast = html.match(reFast);
+    if (mFast && mFast[1] !== undefined) return mFast[1];
+
+    // Fallback: capture inner HTML until close tag and strip tags
+    const reFallback = new RegExp(`id=["']${id}["'][^>]*>([\\s\\S]*?)<\\/`, 'i');
+    const mFallback = html.match(reFallback);
+    if (!mFallback || mFallback[1] === undefined) return '';
+    return mFallback[1].replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ').trim();
+}
+
 async function parseHtmlCardCount(html) {
-    const tabs = await chrome.tabs.query({ url: "*://*/*" });
-    const tab = tabs[0];
-    const response = await chrome.tabs.sendMessage(tab.id, {
-        type: 'parse-html-card-count',
-        html
-    });
-    if (response.error) throw new CardNotFoundError(response.error);
-    return response.data;
+    // Service workers don't have DOMParser on many platforms (esp. mobile).
+    // Parse directly in background to avoid relying on a specific tab.
+    const tradeText = _extractTextById(html, 'owners-trade');
+    const needText = _extractTextById(html, 'owners-need');
+    const ownerText = _extractTextById(html, 'owners-count');
+
+    // If markup is missing, fail loudly (prevents silently returning wrong 0s).
+    if (!tradeText && !needText && !ownerText) {
+        throw new CardNotFoundError("Card not found");
+    }
+
+    return {
+        trade: _parseIntLoose(tradeText),
+        need: _parseIntLoose(needText),
+        owner: _parseIntLoose(ownerText),
+    };
 }
 
 async function parseHtmlDuplicates(html) {
-    const tabs = await chrome.tabs.query({ url: "*://*/*" });
-    const tab = tabs[0];
-    const response = await chrome.tabs.sendMessage(tab.id, {
-        type: 'parse-html-duplicates',
-        html
-    });
-    if (response.error) throw new CardNotFoundError(response.error);
-    return response.data;
+    if (typeof html !== 'string' || !html) return { duplicates: 0 };
+    // Count occurrences of card items. Keep it simple and fast.
+    const matches = html.match(/\banime-cards__item\b/g);
+    return { duplicates: matches ? matches.length : 0 };
 }
 
 
