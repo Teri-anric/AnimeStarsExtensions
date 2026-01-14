@@ -1,36 +1,23 @@
-# AnimeStar Extension v0.0.23
+# AnimeStar Extension v0.0.24
 
-## New Features
+## Changes
 
-- User Card Buttons Editor
-  - Configure which quick buttons appear on user cards
-  - Drag-and-drop ordering, import/export configuration, and live preview
+- Custom site domains
+  - Add your site domain manually in Settings when AnimeStar changes domain / mirror is used
+  - Accepts both hostname and full URL (e.g. `animestars.org` or `https://animestars.org`)
+  - After adding/removing a domain, reload the website tab
 
-- Trades History Filters
-  - Filter trades history by rank and by user
-  - Filters persist across subtabs with a one-click clear option
-  - Big images toggle for enhanced visual clarity
+- Card statistics stability & performance
+  - More reliable HTML parsing in the background service worker (no DOMParser dependency)
+  - Cleaner fetch queue behavior with fewer “silent zeros” on missing markup
 
-- Trade Previews
-  - Small card previews in trade lists to evaluate offers faster
-  - Optional auto-parse for missing previews with configurable delay/interval
-  - Full exchange details display option
+- Internal build/manifest
+  - Manifest generation refactor: merge `manifest.base.json` + browser-specific manifest
+  - Removed legacy site-host configuration
+  - Fixed `build-manifest.py` crash after removing `site-host.json`
 
-- Remelt Top Bar
-  - Simplifies and elevates remelt slots and button to the top
-
-- Advanced Card Widgets (new name of card statistics display)
-  - Custom positioning controls with percentage-based placement
-  - Enhanced template variables for card and deck details (including deck stats)
-  - Improved widget management and customization options
-
-- Сard Statistics
-  - Update cache system and data storage
-  - Shows card statistics on cards you're offering in trades
-  - Displays card previews in modal dialogs
-
-## For the ASS site
-- I am opening the API to all users, now you don't need an account on ass.strawberrycat.dev to use all the extension features
+> ⚠️ Note  
+> This version will not be published to store.
 
 ## Quick install (need for 1-3 days from release for approval from Google and Mozilla)
 🦊 Firefox Add-ons: https://addons.mozilla.org/firefox/addon/animestar-extension/  
