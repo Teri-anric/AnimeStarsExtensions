@@ -31,6 +31,8 @@
         "https://asstars1.asstars.club/*",
         "https://asstars1.astars.club/*",
         "https://asstars2.astars.club/*",
+        "https://animesss.com/*",
+        "https://animesss.tv/*",
         "https://raw.githubusercontent.com/Teri-anric/AnimeStarsExtensions/*",
         "https://ass-api.strawberrycat.dev/*",
         "https://ass.strawberrycat.dev/*"
@@ -60,7 +62,9 @@
                 "https://asstars.asstars.club/*",
                 "https://asstars1.asstars.club/*",
                 "https://asstars1.astars.club/*",
-                "https://asstars2.astars.club/*"
+                "https://asstars2.astars.club/*",
+                "https://animesss.com/*",
+                "https://animesss.tv/*"
             ],
             "js": [
                 "./scripts/auto_seen_card.js",
@@ -95,7 +99,9 @@
                 "https://asstars.asstars.club/*",
                 "https://asstars1.asstars.club/*",
                 "https://asstars1.astars.club/*",
-                "https://asstars2.astars.club/*"
+                "https://asstars2.astars.club/*",
+                "https://animesss.com/*",
+                "https://animesss.tv/*"
             ],
             "js": [
                 "./scripts/fix_header.js"
@@ -129,7 +135,9 @@
                 "https://asstars.asstars.club/*",
                 "https://asstars1.asstars.club/*",
                 "https://asstars1.astars.club/*",
-                "https://asstars2.astars.club/*"
+                "https://asstars2.astars.club/*",
+                "https://animesss.com/*",
+                "https://animesss.tv/*"
             ],
             "js": [
                 "./scripts/card_indexer.js",
@@ -164,7 +172,9 @@
                 "https://asstars.asstars.club/user/*",
                 "https://asstars1.asstars.club/user/*",
                 "https://asstars1.astars.club/user/*",
-                "https://asstars2.astars.club/user/*"
+                "https://asstars2.astars.club/user/*",
+                "https://animesss.com/*",
+                "https://animesss.tv/*"                
             ],
             "js": [
                 "./scripts/user_card_buttons.js"
@@ -198,7 +208,9 @@
                 "https://asstars.asstars.club/cards*",
                 "https://asstars1.asstars.club/cards*",
                 "https://asstars1.astars.club/cards*",
-                "https://asstars2.astars.club/cards*"
+                "https://asstars2.astars.club/cards*",
+                "https://animesss.com/*",
+                "https://animesss.tv/*"
             ],
             "js": [
                 "./scripts/cards_search_integration.js"
@@ -255,7 +267,9 @@
                 "https://asstars.asstars.club/cards_remelt/*",
                 "https://asstars1.asstars.club/cards_remelt/*",
                 "https://asstars1.astars.club/cards_remelt/*",
-                "https://asstars2.astars.club/cards_remelt/*"
+                "https://asstars2.astars.club/cards_remelt/*",
+                "https://animesss.com/cards_remelt/*",
+                "https://animesss.tv/cards_remelt/*"
             ],
             "js": [
                 "./scripts/remelt_topbar.js"
@@ -312,7 +326,9 @@
                 "https://asstars.asstars.club/trades/history/*",
                 "https://asstars1.asstars.club/trades/history/*",
                 "https://asstars1.astars.club/trades/history/*",
-                "https://asstars2.astars.club/trades/history/*"
+                "https://asstars2.astars.club/trades/history/*",
+                "https://animesss.com/trades/history/*",
+                "https://animesss.tv/trades/history/*"
             ],
             "js": [
                 "./scripts/trades_history_filters.js"
@@ -347,6 +363,8 @@
                 "https://asstars1.asstars.club/trades/*/",
                 "https://asstars1.astars.club/trades/*/",
                 "https://asstars2.astars.club/trades/*/",
+                "https://animesss.com/trades/*/",
+                "https://animesss.tv/trades/*/",
                 "https://animestars.org/trades/offers/*/",
                 "https://astars.club/trades/offers/*/",
                 "https://asstars1.astars.club/trades/offers/*/",
@@ -370,6 +388,8 @@
                 "https://asstars1.asstars.club/trades/offers/*/",
                 "https://asstars1.astars.club/trades/offers/*/",
                 "https://asstars2.astars.club/trades/offers/*/",
+                "https://animesss.com/trades/offers/*/",
+                "https://animesss.tv/trades/offers/*/",
                 "https://animestars.org/trades/",
                 "https://astars.club/trades/",
                 "https://asstars1.astars.club/trades/",
@@ -393,6 +413,8 @@
                 "https://asstars1.asstars.club/trades/",
                 "https://asstars1.astars.club/trades/",
                 "https://asstars2.astars.club/trades/",
+                "https://animesss.com/trades/",
+                "https://animesss.tv/trades/",
                 "https://animestars.org/trades/offers/",
                 "https://astars.club/trades/offers/",
                 "https://asstars1.astars.club/trades/offers/",
@@ -415,7 +437,9 @@
                 "https://asstars.asstars.club/trades/offers/",
                 "https://asstars1.asstars.club/trades/offers/",
                 "https://asstars1.astars.club/trades/offers/",
-                "https://asstars2.astars.club/trades/offers/"
+                "https://asstars2.astars.club/trades/offers/",
+                "https://animesss.com/trades/offers/",
+                "https://animesss.tv/trades/offers/"
             ],
             "js": [
                 "./scripts/trade_previews.js"
@@ -448,7 +472,9 @@
                 "https://asstars.asstars.club/cards/users/*",
                 "https://asstars1.asstars.club/cards/users/*",
                 "https://asstars1.astars.club/cards/users/*",
-                "https://asstars2.astars.club/cards/users/*"
+                "https://asstars2.astars.club/cards/users/*",
+                "https://animesss.com/cards/users//*",
+                "https://animesss.tv/cards/users//*"
             ],
             "js": [
                 "./scripts/cards_users_parser.js"
@@ -479,7 +505,9 @@
                 "https://asstars.asstars.club/clubs/boost/*",
                 "https://asstars1.asstars.club/clubs/boost/*",
                 "https://asstars1.astars.club/clubs/boost/*",
-                "https://asstars2.astars.club/clubs/boost/*"
+                "https://asstars2.astars.club/clubs/boost/*",
+                "https://animesss.com/clubs/boost/*",
+                "https://animesss.tv/clubs/boost/*"
             ],
             "js": [
                 "./scripts/boost_club.js",
@@ -523,6 +551,8 @@
                 "https://asstars1.asstars.club/*",
                 "https://asstars1.astars.club/*",
                 "https://asstars2.astars.club/*",
+                "https://animesss.com/*",
+                "https://animesss.tv/*",
                 "https://raw.githubusercontent.com/Teri-anric/AnimeStarsExtensions/*",
                 "https://ass-api.strawberrycat.dev/*",
                 "https://ass.strawberrycat.dev/*"
@@ -555,7 +585,9 @@
                 "https://asstars.asstars.club/pm/*",
                 "https://asstars1.asstars.club/pm/*",
                 "https://asstars1.astars.club/pm/*",
-                "https://asstars2.astars.club/pm/*"
+                "https://asstars2.astars.club/pm/*",
+                "https://animesss.com/pm/*",
+                "https://animesss.tv/pm/*"
             ],
             "js": [
                 "./scripts/pm.js"
