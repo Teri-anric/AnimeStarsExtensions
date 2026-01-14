@@ -173,6 +173,8 @@ const AnimeStarExtensionTranslationUkraine = {
     'reset-widgets-confirm': 'Ви впевнені, що хочете скинути всі віджети до стандартних? Цю дію неможливо скасувати.',
     'pm-card-preview-enabled': 'Показувати превʼю карток в PM Посикунчик',
     'extension-settings': 'Налаштування розширення',
+    'auto-take-snow-stone': 'Автоматично брати сніжний камінь',
+    'auto-click-gandama': 'Автоматично ловити гандаму',
 }
 
 export default AnimeStarExtensionTranslationUkraine;

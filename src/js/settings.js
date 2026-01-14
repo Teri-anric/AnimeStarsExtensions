@@ -27,6 +27,8 @@ document.addEventListener('DOMContentLoaded', () => {
         'trades-history-big-images',
         'remelt-topbar-enabled',
         'pm-card-preview-enabled',
+        'auto-take-snow-stone',
+        'auto-click-gandama',
     ];
 
     const settingsSelects = [
@@ -88,6 +90,14 @@ document.addEventListener('DOMContentLoaded', () => {
                 "trades-preview-auto-subsettings",
             ]
         },
+        {
+            condition: {
+                "auto-take-snow-stone": true,
+            },
+            targets: [
+                "auto-click-gandama",
+            ]
+        }
     ];
 
     const actions = {

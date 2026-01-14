@@ -171,6 +171,8 @@ const AnimeStarExtensionTranslationEnglish = {
     'reset-widgets-confirm': 'Are you sure you want to reset all widgets to default? This action cannot be undone.',
     'pm-card-preview-enabled': 'Show card previews in PM Postikuncik',
     'extension-settings': 'Extension Settings',
+    'auto-take-snow-stone': 'Take snow stone automatically',
+    'auto-click-gandama': 'Click gandama automatically',
 }
 
 export default AnimeStarExtensionTranslationEnglish;

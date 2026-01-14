@@ -173,6 +173,8 @@ export const AnimeStarExtensionTranslationRussian = {
     'reset-widgets-confirm': 'Вы уверены, что хотите сбросить все виджеты к стандартным? Это действие нельзя отменить.',
     'pm-card-preview-enabled': 'Показывать превью карточек в PM Посикунчик',
     'extension-settings': 'Настройки расширения',
+    'auto-take-snow-stone': 'Автоматически брать снежный камень',
+    'auto-click-gandama': 'Автоматически кликать на гандаму',
 }
 
 export default AnimeStarExtensionTranslationRussian;

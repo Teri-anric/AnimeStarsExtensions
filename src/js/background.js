@@ -50,6 +50,8 @@ const DEFAULT_SETTINGS = {
     'trades-preview-full-exchange': false,
     'trades-history-big-images': false,
     'custom-hosts': ['animesss.tv', 'animesss.com'],
+    'auto-take-snow-stone': true,
+    'auto-click-gandama': true,
 };
 
 const MIGRATIONS = [
