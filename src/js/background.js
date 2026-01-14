@@ -59,7 +59,7 @@ const MIGRATIONS = [
             chrome.storage.sync.get((settings) => {
                 const OLD_TEMPLATE = "{need}{needHasMorePages?+} | {ownerHasMorePages?[ownerPages]P:[owner]} | {trade}{tradeHasMorePages?+[tradePages]P}";
                 const NEW_TEMPLATE = '{need} | {owner} | {trade}';
-                if (settings["card-user-count-template"].trim() === OLD_TEMPLATE.trim()) {
+                if (settings["card-user-count-template"]?.trim?.() === OLD_TEMPLATE?.trim?.()) {
                     chrome.storage.sync.set({ "card-user-count-template": NEW_TEMPLATE });
                 }
             });
@@ -79,7 +79,7 @@ const MIGRATIONS = [
         migrate: () => {
             chrome.storage.sync.get((settings) => {
                 const AUTOMATIC_EVENT_TARGET = 'automatic';
-                if (settings["card-user-count-event-target"].trim() === AUTOMATIC_EVENT_TARGET) {
+                if (settings["card-user-count-event-target"]?.trim?.() === AUTOMATIC_EVENT_TARGET) {
                     chrome.storage.sync.set({ "card-user-count-event-target": 'mouseover' });
                 }
             });
@@ -90,7 +90,7 @@ const MIGRATIONS = [
         migrate: () => {
             chrome.storage.local.get((items) => {
                 const toRemove = [];
-                for (const key in items) {
+                for (const key of Object.keys(items)) {
                     if (key.startsWith('cardUserCountV2_')) {
                         toRemove.push(key);
                     }
@@ -139,36 +139,10 @@ const MIGRATIONS = [
                 ]);
             });
         },
-    }
-    ,
+    },
     {
         migrateVersion: 4,
-        migrate: () => {
-            const DEFAULT_HOSTS = ['animesss.tv', 'animesss.com'];
-
-            const normalizeHost = (input) => {
-                if (typeof input !== 'string') return null;
-                const raw = input.trim().toLowerCase();
-                if (!raw) return null;
-                let hostname = raw;
-                try {
-                    if (raw.includes('://')) hostname = new URL(raw).hostname;
-                } catch {
-                    // ignore
-                }
-                hostname = hostname.split('/')[0]?.split('?')[0]?.split('#')[0] ?? '';
-                if (!hostname || hostname.includes(' ') || !hostname.includes('.')) return null;
-                return hostname;
-            };
-
-            chrome.storage.sync.get(['custom-hosts'], (settings) => {
-                const existingRaw = settings?.['custom-hosts'];
-                const existing = Array.isArray(existingRaw) ? existingRaw : [];
-                const normalized = existing.map(normalizeHost).filter(Boolean);
-                const merged = [...new Set([...normalized, ...DEFAULT_HOSTS.map(normalizeHost).filter(Boolean)])];
-                chrome.storage.sync.set({ 'custom-hosts': merged });
-            });
-        },
+        migrate: () => {}, // Delete migration of test release version
     },
 ];
 
