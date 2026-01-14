@@ -573,6 +573,66 @@ input:checked + .slider:before {
     cursor: not-allowed;
 }
 
+/* Custom domains */
+.domain-controls {
+    display: flex;
+    gap: 10px;
+    width: 100%;
+}
+
+.domain-controls input[type="text"] {
+    flex: 1;
+    padding: 8px 12px;
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+    background-color: var(--bg-secondary);
+    color: var(--text-primary);
+    font-size: 14px;
+    transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+}
+
+.domain-controls input[type="text"]:focus {
+    outline: none;
+    border-color: var(--slider-active);
+    box-shadow: 0 0 0 2px rgba(33, 150, 243, 0.2);
+}
+
+.domain-list {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.domain-row {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    padding: 8px 10px;
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    background-color: var(--bg-tertiary);
+}
+
+.domain-row code {
+    font-family: 'Courier New', monospace;
+    font-size: 13px;
+    word-break: break-all;
+}
+
+.domain-remove-btn {
+    background-color: var(--api-error);
+    border: none;
+    padding: 6px 10px;
+    border-radius: 4px;
+}
+
+.domain-remove-btn:hover {
+    background-color: #c0392b;
+}
+
 /* Dark Theme */
 body.dark-theme {
     --bg-primary: #1a1a1a;

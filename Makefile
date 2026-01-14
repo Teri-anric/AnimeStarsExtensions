@@ -32,11 +32,13 @@ build-chrome:
 	@rm -rf dist/manifest
 	@echo "Zipping extension..."
 	@cd dist && zip -r -0 ../build/animestars_extension-chrome.zip *
-	@echo "Packing extension..."
-	google-chrome \
-		--pack-extension=./dist \
-		--pack-extension-key=mykey.pem
-	@mv dist.crx build/animestars_extension-chrome.crx
+	@echo "Packing extension (optional)..."
+	@if [ -f mykey.pem ] && command -v google-chrome >/dev/null 2>&1; then \
+		google-chrome --pack-extension=./dist --pack-extension-key=mykey.pem; \
+		mv dist.crx build/animestars_extension-chrome.crx; \
+	else \
+		echo "Skip CRX packing (missing mykey.pem or google-chrome). ZIP is ready in build/."; \
+	fi
 	@echo "Removing dist directory..."
 	@rm -rf dist
 	@echo "Build complete"

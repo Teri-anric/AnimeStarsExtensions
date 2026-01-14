@@ -49,6 +49,7 @@ const DEFAULT_SETTINGS = {
     'trades-preview-auto-interval': 1200,
     'trades-preview-full-exchange': false,
     'trades-history-big-images': false,
+    'custom-hosts': ['animesss.tv', 'animesss.com'],
 };
 
 const MIGRATIONS = [
@@ -139,6 +140,36 @@ const MIGRATIONS = [
             });
         },
     }
+    ,
+    {
+        migrateVersion: 4,
+        migrate: () => {
+            const DEFAULT_HOSTS = ['animesss.tv', 'animesss.com'];
+
+            const normalizeHost = (input) => {
+                if (typeof input !== 'string') return null;
+                const raw = input.trim().toLowerCase();
+                if (!raw) return null;
+                let hostname = raw;
+                try {
+                    if (raw.includes('://')) hostname = new URL(raw).hostname;
+                } catch {
+                    // ignore
+                }
+                hostname = hostname.split('/')[0]?.split('?')[0]?.split('#')[0] ?? '';
+                if (!hostname || hostname.includes(' ') || !hostname.includes('.')) return null;
+                return hostname;
+            };
+
+            chrome.storage.sync.get(['custom-hosts'], (settings) => {
+                const existingRaw = settings?.['custom-hosts'];
+                const existing = Array.isArray(existingRaw) ? existingRaw : [];
+                const normalized = existing.map(normalizeHost).filter(Boolean);
+                const merged = [...new Set([...normalized, ...DEFAULT_HOSTS.map(normalizeHost).filter(Boolean)])];
+                chrome.storage.sync.set({ 'custom-hosts': merged });
+            });
+        },
+    },
 ];
 
 function setDefaultSettings() {

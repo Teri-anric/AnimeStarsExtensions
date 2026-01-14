@@ -1,4 +1,8 @@
-(async () => {
+chrome.storage.sync.get(['custom-hosts'], (data) => {
+  const hosts = Array.isArray(data?.['custom-hosts']) ? data['custom-hosts'] : [];
+  if (!hosts.includes(window.location.hostname)) return;
+
+  (async () => {
   const OFFERS_LIST_ITEM_SELECTOR = '.trade__list .trade__list-item[href]';
   const TRADE_STORAGE_PREFIX = 'tradeV1_';
   const AUTO_PARSE_DELAY_MS = 1200;
@@ -402,6 +406,7 @@
       startWithSettings(settings || {});
     } catch {}
   });
-})();
+  })();
+});
 
 

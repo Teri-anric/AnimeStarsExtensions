@@ -1,4 +1,8 @@
-(function () {
+chrome.storage.sync.get(['custom-hosts'], (data) => {
+    const hosts = Array.isArray(data?.['custom-hosts']) ? data['custom-hosts'] : [];
+    if (!hosts.includes(window.location.hostname)) return;
+
+    (function () {
     let isHighlighted = false;
     const USERNAME = document.querySelector(".lgn__name > span")?.textContent?.trim?.();
 
@@ -36,4 +40,5 @@
             }
         }
     });
-})();
+    })();
+});

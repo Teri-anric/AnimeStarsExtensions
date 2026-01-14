@@ -1,4 +1,8 @@
-(async () => {
+chrome.storage.sync.get(['custom-hosts'], (data) => {
+    const hosts = Array.isArray(data?.['custom-hosts']) ? data['custom-hosts'] : [];
+    if (!hosts.includes(window.location.hostname)) return;
+
+    (async () => {
     const CONFIG = {
         CARD_PM_PREVIEW_ENABLED: true,
     };
@@ -82,4 +86,5 @@
         }
         processAllMessages();
     });
-})();
+    })();
+});

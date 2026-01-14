@@ -1,4 +1,8 @@
-(function () {
+chrome.storage.sync.get(['custom-hosts'], (data) => {
+    const hosts = Array.isArray(data?.['custom-hosts']) ? data['custom-hosts'] : [];
+    if (!hosts.includes(window.location.hostname)) return;
+
+    (function () {
     const CONFIG = {
         ENABLED: false,
         REMOVE_CARD_LIST_AND_CLUB_RATING_IN_CARD_BASE: false,
@@ -402,4 +406,5 @@
             }
         }
     });
-})();
+    })();
+});

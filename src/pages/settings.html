@@ -27,7 +27,6 @@
 
             </div>
         </div>
-
         <div class="settings-section">
             <h2>auto-features</h2>
             <div class="setting-item">
@@ -353,7 +352,7 @@
         </div>
 
         <div class="settings-section">
-            <h2>updates</h2>
+            <h2>extension-settings</h2>
             <div class="setting-item">
                 <label for="not-update-check">not-update-check</label>
                 <label class="toggle">
@@ -364,7 +363,18 @@
             <div class="setting-item">
                 <button class="check-update-btn">check-update</button>
             </div>
+
+            <div class="setting-item multi-line">
+                <label for="custom-domain-input">site-domains-add-label</label>
+                <div class="domain-controls">
+                    <input id="custom-domain-input" type="text" autocomplete="off" spellcheck="false" placeholder="animestars.org або https://animestars.org">
+                    <button id="custom-domain-add">site-domains-add-btn</button>
+                </div>
+                <label>site-domains</label>
+                <div class="domain-list" id="custom-domains-list"></div>
+            </div>
         </div>
+
     </translate-text>
 
     <div class="update-notification hidden" id="update-notification">

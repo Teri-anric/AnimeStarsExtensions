@@ -1,4 +1,8 @@
-(function () {
+chrome.storage.sync.get(['custom-hosts'], (data) => {
+    const hosts = Array.isArray(data?.['custom-hosts']) ? data['custom-hosts'] : [];
+    if (!hosts.includes(window.location.hostname)) return;
+
+    (function () {
     const CONFIG = {
         ADD_MY_CARDS_BUTTON: false,
         AUTO_WATCHLIST_FIX: false,
@@ -76,4 +80,5 @@
             CONFIG.AUTO_TAKE_HEAVENLY_STONE = changes['auto-take-heavenly-stone'].newValue;
         }
     });
-})();
+    })();
+});

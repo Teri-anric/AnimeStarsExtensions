@@ -8,7 +8,6 @@
         "alarms"
     ],
     "host_permissions": [
-        "https://[HOST]/*",
         "https://raw.githubusercontent.com/Teri-anric/AnimeStarsExtensions/*",
         "https://ass-api.strawberrycat.dev/*",
         "https://ass.strawberrycat.dev/*"
@@ -16,7 +15,16 @@
     "content_scripts": [
         {
             "matches": [
-                "https://[HOST]/*"
+                "https://*/*"
+            ],
+            "js": [
+                "./scripts/page_worker.js"
+            ],
+            "run_at": "document_idle"
+        },
+        {
+            "matches": [
+                "https://*/*"
             ],
             "js": [
                 "./scripts/auto_seen_card.js",
@@ -29,7 +37,7 @@
         },
         {
             "matches": [
-                "https://[HOST]/*"
+                "https://*/*"
             ],
             "js": [
                 "./scripts/fix_header.js"
@@ -41,7 +49,7 @@
         },
         {
             "matches": [
-                "https://[HOST]/*"
+                "https://*/*"
             ],
             "js": [
                 "./scripts/card_indexer.js",
@@ -54,7 +62,7 @@
         },
         {
             "matches": [
-                "https://[HOST]/user/*"
+                "https://*/user/*"
             ],
             "js": [
                 "./scripts/user_card_buttons.js"
@@ -66,7 +74,7 @@
         },
         {
             "matches": [
-                "https://[HOST]/cards*"
+                "https://*/cards*"
             ],
             "js": [
                 "./scripts/cards_search_integration.js"
@@ -78,8 +86,8 @@
         },
         {
             "matches": [
-                "https://[HOST]/cards_remelt/",
-                "https://[HOST]/cards_remelt/*"
+                "https://*/cards_remelt/",
+                "https://*/cards_remelt/*"
             ],
             "js": [
                 "./scripts/remelt_topbar.js"
@@ -91,8 +99,8 @@
         },
         {
             "matches": [
-                "https://[HOST]/trades/history*",
-                "https://[HOST]/trades/history/*"
+                "https://*/trades/history*",
+                "https://*/trades/history/*"
             ],
             "js": [
                 "./scripts/trades_history_filters.js"
@@ -104,21 +112,22 @@
         },
         {
             "matches": [
-                "https://[HOST]/trades/*/",
-                "https://[HOST]/trades/offers/*/",
-                "https://[HOST]/trades/",
-                "https://[HOST]/trades/offers/"
+                "https://*/trades/*/",
+                "https://*/trades/offers/*/",
+                "https://*/trades/",
+                "https://*/trades/offers/"
             ],
             "js": [
                 "./scripts/trade_previews.js"
             ],
             "css": [
                 "./styles/trade_previews.css"
-            ]
+            ],
+            "run_at": "document_idle"
         },
         {
             "matches": [
-                "https://[HOST]/cards/users/*"
+                "https://*/cards/users/*"
             ],
             "js": [
                 "./scripts/cards_users_parser.js"
@@ -127,7 +136,7 @@
         },
         {
             "matches": [
-                "https://[HOST]/clubs/boost/*"
+                "https://*/clubs/boost/*"
             ],
             "js": [
                 "./scripts/boost_club.js",
@@ -135,7 +144,17 @@
             ],
             "css": [
                 "./styles/boost_club.css"
-            ]
+            ],
+            "run_at": "document_idle"
+        },
+        {
+            "matches": [
+                "https://*/pm/*"
+            ],
+            "js": [
+                "./scripts/pm.js"
+            ],
+            "run_at": "document_idle"
         },
         {
             "matches": [
@@ -145,25 +164,6 @@
                 "./scripts/token_bridge.js"
             ],
             "run_at": "document_end"
-        },
-        {
-            "matches": [
-                "https://[HOST]/*",
-                "https://raw.githubusercontent.com/Teri-anric/AnimeStarsExtensions/*",
-                "https://ass-api.strawberrycat.dev/*",
-                "https://ass.strawberrycat.dev/*"
-            ],
-            "js": [
-                "./scripts/page_worker.js"
-            ]
-        },
-        {
-            "matches": [
-                "https://[HOST]/pm/*"
-            ],
-            "js": [
-                "./scripts/pm.js"
-            ]
         }
     ],
     "icons": {

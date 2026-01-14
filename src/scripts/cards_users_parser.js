@@ -3,7 +3,11 @@
 // Parses card count data from the page and sends it to background for caching
 // -----------------------------------------------------------------------------
 
-(async () => {
+chrome.storage.sync.get(['custom-hosts'], (data) => {
+    const hosts = Array.isArray(data?.['custom-hosts']) ? data['custom-hosts'] : [];
+    if (!hosts.includes(window.location.hostname)) return;
+
+    (async () => {
     function sendMessageBG(message) {
         chrome.runtime.sendMessage(message);
     }
@@ -76,4 +80,5 @@
     }
 
     main();
-})(); 
+    })();
+});

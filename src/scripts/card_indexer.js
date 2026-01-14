@@ -1,4 +1,8 @@
-(async () => {
+chrome.storage.sync.get(['custom-hosts'], (data) => {
+  const hosts = Array.isArray(data?.['custom-hosts']) ? data['custom-hosts'] : [];
+  if (!hosts.includes(window.location.hostname)) return;
+
+  (async () => {
   const cardContainerSelector = [
     '.lootbox__card',
     '.anime-cards__item',
@@ -238,6 +242,7 @@
       if (val !== undefined) CONFIG.ADD_NEED_BTN_TO_CARD_DIALOG = val;
     }
   });
-})();
+  })();
+});
 
 

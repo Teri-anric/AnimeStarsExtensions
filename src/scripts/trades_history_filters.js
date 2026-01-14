@@ -1,4 +1,8 @@
-(async () => {
+chrome.storage.sync.get(['custom-hosts'], (data) => {
+  const hosts = Array.isArray(data?.['custom-hosts']) ? data['custom-hosts'] : [];
+  if (!hosts.includes(window.location.hostname)) return;
+
+  (async () => {
   const INSERT_BEFORE_SELECTOR = '.ncard__subtabs';
   const HISTORY_CONTAINER_SELECTOR = '.history';
 
@@ -182,6 +186,7 @@
       toggleBigImages(!!bigImagesEnabled);
     }
   });
-})();
+  })();
+});
 
 

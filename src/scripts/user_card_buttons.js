@@ -1,4 +1,8 @@
-(function () {
+chrome.storage.sync.get(['custom-hosts'], (data) => {
+    const hosts = Array.isArray(data?.['custom-hosts']) ? data['custom-hosts'] : [];
+    if (!hosts.includes(window.location.hostname)) return;
+
+    (function () {
     let USERNAME = document.querySelector(".usn__name > h1")?.textContent?.trim?.();
     if (!USERNAME) return console.log('user_card_buttons: USERNAME not found');
 
@@ -130,4 +134,5 @@
             });
         }
     });
-})();
+    })();
+});

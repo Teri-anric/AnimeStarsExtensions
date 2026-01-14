@@ -1,4 +1,8 @@
-(function () {
+chrome.storage.sync.get(['custom-hosts'], (data) => {
+    const hosts = Array.isArray(data?.['custom-hosts']) ? data['custom-hosts'] : [];
+    if (!hosts.includes(window.location.hostname)) return;
+
+    (function () {
     let boostCooldown = 500;
     let refreshCooldown = 600;
     const BoostLimit = 600;
@@ -141,4 +145,5 @@
         }
     });
 
-})();
+    })();
+});
