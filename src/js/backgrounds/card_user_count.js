@@ -63,19 +63,27 @@ chrome.storage.onChanged.addListener((changes, namespace) => {
     }
 });
 
-// Helper function to send notifications to all content scripts
-async function broadcastToAllTabs(message) {
-    try {
-        const tabs = await chrome.tabs.query({}); // get all tabs
-        const promises = tabs.map(tab =>
-            chrome.tabs.sendMessage(tab.id, message).catch(() => {
-                // Tab might be closed or not available, ignore silently
-            })
-        );
-        await Promise.all(promises);
-    } catch (error) {
-        console.log('Failed to broadcast message:', error);
-    }
+// In Chrome MV3, using chrome.tabs.query({}) requires "tabs" permission.
+// We avoid requesting extra permissions by tracking only tabs that actually
+// interact with this feature (i.e., those that send us messages).
+const subscribedTabIds = new Set();
+
+function registerSenderTab(sender) {
+    const tabId = sender?.tab?.id;
+    if (Number.isInteger(tabId)) subscribedTabIds.add(tabId);
+}
+
+async function broadcastToSubscribedTabs(message) {
+    const ids = Array.from(subscribedTabIds);
+    if (ids.length === 0) return;
+    await Promise.all(ids.map(async (tabId) => {
+        try {
+            await chrome.tabs.sendMessage(tabId, message);
+        } catch {
+            // Tab might be closed or not available / doesn't have the content script.
+            subscribedTabIds.delete(tabId);
+        }
+    }));
 }
 
 async function addStatToUploadQueue(data) {
@@ -127,7 +135,7 @@ async function getSiteCardDatas(cardIds, parseTypes, callback) {
 }
 
 async function cardDataUpdated(items) {
-    await broadcastToAllTabs({
+    await broadcastToSubscribedTabs({
         action: 'card_data_updated',
         items: items,
     });
@@ -303,17 +311,19 @@ function enqueueFetchRequest(data) {
 }
 
 function clearCardDataQueue(message, sender) {
+    registerSenderTab(sender);
     const length = fetchQueue.length;
     for (let i = 0; i < length; i++) {
         fetchQueue.shift();
     }
-    broadcastToAllTabs({
+    broadcastToSubscribedTabs({
         action: 'card_data_queue_cleared',
     });
     return { success: true };
 }
 
 function fetchCardDataQueue(message, sender) {
+    registerSenderTab(sender);
     const { cardIds, origin, parseTypes, username } = message.data;
     if (!cardIds || !origin) {
         console.error("Missing cardId or origin");
@@ -327,6 +337,7 @@ function fetchCardDataQueue(message, sender) {
 }
 
 async function fetchCachedCardData(message, sender) {
+    registerSenderTab(sender);
     const { cardIds, parseTypes, username } = message.data;
     if (!cardIds) {
         console.error("Missing cardIds");
@@ -339,6 +350,7 @@ async function fetchCachedCardData(message, sender) {
 }
 
 async function updateCardDataFromPage(message, sender) {
+    registerSenderTab(sender);
     setCachedCounts(message.data);
     cardDataUpdated([message.data]);
     addStatToUploadQueue(message.data);
@@ -373,6 +385,7 @@ const actionMap = {
     'clear_all_card_caches': clearAllCardCaches,
 };
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
+    registerSenderTab(sender);
     const action = actionMap?.[message?.action];
 
     if (!action) {
