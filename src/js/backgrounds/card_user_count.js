@@ -66,7 +66,7 @@ chrome.storage.onChanged.addListener((changes, namespace) => {
 // Helper function to send notifications to all content scripts
 async function broadcastToAllTabs(message) {
     try {
-        const tabs = await chrome.tabs.query({ url: "*://*/*" });
+        const tabs = await chrome.tabs.query({}); // get all tabs
         const promises = tabs.map(tab =>
             chrome.tabs.sendMessage(tab.id, message).catch(() => {
                 // Tab might be closed or not available, ignore silently
