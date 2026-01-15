@@ -9,11 +9,7 @@ chrome.storage.sync.get(['custom-hosts'], (data) => {
             AUTO_TAKE_SNOW_STONE: false,
             AUTO_CLICK_GANDAMA: false,
 
-            isSnowing: () => {
-                if (document.querySelector('.snowball-box')) return true
-                // if (document.querySelector('.snowflakes-box')) return true
-                return false
-            }
+            IS_FIRST_SNOW_STONE: true,
         }
 
         function getCardNotifications() {
@@ -77,18 +73,19 @@ chrome.storage.sync.get(['custom-hosts'], (data) => {
             if (!CONFIG.AUTO_TAKE_SNOW_STONE) return;
             const snowStone = document.querySelector('#snow-stone-gift');
             if (snowStone) {
-                if (!CONFIG.isSnowing()) {
-                    setTimeout(clickGandama, 1000);
-                }
                 snowStone.click();
+                if (CONFIG.IS_FIRST_SNOW_STONE) {
+                    setTimeout(clickGandama, 60 * 1000); // 1 minute (60s) delay
+                    CONFIG.IS_FIRST_SNOW_STONE = false;
+                }
             }
         }
 
         // init
-        chrome.storage.sync.get(['auto-seen-card', 'auto-seen-card-stack'], (settings) => {
+        chrome.storage.sync.get(['auto-seen-card', 'auto-seen-card-stack', 'auto-take-snow-stone', 'auto-click-gandama'], (settings) => {
             CONFIG.AUTO_SEEN_CARD = settings['auto-seen-card']
-            CONFIG.AUTO_TAKE_SNOW_STONE = settings['auto-take-snow-stone']
             CONFIG.TO_STACK = settings['auto-seen-card-stack']
+            CONFIG.AUTO_TAKE_SNOW_STONE = settings['auto-take-snow-stone']
             CONFIG.AUTO_CLICK_GANDAMA = settings['auto-click-gandama']
             setInterval(clickCardNotification, 1000);
             setInterval(clickToSnowStone, 1000);
