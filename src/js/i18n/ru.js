@@ -9,6 +9,7 @@ export const AnimeStarExtensionTranslationRussian = {
     'exchange-settings': 'Настройки обменов',
     'ui-customization': 'Кастомизация интерфейса',
     'dark-theme': 'Темная тема',
+    'hide-snow': 'Убрать снег',
     'auto-seen-card': 'Автоматически просматривать карточки',
     'auto-seen-card-stack': 'Складывать карточки из просмотра',
     'auto-watchlist-fix': 'Коллекция как список просмотра',

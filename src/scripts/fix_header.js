@@ -7,9 +7,16 @@ chrome.storage.sync.get(['custom-hosts'], (data) => {
         ADD_MY_CARDS_BUTTON: false,
         AUTO_WATCHLIST_FIX: false,
         AUTO_TAKE_HEAVENLY_STONE: false,
+        HIDE_SNOW: false,
     }
     const USERNAME_ELEMENT = document.querySelector(".lgn__name > span");
     const USERNAME = USERNAME_ELEMENT ? USERNAME_ELEMENT.textContent.trim() : null;
+
+    function updateHideSnow(enabled) {
+        CONFIG.HIDE_SNOW = !!enabled;
+        if (!document.body) return;
+        document.body.classList.toggle('as-hide-snow', CONFIG.HIDE_SNOW);
+    }
 
     function createMyCardsButton() {
         if (!USERNAME) return;
@@ -51,7 +58,7 @@ chrome.storage.sync.get(['custom-hosts'], (data) => {
     }, 1000);
 
     // init
-    chrome.storage.sync.get(['auto-watchlist-fix', 'add-my-cards-button', 'auto-take-heavenly-stone'], (settings) => {
+    chrome.storage.sync.get(['auto-watchlist-fix', 'add-my-cards-button', 'auto-take-heavenly-stone', 'hide-snow'], (settings) => {
         updateWatchlistFix(settings['auto-watchlist-fix']);
         if (settings['add-my-cards-button']) {
             createMyCardsButton();
@@ -59,6 +66,7 @@ chrome.storage.sync.get(['custom-hosts'], (data) => {
         if (settings['auto-take-heavenly-stone']) {
             CONFIG.AUTO_TAKE_HEAVENLY_STONE = settings['auto-take-heavenly-stone'];
         }
+        updateHideSnow(settings['hide-snow']);
     });
     // sync
     chrome.storage.onChanged.addListener((changes, namespace) => {
@@ -78,6 +86,10 @@ chrome.storage.sync.get(['custom-hosts'], (data) => {
         // auto take heavenly stone
         if (changes['auto-take-heavenly-stone'] && changes['auto-take-heavenly-stone'].newValue != changes['auto-take-heavenly-stone'].oldValue) {
             CONFIG.AUTO_TAKE_HEAVENLY_STONE = changes['auto-take-heavenly-stone'].newValue;
+        }
+        // hide snow
+        if (changes['hide-snow'] && changes['hide-snow'].newValue != changes['hide-snow'].oldValue) {
+            updateHideSnow(changes['hide-snow'].newValue);
         }
     });
     })();

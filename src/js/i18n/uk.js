@@ -9,6 +9,7 @@ const AnimeStarExtensionTranslationUkraine = {
     'exchange-settings': 'Налаштування обмінів',
     'ui-customization': 'Кастомізація інтерфейсу',
     'dark-theme': 'Темна тема',
+    'hide-snow': 'Прибрати сніг',
     'auto-seen-card': 'Автоматично переглядати картки',
     'auto-seen-card-stack': 'Складати картки з перегляду',
     'auto-take-heavenly-stone': 'Автоматично брати небесний камінь',

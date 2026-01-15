@@ -9,6 +9,7 @@ const AnimeStarExtensionTranslationEnglish = {
     'exchange-settings': 'Exchange Settings',
     'ui-customization': 'UI Customization',
     'dark-theme': 'Dark Theme',
+    'hide-snow': 'Hide snow',
     'auto-seen-card': 'Automatically take cards from watching',
     'auto-seen-card-stack': 'Stack cards from watching',
     'auto-watchlist-fix': 'Collection is a watchlist',

@@ -52,6 +52,7 @@ const DEFAULT_SETTINGS = {
     'custom-hosts': ['animesss.tv', 'animesss.com'],
     'auto-take-snow-stone': true,
     'auto-click-gandama': true,
+    'hide-snow': false,
 };
 
 const MIGRATIONS = [

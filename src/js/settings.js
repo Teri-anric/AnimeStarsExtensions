@@ -4,6 +4,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const settingsCheckboxes = [
         'dark-theme',
+        'hide-snow',
         'auto-seen-card',
         'auto-seen-card-stack',
         'auto-watchlist-fix',

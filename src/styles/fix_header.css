@@ -21,3 +21,9 @@
     color: #fff;
     text-decoration: none;
 }
+
+body.as-hide-snow .snowflakes-box,
+body.as-hide-snow .snowball-box {
+    display: none !important;
+    visibility: hidden !important;
+}
