@@ -24,9 +24,31 @@ chrome.storage.sync.get(['custom-hosts'], (data) => {
         }
     }
 
+    /** @returns {{ current: number, max: number } | null} */
+    function getBoostLimitFromPage() {
+        // New logic: progress bar (aria-valuenow / aria-valuemax)
+        const progressBar = document.querySelector('.club-boost [role="progressbar"], #my-progress [role="progressbar"], .pbar__track[role="progressbar"]');
+        if (progressBar) {
+            const current = parseInt(progressBar.getAttribute('aria-valuenow'), 10);
+            const max = parseInt(progressBar.getAttribute('aria-valuemax'), 10);
+            if (Number.isFinite(current) && Number.isFinite(max)) {
+                return { current, max };
+            }
+        }
+        // Fallback: old .boost-limit element
+        const boostLimitEl = document.querySelector(".boost-limit");
+        if (boostLimitEl) {
+            const current = parseInt(boostLimitEl.textContent, 10);
+            if (Number.isFinite(current)) {
+                return { current, max: BoostLimit };
+            }
+        }
+        return null;
+    }
+
     function checkBoostLimit(onlyCheck = false) {
-        const boostLimit = document.querySelector(".boost-limit");
-        if (boostLimit && parseInt(boostLimit.textContent) >= BoostLimit) {
+        const limit = getBoostLimitFromPage();
+        if (limit && limit.current >= limit.max) {
             if (onlyCheck) {
                 return false;
             }
