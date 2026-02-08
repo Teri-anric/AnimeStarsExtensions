@@ -599,15 +599,17 @@ function updateCardPreview() {
     const templateItems = (templateEditor ? templateEditor.getItems() : selected.templateItems) || [];
 
     // Mock data for preview
-    const mockData = {
+    const mockData = { 
         cardId: 4779,
-        newLine: "\n",
-        need: 9,
-        owner: 583,
-        trade: 28,
-        unlockNeed: 9,
-        unlockOwner: 383,
-        unlockTrade: 28,
+        need: 14, 
+        owner: 642, 
+        trade: 46, 
+        unlockNeed: 5, 
+        unlockOwner: 200, 
+        unlockTrade: 12,
+        clubNeed: 3,
+        clubOwner: 28,
+        clubTrade: 7,
         duplicates: 2,
         cardName: 'Кируко',
         cardRank: 'A',
@@ -623,7 +625,6 @@ function updateCardPreview() {
         deckCountE: 20,
         deckCountTotal: 50,
     };
-
 
     // Render all enabled widgets in consistent order
     widgetsState.list.filter(w => w.enabled).forEach(w => {

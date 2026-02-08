@@ -8,6 +8,9 @@ chrome.storage.sync.get(['custom-hosts'], (data) => {
   const parseTypeToVariablesMap = {
     unlocked: ["unlockNeed", "unlockOwner", "unlockTrade"],
     counts: ["need", "owner", "trade"],
+    clubNeed: ["clubNeed"],
+    clubOwner: ["clubOwner"],
+    clubTrade: ["clubTrade"],
     duplicates: ["duplicates"],
     siteCard: ["cardName", "cardRank", "cardAnime", "cardAnimeLink", "cardAuthor"],
     siteDeck: [
@@ -351,6 +354,15 @@ chrome.storage.sync.get(['custom-hosts'], (data) => {
       }
       if (cardData.parseType === 'duplicates') {
         variables.duplicates = cardData.data?.duplicates;
+      }
+      if (cardData.parseType === 'clubNeed') {
+        variables.clubNeed = cardData.data?.need;
+      }
+      if (cardData.parseType === 'clubOwner') {
+        variables.clubOwner = cardData.data?.owner;
+      }
+      if (cardData.parseType === 'clubTrade') {
+        variables.clubTrade = cardData.data?.trade;
       }
       if (cardData.parseType === 'siteCard') {
         variables.cardName = cardData.data?.name;

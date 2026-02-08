@@ -9,6 +9,9 @@ const CARD_COUNT_CACHE_KEY_PREFIX = `${_CARD_COUNT_CACHE_KEY_PREFIX_BASE}${_CARD
 const CARD_COUNT_COUNTS_KEY = (cardId, parseType = "counts", username = "") => {
     if (parseType === "counts") return `${CARD_COUNT_CACHE_KEY_PREFIX}_${cardId}`;
     if (parseType === "unlocked") return `${CARD_COUNT_CACHE_KEY_PREFIX}_unlocked_${cardId}`;
+    if (parseType === "clubNeed") return `${CARD_COUNT_CACHE_KEY_PREFIX}_club_need_${cardId}`;
+    if (parseType === "clubOwner") return `${CARD_COUNT_CACHE_KEY_PREFIX}_club_owner_${cardId}`;
+    if (parseType === "clubTrade") return `${CARD_COUNT_CACHE_KEY_PREFIX}_club_trade_${cardId}`;
     if (parseType === "duplicates") {
         if (!username) throw new Error("Username is required for duplicates");
         return `${CARD_COUNT_CACHE_KEY_PREFIX}_duplicates_${cardId}_${username}`;
@@ -185,8 +188,15 @@ async function parseHtmlCardCount(html) {
 async function parseHtmlDuplicates(html) {
     if (typeof html !== 'string' || !html) return { duplicates: 0 };
     // Count occurrences of card items. Keep it simple and fast.
-    const matches = html.match(/\banime-cards__item\b/g);
+    const matches = html.match(/[\s"]anime-cards__item[\s"]/g);
     return { duplicates: matches ? matches.length : 0 };
+}
+
+/** Parse a single club page: one count (owners by count). Uses #owners-count or fallback to anime-cards__item count. Returns number. */
+async function parseHtmlClubCountSingle(html) {
+    if (typeof html !== 'string' || !html) return null;
+    const matches = html.match(/[\s"]card-show__owner[\s"]/g);
+    return { count: matches ? matches.length : 0 };
 }
 
 
@@ -261,6 +271,30 @@ async function fetchCounts(item) {
         if (!username) throw new FetchError("Username is required for duplicates");
         url = `${origin}/user/cards/?name=${encodeURIComponent(username)}&card_id=${cardId}`;
         parseFunction = parseHtmlDuplicates;
+    }
+    if (parseType === "clubNeed") {
+        url = `${origin}/cards/users/need/?id=${cardId}&club=1`;
+        const need = (await fetchPage(url, parseHtmlClubCountSingle, 3)).count;
+        const data = { cardId, parseType: 'clubNeed', data: { need }, username };
+        setCachedCounts(data);
+        addStatToUploadQueue(data);
+        return data;
+    }
+    if (parseType === "clubOwner") {
+        url = `${origin}/cards/users/?id=${cardId}&club=1`;
+        const owner = (await fetchPage(url, parseHtmlClubCountSingle, 3)).count;
+        const data = { cardId, parseType: 'clubOwner', data: { owner }, username };
+        setCachedCounts(data);
+        addStatToUploadQueue(data);
+        return data;
+    }
+    if (parseType === "clubTrade") {
+        url = `${origin}/cards/users/trade/?id=${cardId}&club=1`;
+        const trade = (await fetchPage(url, parseHtmlClubCountSingle, 3)).count;
+        const data = { cardId, parseType: 'clubTrade', data: { trade }, username };
+        setCachedCounts(data);
+        addStatToUploadQueue(data);
+        return data;
     }
     const counts = await fetchPage(url, parseFunction, 3);
     const data = {

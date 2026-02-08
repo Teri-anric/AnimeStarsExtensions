@@ -11,6 +11,9 @@ import IconPicker from './icon-picker.js';
 const parseTypeToVariablesMap = {
     unlocked: ["unlockNeed", "unlockOwner", "unlockTrade"],
     counts: ["need", "owner", "trade"],
+    clubNeed: ["clubNeed"],
+    clubOwner: ["clubOwner"],
+    clubTrade: ["clubTrade"],
     duplicates: ["duplicates"],
     siteCard: ["cardName", "cardRank", "cardAnime", "cardAnimeLink", "cardAuthor"],
     siteDeck: [
@@ -476,6 +479,9 @@ class TemplateEditor {
             unlockNeed: 5, 
             unlockOwner: 200, 
             unlockTrade: 12,
+            clubNeed: 3,
+            clubOwner: 28,
+            clubTrade: 7,
             duplicates: 2,
             cardName: 'Кируко',
             cardRank: 'A',
