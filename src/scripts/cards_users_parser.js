@@ -7,10 +7,20 @@ chrome.storage.sync.get(['custom-hosts'], (data) => {
     const hosts = Array.isArray(data?.['custom-hosts']) ? data['custom-hosts'] : [];
     if (!hosts.includes(window.location.hostname)) return;
 
-    (async () => {
+(async () => {
     function sendMessageBG(message) {
         chrome.runtime.sendMessage(message);
     }
+
+
+    function uploadCardDataToAss(cardData) {
+        if (!cardData) return;
+        sendMessageBG({
+            action: 'upload_card_data_to_ass',
+            cards: [cardData],
+        });
+    }
+
 
     // Parse card data from the current page
     function parseCardDataFromPage() {
@@ -71,11 +81,34 @@ chrome.storage.sync.get(['custom-hosts'], (data) => {
         console.log(`Card data sent to background for caching: ${cardData.cardId}`);
     }
 
+
+    async function uploadCardDataToAssFromPage() {
+        const urlParams = new URLSearchParams(window.location.search);
+        const cardId = urlParams.get('id');
+        const ImageContainer = document.querySelector('.ncard__img');
+        const cardImage = ImageContainer.querySelector('img');
+
+        const animeLink = new URL(ImageContainer?.href).pathname;
+        const image = new URL(cardImage?.src).pathname;
+        if (!cardId || !animeLink || !image) return;
+        uploadCardDataToAss({
+            card_id: parseInt(cardId),
+            anime_link: animeLink,
+            image: image,
+        });
+        console.log('Card data uploaded to ASS:', {
+            card_id: parseInt(cardId),
+            anime_link: animeLink,
+            image: image,
+        });
+    }
+
     async function main() {
         console.log('Cards users parser started');
         const cardData = parseCardDataFromPage();
         if (cardData) {
             updateCardDataCache(cardData);
+            uploadCardDataToAssFromPage();
         }
     }
 

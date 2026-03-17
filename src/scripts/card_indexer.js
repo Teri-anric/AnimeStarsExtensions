@@ -169,6 +169,8 @@ chrome.storage.sync.get(['custom-hosts'], (data) => {
     }
 
     // indexOwnerIds(elms); DISABLED
+
+    enqueueCardData(elms);
   }
 
   async function createStatOverlays() {
@@ -183,6 +185,28 @@ chrome.storage.sync.get(['custom-hosts'], (data) => {
       setCardIdIndex(statOverlay, extractCardIdFromElement(elm))
       if (!elm.contains(statOverlay)) elm.appendChild(statOverlay);
     });
+  }
+
+  function extractCardData(elm) {
+    const cardId = parseInt(elm.getAttribute('data-index-card-id') || elm.dataset?.id);
+    if (!cardId || !elm.dataset?.name || !elm.dataset?.rank) return null;
+    return {
+      card_id: cardId,
+      name: elm.dataset.name,
+      rank: elm.dataset.rank,
+      anime_name: elm.dataset.animeName || null,
+      anime_link: elm.dataset.animeLink || null,
+      author: elm.dataset.author || null,
+      image: elm.dataset.image || null,
+      mp4: elm.dataset.mp4 || null,
+      webm: elm.dataset.webm || null,
+    };
+  }
+
+  function enqueueCardData(elms) {
+    const cards = elms.map(extractCardData).filter(Boolean);
+    if (cards.length === 0) return;
+    chrome.runtime.sendMessage({ action: 'upload_card_data_to_ass', cards });
   }
 
   async function indexAllOnPage() {

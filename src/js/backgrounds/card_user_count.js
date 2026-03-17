@@ -26,6 +26,7 @@ const CARD_COUNT_CONFIG = {
     CACHE_MAX_LIFETIME: 7 * 24 * 60 * 60 * 1000, // 7 days
     PARSE_UNLOCKED: false,                    // updated from settings if needed
     API_STATS_SUBMISSION_ENABLED: true,
+    API_STATS_RECEIVE_ENABLED: false,
 };
 
 // Initialise config from persisted settings
@@ -34,6 +35,7 @@ chrome.storage.sync.get([
     'card-user-count-cache-enabled',
     'card-user-count-cache-max-lifetime',
     'api-stats-submission-enabled',
+    'api-stats-receive-enabled',
 ], (settings) => {
     if (typeof settings['card-user-count-request-delay'] === 'number') {
         CARD_COUNT_CONFIG.REQUEST_DELAY = settings['card-user-count-request-delay'] * 1000;
@@ -46,6 +48,9 @@ chrome.storage.sync.get([
     }
     if (typeof settings['api-stats-submission-enabled'] === 'boolean') {
         CARD_COUNT_CONFIG.API_STATS_SUBMISSION_ENABLED = settings['api-stats-submission-enabled'];
+    }
+    if (typeof settings['api-stats-receive-enabled'] === 'boolean') {
+        CARD_COUNT_CONFIG.API_STATS_RECEIVE_ENABLED = settings['api-stats-receive-enabled'];
     }
 });
 
@@ -63,6 +68,9 @@ chrome.storage.onChanged.addListener((changes, namespace) => {
     }
     if (changes['api-stats-submission-enabled']?.newValue !== undefined) {
         CARD_COUNT_CONFIG.API_STATS_SUBMISSION_ENABLED = changes['api-stats-submission-enabled'].newValue;
+    }
+    if (changes['api-stats-receive-enabled']?.newValue !== undefined) {
+        CARD_COUNT_CONFIG.API_STATS_RECEIVE_ENABLED = changes['api-stats-receive-enabled'].newValue;
     }
 });
 
@@ -256,12 +264,61 @@ async function fetchPage(url, parseFunction, retry = 0) {
 }
 
 
+// Mapping from API collection names to fetchCounts data shapes.
+// Returns { cardId, parseType, data, username } or null if API stats are absent/expired.
+async function fetchCountsFromApi(cardIds, parseTypes) {
+    if (!CARD_COUNT_CONFIG.API_STATS_RECEIVE_ENABLED) return null;
+    if (!Array.isArray(parseTypes) || parseTypes.length === 0) return null;
+    try {
+        const stats = await AssApiClient.getBulkCardStats(cardIds);
+        if (!Array.isArray(stats) || stats.length === 0) return null;
+
+        const now = Date.now();
+        const statsByCardId = Object.groupBy(stats, (stat) => stat.card_id);
+        const results = [];
+
+        for (const cardId of cardIds) {
+            if (!statsByCardId[cardId]) continue;
+            const statsByCollection = Object.groupBy(statsByCardId[cardId], (stat) => stat.collection);
+            if (parseTypes.includes('counts')) {
+                const trade = statsByCollection['trade']?.[0]?.count;
+                const need = statsByCollection['need']?.[0]?.count;
+                const owner = statsByCollection['owned']?.[0]?.count;
+                if (trade == null || need == null || owner == null) continue;
+                results.push({
+                    cardId,
+                    parseType: 'counts',
+                    data: { 
+                        trade,
+                        need,
+                        owner,
+                    },
+                });
+            }
+            if (parseTypes.includes('unlocked')) {
+                const owner = statsByCollection['unlocked_owned']?.[0]?.count;
+                if (owner == null) continue;
+                results.push({
+                    cardId,
+                    parseType: 'unlocked',
+                    data: { owner },
+                });
+            }
+        }
+        return results;
+    } catch (error) {
+        console.error('fetchCountsFromApi error:', error);
+        return null;
+    }
+}
+
 async function fetchCounts(item) {
     const { cardId, origin, parseType, username } = item;
     if (CARD_COUNT_CONFIG.CACHE_ENABLED) {
         const cached = await getCachedCounts([cardId], [parseType], username);
         if (cached && cached.length > 0) return cached[0];
     }
+
     let url = `${origin}/cards/users/?id=${cardId}`;
     let parseFunction = parseHtmlCardCount;
     if (parseType === "unlocked") {
@@ -376,6 +433,14 @@ async function fetchCachedCardData(message, sender) {
     if (!cardIds) {
         console.error("Missing cardIds");
         return;
+    }
+
+    // Try API cached stats first
+    if (CARD_COUNT_CONFIG.API_STATS_RECEIVE_ENABLED) {
+        const apiData = await fetchCountsFromApi(cardIds, parseTypes);
+        if (apiData) {
+            cardDataUpdated(apiData);
+        }
     }
 
     const data = await getCachedCounts(cardIds, parseTypes, username);

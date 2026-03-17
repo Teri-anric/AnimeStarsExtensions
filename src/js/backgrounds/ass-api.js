@@ -116,6 +116,41 @@ async function getCardDetail(message, sender) {
     }
 }
 
+// --- Card index queue ---
+const CARD_INDEX_BATCH_SIZE = 50;
+const CARD_INDEX_DEBOUNCE_MS = 2000;
+const cardIndexSeenIds = new Set();
+let cardIndexQueue = [];
+let cardIndexTimer = null;
+
+async function flushCardIndexQueue() {
+    cardIndexTimer = null;
+    if (cardIndexQueue.length === 0) return;
+    const batch = cardIndexQueue.splice(0);
+    for (let i = 0; i < batch.length; i += CARD_INDEX_BATCH_SIZE) {
+        try {
+            await AssApiClient.submitCards(batch.slice(i, i + CARD_INDEX_BATCH_SIZE));
+        } catch (error) {
+            console.error('Card index flush error:', error);
+        }
+    }
+}
+
+function indexCards(message, sender) {
+    const cards = message?.cards;
+    if (!Array.isArray(cards) || cards.length === 0) return { success: true };
+    cards.forEach((card) => {
+        if (!card?.card_id || cardIndexSeenIds.has(card.card_id)) return;
+        cardIndexSeenIds.add(card.card_id);
+        cardIndexQueue.push(card);
+    });
+    if (cardIndexQueue.length === 0) return { success: true };
+    clearTimeout(cardIndexTimer);
+    cardIndexTimer = setTimeout(flushCardIndexQueue, CARD_INDEX_DEBOUNCE_MS);
+    return { success: true };
+}
+// --- End card index queue ---
+
 const actionMap = {
     'test_api_connection': testApiConnection,
     'store_token': storeToken,
@@ -124,6 +159,7 @@ const actionMap = {
     'find_card_full_by_image_url': findCardFullByImageUrl,
     'search_cards': searchCards,
     'get_card_detail': getCardDetail,
+    'upload_card_data_to_ass': indexCards,
 };
 
 

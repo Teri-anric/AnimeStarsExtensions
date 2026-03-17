@@ -24,7 +24,10 @@ const ASS_API_CONFIG = {
         CARD_STATS_LAST: '/api/card/stats/last',
         CARD_STATS_LAST_BULK: '/api/card/stats/last/bulk',
         CARD_STATS_QUERY: '/api/card/stats/',
-        CARD_STATS_ADD: '/api/card/stats/add', // New endpoint for adding stats
+        CARD_STATS_ADD: '/api/card/stats/add',
+
+        // Card bulk upsert
+        CARD_BULK_UPSERT: '/api/card/bulk',
 
         // Extension endpoints
         EXTENSION_TOKEN: '/api/extension/token',
@@ -292,9 +295,8 @@ class AssApiClient {
 
     static async getBulkCardStats(cardIds) {
         try {
-            return await this.makeRequest(ASS_API_CONFIG.ENDPOINTS.CARD_STATS_LAST_BULK, {
-                method: 'GET',
-                body: JSON.stringify(cardIds)
+            return await this.makeRequest(`${ASS_API_CONFIG.ENDPOINTS.CARD_STATS_LAST_BULK}?card_ids_comma_separated=${cardIds.join(',')}`, {
+                method: 'GET'
             });
         } catch (error) {
             console.error('Get bulk card stats error:', error);
@@ -356,6 +358,21 @@ class AssApiClient {
             return true;
         } catch (error) {
             console.error('Submit card stats error:', error);
+            throw error;
+        }
+    }
+
+    // Method to submit card data in bulk (upsert by card_id)
+    // cards: array of { card_id, name, rank, anime_name?, anime_link?, author?, image?, mp4?, webm? }
+    static async submitCards(cards) {
+        if (!cards || cards.length === 0) return { status: 'ok', count: 0 };
+        try {
+            return await this.makeRequest(ASS_API_CONFIG.ENDPOINTS.CARD_BULK_UPSERT, {
+                method: 'POST',
+                body: JSON.stringify({ cards })
+            });
+        } catch (error) {
+            console.error('Submit cards error:', error);
             throw error;
         }
     }
