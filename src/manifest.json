@@ -127,7 +127,8 @@
         },
         {
             "matches": [
-                "https://*/clubs/boost/*"
+                "https://*/clubs/boost/*",
+                "https://*/boss_invansion/*"
             ],
             "js": [
                 "./scripts/boost_club.js",

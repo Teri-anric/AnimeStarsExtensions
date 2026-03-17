@@ -8,6 +8,8 @@ chrome.storage.sync.get(['custom-hosts'], (data) => {
         clickedCodes: new Set(),
     }
 
+    const CLICK_DELAY_MS = 900;
+
     function takeCinemaStone() {
         if (!CONFIG.ENABLED) return;
         // Auto-take stones in cinema
@@ -21,15 +23,21 @@ chrome.storage.sync.get(['custom-hosts'], (data) => {
         const cardsElement = document.getElementById("fscr__cards");
         if (!cardsElement) return;
         cardsElement.focus();
-        
-        // Click on all unclicked diamonds
-        document.querySelectorAll('#diamonds-chat[data-code]').forEach(diamond => {
-            let code = diamond.getAttribute('data-code');
-            if (!CONFIG.clickedCodes.has(code)) {
+
+        // Click on all unclicked diamonds with delay
+        const diamonds = Array.from(document.querySelectorAll('#diamonds-chat[data-code]'));
+        let delay = 0;
+        diamonds.reverse().forEach(diamond => {
+            const code = diamond.getAttribute('data-code');
+            if (!code || CONFIG.clickedCodes.has(code)) return;
+
+            setTimeout(() => {
                 diamond.click();
                 CONFIG.clickedCodes.add(code);
                 console.log(`Clicked on diamond with code: ${code}`);
-            }
+            }, delay);
+
+            delay += CLICK_DELAY_MS;
         });
         
         // Handle card notifications

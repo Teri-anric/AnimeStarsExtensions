@@ -9,6 +9,9 @@ chrome.storage.sync.get(['custom-hosts'], (data) => {
     let boostIntervalID;
     let refreshIntervalID;
 
+    const isBossPage = window.location.pathname.includes('boss_invansion');
+    const AUTO_KEY = isBossPage ? 'boss-boost-auto' : 'club-boost-auto';
+
     const CONFIG = {
         boostActive: false,
         isCurrentBoosting: () => {
@@ -59,14 +62,14 @@ chrome.storage.sync.get(['custom-hosts'], (data) => {
     }
     function boostClub(force = false) {
         if (!force && !checkBoostLimit()) return;
-        const boostBtn = document.querySelector(".club__boost-btn");
+        const boostBtn = document.querySelector(isBossPage ? ".mine__boost-btn" : ".club__boost-btn");
         clearDLEPush();
         if (!boostBtn) console.log("Boost button not found");
         boostBtn?.click();
     }
     function refreshClub(force = false) {
         if (!force && !checkBoostLimit()) return;
-        const refreshBtn = document.querySelector(".club__boost__refresh-btn");
+        const refreshBtn = document.querySelector(isBossPage ? ".mine__boost__refresh-btn" : ".club__boost__refresh-btn");
         clearDLEPush();
         if (!refreshBtn) console.log("Refresh button not found");
         refreshBtn?.click();
@@ -121,16 +124,16 @@ chrome.storage.sync.get(['custom-hosts'], (data) => {
     }
 
     chrome.storage.sync.get([
-        'club-boost-auto',
+        AUTO_KEY,
         'club-boost-refresh-cooldown',
         'club-boost-action-cooldown'
     ], (settings) => {
         refreshCooldown = settings['club-boost-refresh-cooldown'] || 600;
         boostCooldown = settings['club-boost-action-cooldown'] || 500;
-        if (settings['club-boost-auto']) {
+        if (settings[AUTO_KEY]) {
             startBoosting();
         }
-        CONFIG.boostActive = settings['club-boost-auto'] || false;
+        CONFIG.boostActive = settings[AUTO_KEY] || false;
     });
 
     chrome.storage.onChanged.addListener((changes, namespace) => {
@@ -142,7 +145,7 @@ chrome.storage.sync.get(['custom-hosts'], (data) => {
             boostCooldown = changes['club-boost-action-cooldown'].newValue;
         }
         stopBoosting(true);
-        let toStart = changes['club-boost-auto'] != undefined ? changes['club-boost-auto']?.newValue : CONFIG.boostActive
+        let toStart = changes[AUTO_KEY] != undefined ? changes[AUTO_KEY]?.newValue : CONFIG.boostActive
         CONFIG.boostActive = false;
         if (toStart) {
             startBoosting();
@@ -162,8 +165,8 @@ chrome.storage.sync.get(['custom-hosts'], (data) => {
             "KeyR": refreshClub,
             "KeyE": boostClub,
             "KeyB": () => {
-                chrome.storage.sync.get('club-boost-auto', (settings) => {
-                    chrome.storage.sync.set({ 'club-boost-auto': !settings['club-boost-auto'] });
+                chrome.storage.sync.get(AUTO_KEY, (settings) => {
+                    chrome.storage.sync.set({ [AUTO_KEY]: !settings[AUTO_KEY] });
                 });
             }
         }

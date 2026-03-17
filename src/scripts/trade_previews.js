@@ -56,6 +56,16 @@ chrome.storage.sync.get(['custom-hosts'], (data) => {
     previewElm.appendChild(img);
   }
 
+  function getDominantOwnerClass(rec) {
+    const counts = {};
+    for (const card of [...(rec.gainedCardData || []), ...(rec.lostCardData || [])]) {
+      for (const cls of (card.ownerClasses || [])) {
+        counts[cls] = (counts[cls] || 0) + 1;
+      }
+    }
+    return Object.entries(counts).sort((a, b) => b[1] - a[1])[0]?.[0] || null;
+  }
+
 
   async function processOffersList() {
     const links = Array.from(document.querySelectorAll(OFFERS_LIST_ITEM_SELECTOR));
@@ -88,6 +98,10 @@ chrome.storage.sync.get(['custom-hosts'], (data) => {
         if (!preview) {
           preview = document.createElement('div');
           preview.className = 'ass-trade-preview';
+          const ownerClass = getDominantOwnerClass(rec);
+          if (ownerClass) {
+            preview.classList.add(ownerClass);
+          }
           mount.appendChild(preview);
         }
         renderImage(preview, imageUrl);
@@ -176,11 +190,13 @@ chrome.storage.sync.get(['custom-hosts'], (data) => {
         const cardId = extractCardIdFromElement(elm);
         if (!cardId) return null;
 
-        // Extract image URL from data-src attribute
         const img = elm.querySelector('img');
         const imageUrl = img?.getAttribute('data-src') || img?.src;
 
-        return { cardId: parseInt(cardId), imageUrl };
+        const ownerClasses = ['anime-cards__owned-by-user', 'anime-cards__owned-by-user-want']
+          .filter(cls => elm.classList.contains(cls) || img?.classList.contains(cls));
+
+        return { cardId: parseInt(cardId), imageUrl, ownerClasses };
       }
 
       const firstCardData = firstItems.map(extractCardDataFromElement).filter(Boolean);
@@ -249,13 +265,18 @@ chrome.storage.sync.get(['custom-hosts'], (data) => {
 
     const controls = document.createElement('div');
     controls.className = 'trade__controls d-flex c-gap-20 r-gap-10';
-    const openBtn = document.createElement('a');
-    openBtn.className = 'btn flex-grow-1';
-    openBtn.textContent = 'Открыть ордер';
-    controls.appendChild(openBtn);
+    const rejectBtn = document.createElement('button');
+    rejectBtn.className = 'btn-red flex-grow-1 fast__trade__rejected-btn cansel__trade__proposal';
+    rejectBtn.dataset.text = 'Вы уверены что хотите отклонить этот обмен?';
+    rejectBtn.textContent = 'Отклонить обмен';
+    const acceptBtn = document.createElement('button');
+    acceptBtn.className = 'btn-green flex-grow-1 fast__trade__accepted-btn';
+    acceptBtn.textContent = 'Принять обмен';
+    controls.appendChild(rejectBtn);
+    controls.appendChild(acceptBtn);
     wrap.appendChild(controls);
 
-    return { wrap, name, gained, lost, openBtn };
+    return { wrap, name, gained, lost, rejectBtn, acceptBtn };
   }
 
   async function renderCachedListForPage(settings) {
@@ -328,13 +349,21 @@ chrome.storage.sync.get(['custom-hosts'], (data) => {
       } catch { }
       if (!rec) continue;
 
-      const { wrap, name, gained, lost, openBtn } = buildHistoryItemSkeleton();
+      const { wrap, name, gained, lost, rejectBtn, acceptBtn } = buildHistoryItemSkeleton();
       const otherUserText = rec.otherUser || '';
       name.innerHTML = `Обмен с <a href="/user/${encodeURIComponent(otherUserText)}/">${otherUserText}</a>`;
-      openBtn.href = a.getAttribute('href');
+      rejectBtn.dataset.id = rec.tradeId;
+      rejectBtn.dataset.kind = rec.direction;
+      if (rec.direction === 'sent') {
+        acceptBtn.remove();
+      } else {
+        acceptBtn.dataset.id = rec.tradeId;
+      }
+      rejectBtn.addEventListener('click', () => wrap.remove(), { once: true });
+      acceptBtn.addEventListener('click', () => wrap.remove(), { once: true });
 
       // Helper to create card thumb
-      function createCardThumb(cardId, imageUrl) {
+      function createCardThumb(cardId, imageUrl, ownerClasses) {
         const href = `/cards/users/?id=${cardId}`;
         const item = document.createElement('a');
         item.className = 'history__body-item show-need_button';
@@ -345,6 +374,7 @@ chrome.storage.sync.get(['custom-hosts'], (data) => {
         img.decoding = 'async';
         img.alt = 'Карточка';
         if (imageUrl) img.src = imageUrl;
+        if (ownerClasses?.length) img.classList.add(...ownerClasses);
         item.appendChild(img);
         return item;
       }
@@ -353,10 +383,10 @@ chrome.storage.sync.get(['custom-hosts'], (data) => {
       const lostCardData = full ? (Array.isArray(rec.lostCardData) ? rec.lostCardData : []) : ((rec.lostCardData || []).slice(0, 1));
 
       for (const cardData of gainedCardData) {
-        try { gained.appendChild(createCardThumb(cardData.cardId, cardData.imageUrl)); } catch { }
+        try { gained.appendChild(createCardThumb(cardData.cardId, cardData.imageUrl, cardData.ownerClasses)); } catch { }
       }
       for (const cardData of lostCardData) {
-        try { lost.appendChild(createCardThumb(cardData.cardId, cardData.imageUrl)); } catch { }
+        try { lost.appendChild(createCardThumb(cardData.cardId, cardData.imageUrl, cardData.ownerClasses)); } catch { }
       }
 
       container.appendChild(wrap);

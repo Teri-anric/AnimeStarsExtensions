@@ -11,7 +11,7 @@ document.addEventListener('DOMContentLoaded', () => {
         'auto-take-heavenly-stone',
         'auto-take-cinema-stone',
         'club-boost-auto',
-        'club-boost-highlight',
+        'boss-boost-auto',
         'card-user-count',
         'card-user-count-cache-enabled',
         'add-my-cards-button',
@@ -30,6 +30,7 @@ document.addEventListener('DOMContentLoaded', () => {
         'pm-card-preview-enabled',
         'auto-take-snow-stone',
         'auto-click-gandama',
+        'clubs-boost-block-images',
     ];
 
     const settingsSelects = [

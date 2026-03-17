@@ -77,6 +77,17 @@ async function findCardIdByImageUrl(message, sender) {
     };
 }
 
+async function findCardFullByImageUrl(message, sender) {
+    const cards = await AssApiClient.findCardByImageUrls(message.imageUrls);
+    return {
+        success: true,
+        cardImageMap: cards.reduce((acc, card) => {
+            acc[card.image] = card;
+            return acc;
+        }, {})
+    };
+}
+
 async function searchCards(message, sender) {
     try {
         const data = await AssApiClient.searchCards(message.searchQuery);
@@ -110,6 +121,7 @@ const actionMap = {
     'store_token': storeToken,
     'remove_token': removeToken,
     'find_card_id_by_image_url': findCardIdByImageUrl,
+    'find_card_full_by_image_url': findCardFullByImageUrl,
     'search_cards': searchCards,
     'get_card_detail': getCardDetail,
 };

@@ -36,7 +36,6 @@ const DEFAULT_SETTINGS = {
     'card-user-count-opacity': 80,
     'card-user-count-hover-action': 'none',
     'not-update-check': false,
-    'club-boost-highlight': true,
     'auto-take-heavenly-stone': true,
     'auto-take-cinema-stone': true,
     'add-need-btn-to-card-dialog': 'can',
@@ -53,6 +52,7 @@ const DEFAULT_SETTINGS = {
     'auto-take-snow-stone': true,
     'auto-click-gandama': true,
     'hide-snow': false,
+    'clubs-boost-block-images': true,
 };
 
 const MIGRATIONS = [
@@ -233,9 +233,63 @@ chrome.alarms.onAlarm.addListener((alarm) => {
     }
 });
 
-
 // Optional: Add listener for settings changes if needed in future
 chrome.storage.onChanged.addListener((changes, namespace) => {
     if (namespace != 'sync') return;
     console.log('Settings changed:', changes);
+});
+
+// -----------------------------------------------------------------------------
+// clubs/boost - block card image loading via declarativeNetRequest
+// -----------------------------------------------------------------------------
+
+const BOOST_IMAGE_RULE_BASE_ID = 1000;
+
+async function updateBoostImageBlockingRuleForTab(sender, enable) {
+    try {
+        const tabId = sender?.tab?.id;
+        if (tabId == null) return { success: false, error: 'No tab id' };
+
+        const ruleId = BOOST_IMAGE_RULE_BASE_ID + tabId;
+        const removeRuleIds = [ruleId];
+        const addRules = [];
+
+        if (enable) {
+            addRules.push({
+                id: ruleId,
+                priority: 1,
+                action: { type: 'block' },
+                condition: {
+                    tabIds: [tabId],
+                    urlFilter: '/uploads/cards_image/',
+                    resourceTypes: ['image'],
+                },
+            });
+        }
+
+        await chrome.declarativeNetRequest.updateSessionRules({
+            addRules,
+            removeRuleIds,
+        });
+
+        return { success: true, enabled: enable };
+    } catch (error) {
+        console.error('Failed to update boost image blocking rule:', error);
+        return { success: false, error: error.message };
+    }
+}
+
+chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
+    if (message?.action === 'boost_block_images') {
+        const enable = message.enable !== false;
+        const result = updateBoostImageBlockingRuleForTab(sender, enable);
+        if (result instanceof Promise) {
+            result.then(sendResponse).catch((error) => {
+                sendResponse({ success: false, error: error.message });
+            });
+            return true;
+        } else {
+            sendResponse(result);
+        }
+    }
 });
