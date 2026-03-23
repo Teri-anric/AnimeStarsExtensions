@@ -52,7 +52,8 @@ const DEFAULT_SETTINGS = {
     'auto-take-snow-stone': true,
     'auto-click-gandama': true,
     'hide-snow': false,
-    'clubs-boost-block-images': true,
+    'clubs-boost-block-images': false,
+    'boss-boost-auto': false,
 };
 
 const MIGRATIONS = [
