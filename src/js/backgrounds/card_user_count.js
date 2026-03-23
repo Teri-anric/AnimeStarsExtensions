@@ -279,11 +279,16 @@ async function fetchCountsFromApi(cardIds, parseTypes) {
 
         for (const cardId of cardIds) {
             if (!statsByCardId[cardId]) continue;
-            // Ensure stats are not older than CACHE_MAX_LIFETIME (UTC-based)
+            const cardStats = statsByCardId[cardId];
+            const newestTimestampMs = cardStats.reduce((max, stat) => {
+                const t = stat.created_at;
+                if (t == null) return max;
+                return Math.max(max, t);
+            }, 0);
             if (!newestTimestampMs || now - newestTimestampMs > CARD_COUNT_CONFIG.CACHE_MAX_LIFETIME) {
                 continue;
             }
-            const statsByCollection = Object.groupBy(statsByCardId[cardId], (stat) => stat.collection);
+            const statsByCollection = Object.groupBy(cardStats, (stat) => stat.collection);
             if (parseTypes.includes('counts')) {
                 const trade = statsByCollection['trade']?.[0]?.count;
                 const need = statsByCollection['need']?.[0]?.count;

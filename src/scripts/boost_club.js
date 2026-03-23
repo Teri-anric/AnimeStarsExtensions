@@ -2,7 +2,7 @@ chrome.storage.sync.get(['custom-hosts', 'clubs-boost-block-images'], (data) => 
     const hosts = Array.isArray(data?.['custom-hosts']) ? data['custom-hosts'] : [];
     if (!hosts.includes(window.location.hostname)) return;
 
-    const blockImagesEnabled = data?.['clubs-boost-block-images'] ?? true;
+    const blockImagesEnabled = data?.['clubs-boost-block-images'] ?? false;
 
     if (!blockImagesEnabled) return;
 
@@ -38,13 +38,12 @@ chrome.storage.sync.get(['custom-hosts', 'clubs-boost-block-images'], (data) => 
             if (overlays.length > 1) {
                 overlays[overlays.length - 1].remove();
             }
-            if (overlays.length == 1) return overlays[0];
-            if (overlays.length == 0) {
-                overlay = document.createElement('div');
-                overlay.className = 'ass-boost-card-info';
-                container.parentElement.insertBefore(overlay, container.nextSibling);
-            }
+            overlays = container.parentElement.querySelectorAll('.ass-boost-card-info');
+            if (overlays.length >= 1) return overlays[0];
 
+            const overlay = document.createElement('div');
+            overlay.className = 'ass-boost-card-info';
+            container.parentElement.insertBefore(overlay, container.nextSibling);
             return overlay;
         }
 
