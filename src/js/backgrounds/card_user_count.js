@@ -279,30 +279,39 @@ async function fetchCountsFromApi(cardIds, parseTypes) {
 
         for (const cardId of cardIds) {
             if (!statsByCardId[cardId]) continue;
+            // Ensure stats are not older than CACHE_MAX_LIFETIME (UTC-based)
+            if (!newestTimestampMs || now - newestTimestampMs > CARD_COUNT_CONFIG.CACHE_MAX_LIFETIME) {
+                continue;
+            }
             const statsByCollection = Object.groupBy(statsByCardId[cardId], (stat) => stat.collection);
             if (parseTypes.includes('counts')) {
                 const trade = statsByCollection['trade']?.[0]?.count;
                 const need = statsByCollection['need']?.[0]?.count;
                 const owner = statsByCollection['owned']?.[0]?.count;
-                if (trade == null || need == null || owner == null) continue;
-                results.push({
-                    cardId,
-                    parseType: 'counts',
-                    data: { 
-                        trade,
-                        need,
-                        owner,
-                    },
-                });
+                const createdAt = statsByCollection['trade']?.[0]?.created_at;
+
+                if (trade != null && need != null && owner != null && createdAt != null && now - createdAt <= CARD_COUNT_CONFIG.CACHE_MAX_LIFETIME){
+                    results.push({
+                        cardId,
+                        parseType: 'counts',
+                        data: { 
+                            trade,
+                            need,
+                            owner,
+                        },
+                    });
+                }
             }
             if (parseTypes.includes('unlocked')) {
                 const owner = statsByCollection['unlocked_owned']?.[0]?.count;
-                if (owner == null) continue;
-                results.push({
-                    cardId,
-                    parseType: 'unlocked',
-                    data: { owner },
-                });
+                const createdAt = statsByCollection['unlocked_owned']?.[0]?.created_at;
+                if (owner != null && createdAt != null && now - createdAt <= CARD_COUNT_CONFIG.CACHE_MAX_LIFETIME) {
+                    results.push({
+                        cardId,
+                        parseType: 'unlocked',
+                        data: { owner },
+                    });
+                }
             }
         }
         return results;
