@@ -9,20 +9,12 @@ chrome.storage.sync.get(['custom-hosts'], (data) => {
     }
 
     const CLICK_DELAY_MS = 900;
+    const TAKE_DELAY_MS = 1000;
+    const INTERACTION_DELAY_MS = 6000;
+
 
     function takeCinemaStone() {
         if (!CONFIG.ENABLED) return;
-        // Auto-take stones in cinema
-        let imback = document.querySelector(".lc_chat_timeout_imback");
-        if (imback) {
-            imback.click();
-        }
-        
-        // Focus on cards element to ensure interaction works
-        const focusedElement = document.activeElement;
-        const cardsElement = document.getElementById("fscr__cards");
-        if (!cardsElement) return;
-        cardsElement.focus();
 
         // Click on all unclicked diamonds with delay
         const diamonds = Array.from(document.querySelectorAll('#diamonds-chat[data-code]'));
@@ -39,6 +31,21 @@ chrome.storage.sync.get(['custom-hosts'], (data) => {
 
             delay += CLICK_DELAY_MS;
         });
+    }
+
+    function interactionWithChat() {
+        // Auto-take stones in cinema
+        let imback = document.querySelector(".lc_chat_timeout_imback");
+        if (imback) {
+            imback.click();
+        }
+        
+        // Focus on cards element to ensure interaction works
+        const focusedElement = document.activeElement;
+        const cardsElement = document.getElementById("fscr__cards");
+        if (!cardsElement) return;
+        cardsElement.focus();
+
         
         // Handle card notifications
         const rewardElem = document.querySelector('.card-notification__wrapper');
@@ -58,6 +65,7 @@ chrome.storage.sync.get(['custom-hosts'], (data) => {
         }
     }
 
+
     chrome.storage.sync.get(['auto-take-cinema-stone'], (settings) => {
         CONFIG.ENABLED = settings['auto-take-cinema-stone'];
     });
@@ -69,10 +77,7 @@ chrome.storage.sync.get(['custom-hosts'], (data) => {
         }
     });
 
-    setInterval(() => {
-        if (CONFIG.ENABLED) {
-            takeCinemaStone();
-        }
-    }, 1000);
+    setInterval(takeCinemaStone, TAKE_DELAY_MS);
+    setInterval(interactionWithChat, INTERACTION_DELAY_MS);
     })();
 });

@@ -280,20 +280,12 @@ async function fetchCountsFromApi(cardIds, parseTypes) {
         for (const cardId of cardIds) {
             if (!statsByCardId[cardId]) continue;
             const cardStats = statsByCardId[cardId];
-            const newestTimestampMs = cardStats.reduce((max, stat) => {
-                const t = stat.created_at;
-                if (t == null) return max;
-                return Math.max(max, t);
-            }, 0);
-            if (!newestTimestampMs || now - newestTimestampMs > CARD_COUNT_CONFIG.CACHE_MAX_LIFETIME) {
-                continue;
-            }
             const statsByCollection = Object.groupBy(cardStats, (stat) => stat.collection);
             if (parseTypes.includes('counts')) {
                 const trade = statsByCollection['trade']?.[0]?.count;
                 const need = statsByCollection['need']?.[0]?.count;
                 const owner = statsByCollection['owned']?.[0]?.count;
-                const createdAt = statsByCollection['trade']?.[0]?.created_at;
+                const createdAt = Date.parse(statsByCollection['trade']?.[0]?.created_at);
 
                 if (trade != null && need != null && owner != null && createdAt != null && now - createdAt <= CARD_COUNT_CONFIG.CACHE_MAX_LIFETIME){
                     results.push({
@@ -309,7 +301,7 @@ async function fetchCountsFromApi(cardIds, parseTypes) {
             }
             if (parseTypes.includes('unlocked')) {
                 const owner = statsByCollection['unlocked_owned']?.[0]?.count;
-                const createdAt = statsByCollection['unlocked_owned']?.[0]?.created_at;
+                const createdAt = Date.parse(statsByCollection['unlocked_owned']?.[0]?.created_at);
                 if (owner != null && createdAt != null && now - createdAt <= CARD_COUNT_CONFIG.CACHE_MAX_LIFETIME) {
                     results.push({
                         cardId,

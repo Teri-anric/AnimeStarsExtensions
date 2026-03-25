@@ -27,7 +27,7 @@ chrome.storage.sync.get(['custom-hosts'], (data) => {
         // Get card ID from URL parameters
         const urlParams = new URLSearchParams(window.location.search);
         const cardId = urlParams.get('id');
-        const unlockedParam = (urlParams.get('unlocked') || '0') !== '0';
+        const unlocked = (urlParams.get('unlocked') || '0') !== '0';
 
         if (!cardId) {
             console.log('Card ID not found in URL');
@@ -53,7 +53,7 @@ chrome.storage.sync.get(['custom-hosts'], (data) => {
             trade,
             need,
             owner,
-            unlocked: unlockedParam === '1'
+            unlocked,
         };
 
         console.log('Parsed card data:', cardData);

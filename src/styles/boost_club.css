@@ -1,3 +1,9 @@
+/* Boost active border */
+.boost-active .club-boost--content .club-boost__inner {
+    border: 5px solid #216d2b;
+    border-radius: 7px;
+}
+
 /* Overlay with card/anime info on clubs/boost */
 .ass-boost-card-info {
     margin-top: 4px;
