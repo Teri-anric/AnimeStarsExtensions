@@ -9,11 +9,17 @@ chrome.storage.sync.get(['custom-hosts'], (data) => {
   const RANKS = [
     { key: '', label: 'Все' },
     { key: 'ass', label: 'ASS' },
+    { key: 's_plus', label: 'S+' },
     { key: 's', label: 'S' },
+    { key: 'a_plus', label: 'A+' },
     { key: 'a', label: 'A' },
+    { key: 'b_plus', label: 'B+' },
     { key: 'b', label: 'B' },
+    { key: 'c_plus', label: 'C+' },
     { key: 'c', label: 'C' },
+    { key: 'd_plus', label: 'D+' },
     { key: 'd', label: 'D' },
+    { key: 'e_plus', label: 'E+' },
     { key: 'e', label: 'E' }
   ];
 

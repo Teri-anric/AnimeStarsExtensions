@@ -84,9 +84,9 @@ chrome.storage.sync.get(['custom-hosts'], (data) => {
         unlockLink.appendChild(unlockIcon);
         container.append(unlockLink);
 
-        ["a", "b", "c", "d", "e", "s", "ass"].forEach(rank => {
+        ["s_plus", "s", "a_plus", "a", "b_plus", "b", "c_plus", "c", "d_plus", "d", "e_plus", "e", "ass"].forEach(rank => {
             const rankLink = document.createElement("a");
-            rankLink.textContent = rank.toUpperCase();
+            rankLink.textContent = rank.replace('_plus', '+').toUpperCase();
             rankLink.href = `/user/cards/?name=${USERNAME}&locked=0&rank=${rank}`;
             container.append(rankLink);
         });

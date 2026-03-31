@@ -279,11 +279,19 @@ body {
 }
 
 /* Rank borders */
+.rank-e { border: 4px solid #6c757d; }
+.rank-e_plus { border: 4px solid #5cb85c; }
 .rank-d { border: 4px solid #28a745; }
+.rank-d_plus { border: 4px solid #1abc9c; }
 .rank-c { border: 4px solid #17a2b8; }
+.rank-c_plus { border: 4px solid #3498db; }
 .rank-b { border: 4px solid #ffc107; }
+.rank-b_plus { border: 4px solid #f39c12; }
 .rank-a { border: 4px solid #fd7e14; }
+.rank-a_plus { border: 4px solid #e74c3c; }
 .rank-s { border: 4px solid #dc3545; }
+.rank-s_plus { border: 4px solid #9b59b6; }
+.rank-ass { border: 4px solid #e83e8c; }
 .rank-ss { border: 4px solid #6f42c1; }
 .rank-sss { border: 4px solid #e83e8c; }
 

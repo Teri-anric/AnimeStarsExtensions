@@ -116,11 +116,17 @@ async function getSiteCardData(cardId, parseType) {
             parseType,
             data: {
                 ASSCardCount: deck.cards.filter(c => c.rank === 'ass').length,
+                SPlusCardCount: deck.cards.filter(c => c.rank === 's_plus').length,
                 SCardCount: deck.cards.filter(c => c.rank === 's').length,
+                APlusCardCount: deck.cards.filter(c => c.rank === 'a_plus').length,
                 ACardCount: deck.cards.filter(c => c.rank === 'a').length,
+                BPlusCardCount: deck.cards.filter(c => c.rank === 'b_plus').length,
                 BCardCount: deck.cards.filter(c => c.rank === 'b').length,
+                CPlusCardCount: deck.cards.filter(c => c.rank === 'c_plus').length,
                 CCardCount: deck.cards.filter(c => c.rank === 'c').length,
+                DPlusCardCount: deck.cards.filter(c => c.rank === 'd_plus').length,
                 DCardCount: deck.cards.filter(c => c.rank === 'd').length,
+                EPlusCardCount: deck.cards.filter(c => c.rank === 'e_plus').length,
                 ECardCount: deck.cards.filter(c => c.rank === 'e').length,
                 TotalCardCount: deck.cards.length,
             }

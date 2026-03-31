@@ -151,7 +151,7 @@ chrome.storage.sync.get(['custom-hosts'], (data) => {
                         { author: { eq: query } },
                     ]
                 },
-                { rank: { in: (getActiveRanks() || ["ass", "s", "a", "b", "c", "d", "e"]) } }
+                { rank: { in: (getActiveRanks() || ["ass", "s_plus", "s", "a_plus", "a", "b_plus", "b", "c_plus", "c", "d_plus", "d", "e_plus", "e"]) } }
             ]
         }
     }
