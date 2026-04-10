@@ -27,8 +27,28 @@ chrome.storage.sync.get(['custom-hosts'], (data) => {
         }
     }
 
+    /** @param {string} s */
+    function parseCssCustomNumber(s) {
+        if (!s) return NaN;
+        return parseInt(String(s).replace(/[^\d-]/g, ''), 10);
+    }
+
     /** @returns {{ current: number, max: number } | null} */
     function getBoostLimitFromPage() {
+        // Boss invasion: current = dealt damage (#boss data-damage), max from bar --max-health
+        if (isBossPage) {
+            const boss = document.querySelector('#boss');
+            const hpFill = document.querySelector('.health-bar--health');
+            let current = 0;
+            let max = 100000;
+            if (boss) {
+                current = parseInt(boss.getAttribute('data-damage') || '0', 10);
+            }
+            if (hpFill) {
+                max = parseCssCustomNumber(hpFill.style.getPropertyValue('--max-health'));
+            }
+            return { current, max };
+        }
         // New logic: progress bar (aria-valuenow / aria-valuemax)
         const progressBar = document.querySelector('.club-boost [role="progressbar"], #my-progress [role="progressbar"], .pbar__track[role="progressbar"]');
         if (progressBar) {

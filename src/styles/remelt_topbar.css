@@ -16,6 +16,17 @@
   align-items: stretch
 }
 
+.remelt-ext__topbar--six .remelt-ext__slots {
+  flex-wrap: wrap;
+  max-width: 360px;
+  row-gap: 8px
+}
+
+.remelt-ext__topbar--six .remelt-ext__slot img {
+  width: 80px;
+  height: 120px
+}
+
 .remelt-ext__slot {
   display: flex;
   position: relative;

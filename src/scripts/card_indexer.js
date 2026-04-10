@@ -14,6 +14,7 @@ chrome.storage.sync.get(['custom-hosts'], (data) => {
     '.remelt__item',
     '.remelt-ext__slot',
     '.anime-cards__placeholder',
+    '.stone__inventory-item',
   ].join(',');
 
   const notIdsSelectors = [
@@ -22,6 +23,7 @@ chrome.storage.sync.get(['custom-hosts'], (data) => {
     '.remelt__item',
     'div.trade__main-item',
     '.remelt-ext__slot',
+    '.stone__inventory-item',
   ].join(',');
 
   const CONFIG = {

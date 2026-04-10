@@ -30,52 +30,58 @@ chrome.storage.sync.get(['custom-hosts'], (data) => {
     return topbar;
   }
 
-  function ensureSlotClones(topbar) {
-    const slotsWrap = topbar.querySelector('.remelt-ext__slots');
-    if (!slotsWrap) return null;
-    if (slotsWrap.childElementCount >= 3) return slotsWrap;
-    const names = ['one', 'two', 'three'];
-    for (const n of names) {
-      const wrap = document.createElement('div');
-      wrap.className = 'remelt-ext__slot';
-      wrap.setAttribute('data-slot', n);
-      slotsWrap.appendChild(wrap);
+  function getRemeltLayout() {
+    if (document.querySelector('.remelt__wrapper.remelt6')) {
+      return {
+        variant: 'remelt6',
+        slots: [1, 2, 3, 4, 5, 6].map((n) => ({
+          name: String(n),
+          selector: `.remelt6__slot--${n} img`,
+        })),
+        resultSelector: '.remelt6__row.remelt6__result img, .remelt6__slot--result img',
+      };
     }
-    return slotsWrap;
+    return {
+      variant: 'classic',
+      slots: [
+        { name: 'one', selector: '.remelt__item--one img' },
+        { name: 'two', selector: '.remelt__item--two img' },
+        { name: 'three', selector: '.remelt__item--three img' },
+      ],
+      resultSelector: '.remelt__item--result img',
+    };
+  }
+
+  function setTopbarLayoutClass(topbar, variant) {
+    if (!topbar) return;
+    topbar.classList.toggle('remelt-ext__topbar--six', variant === 'remelt6');
   }
 
   function syncSlotsFromWrapper(topbar) {
     const slotsWrap = topbar.querySelector('.remelt-ext__slots');
     if (!slotsWrap) return;
-    // Clear all slots
     slotsWrap.innerHTML = '';
-    
-    const mapping = [
-      { name: 'one', selector: '.remelt__item--one img' },
-      { name: 'two', selector: '.remelt__item--two img' },
-      { name: 'three', selector: '.remelt__item--three img' },
-    ];
 
-    for (const { name, selector } of mapping) {
+    const { variant, slots: slotDefs } = getRemeltLayout();
+    setTopbarLayoutClass(topbar, variant);
+
+    for (const { name, selector } of slotDefs) {
       const srcImg = document.querySelector(selector);
-      
-      // Create new slot
       const slot = document.createElement('div');
       slot.className = 'remelt-ext__slot';
       slot.setAttribute('data-slot', name);
-      
+
       if (srcImg) {
         const img = document.createElement('img');
         img.src = srcImg.getAttribute('src');
         img.setAttribute('data-id', srcImg.getAttribute('data-id') || '');
         img.setAttribute('data-rank', srcImg.getAttribute('data-rank') || '');
         img.addEventListener('click', () => {
-          // Forward click to original image to trigger site removal logic
           try { srcImg.click(); } catch {}
         });
         slot.appendChild(img);
       }
-      
+
       slotsWrap.appendChild(slot);
     }
   }
@@ -84,7 +90,8 @@ chrome.storage.sync.get(['custom-hosts'], (data) => {
     const resultWrap = topbar.querySelector('.remelt-ext__result');
     if (!resultWrap) return;
     while (resultWrap.firstChild) resultWrap.removeChild(resultWrap.firstChild);
-    const src = document.querySelector('.remelt__item--result img');
+    const { resultSelector } = getRemeltLayout();
+    const src = document.querySelector(resultSelector);
     if (src) {
       const img = document.createElement('img');
       img.src = src.getAttribute('src');
@@ -131,7 +138,6 @@ chrome.storage.sync.get(['custom-hosts'], (data) => {
   function apply() {
     const topbar = ensureTopbar();
     if (!topbar) return;
-    ensureSlotClones(topbar);
     syncSlotsFromWrapper(topbar);
     syncResultToTopbar(topbar);
     ensureStartButtonProxy(topbar);
@@ -144,7 +150,15 @@ chrome.storage.sync.get(['custom-hosts'], (data) => {
         if (!enabledCached) return;
         const target = e.target;
         const shouldSync = (
-          (target && target.closest && (target.closest('.remelt__inventory-item') || target.closest('.remelt__item img') || target.closest('.remelt__start-btn') || target.closest('.remelt-ext__start-btn')))
+          (target && target.closest && (
+            target.closest('.remelt__inventory-item')
+            || target.closest('.remelt__item img')
+            || target.closest('.remelt6__slot img')
+            || target.closest('.remelt__rank-item')
+            || target.closest('.remelt__lock-item')
+            || target.closest('.remelt__start-btn')
+            || target.closest('.remelt-ext__start-btn')
+          ))
         );
         if (!shouldSync) return;
         const syncNow = () => {

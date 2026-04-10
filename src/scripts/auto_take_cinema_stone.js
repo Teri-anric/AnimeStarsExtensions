@@ -8,9 +8,9 @@ chrome.storage.sync.get(['custom-hosts'], (data) => {
         clickedCodes: new Set(),
     }
 
-    const CLICK_DELAY_MS = 900;
-    const TAKE_DELAY_MS = 1000;
-    const INTERACTION_DELAY_MS = 6000;
+    const CLICK_DELAY_MS = 900; // 0.9 seconds
+    const TAKE_DELAY_MS = 1000; // 1 second
+    const INTERACTION_DELAY_MS = 10 * 1000; // 10 seconds
 
 
     function takeCinemaStone() {
@@ -34,31 +34,19 @@ chrome.storage.sync.get(['custom-hosts'], (data) => {
     }
 
     function interactionWithChat() {
-        // Auto-take stones in cinema
-        let imback = document.querySelector(".lc_chat_timeout_imback");
+        // Save focused element
+        const focusedElement = document.activeElement;
+
+        const animesssChatIdle = document.querySelector("#animesssChatIdle");
+        if (animesssChatIdle && animesssChatIdle.style.display == 'none') {
+            return;
+        }
+
+        // Click on imback button
+        const imback = document.querySelector("#animesssChatIdleBack");
         if (imback) {
             imback.click();
         }
-        
-        // Focus on cards element to ensure interaction works
-        const focusedElement = document.activeElement;
-        const cardsElement = document.getElementById("fscr__cards");
-        if (!cardsElement) return;
-        cardsElement.focus();
-
-        
-        // Handle card notifications
-        const rewardElem = document.querySelector('.card-notification__wrapper');
-        if (rewardElem) {
-            rewardElem.click();
-            setTimeout(() => {
-                const cardModal = document.getElementById("card-modal");
-                if (cardModal && cardModal.parentElement) {
-                    cardModal.parentElement.remove();
-                }
-            }, 1000);
-        }
-        
         // Return focus to previous element
         if (focusedElement) {
             focusedElement.focus();
