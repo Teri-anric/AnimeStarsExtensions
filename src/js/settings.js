@@ -20,6 +20,7 @@ document.addEventListener('DOMContentLoaded', () => {
         'not-update-check',
         'api-stats-submission-enabled',
         'api-stats-receive-enabled',
+        'upload-card-data-to-ass',
         'remove-card-list-and-club-rating-in-card-base',
         'trades-history-filters',
         'trades-preview-enabled',
@@ -418,48 +419,6 @@ document.addEventListener('DOMContentLoaded', () => {
             });
         }
 
-        // API connection test functionality - enhanced
-        const testApiBtn = document.getElementById('test-api-connection');
-        const apiStatus = document.getElementById('api-status');
-        
-        if (testApiBtn && apiStatus) {
-            testApiBtn.addEventListener('click', async () => {
-                testApiBtn.disabled = true;
-                testApiBtn.textContent = 'Testing...';
-                
-                // Show testing status
-                apiStatus.className = 'api-status testing';
-                apiStatus.classList.remove('hidden');
-                apiStatus.querySelector('.api-status-text').textContent = 'Testing API connection...';
-                
-                try {
-                    // Use background script's comprehensive test
-                    const response = await new Promise((resolve, reject) => {
-                        chrome.runtime.sendMessage({ action: 'test_api_connection' }, (result) => {
-                            if (chrome.runtime.lastError) {
-                                reject(new Error(chrome.runtime.lastError.message));
-                            } else {
-                                resolve(result);
-                            }
-                        });
-                    });
-                    
-                    if (response.success) {
-                        apiStatus.className = 'api-status success';
-                        const authStatus = response.authenticated ? 'authenticated' : 'not authenticated';
-                        apiStatus.querySelector('.api-status-text').textContent = `API connection successful (${authStatus})`;
-                    } else {
-                        apiStatus.className = 'api-status error';
-                        apiStatus.querySelector('.api-status-text').textContent = `Connection failed: ${response.error}`;
-                    }
-                } catch (fallbackError) {
-                    apiStatus.className = 'api-status error';
-                    apiStatus.querySelector('.api-status-text').textContent = 'Connection failed: ' + fallbackError.message;
-                }
-                testApiBtn.disabled = false;
-                testApiBtn.textContent = 'Test Connection';
-            });
-        }
     });
 
     // Custom domains UI (independent from generic settings arrays)

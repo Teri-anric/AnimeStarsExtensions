@@ -427,106 +427,25 @@ input:checked + .slider:before {
     color: #7f8c8d;
 }
 
-.test-api-connection-btn {
-    background-color: var(--api-success);
-    color: white;
-    border: none;
-    padding: 8px 16px;
-    border-radius: 4px;
-    font-size: 14px;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
-}
-
-.test-api-connection-btn:hover {
-    background-color: #27ae60;
-}
-
-.test-api-connection-btn:disabled {
-    background-color: #95a5a6;
-    cursor: not-allowed;
-}
-
-.api-status {
-    margin-top: 10px;
-    padding: 8px 12px;
-    border-radius: 4px;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    font-size: 14px;
-    font-weight: 500;
-    transition: all 0.3s ease;
-}
-
-.api-status.success {
-    background-color: rgba(46, 204, 113, 0.1);
-    border: 1px solid rgba(46, 204, 113, 0.3);
-    color: var(--api-success);
-}
-
-.api-status.error {
-    background-color: rgba(231, 76, 60, 0.1);
-    border: 1px solid rgba(231, 76, 60, 0.3);
-    color: var(--api-error);
-}
-
-.api-status.testing {
-    background-color: rgba(241, 196, 15, 0.1);
-    border: 1px solid rgba(241, 196, 15, 0.3);
-    color: var(--api-warning);
-}
-
-.api-status-indicator {
-    width: 8px;
-    height: 8px;
-    border-radius: 50%;
-    flex-shrink: 0;
-}
-
-.api-status.success .api-status-indicator {
-    background-color: var(--api-success);
-    box-shadow: 0 0 8px rgba(46, 204, 113, 0.5);
-}
-
-.api-status.error .api-status-indicator {
-    background-color: var(--api-error);
-    box-shadow: 0 0 8px rgba(231, 76, 60, 0.5);
-}
-
-.api-status.testing .api-status-indicator {
-    background-color: var(--api-warning);
-    animation: pulse-api 1.5s infinite;
-}
-
-@keyframes pulse-api {
-    0%, 100% { opacity: 1; }
-    50% { opacity: 0.5; }
-}
-
-/* Simple API Integration Styles */
+/* ASS project site (plain link, not a button) */
 .website-link {
     display: inline-flex;
     align-items: center;
-    gap: 8px;
+    gap: 6px;
     color: var(--link-color);
-    text-decoration: none;
+    text-decoration: underline;
+    text-underline-offset: 2px;
     font-weight: 500;
-    transition: color 0.3s ease;
-    padding: 8px 16px;
-    border: 1px solid var(--link-color);
-    border-radius: 4px;
-    background-color: rgba(52, 152, 219, 0.1);
+    transition: color 0.2s ease;
 }
 
 .website-link:hover {
     color: var(--link-hover);
-    border-color: var(--link-hover);
-    background-color: rgba(93, 173, 226, 0.1);
 }
 
 .website-link i {
-    font-size: 14px;
+    font-size: 12px;
+    text-decoration: none;
 }
 
 .setting-item small {

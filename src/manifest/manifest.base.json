@@ -148,15 +148,6 @@
                 "./scripts/pm.js"
             ],
             "run_at": "document_idle"
-        },
-        {
-            "matches": [
-                "https://ass.strawberrycat.dev/*"
-            ],
-            "js": [
-                "./scripts/token_bridge.js"
-            ],
-            "run_at": "document_end"
         }
     ],
     "icons": {

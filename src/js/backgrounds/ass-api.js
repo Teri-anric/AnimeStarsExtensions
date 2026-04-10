@@ -1,70 +1,4 @@
-import { AssApiClient, TokenManager } from '../api-client.js';
-
-// Test API connection function
-async function testApiConnection(message, sender) {
-    try {
-        return {
-            success: true,
-            message: 'API connection successful',
-            authenticated: await AssApiClient.isAuthenticated()
-        };
-
-    } catch (error) {
-        console.error('API connection test failed:', error);
-        return {
-            success: false,
-            error: error.message,
-            authenticated: false
-        };
-    }
-}
-
-// Store token function
-async function storeToken(message, sender) {
-    try {
-        if (!message.token) {
-            throw new Error('Token is required');
-        }
-
-        await TokenManager.setToken(message.token);
-        
-        // Verify the token was stored and is valid
-        const isAuthenticated = await AssApiClient.isAuthenticated();
-        
-        return {
-            success: true,
-            message: 'Token stored successfully',
-            authenticated: isAuthenticated
-        };
-    } catch (error) {
-        console.error('Store token failed:', error);
-        return {
-            success: false,
-            error: error.message,
-            authenticated: false
-        };
-    }
-}
-
-// Remove token function
-async function removeToken(message, sender) {
-    try {
-        await TokenManager.removeToken();
-        
-        return {
-            success: true,
-            message: 'Token removed successfully',
-            authenticated: false
-        };
-    } catch (error) {
-        console.error('Remove token failed:', error);
-        return {
-            success: false,
-            error: error.message,
-            authenticated: false
-        };
-    }
-}
+import { AssApiClient } from '../api-client.js';
 
 async function findCardIdByImageUrl(message, sender) {
     const cards = await AssApiClient.findCardByImageUrls(message.imageUrls);
@@ -136,7 +70,13 @@ async function flushCardIndexQueue() {
     }
 }
 
-function indexCards(message, sender) {
+const UPLOAD_CARD_DATA_SETTING_KEY = 'upload-card-data-to-ass';
+
+async function indexCards(message, sender) {
+    const stored = await chrome.storage.sync.get(UPLOAD_CARD_DATA_SETTING_KEY);
+    if (stored[UPLOAD_CARD_DATA_SETTING_KEY] === false) {
+        return { success: true, skipped: true };
+    }
     const cards = message?.cards;
     if (!Array.isArray(cards) || cards.length === 0) return { success: true };
     cards.forEach((card) => {
@@ -152,9 +92,6 @@ function indexCards(message, sender) {
 // --- End card index queue ---
 
 const actionMap = {
-    'test_api_connection': testApiConnection,
-    'store_token': storeToken,
-    'remove_token': removeToken,
     'find_card_id_by_image_url': findCardIdByImageUrl,
     'find_card_full_by_image_url': findCardFullByImageUrl,
     'search_cards': searchCards,

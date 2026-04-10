@@ -6,12 +6,6 @@
 const ASS_API_CONFIG = {
     BASE_URL: 'https://ass-api.strawberrycat.dev',
     ENDPOINTS: {
-        // Auth endpoints
-        LOGIN: '/api/auth/login',
-        LOGOUT: '/api/auth/logout',
-        REGISTER: '/api/auth/register',
-        ME: '/api/auth/me',
-
         // Card endpoints
         CARDS: '/api/card/',
         CARD_DETAIL: '/api/card/',
@@ -29,15 +23,11 @@ const ASS_API_CONFIG = {
         // Card bulk upsert
         CARD_BULK_UPSERT: '/api/card/bulk',
 
-        // Extension endpoints
-        EXTENSION_TOKEN: '/api/extension/token',
-
         // System endpoints
         HEALTH: '/health'
     },
     CACHE_PREFIX: 'ass_api_cache_',
-    CACHE_DURATION: 5 * 60 * 1000, // 5 minutes
-    TOKEN_KEY: 'ass_api_token'
+    CACHE_DURATION: 5 * 60 * 1000 // 5 minutes
 };
 
 
@@ -100,54 +90,16 @@ class ApiCache {
     }
 }
 
-// Token management  
-class TokenManager {
-    static async getToken() {
-        try {
-            const result = await chrome.storage.sync.get([ASS_API_CONFIG.TOKEN_KEY]);
-            const token = result[ASS_API_CONFIG.TOKEN_KEY] || null;
-            return token;
-        } catch (error) {
-            console.error('TokenManager - Token get error:', error);
-            return null;
-        }
-    }
-
-    static async setToken(token) {
-        try {
-            await chrome.storage.sync.set({ [ASS_API_CONFIG.TOKEN_KEY]: token });
-        } catch (error) {
-            console.error('TokenManager - Token set error:', error);
-        }
-    }
-
-    static async removeToken() {
-        try {
-            await chrome.storage.sync.remove([ASS_API_CONFIG.TOKEN_KEY]);
-            // Also clear API cache when token is removed
-            await ApiCache.clear();
-        } catch (error) {
-            console.error('TokenManager - Token remove error:', error);
-        }
-    }
-}
-
 // API Client
 class AssApiClient {
 
-    // Helper method to make authenticated requests
     static async makeRequest(endpoint, options = {}) {
-        const token = await TokenManager.getToken();
         const url = ASS_API_CONFIG.BASE_URL + endpoint;
 
         const headers = {
             'Content-Type': 'application/json',
             ...options.headers
         };
-
-        if (token) {
-            headers['Authorization'] = `Bearer ${token}`;
-        }
 
         const requestOptions = {
             ...options,
@@ -165,45 +117,6 @@ class AssApiClient {
             return data;
         } catch (error) {
             console.error('API request failed:', error);
-            throw error;
-        }
-    }
-
-    // Authentication methods
-    static async login(username, password) {
-        const formData = new URLSearchParams();
-        formData.append('username', username);
-        formData.append('password', password);
-
-        try {
-            const response = await fetch(ASS_API_CONFIG.BASE_URL + ASS_API_CONFIG.ENDPOINTS.LOGIN, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/x-www-form-urlencoded'
-                },
-                body: formData.toString()
-            });
-
-            if (!response.ok) {
-                throw new Error(`Login failed: ${response.status}`);
-            }
-
-            const data = await response.json();
-            if (data.access_token) {
-                await TokenManager.setToken(data.access_token);
-            }
-            return data;
-        } catch (error) {
-            console.error('Login error:', error);
-            throw error;
-        }
-    }
-
-    static async getCurrentUser() {
-        try {
-            return await this.makeRequest(ASS_API_CONFIG.ENDPOINTS.ME);
-        } catch (error) {
-            console.error('Get current user error:', error);
             throw error;
         }
     }
@@ -240,27 +153,6 @@ class AssApiClient {
         }
     }
 
-    // Card statistics methods
-    static async getCardStats(cardId) {
-        const cacheKey = `card_stats_${cardId}`;
-
-        // Try cache first
-        const cached = await ApiCache.get(cacheKey);
-        if (cached) {
-            return cached;
-        }
-
-        try {
-            const data = await this.makeRequest(
-                `${ASS_API_CONFIG.ENDPOINTS.CARD_STATS_LAST}?card_id=${cardId}`
-            );
-            await ApiCache.set(cacheKey, data);
-            return data;
-        } catch (error) {
-            console.error('Get card stats error:', error);
-            throw error;
-        }
-    }
 
     static async getDeckByCardId(cardId) {
         const numericId = parseInt(cardId);
@@ -377,33 +269,9 @@ class AssApiClient {
         }
     }
 
-    // Utility methods
-    static async isAuthenticated() {
-        const token = await TokenManager.getToken();
-        if (!token) return false;
-
-        try {
-            await this.getCurrentUser();
-            return true;
-        } catch (error) {
-            return false;
-        }
-    }
-
     static async clearCache() {
         await ApiCache.clear();
     }
-
-    // Stats Collection - simplified
-    static async collectStats(cardId) {
-        try {
-            const statsData = await this.getCardStats(cardId);
-            return statsData;
-        } catch (error) {
-            console.error('Error collecting stats:', error);
-            return null;
-        }
-    }
 }
 
-export { AssApiClient, TokenManager, ApiCache, ASS_API_CONFIG };
+export { AssApiClient, ApiCache, ASS_API_CONFIG };

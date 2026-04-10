@@ -54,6 +54,7 @@ const DEFAULT_SETTINGS = {
     'hide-snow': false,
     'clubs-boost-block-images': false,
     'boss-boost-auto': false,
+    'upload-card-data-to-ass': true,
 };
 
 const MIGRATIONS = [
