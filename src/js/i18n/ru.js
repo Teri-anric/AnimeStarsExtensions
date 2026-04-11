@@ -18,6 +18,7 @@ export const AnimeStarExtensionTranslationRussian = {
     'add-my-cards-button': 'Добавить кнопку "Мои карточки" в заголовок',
     'add-user-cards-buttons': 'Добавить кнопки быстрого доступа к открытым карточкам пользователя',
     'club-boost-auto': 'Автоматический буст клуба',
+    'club-boost-replace-auto': 'Автоматический скип карт (замена в шахте)',
     'boss-boost-auto': 'Автоматический буст босса',
     'card-user-count': 'Показать статистику карточек',
     'card-user-count-event-target': 'Событие для показа статистики карточек',
@@ -46,6 +47,10 @@ export const AnimeStarExtensionTranslationRussian = {
     'club-boost-refresh-cooldown': 'Интервал обновления',
     'club-boost-action-cooldown': 'Интервал усиления',
     'club-boost-cooldown-description': 'Настройки интервалов автоматического усиления клуба (мс)',
+    'club-boost-replace-stale-ms': 'Скип карт: время без смены карты',
+    'club-boost-replace-stale-description': 'Если за это время карта на экране так и не сменилась (никто не забирает её из взносов) — нажимается замена (скип). Отдельно сразу скипает, если никто из клуба не может внести эту карту (пустой список «Могут внести»). Работает только при включённом «Автоматический скип карт».',
+    'club-boost-replace-skip-cooldown-ms': 'Задержка между скипами карт',
+    'club-boost-replace-skip-cooldown-description': 'Минимальный интервал между двумя нажатиями «заменить», чтобы не отправить запрос дважды подряд.',
     'club-boost-hotkey-description': 'Горячие клавиши для управления бустом клуба:\n' +
         '- R: Обновить\n' +
         '- E: Усилить\n' +

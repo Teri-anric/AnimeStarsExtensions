@@ -18,6 +18,7 @@ const AnimeStarExtensionTranslationEnglish = {
     'add-my-cards-button': 'Add "My Cards" button to the header',
     'add-user-cards-buttons': 'Add buttons for quick access to user\'s open cards',
     'club-boost-auto': 'Automatic club boost',
+    'club-boost-replace-auto': 'Automatic card skips (mine replace)',
     'boss-boost-auto': 'Automatic boss boost',
     'card-user-count': 'Show card statistics',
     'card-user-count-event-target': 'Event target for showing card statistics',
@@ -46,6 +47,10 @@ const AnimeStarExtensionTranslationEnglish = {
     'club-boost-refresh-cooldown': 'Refresh Interval',
     'club-boost-action-cooldown': 'Boost Interval',
     'club-boost-cooldown-description': 'Settings for automatic club boost intervals (ms)',
+    'club-boost-replace-stale-ms': 'Card skip: time with no card change',
+    'club-boost-replace-stale-description': 'If the offered card stays the same on screen for this long (no one takes it from contributions), a skip is triggered (replace). Also skips immediately when no club member can donate this card (empty “can contribute” list). Only when “Automatic card skips” is enabled.',
+    'club-boost-replace-skip-cooldown-ms': 'Delay between card skips',
+    'club-boost-replace-skip-cooldown-description': 'Minimum time between two replace clicks so the site is not hit twice in a row.',
     'club-boost-hotkey-description': 'Hotkeys for club boost control:\n' +
         '- R: Refresh\n' +
         '- E: Boost\n' +

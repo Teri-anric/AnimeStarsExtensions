@@ -18,6 +18,7 @@ const AnimeStarExtensionTranslationUkraine = {
     'add-my-cards-button': 'Додати кнопку "Мої картки" в заголовок',
     'add-user-cards-buttons': 'Додати кнопки швидкого доступу до відкритих карток користувача',
     'club-boost-auto': 'Автоматичний буст клубу',
+    'club-boost-replace-auto': 'Автоматичний скіп карт (заміна на шахті)',
     'boss-boost-auto': 'Автоматичний буст боса',
     'card-user-count': 'Показати статистику карток',
     'card-user-count-event-target': 'Подія для показу статистики карток',
@@ -46,6 +47,10 @@ const AnimeStarExtensionTranslationUkraine = {
     'club-boost-refresh-cooldown': 'Інтервал оновлення',
     'club-boost-action-cooldown': 'Інтервал підсилення',
     'club-boost-cooldown-description': 'Налаштування інтервалів автоматичного підсилення клубу (мс)',
+    'club-boost-replace-stale-ms': 'Скіп карт: час без зміни картки',
+    'club-boost-replace-stale-description': 'Якщо за цей час картка на екрані так і не змінилась (ніхто її не забирає з внеску) — натискається заміна (скіп). Окремо одразу скіпає, якщо ніхто з клубу не може внести цю картку (порожній список «Можуть внести»). Працює лише коли увімкнено «Автоматичний скіп карт».',
+    'club-boost-replace-skip-cooldown-ms': 'Затримка між скіпами карт',
+    'club-boost-replace-skip-cooldown-description': 'Мінімальний інтервал між двома натисканнями «замінити», щоб не відправити запит двічі поспіль і не перевантажити сторінку.',
     'club-boost-hotkey-description': "Гарячі клавіші для керування бустом клубу:\n" +
         "- R: Оновити\n" +
         "- E: Підсилити\n" +

@@ -11,6 +11,7 @@ document.addEventListener('DOMContentLoaded', () => {
         'auto-take-heavenly-stone',
         'auto-take-cinema-stone',
         'club-boost-auto',
+        'club-boost-replace-auto',
         'boss-boost-auto',
         'card-user-count',
         'card-user-count-cache-enabled',
@@ -43,6 +44,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const settingsRangeInputs = [
         'club-boost-refresh-cooldown',
         'club-boost-action-cooldown',
+        'club-boost-replace-stale-ms',
+        'club-boost-replace-skip-cooldown-ms',
         'card-user-count-request-delay',
         'card-user-count-cache-max-lifetime',
         'trades-preview-auto-start-delay',
@@ -62,6 +65,14 @@ document.addEventListener('DOMContentLoaded', () => {
             },
             targets: [
                 "club-boost-auto-subsettings"
+            ]
+        },
+        {
+            condition: {
+                "club-boost-replace-auto": true,
+            },
+            targets: [
+                "club-boost-replace-subsettings"
             ]
         },
         {
@@ -256,6 +267,9 @@ document.addEventListener('DOMContentLoaded', () => {
     // Combine all settings to load 
     const allSettings = [...settingsCheckboxes, ...settingsSelects, ...settingsRangeInputs, ...settingsColorInputs, ...settingsTextInputs];
 
+    /** Checkboxes that default to on when the key is missing from storage */
+    const checkboxesDefaultTrue = new Set(['club-boost-replace-auto']);
+
     // Load saved settings
     chrome.storage.sync.get(allSettings, (settings) => {
         // Load language settings
@@ -270,7 +284,9 @@ document.addEventListener('DOMContentLoaded', () => {
         settingsCheckboxes.forEach(id => {
             const checkbox = document.getElementById(id);
             if (checkbox) {
-                checkbox.checked = settings[id] || false;
+                checkbox.checked = checkboxesDefaultTrue.has(id)
+                    ? settings[id] !== false
+                    : Boolean(settings[id]);
             }
             checkbox.addEventListener('change', (event) => {
                 if (actions[id]) {
@@ -374,7 +390,11 @@ document.addEventListener('DOMContentLoaded', () => {
         // Load additional settings
         additionalSettings.forEach(({ condition, targets }) => {
             if (!condition || !targets) return;
-            let isHidden = Object.keys(condition).some(key => condition[key] != settings[key]);
+            let isHidden = Object.keys(condition).some((key) => {
+                const raw = settings[key];
+                const effective = checkboxesDefaultTrue.has(key) ? raw !== false : raw;
+                return condition[key] != effective;
+            });
             targets.forEach(target => {
                 try {
                     const boxTarget = document.getElementById(target).closest(".setting-item, .settings-sub-section")

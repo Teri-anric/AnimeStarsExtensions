@@ -220,6 +220,13 @@
                 </label>
             </div>
             <div class="setting-item">
+                <label for="club-boost-replace-auto">club-boost-replace-auto</label>
+                <label class="toggle">
+                    <input type="checkbox" id="club-boost-replace-auto">
+                    <span class="slider"></span>
+                </label>
+            </div>
+            <div class="setting-item">
                 <label for="boss-boost-auto">boss-boost-auto</label>
                 <label class="toggle">
                     <input type="checkbox" id="boss-boost-auto">
@@ -252,6 +259,26 @@
                         <span>ms</span>
                     </div>
                     <small translate-key="club-boost-cooldown-description"></small>
+                </div>
+            </div>
+            <div class="settings-sub-section hidden" id="club-boost-replace-subsettings">
+                <div class="setting-item">
+                    <label for="club-boost-replace-stale-ms">club-boost-replace-stale-ms</label>
+                    <div class="slider-container">
+                        <input type="range" id="club-boost-replace-stale-ms" min="3000" max="120000" step="1000" value="12000">
+                        <input type="number" id="club-boost-replace-stale-ms-number" min="3000" max="120000" step="1000" value="12000">
+                        <span>ms</span>
+                    </div>
+                    <small translate-key="club-boost-replace-stale-description"></small>
+                </div>
+                <div class="setting-item">
+                    <label for="club-boost-replace-skip-cooldown-ms">club-boost-replace-skip-cooldown-ms</label>
+                    <div class="slider-container">
+                        <input type="range" id="club-boost-replace-skip-cooldown-ms" min="400" max="15000" step="100" value="1600">
+                        <input type="number" id="club-boost-replace-skip-cooldown-ms-number" min="400" max="15000" step="100" value="1600">
+                        <span>ms</span>
+                    </div>
+                    <small translate-key="club-boost-replace-skip-cooldown-description"></small>
                 </div>
             </div>
         </div>
