@@ -19,12 +19,19 @@ chrome.storage.sync.get(['custom-hosts'], (data) => {
     duplicates: ["duplicates"],
     siteCard: ["cardName", "cardRank", "cardAnime", "cardAnimeLink", "cardAuthor"],
     siteDeck: [
+      "deckCountSSS",
       "deckCountASS",
+      "deckCountSPlus",
       "deckCountS",
+      "deckCountAPlus",
       "deckCountA",
+      "deckCountBPlus",
       "deckCountB",
+      "deckCountCPlus",
       "deckCountC",
+      "deckCountDPlus",
       "deckCountD",
+      "deckCountEPlus",
       "deckCountE",
       "deckCountTotal"
     ]
@@ -378,19 +385,20 @@ chrome.storage.sync.get(['custom-hosts'], (data) => {
       }
       if (cardData.parseType === 'siteDeck') {
         const data = cardData.data || {};
+        variables.deckCountSSS = data['sss'] || 0;
         variables.deckCountASS = data['ass'] || 0;
-        variables.deckCountS = data['s'] || 0;
         variables.deckCountSPlus = data['s_plus'] || 0;
-        variables.deckCountA = data['a'] || 0;
+        variables.deckCountS = data['s'] || 0;
         variables.deckCountAPlus = data['a_plus'] || 0;
-        variables.deckCountB = data['b'] || 0;
+        variables.deckCountA = data['a'] || 0;
         variables.deckCountBPlus = data['b_plus'] || 0;
-        variables.deckCountC = data['c'] || 0;
+        variables.deckCountB = data['b'] || 0;
         variables.deckCountCPlus = data['c_plus'] || 0;
-        variables.deckCountD = data['d'] || 0;
+        variables.deckCountC = data['c'] || 0;
         variables.deckCountDPlus = data['d_plus'] || 0;
-        variables.deckCountE = data['e'] || 0;
+        variables.deckCountD = data['d'] || 0;
         variables.deckCountEPlus = data['e_plus'] || 0;
+        variables.deckCountE = data['e'] || 0;
         variables.deckCountTotal = DECK_RANK_HIST_KEYS.reduce((sum, k) => sum + (data[k] || 0), 0);
       }
     });

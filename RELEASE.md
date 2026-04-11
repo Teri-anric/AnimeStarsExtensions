@@ -1,21 +1,15 @@
-# AnimeStar Extension v0.0.28
+# AnimeStar Extension v0.0.29
 
 ## Overview
 
-**Technical:** This release extends club boost scripts to boss invasion URLs, splits automatic boosting into separate club and boss toggles, and replaces the old “highlight my row” behavior with optional blocking of card images on boost pages (using `declarativeNetRequest` session rules plus in-page handling). Blocked images can show card and anime names via ASS API lookup (`find_card_full_by_image_url`). Card metadata is sent to ASS in bulk (`/api/card/bulk`) from the card indexer and cards/users parser, with debounced background batches. Bulk reads of last stats use a GET query with `card_ids_comma_separated`. Card statistics can optionally be **received** from the API first (`api-stats-receive-enabled`) when cached stats are fresh, reducing site requests. Trade preview/history UI adds accept/reject controls and propagates ownership styling; cinema auto-stone clicks are spaced with a delay. Manifest includes `declarativeNetRequest` for Chrome. Patch fixes in this release: correct API stats freshness check (`newestTimestampMs`) and boost overlay element creation.
-
-**For users:** Boss invasion pages now support the same boost automation as club boost, with its own on/off switch. On club (and boss) boost pages you can optionally block heavy card images and see text labels instead; new installs default this to off, and you can turn it on in settings. The extension can feed card info back to ASS in the background and, if you enable API receive for stats, show need/owner/trade numbers from the service when data is still fresh—so pages may load counts without scraping every time. Trades get clearer accept/decline actions and better visual hints for your cards; cinema stones are clicked in a gentler sequence so the page keeps up.
-
-## Changes
-
 ### User-facing
 
-- **Boss boost automation**: Automatic refresh/boost works on boss invasion pages, controlled separately from club boost (`boss-boost-auto` vs `club-boost-auto`).
-- **Lighter boost pages**: Optional setting to block card images on club/boss boost and show card and anime names as text instead (helps performance); uses a new permission so blocking works reliably in Chrome.
-- **Smarter card stats (optional)**: If you turn on API receive for statistics, need/owner/trade (and related) counts can come from the ASS API when the cached snapshot is still within your cache lifetime, with a correct freshness check.
-- **Background card index**: Card details you browse can be submitted in bulk to ASS to improve lookups and features that depend on the catalog.
-- **Trades**: Inline previews and cached history rows support accept/decline actions where appropriate, and previews reflect whether cards are yours or wanted.
-- **Cinema stones**: Auto-collect clicks the diamonds one after another with a short delay instead of all at once.
+- **ASS without extension login**: API usage no longer depends on storing an extension token or opening ASS to “connect”; the popup focuses on a simple link to the ASS site and a dedicated **upload card metadata to ASS** toggle.
+- **Faster / leaner card stats**: Need/owner/trade and deck rank summaries can be filled from ASS bulk responses that match the new API shape, with freshness tied to explicit update timestamps.
+- **Boost image blocking**: Blocking is tied to the page lifecycle so network rules are released when you leave the boost page (including bfcache restores).
+- **More ranks everywhere**: Deck widgets and optional profile quick buttons support intermediate ranks (S+, A+, B+, …) aligned with the site’s rank model.
+- **Settings cleanup**: Less clutter around API diagnostics; clearer control over whether browsed card metadata is uploaded for ASS search.
+- **Cinema & remelt**: Tweaked auto-stone timing and remelt top bar layout for smoother day-to-day use.
 
 ## Quick install (need for 1-3 days from release for approval from Google and Mozilla)
 🦊 Firefox Add-ons: https://addons.mozilla.org/firefox/addon/animestar-extension/  
