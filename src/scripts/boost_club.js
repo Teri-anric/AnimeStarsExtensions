@@ -77,9 +77,9 @@ chrome.storage.sync.get(['custom-hosts', 'clubs-boost-block-images'], (data) => 
                 action: 'find_card_full_by_image_url',
                 imageUrls: [imagePath],
             });
-            if (!findResp?.success) return null;
+            if (!findResp?.success || !Array.isArray(findResp.cards)) return null;
 
-            const card = findResp.cardImageMap?.[imagePath];
+            const card = findResp.cards.find((c) => c.image === imagePath) ?? findResp.cards[0];
             if (!card) return null;
 
             return {

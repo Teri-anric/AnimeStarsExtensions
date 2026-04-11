@@ -116,7 +116,7 @@ chrome.storage.sync.get(['custom-hosts'], (data) => {
       const response = await requestFindCardIdByImageUrls(Array.from(imageElmsMap.keys()));
       if (!response?.success) return;
       const findedElms = [];
-      Object.entries(response.cardImageMap).forEach(([imageUrl, cardId]) => {
+      response.resolved.forEach(({ image: imageUrl, card_id: cardId }) => {
         const elms = imageElmsMap.get(imageUrl);
         if (!elms) return;
         elms.forEach((elm) => {

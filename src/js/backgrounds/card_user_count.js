@@ -104,49 +104,37 @@ async function addStatToUploadQueue(data) {
 
 
 
-async function getSiteCardData(cardId, parseType) {
-    if (parseType === "siteCard") {
-        const detail = await AssApiClient.getCard(cardId);
-        return { cardId, parseType, data: detail };
-    }
-    if (parseType === "siteDeck") {
-        const deck = await AssApiClient.getDeckByCardId(cardId);
-        return {
-            cardId,
-            parseType,
-            data: {
-                ASSCardCount: deck.cards.filter(c => c.rank === 'ass').length,
-                SPlusCardCount: deck.cards.filter(c => c.rank === 's_plus').length,
-                SCardCount: deck.cards.filter(c => c.rank === 's').length,
-                APlusCardCount: deck.cards.filter(c => c.rank === 'a_plus').length,
-                ACardCount: deck.cards.filter(c => c.rank === 'a').length,
-                BPlusCardCount: deck.cards.filter(c => c.rank === 'b_plus').length,
-                BCardCount: deck.cards.filter(c => c.rank === 'b').length,
-                CPlusCardCount: deck.cards.filter(c => c.rank === 'c_plus').length,
-                CCardCount: deck.cards.filter(c => c.rank === 'c').length,
-                DPlusCardCount: deck.cards.filter(c => c.rank === 'd_plus').length,
-                DCardCount: deck.cards.filter(c => c.rank === 'd').length,
-                EPlusCardCount: deck.cards.filter(c => c.rank === 'e_plus').length,
-                ECardCount: deck.cards.filter(c => c.rank === 'e').length,
-                TotalCardCount: deck.cards.length,
-            }
-        };
-    }
-    throw new Error(`Invalid parseType: ${parseType}`);
-}
-
 async function getSiteCardDatas(cardIds, parseTypes, callback) {
     const siteParseTypes = parseTypes.filter(x => SITE_CARD_PARSE_TYPES.includes(x));
     if (siteParseTypes.length == 0) return;
+
+    const numericIds = [
+        ...new Set(
+            cardIds
+                .map((id) => parseInt(id, 10))
+                .filter((n) => Number.isFinite(n) && n > 0),
+        ),
+    ];
+    const needSiteCard = siteParseTypes.includes('siteCard');
+    const needSiteDeck = siteParseTypes.includes('siteDeck');
+
+    const [deckRankById, cardDetailById] = await Promise.all([
+        needSiteDeck && numericIds.length > 0
+            ? AssApiClient.getDeckRankWidgetDataByCardIds(numericIds)
+            : Promise.resolve(new Map()),
+        needSiteCard && numericIds.length > 0
+            ? AssApiClient.getCardsByIdsMapped(numericIds)
+            : Promise.resolve(new Map()),
+    ]);
+
     for (const cardId of cardIds) {
+        const n = parseInt(cardId, 10);
         for (const parseType of siteParseTypes) {
-            getSiteCardData(cardId, parseType).catch(() => {
-                return {
-                    cardId,
-                    parseType,
-                    data: null,
-                }
-            }).then(callback);
+            if (parseType === 'siteCard') {
+                callback({ cardId, parseType, data: cardDetailById.get(n) ?? null });
+            } else if (parseType === 'siteDeck') {
+                callback({ cardId, parseType, data: deckRankById.get(n) ?? null });
+            }
         }
     }
 }
@@ -270,49 +258,58 @@ async function fetchPage(url, parseFunction, retry = 0) {
 }
 
 
-// Mapping from API collection names to fetchCounts data shapes.
-// Returns { cardId, parseType, data, username } or null if API stats are absent/expired.
+/** Extension POST …/owner-counts/last/bulk rows → те саме, що дає парсинг сторінки (counts / unlocked). */
 async function fetchCountsFromApi(cardIds, parseTypes) {
     if (!CARD_COUNT_CONFIG.API_STATS_RECEIVE_ENABLED) return null;
     if (!Array.isArray(parseTypes) || parseTypes.length === 0) return null;
     try {
-        const stats = await AssApiClient.getBulkCardStats(cardIds);
-        if (!Array.isArray(stats) || stats.length === 0) return null;
+        const rows = await AssApiClient.getBulkCardStats(cardIds);
+        if (!Array.isArray(rows) || rows.length === 0) return null;
+
+        const rowByCardId = new Map();
+        for (const row of rows) {
+            if (row?.card_id == null) continue;
+            const cid = parseInt(row.card_id, 10);
+            if (!Number.isFinite(cid) || cid <= 0) continue;
+            rowByCardId.set(cid, row);
+        }
 
         const now = Date.now();
-        const statsByCardId = Object.groupBy(stats, (stat) => stat.card_id);
+        const maxAge = CARD_COUNT_CONFIG.CACHE_MAX_LIFETIME;
         const results = [];
 
         for (const cardId of cardIds) {
-            if (!statsByCardId[cardId]) continue;
-            const cardStats = statsByCardId[cardId];
-            const statsByCollection = Object.groupBy(cardStats, (stat) => stat.collection);
-            if (parseTypes.includes('counts')) {
-                const trade = statsByCollection['trade']?.[0]?.count;
-                const need = statsByCollection['need']?.[0]?.count;
-                const owner = statsByCollection['owned']?.[0]?.count;
-                const createdAt = Date.parse(statsByCollection['trade']?.[0]?.created_at);
+            const cid = parseInt(cardId, 10);
+            if (!Number.isFinite(cid) || cid <= 0) continue;
+            const row = rowByCardId.get(cid);
+            if (!row) continue;
 
-                if (trade != null && need != null && owner != null && createdAt != null && now - createdAt <= CARD_COUNT_CONFIG.CACHE_MAX_LIFETIME){
+            if (parseTypes.includes('counts')) {
+                const { trade, need, owner, trade_updated_at, need_updated_at, owner_updated_at } = row;
+                const ts = trade_updated_at ?? need_updated_at ?? owner_updated_at;
+                const updatedAt = ts != null ? Date.parse(ts) : NaN;
+                if (
+                    trade != null &&
+                    need != null &&
+                    owner != null &&
+                    !Number.isNaN(updatedAt) &&
+                    now - updatedAt <= maxAge
+                ) {
                     results.push({
                         cardId,
                         parseType: 'counts',
-                        data: { 
-                            trade,
-                            need,
-                            owner,
-                        },
+                        data: { trade, need, owner },
                     });
                 }
             }
             if (parseTypes.includes('unlocked')) {
-                const owner = statsByCollection['unlocked_owned']?.[0]?.count;
-                const createdAt = Date.parse(statsByCollection['unlocked_owned']?.[0]?.created_at);
-                if (owner != null && createdAt != null && now - createdAt <= CARD_COUNT_CONFIG.CACHE_MAX_LIFETIME) {
+                const { unlocked, unlocked_updated_at } = row;
+                const updatedAt = unlocked_updated_at != null ? Date.parse(unlocked_updated_at) : NaN;
+                if (unlocked != null && !Number.isNaN(updatedAt) && now - updatedAt <= maxAge) {
                     results.push({
                         cardId,
                         parseType: 'unlocked',
-                        data: { owner },
+                        data: { owner: unlocked },
                     });
                 }
             }

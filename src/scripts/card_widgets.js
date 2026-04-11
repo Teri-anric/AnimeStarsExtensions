@@ -5,6 +5,11 @@ chrome.storage.sync.get(['custom-hosts'], (data) => {
   (async () => {
   const indexedCardSelector = '[data-index-card-id]';
 
+  /** Keys of DeckRankHistogram from API (extension deck rank-counts). */
+  const DECK_RANK_HIST_KEYS = [
+    'sss', 'ass', 's_plus', 's', 'a_plus', 'a', 'b_plus', 'b', 'c_plus', 'c', 'd_plus', 'd', 'e_plus', 'e',
+  ];
+
   const parseTypeToVariablesMap = {
     unlocked: ["unlockNeed", "unlockOwner", "unlockTrade"],
     counts: ["need", "owner", "trade"],
@@ -372,15 +377,21 @@ chrome.storage.sync.get(['custom-hosts'], (data) => {
         variables.cardAuthor = cardData.data?.author;
       }
       if (cardData.parseType === 'siteDeck') {
-        const d = cardData.data || {};
-        variables.deckCountASS = d?.ASSCardCount;
-        variables.deckCountS = d?.SCardCount;
-        variables.deckCountA = d?.ACardCount;
-        variables.deckCountB = d?.BCardCount;
-        variables.deckCountC = d?.CCardCount;
-        variables.deckCountD = d?.DCardCount;
-        variables.deckCountE = d?.ECardCount;
-        variables.deckCountTotal = d?.TotalCardCount;
+        const data = cardData.data || {};
+        variables.deckCountASS = data['ass'] || 0;
+        variables.deckCountS = data['s'] || 0;
+        variables.deckCountSPlus = data['s_plus'] || 0;
+        variables.deckCountA = data['a'] || 0;
+        variables.deckCountAPlus = data['a_plus'] || 0;
+        variables.deckCountB = data['b'] || 0;
+        variables.deckCountBPlus = data['b_plus'] || 0;
+        variables.deckCountC = data['c'] || 0;
+        variables.deckCountCPlus = data['c_plus'] || 0;
+        variables.deckCountD = data['d'] || 0;
+        variables.deckCountDPlus = data['d_plus'] || 0;
+        variables.deckCountE = data['e'] || 0;
+        variables.deckCountEPlus = data['e_plus'] || 0;
+        variables.deckCountTotal = DECK_RANK_HIST_KEYS.reduce((sum, k) => sum + (data[k] || 0), 0);
       }
     });
     return variables;

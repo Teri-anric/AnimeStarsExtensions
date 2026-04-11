@@ -1,25 +1,13 @@
 import { AssApiClient } from '../api-client.js';
 
 async function findCardIdByImageUrl(message, sender) {
-    const cards = await AssApiClient.findCardByImageUrls(message.imageUrls);
-    return {
-        success: true,
-        cardImageMap: cards.reduce((acc, card) => {
-            acc[card.image] = card.card_id;
-            return acc;
-        }, {})
-    };
+    const resolved = await AssApiClient.resolveCardIdsByImagePaths(message.imageUrls);
+    return { success: true, resolved };
 }
 
 async function findCardFullByImageUrl(message, sender) {
-    const cards = await AssApiClient.findCardByImageUrls(message.imageUrls);
-    return {
-        success: true,
-        cardImageMap: cards.reduce((acc, card) => {
-            acc[card.image] = card;
-            return acc;
-        }, {})
-    };
+    const cards = await AssApiClient.searchCardsByImages(message.imageUrls);
+    return { success: true, cards };
 }
 
 async function searchCards(message, sender) {
