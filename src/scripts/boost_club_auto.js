@@ -2,14 +2,6 @@ chrome.storage.sync.get(['custom-hosts'], (data) => {
     const hosts = Array.isArray(data?.['custom-hosts']) ? data['custom-hosts'] : [];
     if (!hosts.includes(window.location.hostname)) return;
 
-    (function () {
-    let boostCooldown = 500;
-    let refreshCooldown = 600;
-    let replaceStaleMs = 12000;
-    /** @type {number} min gap between card-skip (replace) clicks */
-    let replaceSkipCooldownMs = 1600;
-    /** @type {boolean} auto card skip (replace button) on club contribution page */
-    let replaceAutoEnabled = true;
     const BoostLimit = 600;
     let boostIntervalID;
     let refreshIntervalID;
@@ -17,13 +9,20 @@ chrome.storage.sync.get(['custom-hosts'], (data) => {
     const isBossPage = window.location.pathname.includes('boss_invansion');
     const AUTO_KEY = isBossPage ? 'boss-boost-auto' : 'club-boost-auto';
 
+    const TICK_INTERVAL_MS = 100;
+    const SKIP_START_TIME = new Date().setUTCHours(18, 3, 0, 0); // 18:03:00 UTC
+
     const CONFIG = {
         boostActive: false,
+        refreshCooldown: 600,
+        boostCooldown: 500,
+        replaceStaleMs: 12000,
+        replaceSkipCooldownMs: 1600,
+        replaceAutoEnabled: true,
         isCurrentBoosting: () => {
             return boostIntervalID != null || refreshIntervalID != null;
-        }
-    }
-
+        },
+    };
 
     async function clearDLEPush() {
         const dlePush = document.querySelector("#DLEPush");
@@ -108,8 +107,8 @@ chrome.storage.sync.get(['custom-hosts'], (data) => {
             refreshClub(true);
             boostClub(true);
         }
-        refreshIntervalID = setInterval(refreshClub, refreshCooldown);
-        boostIntervalID = setInterval(boostClub, boostCooldown);
+        refreshIntervalID = setInterval(refreshClub, CONFIG.refreshCooldown);
+        boostIntervalID = setInterval(boostClub, CONFIG.boostCooldown);
     }
     function stopBoosting(force = false) {
         if (boostIntervalID) clearInterval(boostIntervalID);
@@ -133,7 +132,7 @@ chrome.storage.sync.get(['custom-hosts'], (data) => {
         target.setUTCHours(18, 1, 0, 0);
         let delay = target.getTime() - now.getTime();
         if (delay <= 0) {
-            delay += 24 * 60 * 60 * 1000;
+            delay += 24 * 60 * 60 * 1000; // 24 hours
         }
         let addTime = 30 * 1000; // 30 seconds delay
         if (now < target) {
@@ -148,71 +147,10 @@ chrome.storage.sync.get(['custom-hosts'], (data) => {
         }, delay);
     }
 
-    chrome.storage.sync.get([
-        AUTO_KEY,
-        'club-boost-refresh-cooldown',
-        'club-boost-action-cooldown',
-        'club-boost-replace-auto',
-        'club-boost-replace-stale-ms',
-        'club-boost-replace-skip-cooldown-ms',
-    ], (settings) => {
-        refreshCooldown = settings['club-boost-refresh-cooldown'] || 600;
-        boostCooldown = settings['club-boost-action-cooldown'] || 500;
-        replaceStaleMs = Math.max(3000, Number(settings['club-boost-replace-stale-ms']) || 12000);
-        replaceSkipCooldownMs = Math.max(400, Number(settings['club-boost-replace-skip-cooldown-ms']) || 1600);
-        replaceAutoEnabled = settings['club-boost-replace-auto'] !== false;
-        if (settings[AUTO_KEY]) {
-            startBoosting();
-        }
-        CONFIG.boostActive = settings[AUTO_KEY] || false;
-    });
-
-    chrome.storage.onChanged.addListener((changes, namespace) => {
-        if (namespace != "sync") return;
-        const changedKeys = Object.keys(changes);
-        const replaceOnlyKeys = new Set([
-            'club-boost-replace-auto',
-            'club-boost-replace-stale-ms',
-            'club-boost-replace-skip-cooldown-ms',
-        ]);
-        const onlyReplaceSettings = changedKeys.length > 0 && changedKeys.every((k) => replaceOnlyKeys.has(k));
-
-        if (changes['club-boost-replace-auto'] != undefined) {
-            replaceAutoEnabled = Boolean(changes['club-boost-replace-auto'].newValue);
-        }
-        if (changes['club-boost-replace-stale-ms'] != undefined) {
-            replaceStaleMs = Math.max(3000, Number(changes['club-boost-replace-stale-ms'].newValue) || 12000);
-        }
-        if (changes['club-boost-replace-skip-cooldown-ms'] != undefined) {
-            replaceSkipCooldownMs = Math.max(400, Number(changes['club-boost-replace-skip-cooldown-ms'].newValue) || 1600);
-        }
-        if (onlyReplaceSettings) return;
-
-        if (changes['club-boost-refresh-cooldown'] != undefined) {
-            refreshCooldown = changes['club-boost-refresh-cooldown'].newValue;
-        }
-        if (changes['club-boost-action-cooldown'] != undefined) {
-            boostCooldown = changes['club-boost-action-cooldown'].newValue;
-        }
-        stopBoosting(true);
-        let toStart = changes[AUTO_KEY] != undefined ? changes[AUTO_KEY]?.newValue : CONFIG.boostActive
-        CONFIG.boostActive = false;
-        if (toStart) {
-            startBoosting();
-            CONFIG.boostActive = true;
-        }
-    });
-
-    setInterval(() => {
-        if (CONFIG.boostActive && !CONFIG.isCurrentBoosting() && checkBoostLimit(true)) {
-            startBoosting();
-        }
-    }, 1000);
-
     // -------------------------------------------------------------------------
     // Card skips: replace button when nobody can contribute, or card
-    // fingerprint unchanged for replaceStaleMs (if club-boost-replace-auto).
-    // replaceSkipCooldownMs avoids double server requests between skips.
+    // fingerprint unchanged for CONFIG.replaceStaleMs (if club-boost-replace-auto).
+    // CONFIG.replaceSkipCooldownMs avoids double server requests between skips.
     // -------------------------------------------------------------------------
     let replaceFingerprintInit = false;
     let lastCardFingerprint = '';
@@ -247,7 +185,7 @@ chrome.storage.sync.get(['custom-hosts'], (data) => {
         const btn = document.querySelector('.club-boost__replace-btn');
         if (!btn || btn.disabled) return false;
         const now = Date.now();
-        if (now - lastReplaceClickAt < replaceSkipCooldownMs) return false;
+        if (now - lastReplaceClickAt < CONFIG.replaceSkipCooldownMs) return false;
         clearDLEPush();
         btn.click();
         lastReplaceClickAt = now;
@@ -256,7 +194,8 @@ chrome.storage.sync.get(['custom-hosts'], (data) => {
     }
 
     function tickClubReplaceAutomation() {
-        if (isBossPage || !replaceAutoEnabled) {
+        if (SKIP_START_TIME < Date.now() || !checkBoostLimit(true)) return;
+        if (isBossPage || !CONFIG.replaceAutoEnabled) {
             replaceFingerprintInit = false;
             return;
         }
@@ -282,21 +221,90 @@ chrome.storage.sync.get(['custom-hosts'], (data) => {
             clickClubReplaceBtn();
             return;
         }
-        if (now - lastFingerprintChangeAt >= replaceStaleMs) {
+        if (now - lastFingerprintChangeAt >= CONFIG.replaceStaleMs) {
             clickClubReplaceBtn();
         }
     }
 
-    setInterval(tickClubReplaceAutomation, 400);
+    chrome.storage.sync.get(
+        [
+            AUTO_KEY,
+            'club-boost-refresh-cooldown',
+            'club-boost-action-cooldown',
+            'club-boost-replace-auto',
+            'club-boost-replace-stale-ms',
+            'club-boost-replace-skip-cooldown-ms',
+        ],
+        (settings) => {
+            CONFIG.refreshCooldown = settings['club-boost-refresh-cooldown'] || 600;
+            CONFIG.boostCooldown = settings['club-boost-action-cooldown'] || 500;
+            CONFIG.replaceStaleMs = Number(settings['club-boost-replace-stale-ms']) || 12000;
+            CONFIG.replaceSkipCooldownMs = Number(settings['club-boost-replace-skip-cooldown-ms']) || 1600;
+            CONFIG.replaceAutoEnabled = settings['club-boost-replace-auto'];
+
+            if (settings[AUTO_KEY]) {
+                startBoosting();
+            }
+            CONFIG.boostActive = settings[AUTO_KEY] || false;
+        },
+    );
+
+    chrome.storage.onChanged.addListener((changes, namespace) => {
+        if (namespace != "sync") return;
+
+        const changedKeys = Object.keys(changes);
+        const replaceOnlyKeys = new Set([
+            'club-boost-replace-auto',
+            'club-boost-replace-stale-ms',
+            'club-boost-replace-skip-cooldown-ms',
+        ]);
+        const onlyReplaceSettings = changedKeys.length > 0 && changedKeys.every((k) => replaceOnlyKeys.has(k));
+
+        if (changes['club-boost-replace-auto'] != undefined) {
+            CONFIG.replaceAutoEnabled = Boolean(changes['club-boost-replace-auto'].newValue);
+        }
+        if (changes['club-boost-replace-stale-ms'] != undefined) {
+            CONFIG.replaceStaleMs = Number(changes['club-boost-replace-stale-ms'].newValue) || 12000;
+        }
+        if (changes['club-boost-replace-skip-cooldown-ms'] != undefined) {
+            CONFIG.replaceSkipCooldownMs = Number(changes['club-boost-replace-skip-cooldown-ms'].newValue) || 1600;
+        }
+        if (onlyReplaceSettings) return;
+
+        if (changes['club-boost-refresh-cooldown'] != undefined) {
+            CONFIG.refreshCooldown = changes['club-boost-refresh-cooldown'].newValue;
+        }
+        if (changes['club-boost-action-cooldown'] != undefined) {
+            CONFIG.boostCooldown = changes['club-boost-action-cooldown'].newValue;
+        }
+        stopBoosting(true);
+        let toStart = changes[AUTO_KEY] != undefined ? changes[AUTO_KEY]?.newValue : CONFIG.boostActive
+        CONFIG.boostActive = false;
+        if (toStart) {
+            startBoosting();
+            CONFIG.boostActive = true;
+        }
+    });
+
+    setInterval(() => {
+        if (CONFIG.boostActive && !CONFIG.isCurrentBoosting() && checkBoostLimit(true)) {
+            startBoosting();
+        }
+    }, 1000);
+
+    setInterval(tickClubReplaceAutomation, TICK_INTERVAL_MS);
 
     scheduleAutoStart();
     document.addEventListener("keydown", (event) => {
         map = {
-            "KeyR": refreshClub,
-            "KeyE": boostClub,
             "KeyB": () => {
-                chrome.storage.sync.get(AUTO_KEY, (settings) => {
-                    chrome.storage.sync.set({ [AUTO_KEY]: !settings[AUTO_KEY] });
+                chrome.storage.sync.get(AUTO_KEY, (s) => {
+                    chrome.storage.sync.set({ [AUTO_KEY]: !s[AUTO_KEY] });
+                });
+            },
+            "KeyC": () => {
+                chrome.storage.sync.get(['club-boost-replace-auto'], (s) => {
+                    chrome.storage.sync.set({ ['club-boost-replace-auto']: !s['club-boost-replace-auto'] });
                 });
             }
         }
@@ -305,5 +313,4 @@ chrome.storage.sync.get(['custom-hosts'], (data) => {
         }
     });
 
-    })();
 });

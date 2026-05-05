@@ -48,13 +48,12 @@ const AnimeStarExtensionTranslationEnglish = {
     'club-boost-action-cooldown': 'Boost Interval',
     'club-boost-cooldown-description': 'Settings for automatic club boost intervals (ms)',
     'club-boost-replace-stale-ms': 'Card skip: time with no card change',
-    'club-boost-replace-stale-description': 'If the offered card stays the same on screen for this long (no one takes it from contributions), a skip is triggered (replace). Also skips immediately when no club member can donate this card (empty “can contribute” list). Only when “Automatic card skips” is enabled.',
+    'club-boost-replace-stale-description': 'If the offered card stays the same on screen for this long (no one takes it from contributions), a skip is triggered (replace). Also skips immediately when no club member can donate this card (empty “can contribute” list). Only when “Automatic card boost” is enabled.',
     'club-boost-replace-skip-cooldown-ms': 'Delay between card skips',
     'club-boost-replace-skip-cooldown-description': 'Minimum time between two replace clicks so the site is not hit twice in a row.',
     'club-boost-hotkey-description': 'Hotkeys for club boost control:\n' +
-        '- R: Refresh\n' +
-        '- E: Boost\n' +
-        '- B: Toggle Automatic Boost',
+        '- B: Toggle Automatic Boost\n' +
+        '- C: Toggle Automatic Card Skips',
     'update-notification-title': 'AnimeStar Extension Update Available',
     'update-notification-message': 'New version {version} is available! Click to see details.',
     'update-notification-button': 'View Details',
