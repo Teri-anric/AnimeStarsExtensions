@@ -549,7 +549,7 @@
         "message": "Плавающие быстрые действия"
     },
     "floating_quick_actions_hint": {
-        "message": "Кнопки показываются только на вкладке сайта. Ищите действия по названию, настраивайте порядок и группы, внешний вид и смещение от угла — превью обновляется сразу."
+        "message": "Кнопки показываются только на вкладке сайта. Ищите действия по названию, настраивайте порядок и группы, внешний вид — превью обновляется сразу."
     },
     "floating_quick_actions_enabled": {
         "message": "Включить плавающую панель"
@@ -571,6 +571,12 @@
     },
     "floating_quick_actions_pos_top_left": {
         "message": "Верх слева"
+    },
+    "floating_quick_actions_pos_floating": {
+        "message": "Плавающая — перетаскивание мышью"
+    },
+    "floating_quick_actions_pos_fixed": {
+        "message": "Зафиксированная — остаётся после перетаскивания (без дальнейшего движения)"
     },
     "floating_quick_actions_link_description": {
         "message": "Ярлыки на сайте"
@@ -620,6 +626,24 @@
     "fab_add_group_button": {
         "message": "Новая группа"
     },
+    "fab_panel_layout": {
+        "message": "Как расположены действия"
+    },
+    "fab_panel_layout_column": {
+        "message": "Всегда — вертикальный список"
+    },
+    "fab_panel_layout_radial_open": {
+        "message": "Всегда — веер (дуга)"
+    },
+    "fab_panel_layout_line_open": {
+        "message": "Всегда — ряд"
+    },
+    "fab_panel_layout_radial_launcher": {
+        "message": "После нажатия — веер (дуга)"
+    },
+    "fab_panel_layout_line_launcher": {
+        "message": "После нажатия — ряд"
+    },
     "fab_panel_layout_label": {
         "message": "Разметка панели"
     },
@@ -646,6 +670,69 @@
     },
     "fab_group_add_selected": {
         "message": "Добавить в группу"
+    },
+    "fab_display_mode": {
+        "message": "Тип панели"
+    },
+    "fab_display_mode_bar": {
+        "message": "Панель в углу (список или по нажатию)"
+    },
+    "fab_display_mode_popup": {
+        "message": "Всплывающий запуск (действия по клику)"
+    },
+    "fab_expand_layout": {
+        "message": "Развернуть действия как"
+    },
+    "fab_expand_radial": {
+        "message": "Веер (дуга)"
+    },
+    "fab_expand_line": {
+        "message": "Ряд (линия)"
+    },
+    "fab_action_display": {
+        "message": "Кнопки действий"
+    },
+    "fab_action_icon": {
+        "message": "Круглые иконки"
+    },
+    "fab_action_text": {
+        "message": "Текст (как раньше)"
+    },
+    "fab_allow_drag": {
+        "message": "Плавающее положение — перетаскивание мышью"
+    },
+    "fab_bar_panel_style": {
+        "message": "Вид панели в углу"
+    },
+    "fab_bar_panel_list": {
+        "message": "Всегда показывать список"
+    },
+    "fab_bar_panel_launcher": {
+        "message": "Главная кнопка (веер / ряд)"
+    },
+    "fab_button_bg_color": {
+        "message": "Цвет кнопок"
+    },
+    "fab_button_opacity": {
+        "message": "Непрозрачность (%)"
+    },
+    "fab_pick_icon": {
+        "message": "Выбрать иконку"
+    },
+    "fab_launcher_icon": {
+        "message": "Иконка главной кнопки"
+    },
+    "fab_launcher_icon_placeholder": {
+        "message": "напр. fas fa-bolt"
+    },
+    "fab_icon_placeholder": {
+        "message": "Класс иконки (необязательно)"
+    },
+    "fab_launcher_title": {
+        "message": "Быстрые действия"
+    },
+    "fab_drag_move_title": {
+        "message": "Тяните чтобы сдвинуть панель"
     },
     "back_to_settings": {
         "message": "Назад к настройкам"

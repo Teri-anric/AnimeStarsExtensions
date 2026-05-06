@@ -2,23 +2,35 @@
 
 export const FLOATING_QUICK_ACTIONS_KEY = 'floating-quick-actions';
 
-/** @typedef {'bottom-right'|'bottom-left'|'top-right'|'top-left'} FabPositionPreset */
-/** @typedef {'compact'|'comfortable'} FabDensity */
-/** @typedef {'default'|'minimal'|'filled'} FabVariant */
+/** @typedef {'bottom-right'|'bottom-left'|'top-right'|'top-left'|'floating'|'fixed'} FabPositionPreset */
 
 /**
- * @typedef {{ kind: 'toggle', key: string }} FabToggleItem
+ * @typedef {'column'|'radial_open'|'line_open'|'radial_launcher'|'line_launcher'} FabPanelLayout
+ */
+
+/**
+ * @typedef {{ kind: 'toggle', key: string, icon?: string }} FabToggleItem
  * @typedef {{ kind: 'group', id: string, labelKey?: string, items: FabItem[] }} FabGroupItem
  * @typedef {FabToggleItem|FabGroupItem} FabItem
  */
 
-/** @type {FabPositionPreset[]} */
-export const FAB_POSITION_PRESETS = ['bottom-right', 'bottom-left', 'top-right', 'top-left'];
+/** @typedef {'bar'|'popup'} FabDisplayMode */
+/** @typedef {'icon'|'text'} FabActionDisplay */
 
-const DEFAULT_APPEARANCE = /** @type {{ density: FabDensity, variant: FabVariant }} */ ({
-    density: 'comfortable',
-    variant: 'default',
-});
+/** @type {FabPositionPreset[]} */
+export const FAB_POSITION_PRESETS = ['bottom-right', 'bottom-left', 'top-right', 'top-left', 'floating', 'fixed'];
+
+/** Layouts for corner bar mode (all variants). */
+export const FAB_PANEL_LAYOUTS_BAR = /** @type {const} */ ([
+    'column',
+    'radial_open',
+    'line_open',
+    'radial_launcher',
+    'line_launcher',
+]);
+
+/** Popup only supports launcher layouts. */
+export const FAB_PANEL_LAYOUTS_POPUP = /** @type {const} */ (['radial_launcher', 'line_launcher']);
 
 function isPlainObject(x) {
     return x !== null && typeof x === 'object' && !Array.isArray(x);
@@ -44,7 +56,12 @@ export function normalizeFabItem(raw, depth = 0) {
     if (kind === 'toggle') {
         const key = o.key;
         if (typeof key !== 'string' || !key.trim()) return null;
-        return { kind: 'toggle', key };
+        const icon =
+            typeof o.icon === 'string' && o.icon.trim() ? String(o.icon).trim().slice(0, 120) : undefined;
+        /** @type {FabToggleItem} */
+        const tgl = { kind: 'toggle', key };
+        if (icon) tgl.icon = icon;
+        return tgl;
     }
 
     if (kind === 'group') {
@@ -99,24 +116,85 @@ export function flattenToggleKeysFromItems(items) {
     return [...collectToggleKeysFromItems(items)];
 }
 
-/**
- * @param {unknown} raw
- * @returns {typeof DEFAULT_APPEARANCE}
- */
-function normalizeAppearance(raw) {
-    if (!isPlainObject(raw)) return { ...DEFAULT_APPEARANCE };
-    const o = /** @type {Record<string, unknown>} */ (raw);
-    const density = o.density === 'compact' || o.density === 'comfortable' ? o.density : DEFAULT_APPEARANCE.density;
-    const variant =
-        o.variant === 'default' || o.variant === 'minimal' || o.variant === 'filled'
-            ? o.variant
-            : DEFAULT_APPEARANCE.variant;
-    return { density, variant };
+function normalizeHexColor(raw) {
+    if (typeof raw !== 'string') return '#ffffff';
+    const h = raw.trim();
+    if (/^#[0-9A-Fa-f]{6}$/.test(h)) return h.toLowerCase();
+    return '#ffffff';
 }
 
-function numOrZero(v) {
+function normalizeOpacityPct(raw) {
+    const n = typeof raw === 'number' ? raw : Number.parseInt(String(raw || ''), 10);
+    if (Number.isNaN(n)) return 92;
+    return Math.min(100, Math.max(0, Math.round(n)));
+}
+
+function numDrag(v) {
     if (typeof v !== 'number' || Number.isNaN(v)) return 0;
-    return Math.round(Math.min(400, Math.max(-400, v)));
+    return Math.round(Math.min(4000, Math.max(-4000, v)));
+}
+
+/** @type {Set<string>} */
+const BAR_LAYOUT_SET = new Set(FAB_PANEL_LAYOUTS_BAR);
+
+/** @type {Set<string>} */
+const POPUP_LAYOUT_SET = new Set(FAB_PANEL_LAYOUTS_POPUP);
+
+/**
+ * @param {unknown} rawLayout
+ * @param {FabDisplayMode} displayMode
+ * @param {Record<string, unknown>} obj full parsed object for legacy migration
+ * @returns {FabPanelLayout}
+ */
+export function normalizePanelLayout(rawLayout, displayMode, obj) {
+    if (typeof rawLayout === 'string' && BAR_LAYOUT_SET.has(rawLayout)) {
+        const pl = /** @type {FabPanelLayout} */ (rawLayout);
+        if (displayMode === 'popup' && !POPUP_LAYOUT_SET.has(pl)) {
+            return 'radial_launcher';
+        }
+        return pl;
+    }
+
+    const barPanelStyle = obj.barPanelStyle === 'launcher' ? 'launcher' : 'list';
+    const expandLayout = obj.expandLayout === 'line' ? 'line' : 'radial';
+    /** @type {FabPanelLayout} */
+    let migrated;
+    if (barPanelStyle === 'launcher') {
+        migrated = expandLayout === 'line' ? 'line_launcher' : 'radial_launcher';
+    } else {
+        migrated = 'column';
+    }
+
+    if (displayMode === 'popup' && !POPUP_LAYOUT_SET.has(migrated)) {
+        return expandLayout === 'line' ? 'line_launcher' : 'radial_launcher';
+    }
+    return migrated;
+}
+
+/**
+ * @param {string} preset
+ * @returns {FabPositionPreset}
+ */
+function normalizePositionPreset(preset, obj) {
+    const valid = /** @type {FabPositionPreset[]} */ ([
+        'bottom-right',
+        'bottom-left',
+        'top-right',
+        'top-left',
+        'floating',
+        'fixed',
+    ]);
+    let p = typeof preset === 'string' ? preset : 'bottom-right';
+    if (!valid.includes(/** @type {FabPositionPreset} */ (p))) {
+        p = 'bottom-right';
+    }
+
+    const corners = new Set(['bottom-right', 'bottom-left', 'top-right', 'top-left']);
+    if (obj.allowDrag === true && corners.has(p)) {
+        return 'floating';
+    }
+
+    return /** @type {FabPositionPreset} */ (p);
 }
 
 /**
@@ -124,11 +202,32 @@ function numOrZero(v) {
  *   enabled: boolean,
  *   items: FabItem[],
  *   positionPreset: FabPositionPreset,
- *   offsetX: number,
- *   offsetY: number,
- *   appearance: { density: FabDensity, variant: FabVariant },
+ *   displayMode: FabDisplayMode,
+ *   panelLayout: FabPanelLayout,
+ *   actionDisplay: FabActionDisplay,
+ *   dragX: number,
+ *   dragY: number,
+ *   launcherIcon: string,
+ *   buttonBgColor: string,
+ *   buttonOpacity: number,
  * }} FabConfigNormalized
  */
+
+/**
+ * Depth-first list of all toggle items (for migrations / helpers).
+ * @param {FabItem[]} items
+ * @returns {FabToggleItem[]}
+ */
+export function flattenToggleItems(items) {
+    const out = /** @type {FabToggleItem[]} */ ([]);
+    for (const it of items) {
+        if (it.kind === 'toggle') out.push(it);
+        else if (it.kind === 'group') {
+            flattenToggleItems(it.items).forEach((x) => out.push(x));
+        }
+    }
+    return out;
+}
 
 /**
  * Parse stored JSON string into normalized FAB config (supports legacy `buttonKeys`).
@@ -140,9 +239,14 @@ export function parseFabConfig(raw) {
         enabled: false,
         items: [],
         positionPreset: 'bottom-right',
-        offsetX: 0,
-        offsetY: 0,
-        appearance: { ...DEFAULT_APPEARANCE },
+        displayMode: 'bar',
+        panelLayout: 'column',
+        actionDisplay: 'text',
+        dragX: 0,
+        dragY: 0,
+        launcherIcon: '',
+        buttonBgColor: '#ffffff',
+        buttonOpacity: 92,
     });
 
     if (typeof raw !== 'string') return fallback;
@@ -164,18 +268,43 @@ export function parseFabConfig(raw) {
         items = keys.map((key) => /** @type {FabToggleItem} */ ({ kind: 'toggle', key }));
     }
 
-    let positionPreset = typeof obj.positionPreset === 'string' ? obj.positionPreset : 'bottom-right';
-    if (!FAB_POSITION_PRESETS.includes(/** @type {FabPositionPreset} */ (positionPreset))) {
-        positionPreset = 'bottom-right';
+    const displayMode = obj.displayMode === 'popup' ? 'popup' : 'bar';
+
+    let positionPreset = normalizePositionPreset(
+        typeof obj.positionPreset === 'string' ? obj.positionPreset : 'bottom-right',
+        obj
+    );
+
+    const panelLayout = normalizePanelLayout(obj.panelLayout, /** @type {FabDisplayMode} */ (displayMode), obj);
+
+    const actionDisplay = obj.actionDisplay === 'icon' ? 'icon' : 'text';
+
+    const launcherIcon =
+        typeof obj.launcherIcon === 'string' ? String(obj.launcherIcon).trim().slice(0, 120) : '';
+
+    let dragX = numDrag(obj.dragX);
+    let dragY = numDrag(obj.dragY);
+
+    if (typeof obj.offsetX === 'number' && Number.isFinite(obj.offsetX) && (obj.dragX == null || obj.dragX === 0)) {
+        dragX = numDrag(dragX + Math.round(obj.offsetX));
+    }
+
+    if (typeof obj.offsetY === 'number' && Number.isFinite(obj.offsetY)) {
+        dragY = numDrag(dragY + Math.round(obj.offsetY));
     }
 
     return {
         enabled,
         items,
-        positionPreset: /** @type {FabPositionPreset} */ (positionPreset),
-        offsetX: numOrZero(obj.offsetX),
-        offsetY: numOrZero(obj.offsetY),
-        appearance: normalizeAppearance(obj.appearance),
+        positionPreset,
+        displayMode: /** @type {FabDisplayMode} */ (displayMode),
+        panelLayout,
+        actionDisplay: /** @type {FabActionDisplay} */ (actionDisplay),
+        dragX,
+        dragY,
+        launcherIcon,
+        buttonBgColor: normalizeHexColor(obj.buttonBgColor),
+        buttonOpacity: normalizeOpacityPct(obj.buttonOpacity),
     };
 }
 
@@ -189,16 +318,40 @@ export function normalizeFabConfigObject(o) {
 }
 
 /**
+ * @param {FabPositionPreset} preset
+ */
+export function fabPresetAllowsDrag(preset) {
+    return preset === 'floating';
+}
+
+/**
+ * @param {FabPanelLayout} layout
+ */
+export function fabPanelLayoutIsLauncher(layout) {
+    return layout === 'radial_launcher' || layout === 'line_launcher';
+}
+
+/**
  * @param {FabConfigNormalized} cfg
  */
 export function stringifyFabConfig(cfg) {
+    const preset = cfg.positionPreset || 'bottom-right';
+    const allowDrag = fabPresetAllowsDrag(preset);
+
     return JSON.stringify({
         enabled: !!cfg.enabled,
         items: cfg.items || [],
-        positionPreset: cfg.positionPreset || 'bottom-right',
-        offsetX: numOrZero(cfg.offsetX),
-        offsetY: numOrZero(cfg.offsetY),
-        appearance: normalizeAppearance(cfg.appearance),
+        positionPreset: preset,
+        displayMode: cfg.displayMode === 'popup' ? 'popup' : 'bar',
+        panelLayout: cfg.panelLayout || 'column',
+        actionDisplay: cfg.actionDisplay === 'icon' ? 'icon' : 'text',
+        allowDrag,
+        dragX: numDrag(cfg.dragX),
+        dragY: numDrag(cfg.dragY),
+        launcherIcon:
+            typeof cfg.launcherIcon === 'string' ? String(cfg.launcherIcon).trim().slice(0, 120) : '',
+        buttonBgColor: normalizeHexColor(cfg.buttonBgColor),
+        buttonOpacity: normalizeOpacityPct(cfg.buttonOpacity),
     });
 }
 

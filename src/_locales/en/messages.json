@@ -549,7 +549,7 @@
         "message": "Floating quick actions"
     },
     "floating_quick_actions_hint": {
-        "message": "Shortcut buttons appear only on the game website tab. Search actions by name, arrange order and groups, tune look and corner offset — preview updates live."
+        "message": "Shortcut buttons appear only on the game website tab. Search actions by name, arrange order and groups, tune appearance — preview updates live."
     },
     "floating_quick_actions_enabled": {
         "message": "Enable floating panel"
@@ -571,6 +571,12 @@
     },
     "floating_quick_actions_pos_top_left": {
         "message": "Top left"
+    },
+    "floating_quick_actions_pos_floating": {
+        "message": "Floating — drag to move"
+    },
+    "floating_quick_actions_pos_fixed": {
+        "message": "Fixed — stays after drag (no further dragging)"
     },
     "floating_quick_actions_link_description": {
         "message": "Shortcuts on the website"
@@ -620,6 +626,24 @@
     "fab_add_group_button": {
         "message": "New group"
     },
+    "fab_panel_layout": {
+        "message": "How actions are arranged"
+    },
+    "fab_panel_layout_column": {
+        "message": "Always — vertical list"
+    },
+    "fab_panel_layout_radial_open": {
+        "message": "Always — fan (arc)"
+    },
+    "fab_panel_layout_line_open": {
+        "message": "Always — row"
+    },
+    "fab_panel_layout_radial_launcher": {
+        "message": "After tap — fan (arc)"
+    },
+    "fab_panel_layout_line_launcher": {
+        "message": "After tap — row"
+    },
     "fab_panel_layout_label": {
         "message": "Panel layout"
     },
@@ -646,6 +670,69 @@
     },
     "fab_group_add_selected": {
         "message": "Add to group"
+    },
+    "fab_display_mode": {
+        "message": "Panel type"
+    },
+    "fab_display_mode_bar": {
+        "message": "Corner panel (static list or tap-to-open)"
+    },
+    "fab_display_mode_popup": {
+        "message": "Popup launcher (actions on click)"
+    },
+    "fab_expand_layout": {
+        "message": "Open actions as"
+    },
+    "fab_expand_radial": {
+        "message": "Fan (arc)"
+    },
+    "fab_expand_line": {
+        "message": "Row (line)"
+    },
+    "fab_action_display": {
+        "message": "Action buttons"
+    },
+    "fab_action_icon": {
+        "message": "Round icons"
+    },
+    "fab_action_text": {
+        "message": "Text (as before)"
+    },
+    "fab_allow_drag": {
+        "message": "Floating position — drag with the mouse"
+    },
+    "fab_bar_panel_style": {
+        "message": "Bar layout"
+    },
+    "fab_bar_panel_list": {
+        "message": "Always show list"
+    },
+    "fab_bar_panel_launcher": {
+        "message": "Tap main button (fan / row)"
+    },
+    "fab_button_bg_color": {
+        "message": "Button color"
+    },
+    "fab_button_opacity": {
+        "message": "Opacity (%)"
+    },
+    "fab_pick_icon": {
+        "message": "Pick icon"
+    },
+    "fab_launcher_icon": {
+        "message": "Main button icon"
+    },
+    "fab_launcher_icon_placeholder": {
+        "message": "e.g. fas fa-bolt"
+    },
+    "fab_icon_placeholder": {
+        "message": "Icon class (optional)"
+    },
+    "fab_launcher_title": {
+        "message": "Quick actions"
+    },
+    "fab_drag_move_title": {
+        "message": "Drag to move bar"
     },
     "back_to_settings": {
         "message": "Back to settings"

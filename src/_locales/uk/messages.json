@@ -549,7 +549,7 @@
         "message": "Плаваючі швидкі дії"
     },
     "floating_quick_actions_hint": {
-        "message": "Кнопки з’являються лише на вкладці сайту. Шукай дії за назвою, будуй порядок і групи, налаштовуй вигляд і зміщення від кута — превʼю оновлюється одразу."
+        "message": "Кнопки з’являються лише на вкладці сайту. Шукай дії за назвою, будуй порядок і групи, налаштовуй вигляд — превʼю оновлюється одразу."
     },
     "floating_quick_actions_enabled": {
         "message": "Увімкнути плаваючу панель"
@@ -571,6 +571,12 @@
     },
     "floating_quick_actions_pos_top_left": {
         "message": "Верх ліворуч"
+    },
+    "floating_quick_actions_pos_floating": {
+        "message": "Плаваюча — перетягування мишею"
+    },
+    "floating_quick_actions_pos_fixed": {
+        "message": "Зафіксована — лишається після перетягування (без подальшого руху)"
     },
     "floating_quick_actions_link_description": {
         "message": "Ярлики на сайті"
@@ -620,6 +626,24 @@
     "fab_add_group_button": {
         "message": "Нова група"
     },
+    "fab_panel_layout": {
+        "message": "Як розташовані дії"
+    },
+    "fab_panel_layout_column": {
+        "message": "Завжди — вертикальний список"
+    },
+    "fab_panel_layout_radial_open": {
+        "message": "Завжди — віяло (дуга)"
+    },
+    "fab_panel_layout_line_open": {
+        "message": "Завжди — ряд"
+    },
+    "fab_panel_layout_radial_launcher": {
+        "message": "Після натискання — віяло (дуга)"
+    },
+    "fab_panel_layout_line_launcher": {
+        "message": "Після натискання — ряд"
+    },
     "fab_panel_layout_label": {
         "message": "Макет панелі"
     },
@@ -646,6 +670,69 @@
     },
     "fab_group_add_selected": {
         "message": "Додати в групу"
+    },
+    "fab_display_mode": {
+        "message": "Тип панелі"
+    },
+    "fab_display_mode_bar": {
+        "message": "Панель у куті (список або по кліку)"
+    },
+    "fab_display_mode_popup": {
+        "message": "Спливаючий запуск (дії по кліку)"
+    },
+    "fab_expand_layout": {
+        "message": "Розгорнути дії як"
+    },
+    "fab_expand_radial": {
+        "message": "Віяло (дуга)"
+    },
+    "fab_expand_line": {
+        "message": "Ряд (лінія)"
+    },
+    "fab_action_display": {
+        "message": "Кнопки дій"
+    },
+    "fab_action_icon": {
+        "message": "Круглі іконки"
+    },
+    "fab_action_text": {
+        "message": "Текст (як раніше)"
+    },
+    "fab_allow_drag": {
+        "message": "Плаваюче положення — перетягування мишею"
+    },
+    "fab_bar_panel_style": {
+        "message": "Вигляд панелі в куті"
+    },
+    "fab_bar_panel_list": {
+        "message": "Завжди показувати список"
+    },
+    "fab_bar_panel_launcher": {
+        "message": "Головна кнопка (віяло / ряд)"
+    },
+    "fab_button_bg_color": {
+        "message": "Колір кнопок"
+    },
+    "fab_button_opacity": {
+        "message": "Непрозорість (%)"
+    },
+    "fab_pick_icon": {
+        "message": "Обрати іконку"
+    },
+    "fab_launcher_icon": {
+        "message": "Іконка головної кнопки"
+    },
+    "fab_launcher_icon_placeholder": {
+        "message": "напр. fas fa-bolt"
+    },
+    "fab_icon_placeholder": {
+        "message": "Клас іконки (необовʼязково)"
+    },
+    "fab_launcher_title": {
+        "message": "Швидкі дії"
+    },
+    "fab_drag_move_title": {
+        "message": "Тягни щоб зрушити панель"
     },
     "back_to_settings": {
         "message": "Назад до налаштувань"
