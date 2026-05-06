@@ -30,8 +30,50 @@ chrome.storage.sync.get(['custom-hosts'], (data) => {
     return topbar;
   }
 
+  /** Active remelt rank from tabs / URL (lowercase API key, e.g. "b", "a_plus"). */
+  function getActiveRemeltRankKey() {
+    const sel = [
+      '.remelt__rank-item--active[data-rank]',
+      '.remelt__rank-item.tabs__item--active[data-rank]',
+      '.remelt__ranks .tabs__item--active[data-rank]',
+      '.remelt__ranks [data-rank].tabs__item--active',
+    ].join(', ');
+    try {
+      const active = document.querySelector(sel);
+      if (active) {
+        const r = (active.getAttribute('data-rank') || '').trim().toLowerCase();
+        if (r) return r;
+      }
+    } catch {}
+    try {
+      const q = new URL(window.location.href).searchParams.get('rank');
+      if (q) return q.trim().toLowerCase();
+    } catch {}
+    return '';
+  }
+
+  function useRemelt6Layout() {
+    const rank = getActiveRemeltRankKey();
+    return rank === 'b' && !!document.querySelector('.remelt__wrapper.remelt6');
+  }
+
+  /** Single app-wide control; lives outside .remelt__wrapper (sibling / higher in the tree). */
+  function getRemeltStartButton() {
+    return document.querySelector('.remelt__start-btn');
+  }
+
+  /** DOM root for the remelt UI that matches the active rank (both wrappers may exist). */
+  function getActiveRemeltRoot() {
+    if (useRemelt6Layout()) {
+      const w = document.querySelector('.remelt__wrapper.remelt6');
+      if (w) return w;
+    }
+    const classic = document.querySelector('.remelt__wrapper:not(.remelt6)');
+    return classic || document;
+  }
+
   function getRemeltLayout() {
-    if (document.querySelector('.remelt__wrapper.remelt6')) {
+    if (useRemelt6Layout()) {
       return {
         variant: 'remelt6',
         slots: [1, 2, 3, 4, 5, 6].map((n) => ({
@@ -62,11 +104,12 @@ chrome.storage.sync.get(['custom-hosts'], (data) => {
     if (!slotsWrap) return;
     slotsWrap.innerHTML = '';
 
+    const root = getActiveRemeltRoot();
     const { variant, slots: slotDefs } = getRemeltLayout();
     setTopbarLayoutClass(topbar, variant);
 
     for (const { name, selector } of slotDefs) {
-      const srcImg = document.querySelector(selector);
+      const srcImg = root.querySelector(selector);
       const slot = document.createElement('div');
       slot.className = 'remelt-ext__slot';
       slot.setAttribute('data-slot', name);
@@ -90,8 +133,9 @@ chrome.storage.sync.get(['custom-hosts'], (data) => {
     const resultWrap = topbar.querySelector('.remelt-ext__result');
     if (!resultWrap) return;
     while (resultWrap.firstChild) resultWrap.removeChild(resultWrap.firstChild);
+    const root = getActiveRemeltRoot();
     const { resultSelector } = getRemeltLayout();
-    const src = document.querySelector(resultSelector);
+    const src = root.querySelector(resultSelector);
     if (src) {
       const img = document.createElement('img');
       img.src = src.getAttribute('src');
@@ -103,26 +147,26 @@ chrome.storage.sync.get(['custom-hosts'], (data) => {
     const actionWrap = topbar.querySelector('.remelt-ext__action');
     if (!actionWrap) return;
     let proxy = actionWrap.querySelector('.remelt-ext__start-btn');
-    const original = document.querySelector('.remelt__start-btn');
+    const original = getRemeltStartButton();
     if (!proxy) {
       proxy = document.createElement('button');
       proxy.type = 'button';
       proxy.className = 'btn remelt-ext__start-btn';
       proxy.textContent = (original && original.textContent) ? original.textContent : '';
       proxy.addEventListener('click', () => {
-        const orig = document.querySelector('.remelt__start-btn');
+        const orig = getRemeltStartButton();
         try { if (orig) orig.click(); } catch {}
       });
       actionWrap.appendChild(proxy);
     }
-    updateStartButtonProxyVisibility(actionWrap, original);
+    updateStartButtonProxyVisibility(actionWrap);
   }
 
-  function updateStartButtonProxyVisibility(actionWrap, original) {
+  function updateStartButtonProxyVisibility(actionWrap) {
     try {
       const proxy = actionWrap.querySelector('.remelt-ext__start-btn');
       if (!proxy) return;
-      const orig = original || document.querySelector('.remelt__start-btn');
+      const orig = getRemeltStartButton();
       const visible = !!(orig && orig.offsetParent !== null);
       proxy.style.display = visible ? '' : 'none';
     } catch {}

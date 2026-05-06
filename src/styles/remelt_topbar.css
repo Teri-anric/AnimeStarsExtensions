@@ -18,7 +18,6 @@
 
 .remelt-ext__topbar--six .remelt-ext__slots {
   flex-wrap: wrap;
-  max-width: 360px;
   row-gap: 8px
 }
 
