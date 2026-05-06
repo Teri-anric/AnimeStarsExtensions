@@ -713,6 +713,9 @@
     "fab_button_bg_color": {
         "message": "Цвет кнопок"
     },
+    "fab_button_text_color": {
+        "message": "Цвет текста"
+    },
     "fab_button_opacity": {
         "message": "Непрозрачность (%)"
     },

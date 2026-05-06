@@ -713,6 +713,9 @@
     "fab_button_bg_color": {
         "message": "Button color"
     },
+    "fab_button_text_color": {
+        "message": "Text color"
+    },
     "fab_button_opacity": {
         "message": "Opacity (%)"
     },

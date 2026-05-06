@@ -123,6 +123,14 @@ function normalizeHexColor(raw) {
     return '#ffffff';
 }
 
+/** Default matches legacy FQA label color (`#222`). */
+function normalizeButtonTextColor(raw) {
+    if (typeof raw !== 'string') return '#222222';
+    const h = raw.trim();
+    if (/^#[0-9A-Fa-f]{6}$/.test(h)) return h.toLowerCase();
+    return '#222222';
+}
+
 function normalizeOpacityPct(raw) {
     const n = typeof raw === 'number' ? raw : Number.parseInt(String(raw || ''), 10);
     if (Number.isNaN(n)) return 92;
@@ -219,6 +227,7 @@ function normalizePositionPreset(preset, obj) {
  *   dragY: number,
  *   launcherIcon: string,
  *   buttonBgColor: string,
+ *   buttonTextColor: string,
  *   buttonOpacity: number,
  *   buttonSize: number,
  *   launcherSize: number,
@@ -260,6 +269,7 @@ export function parseFabConfig(raw) {
         dragY: 0,
         launcherIcon: '',
         buttonBgColor: '#ffffff',
+        buttonTextColor: '#222222',
         buttonOpacity: 92,
         buttonSize: 40,
         launcherSize: 48,
@@ -321,6 +331,7 @@ export function parseFabConfig(raw) {
         dragY,
         launcherIcon,
         buttonBgColor: normalizeHexColor(obj.buttonBgColor),
+        buttonTextColor: normalizeButtonTextColor(obj.buttonTextColor),
         buttonOpacity: normalizeOpacityPct(obj.buttonOpacity),
         buttonSize: normalizeButtonSize(obj.buttonSize, 40),
         launcherSize: normalizeButtonSize(obj.launcherSize, 48),
@@ -372,6 +383,7 @@ export function stringifyFabConfig(cfg) {
         launcherIcon:
             typeof cfg.launcherIcon === 'string' ? String(cfg.launcherIcon).trim().slice(0, 120) : '',
         buttonBgColor: normalizeHexColor(cfg.buttonBgColor),
+        buttonTextColor: normalizeButtonTextColor(cfg.buttonTextColor),
         buttonOpacity: normalizeOpacityPct(cfg.buttonOpacity),
         buttonSize: normalizeButtonSize(cfg.buttonSize, 40),
         launcherSize: normalizeButtonSize(cfg.launcherSize, 48),

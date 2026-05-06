@@ -25,7 +25,7 @@
     text-align: left;
     background: var(--as-fqa-btn-fill, rgba(255, 255, 255, 0.92));
     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.12);
-    color: #222;
+    color: var(--as-fqa-btn-text, #222);
     max-width: 100%;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -255,6 +255,102 @@
     clip: rect(0, 0, 0, 0);
     border: 0;
     white-space: nowrap;
+}
+
+/* Read-only metric (action_property): same chrome as buttons, not interactive */
+.as-fqa .as-fqa-btn.as-fqa-metric {
+    cursor: default;
+    pointer-events: none;
+    user-select: none;
+    font-variant-numeric: tabular-nums;
+    max-width: min(200px, 78vw);
+    box-sizing: border-box;
+}
+
+/* Long "label: value" should not stretch the bar */
+.as-fqa .as-fqa-btn.as-fqa-metric:not(.as-fqa-btn--circle) {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* Keep round metrics compact (value-only compact mode) */
+.as-fqa .as-fqa-btn.as-fqa-metric.as-fqa-btn--circle {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    font-size: calc(var(--as-fqa-action-size, 40px) * 0.3);
+    line-height: 1;
+    padding: 0 3px;
+}
+
+/* Inline editor popovers (select / range) — appended to document.body; theme vars copied from `.as-fqa` in JS */
+.as-fqa-field-pop {
+    position: fixed;
+    z-index: 2147483647;
+    min-width: 160px;
+    max-width: min(92vw, 280px);
+    padding: 8px;
+    border-radius: 10px;
+    background: var(--as-fqa-btn-fill, rgba(250, 250, 252, 0.98));
+    border: 1px solid color-mix(in srgb, var(--as-fqa-btn-text, #222) 16%, transparent);
+    box-shadow: 0 8px 28px rgba(0, 0, 0, 0.22);
+    pointer-events: auto;
+    color: var(--as-fqa-btn-text, #222);
+}
+
+.as-fqa-field-pop--select {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    max-height: min(52vh, 320px);
+    overflow-y: auto;
+}
+
+.as-fqa-field-pop__opt {
+    width: 100%;
+    text-align: left;
+    cursor: pointer;
+    border: 1px solid transparent;
+    border-radius: var(--as-fqa-btn-radius, 8px);
+    padding: var(--as-fqa-btn-padding-y, 6px) var(--as-fqa-btn-padding-x, 8px);
+    font-size: var(--as-fqa-btn-font-size, 12px);
+    line-height: 1.25;
+    background: color-mix(in srgb, var(--as-fqa-btn-text, #222) 7%, transparent);
+    color: var(--as-fqa-btn-text, #222);
+}
+
+.as-fqa-field-pop__opt:hover {
+    background: color-mix(in srgb, var(--as-fqa-btn-text, #222) 14%, transparent);
+}
+
+.as-fqa-field-pop__range-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+.as-fqa-field-pop__range-row input[type='range'] {
+    flex: 1 1 140px;
+    min-width: 120px;
+}
+
+.as-fqa-field-pop__range-num {
+    width: 72px;
+    padding: 4px 6px;
+    font-size: var(--as-fqa-btn-font-size, 12px);
+    border-radius: 6px;
+    border: 1px solid color-mix(in srgb, var(--as-fqa-btn-text, #222) 22%, transparent);
+    background: color-mix(in srgb, white 90%, var(--as-fqa-btn-fill, rgba(255, 255, 255, 0.92)));
+    color: var(--as-fqa-btn-text, #222);
+}
+
+.as-fqa-field-pop__unit {
+    font-size: 11px;
+    opacity: 0.75;
+    white-space: nowrap;
+    color: var(--as-fqa-btn-text, #222);
 }
 
 .as-fqa-drag-handle {

@@ -6,7 +6,7 @@
 /** Background persists SETTING_FIELDS under this chrome.storage.local key for content scripts that cannot load modules. */
 export const SETTING_FIELDS_REGISTRY_LOCAL_KEY = '_as-setting-fields-registry';
 
-/** @typedef {'checkbox'|'select'|'range'|'custom'} SettingFieldType */
+/** @typedef {'checkbox'|'select'|'range'|'custom'|'action'|'action_property'} SettingFieldType */
 
 /**
  * @type {Record<string, {
@@ -20,6 +20,12 @@ export const SETTING_FIELDS_REGISTRY_LOCAL_KEY = '_as-setting-fields-registry';
  *   min?: number, max?: number, step?: number,
  *   unit?: string,
  *   selectInspect?: boolean,
+ *   action?: {
+ *     type: 'runtime_message',
+ *     message: Record<string, unknown>,
+ *     refreshMetric?: string[],
+ *     responseKey?: string,
+ *   },
  * }>}
  */
 export const SETTING_FIELDS = {
@@ -289,6 +295,32 @@ export const SETTING_FIELDS = {
             { value: 'automatic', labelKey: 'automatic' },
         ],
     },
+    'card-user-count-queue-size': {
+        type: 'action_property',
+        labelKey: 'card_user_count_queue',
+        action: {
+            type: 'runtime_message',
+            message: { action: 'get_card_data_queue_size' },
+            responseKey: 'size',
+        },
+    },
+    'card-user-count-clear-queue-action': {
+        type: 'action',
+        labelKey: 'clear_queue',
+        action: {
+            type: 'runtime_message',
+            message: { action: 'clear_card_data_queue' },
+            refreshMetric: ['card-user-count-queue-size'],
+        },
+    },
+    'clear-card-cache-action': {
+        type: 'action',
+        labelKey: 'clear_card_cache',
+        action: {
+            type: 'runtime_message',
+            message: { action: 'clear_all_card_caches' },
+        },
+    },
 
     'api-stats-submission-enabled': {
         type: 'checkbox',
@@ -327,7 +359,10 @@ export const SETTING_FIELDS = {
 
 /** Keys managed by SETTING_FIELDS (storage keys). */
 export function getRegistryStorageKeys() {
-    return Object.keys(SETTING_FIELDS);
+    return Object.keys(SETTING_FIELDS).filter((key) => {
+        const type = SETTING_FIELDS[key].type;
+        return type === 'checkbox' || type === 'select' || type === 'range';
+    });
 }
 
 /**
@@ -347,7 +382,6 @@ export function buildDefaultSettingsFromFields() {
  * List of boolean field keys that may appear on the floating quick-actions panel.
  */
 export function getQuickActionFieldKeys() {
-    return Object.keys(SETTING_FIELDS).filter(
-        (k) => SETTING_FIELDS[k].type === 'checkbox' && SETTING_FIELDS[k].quickAction
-    );
+    const supportedTypes = new Set(['checkbox', 'select', 'range', 'action', 'action_property']);
+    return Object.keys(SETTING_FIELDS).filter((k) => supportedTypes.has(SETTING_FIELDS[k].type));
 }

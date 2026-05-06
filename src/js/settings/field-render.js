@@ -54,7 +54,7 @@ export function renderRange(fieldKey, def) {
     return wrap;
 }
 
-export function renderFieldRow(fieldKey, showIf) {
+export function renderFieldRow(fieldKey, showIf, nodeOverrides = {}) {
     const def = SETTING_FIELDS[fieldKey];
     if (!def || def.type === 'custom') return null;
 
@@ -80,6 +80,25 @@ export function renderFieldRow(fieldKey, showIf) {
             small.textContent = def.descriptionKey;
             row.appendChild(small);
         }
+    } else if (def.type === 'action_property') {
+        const span = document.createElement('span');
+        span.id = fieldKey;
+        span.textContent = '0';
+        row.appendChild(span);
+    } else if (def.type === 'action' && def.action) {
+        if (nodeOverrides.metric) {
+            const metricSpan = document.createElement('span');
+            metricSpan.id = nodeOverrides.metric;
+            metricSpan.textContent = '0';
+            row.appendChild(metricSpan);
+        }
+        const btn = document.createElement('button');
+        btn.id = nodeOverrides.id || fieldKey;
+        btn.type = 'button';
+        btn.className = nodeOverrides.btnClass || 'as-btn as-btn--secondary';
+        btn.textContent = nodeOverrides.labelKey || def.labelKey;
+        btn.dataset.actionField = fieldKey;
+        row.appendChild(btn);
     }
 
     if (def.descriptionKey && def.type === 'checkbox') {
@@ -133,6 +152,14 @@ export function renderNodes(nodes, container) {
             container.appendChild(sub);
         } else if (node.kind === 'field') {
             const row = renderFieldRow(node.fieldKey, node.showIf);
+            if (row) container.appendChild(row);
+        } else if (node.kind === 'actionField') {
+            const row = renderFieldRow(node.fieldKey, node.showIf, {
+                id: node.id,
+                labelKey: node.labelKey,
+                btnClass: node.btnClass,
+                metric: node.metric,
+            });
             if (row) container.appendChild(row);
         } else if (node.kind === 'custom') {
             const el = renderCustom(node.customId);

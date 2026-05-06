@@ -59,23 +59,29 @@ export function renderExternalLink(node) {
 
 /**
  * @param {{
- *   labelKey: string,
- *   metric?: { message: Record<string, unknown>, displayId: string },
+ *   labelKey?: string,
+ *   metric?: { message: Record<string, unknown>, displayId?: string, fieldKey?: string },
  *   buttons?: Array<{
  *     id: string,
  *     labelKey: string,
  *     message: Record<string, unknown>,
  *     btnClass?: string,
- *     refreshMetric?: boolean,
+ *     refreshMetric?: string[] | boolean,
  *   }>,
  * }} node
  */
 export function renderRuntimeRow(node) {
+    if (!node.labelKey && !node.metric?.displayId && !(node.buttons && node.buttons.length)) {
+        return null;
+    }
+
     const row = document.createElement('div');
     row.className = 'setting-item';
-    const lb = document.createElement('label');
-    lb.textContent = node.labelKey;
-    row.appendChild(lb);
+    if (node.labelKey) {
+        const lb = document.createElement('label');
+        lb.textContent = node.labelKey;
+        row.appendChild(lb);
+    }
 
     if (node.metric) {
         const span = document.createElement('span');

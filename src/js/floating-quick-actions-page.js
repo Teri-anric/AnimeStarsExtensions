@@ -160,6 +160,13 @@ function buildPanel(root) {
     bgInput.type = 'color';
     bgInput.id = 'fab-btn-bg';
     bgInput.className = 'fab-btn-bg-input';
+    const textLabel = document.createElement('label');
+    textLabel.setAttribute('for', 'fab-btn-text');
+    textLabel.textContent = 'fab_button_text_color';
+    const textInput = document.createElement('input');
+    textInput.type = 'color';
+    textInput.id = 'fab-btn-text';
+    textInput.className = 'fab-btn-text-input';
     const opLabel = document.createElement('label');
     opLabel.setAttribute('for', 'fab-btn-opacity');
     opLabel.textContent = 'fab_button_opacity';
@@ -211,6 +218,7 @@ function buildPanel(root) {
     gapRange.step = '1';
     gapRange.className = 'fab-btn-gap-range';
     appendLookControlRow(bgLabel, bgInput);
+    appendLookControlRow(textLabel, textInput);
     appendLookControlRow(opLabel, opRange);
     appendLookControlRow(sizeLabel, sizeRange);
     appendLookControlRow(launcherSizeLabel, launcherSizeRange);
@@ -311,6 +319,7 @@ function wirePanel() {
     const plSel = /** @type {HTMLSelectElement|null} */ (document.getElementById('fab-panel-layout'));
     const adSel = /** @type {HTMLSelectElement|null} */ (document.getElementById('fab-action-display'));
     const bgInput = /** @type {HTMLInputElement|null} */ (document.getElementById('fab-btn-bg'));
+    const textInput = /** @type {HTMLInputElement|null} */ (document.getElementById('fab-btn-text'));
     const opRange = /** @type {HTMLInputElement|null} */ (document.getElementById('fab-btn-opacity'));
     const sizeRange = /** @type {HTMLInputElement|null} */ (document.getElementById('fab-btn-size'));
     const launcherSizeRange = /** @type {HTMLInputElement|null} */ (document.getElementById('fab-launcher-size'));
@@ -329,6 +338,7 @@ function wirePanel() {
         !plSel ||
         !adSel ||
         !bgInput ||
+        !textInput ||
         !opRange ||
         !sizeRange ||
         !launcherSizeRange ||
@@ -667,6 +677,7 @@ function wirePanel() {
             opt.textContent = tMsg(`floating_quick_actions_pos_${v.replace(/-/g, '_')}`);
         });
         bgInput.value = cfg.buttonBgColor || '#ffffff';
+        textInput.value = cfg.buttonTextColor || '#222222';
         opRange.value = String(cfg.buttonOpacity ?? 92);
         sizeRange.value = String(cfg.buttonSize ?? 40);
         launcherSizeRange.value = String(cfg.launcherSize ?? 48);
@@ -710,6 +721,8 @@ function wirePanel() {
         const bsLabEl = document.querySelector('label[for="fab-btn-size"]');
         const lsLabEl = document.querySelector('label[for="fab-launcher-size"]');
         if (bgLabEl) bgLabEl.textContent = tMsg('fab_button_bg_color');
+        const txtLabEl = document.querySelector('label[for="fab-btn-text"]');
+        if (txtLabEl) txtLabEl.textContent = tMsg('fab_button_text_color');
         if (opLabEl) opLabEl.textContent = tMsg('fab_button_opacity');
         if (bsLabEl) bsLabEl.textContent = tMsg('fab_button_size');
         if (lsLabEl) lsLabEl.textContent = tMsg('fab_launcher_size');
@@ -755,6 +768,14 @@ function wirePanel() {
     bgInput.addEventListener('change', () => {
         readCfg((cfg) => {
             cfg.buttonBgColor = bgInput.value;
+            writeCfg(cfg);
+            fullRender();
+        });
+    });
+
+    textInput.addEventListener('change', () => {
+        readCfg((cfg) => {
+            cfg.buttonTextColor = textInput.value;
             writeCfg(cfg);
             fullRender();
         });

@@ -6,6 +6,17 @@
 /** @typedef {{ kind: 'section', titleKey: string, tooltipKey?: string, children: SectionNode[] }} SectionBlock */
 /** @typedef {{ kind: 'sub', id: string, showIf?: Record<string, boolean>, children: SectionNode[] }} SubBlock */
 /** @typedef {{ kind: 'field', fieldKey: string, showIf?: Record<string, boolean> }} FieldRef */
+/**
+ * @typedef {{
+ *   kind: 'actionField',
+ *   fieldKey: string,
+ *   showIf?: Record<string, boolean>,
+ *   id?: string,
+ *   labelKey?: string,
+ *   btnClass?: string,
+ *   metric?: string,
+ * }} ActionFieldRef
+ */
 /** @typedef {{ kind: 'custom', customId: string }} CustomRef */
 
 /**
@@ -31,19 +42,19 @@
 /**
  * @typedef {{
  *   kind: 'runtimeRow',
- *   labelKey: string,
- *   metric?: { message: Record<string, unknown>, displayId: string },
+ *   labelKey?: string,
+ *   metric?: string | { message: Record<string, unknown>, displayId?: string, fieldKey?: string },
  *   buttons?: Array<{
  *     id: string,
  *     labelKey: string,
  *     message: Record<string, unknown>,
  *     btnClass?: string,
- *     refreshMetric?: boolean,
+ *     refreshMetric?: string[] | boolean,
  *   }>,
  * }} RuntimeRowNode
  */
 
-/** @typedef {SectionBlock | SubBlock | FieldRef | CustomRef | PageLinkNode | ExternalLinkNode | RuntimeRowNode} SectionNode */
+/** @typedef {SectionBlock | SubBlock | FieldRef | ActionFieldRef | CustomRef | PageLinkNode | ExternalLinkNode | RuntimeRowNode} SectionNode */
 
 /** @type {SectionNode[]} */
 export const SETTING_SECTIONS = [
@@ -178,31 +189,19 @@ export const SETTING_SECTIONS = [
                 anchorId: 'open-card-appearance',
             },
             {
-                kind: 'runtimeRow',
-                labelKey: 'card_user_count_queue',
-                metric: {
-                    message: { action: 'get_card_data_queue_size' },
-                    displayId: 'card-user-count-queue-size',
-                },
-                buttons: [
-                    {
-                        id: 'card-user-count-clear-queue',
-                        labelKey: 'clear_queue',
-                        message: { action: 'clear_card_data_queue' },
-                        refreshMetric: true,
-                    },
-                ],
+                kind: 'actionField',
+                fieldKey: 'card-user-count-clear-queue-action',
+                metric: 'card-user-count-queue-size',
+                id: 'card-user-count-clear-queue',
+                labelKey: 'clear_queue',
+                btnClass: 'as-btn as-btn--secondary',
             },
             {
-                kind: 'runtimeRow',
+                kind: 'actionField',
+                fieldKey: 'clear-card-cache-action',
+                id: 'clear-card-cache',
                 labelKey: 'card_cache_controls',
-                buttons: [
-                    {
-                        id: 'clear-card-cache',
-                        labelKey: 'clear_card_cache',
-                        message: { action: 'clear_all_card_caches' },
-                    },
-                ],
+                btnClass: 'as-btn as-btn--secondary',
             },
         ],
     },
