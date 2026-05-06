@@ -7,7 +7,7 @@ export function renderCustom(customId) {
             row.className = 'setting-item';
             const btn = document.createElement('button');
             btn.className = 'check-update-btn as-btn as-btn--primary';
-            btn.textContent = 'check-update';
+            btn.textContent = 'check_update';
             row.appendChild(btn);
             return row;
         }
@@ -16,7 +16,7 @@ export function renderCustom(customId) {
             row.className = 'setting-item multi-line';
             const lb = document.createElement('label');
             lb.setAttribute('for', 'custom-domain-input');
-            lb.textContent = 'site-domains-add-label';
+            lb.textContent = 'site_domains_add_label';
             const controls = document.createElement('div');
             controls.className = 'domain-controls';
             const input = document.createElement('input');
@@ -28,11 +28,11 @@ export function renderCustom(customId) {
             const addBtn = document.createElement('button');
             addBtn.id = 'custom-domain-add';
             addBtn.className = 'as-btn as-btn--primary';
-            addBtn.textContent = 'site-domains-add-btn';
+            addBtn.textContent = 'site_domains_add_btn';
             controls.appendChild(input);
             controls.appendChild(addBtn);
             const lb2 = document.createElement('label');
-            lb2.textContent = 'site-domains';
+            lb2.textContent = 'site_domains';
             const list = document.createElement('div');
             list.className = 'domain-list';
             list.id = 'custom-domains-list';

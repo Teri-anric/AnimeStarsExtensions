@@ -54,7 +54,7 @@ export const SETTING_SECTIONS = [
     },
     {
         kind: 'section',
-        titleKey: 'auto-features',
+        titleKey: 'auto_features',
         children: [
             { kind: 'field', fieldKey: 'auto-seen-card' },
             { kind: 'field', fieldKey: 'auto-seen-card-stack' },
@@ -70,7 +70,7 @@ export const SETTING_SECTIONS = [
     },
     {
         kind: 'section',
-        titleKey: 'ui-customization',
+        titleKey: 'ui_customization',
         children: [
             { kind: 'field', fieldKey: 'dark-theme' },
             { kind: 'field', fieldKey: 'hide-snow' },
@@ -79,16 +79,16 @@ export const SETTING_SECTIONS = [
             { kind: 'field', fieldKey: 'add-user-cards-buttons' },
             {
                 kind: 'pageLink',
-                descriptionKey: 'user-card-buttons-editor-description',
+                descriptionKey: 'user_card_buttons_editor_description',
                 href: 'user-card-buttons-editor.html',
-                titleKey: 'open-user-card-buttons-editor',
+                titleKey: 'open_user_card_buttons_editor',
                 anchorId: 'open-user-card-buttons-editor',
             },
             {
                 kind: 'pageLink',
-                descriptionKey: 'floating-quick-actions-link-description',
+                descriptionKey: 'floating_quick_actions_link_description',
                 href: 'floating-quick-actions.html',
-                titleKey: 'open-floating-quick-actions-page',
+                titleKey: 'open_floating_quick_actions_page',
                 anchorId: 'open-floating-quick-actions-page',
             },
             { kind: 'field', fieldKey: 'add-need-btn-to-card-dialog' },
@@ -99,7 +99,7 @@ export const SETTING_SECTIONS = [
     },
     {
         kind: 'section',
-        titleKey: 'exchange-settings',
+        titleKey: 'exchange_settings',
         children: [
             { kind: 'field', fieldKey: 'trades-history-filters' },
             { kind: 'field', fieldKey: 'trades-preview-enabled' },
@@ -127,8 +127,8 @@ export const SETTING_SECTIONS = [
     },
     {
         kind: 'section',
-        titleKey: 'club-settings',
-        tooltipKey: 'club-boost-hotkey-description',
+        titleKey: 'club_settings',
+        tooltipKey: 'club_boost_hotkey_description',
         children: [
             { kind: 'field', fieldKey: 'club-boost-auto' },
             { kind: 'field', fieldKey: 'boss-boost-auto' },
@@ -156,7 +156,7 @@ export const SETTING_SECTIONS = [
     },
     {
         kind: 'section',
-        titleKey: 'card-user-count-settings',
+        titleKey: 'card_user_count_settings',
         children: [
             { kind: 'field', fieldKey: 'card-user-count' },
             {
@@ -172,14 +172,14 @@ export const SETTING_SECTIONS = [
             },
             {
                 kind: 'pageLink',
-                descriptionKey: 'card-appearance-description',
+                descriptionKey: 'card_appearance_description',
                 href: 'card-appearance.html',
-                titleKey: 'open-card-appearance-editor',
+                titleKey: 'open_card_appearance_editor',
                 anchorId: 'open-card-appearance',
             },
             {
                 kind: 'runtimeRow',
-                labelKey: 'card-user-count-queue',
+                labelKey: 'card_user_count_queue',
                 metric: {
                     message: { action: 'get_card_data_queue_size' },
                     displayId: 'card-user-count-queue-size',
@@ -187,7 +187,7 @@ export const SETTING_SECTIONS = [
                 buttons: [
                     {
                         id: 'card-user-count-clear-queue',
-                        labelKey: 'clear-queue',
+                        labelKey: 'clear_queue',
                         message: { action: 'clear_card_data_queue' },
                         refreshMetric: true,
                     },
@@ -195,11 +195,11 @@ export const SETTING_SECTIONS = [
             },
             {
                 kind: 'runtimeRow',
-                labelKey: 'card-cache-controls',
+                labelKey: 'card_cache_controls',
                 buttons: [
                     {
                         id: 'clear-card-cache',
-                        labelKey: 'clear-card-cache',
+                        labelKey: 'clear_card_cache',
                         message: { action: 'clear_all_card_caches' },
                     },
                 ],
@@ -208,7 +208,7 @@ export const SETTING_SECTIONS = [
     },
     {
         kind: 'section',
-        titleKey: 'api-integration-settings',
+        titleKey: 'api_integration_settings',
         children: [
             { kind: 'field', fieldKey: 'api-stats-submission-enabled' },
             { kind: 'field', fieldKey: 'api-stats-receive-enabled' },
@@ -216,16 +216,16 @@ export const SETTING_SECTIONS = [
             { kind: 'field', fieldKey: 'cards-search-integration' },
             {
                 kind: 'externalLink',
-                labelKey: 'api-website-label',
+                labelKey: 'api_website_label',
                 url: 'https://ass.strawberrycat.dev/',
                 linkHostText: 'ass.strawberrycat.dev',
-                descriptionKey: 'api-website-description',
+                descriptionKey: 'api_website_description',
             },
         ],
     },
     {
         kind: 'section',
-        titleKey: 'extension-settings',
+        titleKey: 'extension_settings',
         children: [
             { kind: 'field', fieldKey: 'not-update-check' },
             { kind: 'custom', customId: 'check-update-row' },

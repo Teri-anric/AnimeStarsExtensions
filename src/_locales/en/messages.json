@@ -1,167 +1,173 @@
 {
+    "extension_name": {
+        "message": "AnimeStar Extension"
+    },
+    "extension_description": {
+        "message": "Enhanced functionality for AnimeStar website"
+    },
     "language": {
         "message": "Language"
     },
-    "language-uk": {
+    "language_uk": {
         "message": "Ukrainian"
     },
-    "language-en": {
+    "language_en": {
         "message": "English"
     },
-    "language-ru": {
+    "language_ru": {
         "message": "Russian"
     },
-    "language-inspect": {
+    "language_inspect": {
         "message": "Inspect"
     },
-    "select-language": {
+    "select_language": {
         "message": "Select Language"
     },
-    "auto-features": {
+    "auto_features": {
         "message": "Automatic Features"
     },
-    "exchange-settings": {
+    "exchange_settings": {
         "message": "Exchange Settings"
     },
-    "ui-customization": {
+    "ui_customization": {
         "message": "UI Customization"
     },
-    "dark-theme": {
+    "dark_theme": {
         "message": "Dark Theme"
     },
-    "hide-snow": {
+    "hide_snow": {
         "message": "Hide snow"
     },
-    "auto-seen-card": {
+    "auto_seen_card": {
         "message": "Automatically take cards from watching"
     },
-    "auto-seen-card-stack": {
+    "auto_seen_card_stack": {
         "message": "Stack cards from watching"
     },
-    "auto-watchlist-fix": {
+    "auto_watchlist_fix": {
         "message": "Collection is a watchlist"
     },
-    "auto-take-heavenly-stone": {
+    "auto_take_heavenly_stone": {
         "message": "Take heavenly stone automatically"
     },
-    "auto-take-cinema-stone": {
+    "auto_take_cinema_stone": {
         "message": "Take cinema stones automatically"
     },
-    "add-my-cards-button": {
+    "add_my_cards_button": {
         "message": "Add \"My Cards\" button to the header"
     },
-    "add-user-cards-buttons": {
+    "add_user_cards_buttons": {
         "message": "Add buttons for quick access to user's open cards"
     },
-    "club-boost-auto": {
+    "club_boost_auto": {
         "message": "Automatic club boost"
     },
-    "club-boost-replace-auto": {
+    "club_boost_replace_auto": {
         "message": "Automatic card skips (mine replace)"
     },
-    "boss-boost-auto": {
+    "boss_boost_auto": {
         "message": "Automatic boss boost"
     },
-    "card-user-count": {
+    "card_user_count": {
         "message": "Show card statistics"
     },
-    "card-user-count-event-target": {
+    "card_user_count_event_target": {
         "message": "Event target for showing card statistics"
     },
-    "only-cache": {
+    "only_cache": {
         "message": "Only cache"
     },
-    "save-settings": {
+    "save_settings": {
         "message": "Save Settings"
     },
     "automatic": {
         "message": "Automatic"
     },
-    "mousedown-0": {
+    "mousedown_0": {
         "message": "Left mouse button"
     },
-    "mousedown-1": {
+    "mousedown_1": {
         "message": "Middle mouse button"
     },
-    "mousedown-2": {
+    "mousedown_2": {
         "message": "Right mouse button"
     },
     "mouseover": {
         "message": "Mouse over"
     },
-    "club-settings": {
+    "club_settings": {
         "message": "Club Settings"
     },
-    "settings-title": {
+    "settings_title": {
         "message": "Extension Settings"
     },
-    "site-domains": {
+    "site_domains": {
         "message": "Site domain(s)"
     },
-    "site-domains-add-label": {
+    "site_domains_add_label": {
         "message": "Add domain manually (when the site changes domain)"
     },
-    "site-domains-add-btn": {
+    "site_domains_add_btn": {
         "message": "Add domain"
     },
-    "site-domains-help": {
+    "site_domains_help": {
         "message": "Add the website domain, then reload the site tab."
     },
-    "site-domains-empty": {
+    "site_domains_empty": {
         "message": "No additional domains."
     },
-    "site-domains-invalid": {
+    "site_domains_invalid": {
         "message": "Invalid domain. Enter a hostname or URL (e.g. animestars.org)."
     },
-    "site-domains-requesting": {
+    "site_domains_requesting": {
         "message": "Saving domain…"
     },
-    "site-domains-added": {
+    "site_domains_added": {
         "message": "Domain added. Reload the website page."
     },
-    "site-domains-removing": {
+    "site_domains_removing": {
         "message": "Removing domain…"
     },
-    "site-domains-removed": {
+    "site_domains_removed": {
         "message": "Domain removed."
     },
-    "site-domains-error": {
+    "site_domains_error": {
         "message": "Error"
     },
     "remove": {
         "message": "Remove"
     },
-    "clubs-boost-block-images": {
+    "clubs_boost_block_images": {
         "message": "Block card images on club boost page"
     },
-    "club-boost-refresh-cooldown": {
+    "club_boost_refresh_cooldown": {
         "message": "Refresh Interval"
     },
-    "club-boost-action-cooldown": {
+    "club_boost_action_cooldown": {
         "message": "Boost Interval"
     },
-    "club-boost-cooldown-description": {
+    "club_boost_cooldown_description": {
         "message": "Settings for automatic club boost intervals (ms)"
     },
-    "club-boost-replace-stale-ms": {
+    "club_boost_replace_stale_ms": {
         "message": "Card skip: time with no card change"
     },
-    "club-boost-replace-stale-description": {
+    "club_boost_replace_stale_description": {
         "message": "If the offered card stays the same on screen for this long (no one takes it from contributions), a skip is triggered (replace). Also skips immediately when no club member can donate this card (empty “can contribute” list). Only when “Automatic card boost” is enabled."
     },
-    "club-boost-replace-skip-cooldown-ms": {
+    "club_boost_replace_skip_cooldown_ms": {
         "message": "Delay between card skips"
     },
-    "club-boost-replace-skip-cooldown-description": {
+    "club_boost_replace_skip_cooldown_description": {
         "message": "Minimum time between two replace clicks so the site is not hit twice in a row."
     },
-    "club-boost-hotkey-description": {
+    "club_boost_hotkey_description": {
         "message": "Hotkeys for club boost control:\n- B: Toggle Automatic Boost\n- C: Toggle Automatic Card Skips"
     },
-    "update-notification-title": {
+    "update_notification_title": {
         "message": "AnimeStar Extension Update Available"
     },
-    "update-notification-message": {
+    "update_notification_message": {
         "message": "New version $VERSION$ is available! Click to see details.",
         "placeholders": {
             "version": {
@@ -170,136 +176,136 @@
             }
         }
     },
-    "update-notification-button": {
+    "update_notification_button": {
         "message": "View Details"
     },
-    "bottom-bar-text": {
+    "bottom_bar_text": {
         "message": "If you have any questions or feedback, feel free to reach out!"
     },
-    "bottom-bar-github": {
+    "bottom_bar_github": {
         "message": "GitHub"
     },
-    "bottom-bar-telegram": {
+    "bottom_bar_telegram": {
         "message": "Telegram"
     },
-    "card-user-count-request-delay": {
+    "card_user_count_request_delay": {
         "message": "Request delay"
     },
-    "not-update-check": {
+    "not_update_check": {
         "message": "Not check for updates"
     },
-    "check-update": {
+    "check_update": {
         "message": "Check for update"
     },
-    "update-available-title": {
+    "update_available_title": {
         "message": "Update Available"
     },
-    "update-available-description": {
+    "update_available_description": {
         "message": "New version is available! Click to see details. Version: "
     },
     "dismiss": {
         "message": "Dismiss"
     },
-    "card-user-count-cache-enabled": {
+    "card_user_count_cache_enabled": {
         "message": "Cache enabled"
     },
-    "card-user-count-cache-max-lifetime": {
+    "card_user_count_cache_max_lifetime": {
         "message": "Cache maximum lifetime (hours)"
     },
-    "card-user-count-queue": {
+    "card_user_count_queue": {
         "message": "Card queue size"
     },
-    "clear-queue": {
+    "clear_queue": {
         "message": "Clear queue"
     },
-    "card-cache-controls": {
+    "card_cache_controls": {
         "message": "Card cache"
     },
-    "clear-card-cache": {
+    "clear_card_cache": {
         "message": "Clear all caches"
     },
-    "card-user-count-template": {
+    "card_user_count_template": {
         "message": "Card statistics text template"
     },
-    "card-user-count-template-editor": {
+    "card_user_count_template_editor": {
         "message": "Template Editor"
     },
-    "card-appearance-settings": {
+    "card_appearance_settings": {
         "message": "Card Appearance Settings"
     },
-    "card-appearance-description": {
+    "card_appearance_description": {
         "message": "Customize the appearance of card statistics using the template editor"
     },
-    "open-card-appearance-editor": {
+    "open_card_appearance_editor": {
         "message": "Open Appearance Editor"
     },
-    "card-preview": {
+    "card_preview": {
         "message": "Card Preview"
     },
-    "card-preview-description": {
+    "card_preview_description": {
         "message": "Preview shows how your card will look with current settings"
     },
-    "card-user-count-settings": {
+    "card_user_count_settings": {
         "message": "Card Statistics Settings"
     },
-    "template-editor": {
+    "template_editor": {
         "message": "Template Editor"
     },
-    "card-user-count-position": {
+    "card_user_count_position": {
         "message": "Statistics Position"
     },
-    "card-user-count-style": {
+    "card_user_count_style": {
         "message": "Statistics Style"
     },
-    "card-user-count-size": {
+    "card_user_count_size": {
         "message": "Statistics Size"
     },
-    "card-user-count-background-color": {
+    "card_user_count_background_color": {
         "message": "Background Color"
     },
-    "card-user-count-text-color": {
+    "card_user_count_text_color": {
         "message": "Text Color"
     },
-    "card-user-count-opacity": {
+    "card_user_count_opacity": {
         "message": "Background Opacity"
     },
-    "card-user-count-hover-action": {
+    "card_user_count_hover_action": {
         "message": "Hover Action"
     },
-    "hover-action-none": {
+    "hover_action_none": {
         "message": "None"
     },
-    "hover-action-scale-up": {
+    "hover_action_scale_up": {
         "message": "Scale Up"
     },
-    "hover-action-scale-down": {
+    "hover_action_scale_down": {
         "message": "Scale Down"
     },
-    "hover-action-fade-out": {
+    "hover_action_fade_out": {
         "message": "Fade Out"
     },
-    "hover-action-hide": {
+    "hover_action_hide": {
         "message": "Hide"
     },
-    "hover-action-brighten": {
+    "hover_action_brighten": {
         "message": "Brighten"
     },
-    "top-left": {
+    "top_left": {
         "message": "Top Left"
     },
-    "top-center": {
+    "top_center": {
         "message": "Top Center"
     },
-    "top-right": {
+    "top_right": {
         "message": "Top Right"
     },
-    "bottom-left": {
+    "bottom_left": {
         "message": "Bottom Left"
     },
-    "bottom-center": {
+    "bottom_center": {
         "message": "Bottom Center"
     },
-    "bottom-right": {
+    "bottom_right": {
         "message": "Bottom Right"
     },
     "under": {
@@ -329,250 +335,250 @@
     "large": {
         "message": "Large"
     },
-    "template-item-type-text": {
+    "template_item_type_text": {
         "message": "Text"
     },
-    "template-item-type-icon": {
+    "template_item_type_icon": {
         "message": "Icon"
     },
-    "template-item-type-variable": {
+    "template_item_type_variable": {
         "message": "Variable"
     },
-    "template-item-placeholder-text": {
+    "template_item_placeholder_text": {
         "message": "Enter text"
     },
-    "template-add-text": {
+    "template_add_text": {
         "message": "Add Text"
     },
-    "template-add-icon": {
+    "template_add_icon": {
         "message": "Add Icon"
     },
-    "template-add-variable": {
+    "template_add_variable": {
         "message": "Add Variable"
     },
-    "template-empty-state-title": {
+    "template_empty_state_title": {
         "message": "No template items yet"
     },
-    "template-empty-state-subtitle": {
+    "template_empty_state_subtitle": {
         "message": "Click the buttons below to start building your template"
     },
-    "template-preview-label": {
+    "template_preview_label": {
         "message": "Preview:"
     },
-    "template-preview-empty": {
+    "template_preview_empty": {
         "message": "Empty template"
     },
-    "button-icon-none": {
+    "button_icon_none": {
         "message": "No icon"
     },
-    "api-integration-settings": {
+    "api_integration_settings": {
         "message": "API Integration"
     },
-    "api-send-stats": {
+    "api_send_stats": {
         "message": "Send statistics to website"
     },
-    "api-receive-stats": {
+    "api_receive_stats": {
         "message": "Receive statistics from website"
     },
-    "upload-card-data-to-ass": {
+    "upload_card_data_to_ass": {
         "message": "Upload card metadata to ASS"
     },
-    "upload-card-data-to-ass-description": {
+    "upload_card_data_to_ass_description": {
         "message": "Sends card metadata (name, image, etc.) for site search; turn off if you do not want this data sent"
     },
-    "api-website-label": {
+    "api_website_label": {
         "message": "ASS website"
     },
-    "api-website-description": {
+    "api_website_description": {
         "message": "Official site used for API integration and card search."
     },
-    "cards-search-settings": {
+    "cards_search_settings": {
         "message": "Cards Search Settings"
     },
-    "cards-search-integration": {
+    "cards_search_integration": {
         "message": "Cards Search Integration"
     },
-    "cards-search-integration-description": {
+    "cards_search_integration_description": {
         "message": "Adds a search button to the cards base page for quick search via API"
     },
-    "trades-history-filters": {
+    "trades_history_filters": {
         "message": "Trades history filters (rank and user)"
     },
-    "trades-preview-enabled": {
+    "trades_preview_enabled": {
         "message": "Show trade card previews"
     },
-    "trades-preview-auto-parse": {
+    "trades_preview_auto_parse": {
         "message": "Auto-load previews by parsing missing trades"
     },
-    "trades-preview-auto-start-delay": {
+    "trades_preview_auto_start_delay": {
         "message": "Auto-parse start delay"
     },
-    "trades-preview-auto-interval": {
+    "trades_preview_auto_interval": {
         "message": "Auto-parse interval"
     },
-    "trades-preview-full-exchange": {
+    "trades_preview_full_exchange": {
         "message": "Show full exchange (all cards) in lists"
     },
-    "trades-history-big-images": {
+    "trades_history_big_images": {
         "message": "Bigger images in trades history"
     },
-    "remelt-topbar-enabled": {
+    "remelt_topbar_enabled": {
         "message": "Simplify and move smelting top bar to the top of the page"
     },
-    "add-need-btn-to-card-dialog": {
+    "add_need_btn_to_card_dialog": {
         "message": "Add \"Need\" button to card dialog"
     },
-    "not-add-need-btn-to-card-dialog": {
+    "not_add_need_btn_to_card_dialog": {
         "message": "Not add"
     },
-    "add-need-btn-to-card-dialog-can": {
+    "add_need_btn_to_card_dialog_can": {
         "message": "Add if can set"
     },
-    "add-need-btn-to-card-dialog-force": {
+    "add_need_btn_to_card_dialog_force": {
         "message": "Add always"
     },
-    "remove-card-list-and-club-rating-in-card-base": {
+    "remove_card_list_and_club_rating_in_card_base": {
         "message": "Remove card list and club rating in card base"
     },
-    "user-card-buttons-editor-title": {
+    "user_card_buttons_editor_title": {
         "message": "User Card Buttons Editor"
     },
-    "user-card-buttons-editor-description": {
+    "user_card_buttons_editor_description": {
         "message": "Configure quick access buttons on user cards"
     },
-    "open-user-card-buttons-editor": {
+    "open_user_card_buttons_editor": {
         "message": "Open Buttons Editor"
     },
-    "buttons-preview": {
+    "buttons_preview": {
         "message": "Buttons Preview"
     },
-    "buttons-preview-description": {
+    "buttons_preview_description": {
         "message": "Preview shows how buttons will look on the user card"
     },
-    "buttons-configuration": {
+    "buttons_configuration": {
         "message": "Buttons Configuration"
     },
-    "buttons-empty-state-title": {
+    "buttons_empty_state_title": {
         "message": "No buttons yet"
     },
-    "buttons-empty-state-subtitle": {
+    "buttons_empty_state_subtitle": {
         "message": "Add buttons using the section below"
     },
-    "add-button": {
+    "add_button": {
         "message": "Add Button"
     },
-    "import-export-config": {
+    "import_export_config": {
         "message": "Import/Export Configuration"
     },
-    "export-config": {
+    "export_config": {
         "message": "Export Configuration"
     },
-    "import-config": {
+    "import_config": {
         "message": "Import Configuration"
     },
-    "reset-to-default": {
+    "reset_to_default": {
         "message": "Reset to Default"
     },
-    "button-need": {
+    "button_need": {
         "message": "Need Cards"
     },
-    "button-in-my-list": {
+    "button_in_my_list": {
         "message": "In My List"
     },
-    "button-unlocked": {
+    "button_unlocked": {
         "message": "Unlocked Cards"
     },
-    "button-text-label": {
+    "button_text_label": {
         "message": "Text:"
     },
-    "button-text-placeholder": {
+    "button_text_placeholder": {
         "message": "Enter button text"
     },
-    "button-icon-label": {
+    "button_icon_label": {
         "message": "Icon:"
     },
-    "button-icon-select": {
+    "button_icon_select": {
         "message": "Select Icon"
     },
-    "button-url-label": {
+    "button_url_label": {
         "message": "URL:"
     },
-    "button-enabled": {
+    "button_enabled": {
         "message": "Enabled"
     },
-    "confirm-reset": {
+    "confirm_reset": {
         "message": "Are you sure you want to reset all settings to default?"
     },
-    "import-success": {
+    "import_success": {
         "message": "Configuration imported successfully!"
     },
-    "import-error": {
+    "import_error": {
         "message": "Error importing configuration"
     },
-    "export-success": {
+    "export_success": {
         "message": "Configuration exported successfully!"
     },
-    "export-error": {
+    "export_error": {
         "message": "Error exporting configuration"
     },
-    "invalid-config-file": {
+    "invalid_config_file": {
         "message": "Invalid configuration file format"
     },
-    "config-exported": {
+    "config_exported": {
         "message": "Configuration exported to file"
     },
-    "config-imported": {
+    "config_imported": {
         "message": "Configuration imported from file"
     },
-    "reset-widgets-confirm": {
+    "reset_widgets_confirm": {
         "message": "Are you sure you want to reset all widgets to default? This action cannot be undone."
     },
-    "pm-card-preview-enabled": {
+    "pm_card_preview_enabled": {
         "message": "Show card previews in PM Postikuncik"
     },
-    "extension-settings": {
+    "extension_settings": {
         "message": "Extension Settings"
     },
-    "auto-take-snow-stone": {
+    "auto_take_snow_stone": {
         "message": "Take snow stone automatically"
     },
-    "auto-click-gandama": {
+    "auto_click_gandama": {
         "message": "Click gandama automatically"
     },
-    "floating-quick-actions-section": {
+    "floating_quick_actions_section": {
         "message": "Floating quick actions"
     },
-    "floating-quick-actions-hint": {
+    "floating_quick_actions_hint": {
         "message": "Shows movable shortcut buttons on the game website tab only (not system-wide). Pick toggles and position."
     },
-    "floating-quick-actions-enabled": {
+    "floating_quick_actions_enabled": {
         "message": "Enable floating panel"
     },
-    "floating-quick-actions-position": {
+    "floating_quick_actions_position": {
         "message": "Panel position"
     },
-    "floating-quick-actions-keys-label": {
+    "floating_quick_actions_keys_label": {
         "message": "Toggle shortcuts"
     },
-    "floating-quick-actions-pos-bottom-right": {
+    "floating_quick_actions_pos_bottom_right": {
         "message": "Bottom right"
     },
-    "floating-quick-actions-pos-bottom-left": {
+    "floating_quick_actions_pos_bottom_left": {
         "message": "Bottom left"
     },
-    "floating-quick-actions-pos-top-right": {
+    "floating_quick_actions_pos_top_right": {
         "message": "Top right"
     },
-    "floating-quick-actions-pos-top-left": {
+    "floating_quick_actions_pos_top_left": {
         "message": "Top left"
     },
-    "floating-quick-actions-link-description": {
+    "floating_quick_actions_link_description": {
         "message": "Shortcuts on the website"
     },
-    "open-floating-quick-actions-page": {
+    "open_floating_quick_actions_page": {
         "message": "Configure floating buttons…"
     },
-    "back-to-settings": {
+    "back_to_settings": {
         "message": "Back to settings"
     }
 }

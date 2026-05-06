@@ -138,20 +138,20 @@ class TemplateEditor {
         if (item.type === 'text') {
             const typeLabel = document.createElement('span');
             typeLabel.className = 'item-type-label';
-            typeLabel.textContent = this.getTranslatedText('template-item-type-text');
+            typeLabel.textContent = this.getTranslatedText('template_item_type_text');
             
             const input = document.createElement('input');
             input.type = 'text';
             input.className = 'item-input';
             input.value = item.text || '';
-            input.placeholder = this.getTranslatedText('template-item-placeholder-text');
+            input.placeholder = this.getTranslatedText('template_item_placeholder_text');
             
             content.appendChild(typeLabel);
             content.appendChild(input);
         } else if (item.type === 'icon') {
             const typeLabel = document.createElement('span');
             typeLabel.className = 'item-type-label';
-            typeLabel.textContent = this.getTranslatedText('template-item-type-icon');
+            typeLabel.textContent = this.getTranslatedText('template_item_type_icon');
 
             const iconControls = document.createElement('div');
             iconControls.className = 'icon-controls';
@@ -177,7 +177,7 @@ class TemplateEditor {
         } else if (item.type === 'variable') {
             const typeLabel = document.createElement('span');
             typeLabel.className = 'item-type-label';
-            typeLabel.textContent = this.getTranslatedText('template-item-type-variable');
+            typeLabel.textContent = this.getTranslatedText('template_item_type_variable');
             
             const select = document.createElement('select');
             select.className = 'variable-select';
@@ -289,10 +289,10 @@ class TemplateEditor {
             icon.className = 'fas fa-plus-circle';
             
             const title = document.createElement('p');
-            title.textContent = this.getTranslatedText('template-empty-state-title');
+            title.textContent = this.getTranslatedText('template_empty_state_title');
             
             const subtitle = document.createElement('small');
-            subtitle.textContent = this.getTranslatedText('template-empty-state-subtitle');
+            subtitle.textContent = this.getTranslatedText('template_empty_state_subtitle');
             
             emptyState.appendChild(icon);
             emptyState.appendChild(title);
@@ -317,7 +317,7 @@ class TemplateEditor {
         textIcon.className = 'fas fa-font';
         addTextBtn.appendChild(textIcon);
         addTextBtn.appendChild(document.createTextNode(' '));
-        addTextBtn.appendChild(document.createTextNode(this.getTranslatedText('template-add-text')));
+        addTextBtn.appendChild(document.createTextNode(this.getTranslatedText('template_add_text')));
         
         // Add Icon button
         const addIconBtn = document.createElement('button');
@@ -328,7 +328,7 @@ class TemplateEditor {
         iconIcon.className = 'fas fa-icons';
         addIconBtn.appendChild(iconIcon);
         addIconBtn.appendChild(document.createTextNode(' '));
-        addIconBtn.appendChild(document.createTextNode(this.getTranslatedText('template-add-icon')));
+        addIconBtn.appendChild(document.createTextNode(this.getTranslatedText('template_add_icon')));
         
         // Add Variable button
         const addVariableBtn = document.createElement('button');
@@ -339,7 +339,7 @@ class TemplateEditor {
         variableIcon.className = 'fas fa-code';
         addVariableBtn.appendChild(variableIcon);
         addVariableBtn.appendChild(document.createTextNode(' '));
-        addVariableBtn.appendChild(document.createTextNode(this.getTranslatedText('template-add-variable')));
+        addVariableBtn.appendChild(document.createTextNode(this.getTranslatedText('template_add_variable')));
         
         buttonsDiv.appendChild(addTextBtn);
         buttonsDiv.appendChild(addIconBtn);
@@ -440,13 +440,13 @@ class TemplateEditor {
             const typeLabel = itemDiv.querySelector('.item-type-label').textContent;
             
             // Compare with localized text to determine type
-            if (typeLabel === this.getTranslatedText('template-item-type-text')) {
+            if (typeLabel === this.getTranslatedText('template_item_type_text')) {
                 const text = itemDiv.querySelector('.item-input').value;
                 newItems.push({ type: 'text', text });
-            } else if (typeLabel === this.getTranslatedText('template-item-type-icon')) {
+            } else if (typeLabel === this.getTranslatedText('template_item_type_icon')) {
                 const icon = itemDiv.dataset.icon || '';
                 newItems.push({ type: 'icon', icon });
-            } else if (typeLabel === this.getTranslatedText('template-item-type-variable')) {
+            } else if (typeLabel === this.getTranslatedText('template_item_type_variable')) {
                 const variable = itemDiv.querySelector('.variable-select').value;
                 newItems.push({ type: 'variable', variable });
             }
@@ -524,7 +524,7 @@ class TemplateEditor {
         eyeIcon.className = 'fas fa-eye';
         previewLabel.appendChild(eyeIcon);
         previewLabel.appendChild(document.createTextNode(' '));
-        previewLabel.appendChild(document.createTextNode(this.getTranslatedText('template-preview-label')));
+        previewLabel.appendChild(document.createTextNode(this.getTranslatedText('template_preview_label')));
 
         const previewContent = document.createElement('div');
         previewContent.className = 'preview-content';
@@ -533,7 +533,7 @@ class TemplateEditor {
             previewContent.innerHTML = preview;
         } else {
             const emptyText = document.createElement('em');
-            emptyText.textContent = this.getTranslatedText('template-preview-empty');
+            emptyText.textContent = this.getTranslatedText('template_preview_empty');
             previewContent.appendChild(emptyText);
         }
 

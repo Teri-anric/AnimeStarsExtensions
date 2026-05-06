@@ -1,167 +1,173 @@
 {
+    "extension_name": {
+        "message": "Расширение AnimeStar"
+    },
+    "extension_description": {
+        "message": "Расширенные возможности для сайта AnimeStar"
+    },
     "language": {
         "message": "Язык"
     },
-    "language-uk": {
+    "language_uk": {
         "message": "Украинский"
     },
-    "language-en": {
+    "language_en": {
         "message": "Английский"
     },
-    "language-ru": {
+    "language_ru": {
         "message": "Русский"
     },
-    "language-inspect": {
+    "language_inspect": {
         "message": "Просмотр"
     },
-    "select-language": {
+    "select_language": {
         "message": "Выберите язык"
     },
-    "auto-features": {
+    "auto_features": {
         "message": "Автоматические функции"
     },
-    "exchange-settings": {
+    "exchange_settings": {
         "message": "Настройки обменов"
     },
-    "ui-customization": {
+    "ui_customization": {
         "message": "Кастомизация интерфейса"
     },
-    "dark-theme": {
+    "dark_theme": {
         "message": "Темная тема"
     },
-    "hide-snow": {
+    "hide_snow": {
         "message": "Убрать снег"
     },
-    "auto-seen-card": {
+    "auto_seen_card": {
         "message": "Автоматически просматривать карточки"
     },
-    "auto-seen-card-stack": {
+    "auto_seen_card_stack": {
         "message": "Складывать карточки из просмотра"
     },
-    "auto-watchlist-fix": {
+    "auto_watchlist_fix": {
         "message": "Коллекция как список просмотра"
     },
-    "auto-take-heavenly-stone": {
+    "auto_take_heavenly_stone": {
         "message": "Автоматически брать небесный камень"
     },
-    "auto-take-cinema-stone": {
+    "auto_take_cinema_stone": {
         "message": "Автоматически брать камни в кинотеатре"
     },
-    "add-my-cards-button": {
+    "add_my_cards_button": {
         "message": "Добавить кнопку \"Мои карточки\" в заголовок"
     },
-    "add-user-cards-buttons": {
+    "add_user_cards_buttons": {
         "message": "Добавить кнопки быстрого доступа к открытым карточкам пользователя"
     },
-    "club-boost-auto": {
+    "club_boost_auto": {
         "message": "Автоматический вклад в клуб"
     },
-    "club-boost-replace-auto": {
+    "club_boost_replace_auto": {
         "message": "Автоматический скип карт (замена в шахте)"
     },
-    "boss-boost-auto": {
+    "boss_boost_auto": {
         "message": "Автоматический буст босса"
     },
-    "card-user-count": {
+    "card_user_count": {
         "message": "Показать статистику карточек"
     },
-    "card-user-count-event-target": {
+    "card_user_count_event_target": {
         "message": "Событие для показа статистики карточек"
     },
-    "only-cache": {
+    "only_cache": {
         "message": "Только кэш"
     },
-    "save-settings": {
+    "save_settings": {
         "message": "Сохранить настройки"
     },
     "automatic": {
         "message": "Автоматический"
     },
-    "mousedown-0": {
+    "mousedown_0": {
         "message": "Левая кнопка мыши"
     },
-    "mousedown-1": {
+    "mousedown_1": {
         "message": "Средняя кнопка мыши"
     },
-    "mousedown-2": {
+    "mousedown_2": {
         "message": "Правая кнопка мыши"
     },
     "mouseover": {
         "message": "Наведение мыши"
     },
-    "club-settings": {
+    "club_settings": {
         "message": "Настройки клуба"
     },
-    "settings-title": {
+    "settings_title": {
         "message": "Настройки расширения"
     },
-    "site-domains": {
+    "site_domains": {
         "message": "Домен(ы) сайта"
     },
-    "site-domains-add-label": {
+    "site_domains_add_label": {
         "message": "Добавить домен вручную (когда сайт сменил домен)"
     },
-    "site-domains-add-btn": {
+    "site_domains_add_btn": {
         "message": "Добавить домен"
     },
-    "site-domains-help": {
+    "site_domains_help": {
         "message": "Добавьте домен сайта, затем перезагрузите вкладку с сайтом."
     },
-    "site-domains-empty": {
+    "site_domains_empty": {
         "message": "Нет дополнительных доменов."
     },
-    "site-domains-invalid": {
+    "site_domains_invalid": {
         "message": "Неверный домен. Укажите hostname или URL (например animestars.org)."
     },
-    "site-domains-requesting": {
+    "site_domains_requesting": {
         "message": "Сохраняю домен…"
     },
-    "site-domains-added": {
+    "site_domains_added": {
         "message": "Домен добавлен. Обновите страницу сайта."
     },
-    "site-domains-removing": {
+    "site_domains_removing": {
         "message": "Удаляю домен…"
     },
-    "site-domains-removed": {
+    "site_domains_removed": {
         "message": "Домен удалён."
     },
-    "site-domains-error": {
+    "site_domains_error": {
         "message": "Ошибка"
     },
     "remove": {
         "message": "Удалить"
     },
-    "clubs-boost-block-images": {
+    "clubs_boost_block_images": {
         "message": "Блокировать изображения карт в топе клуба"
     },
-    "club-boost-refresh-cooldown": {
+    "club_boost_refresh_cooldown": {
         "message": "Интервал обновления"
     },
-    "club-boost-action-cooldown": {
+    "club_boost_action_cooldown": {
         "message": "Интервал усиления"
     },
-    "club-boost-cooldown-description": {
+    "club_boost_cooldown_description": {
         "message": "Настройки интервалов автоматического усиления клуба (мс)"
     },
-    "club-boost-replace-stale-ms": {
+    "club_boost_replace_stale_ms": {
         "message": "Скип карт: время без смены карты"
     },
-    "club-boost-replace-stale-description": {
+    "club_boost_replace_stale_description": {
         "message": "Если за это время карта на экране так и не сменилась (никто не забирает её из взносов) — нажимается замена (скип). Отдельно сразу скипает, если никто из клуба не может внести эту карту (пустой список «Могут внести»). Работает только при включённом «Автоматический клад карт»."
     },
-    "club-boost-replace-skip-cooldown-ms": {
+    "club_boost_replace_skip_cooldown_ms": {
         "message": "Задержка между скипами карт"
     },
-    "club-boost-replace-skip-cooldown-description": {
+    "club_boost_replace_skip_cooldown_description": {
         "message": "Минимальный интервал между двумя нажатиями «заменить», чтобы не отправить запрос дважды подряд."
     },
-    "club-boost-hotkey-description": {
+    "club_boost_hotkey_description": {
         "message": "Горячие клавиши для управления бустом клуба:\n- B: Включить/Выключить автоматический вклад в клуб\n- C: Включить/Выключить автоматический скип карт"
     },
-    "update-notification-title": {
+    "update_notification_title": {
         "message": "Доступно обновление расширения AnimeStar"
     },
-    "update-notification-message": {
+    "update_notification_message": {
         "message": "Новая версия $VERSION$ уже доступна! Нажмите, чтобы просмотреть детали.",
         "placeholders": {
             "version": {
@@ -170,136 +176,136 @@
             }
         }
     },
-    "update-notification-button": {
+    "update_notification_button": {
         "message": "Просмотреть детали"
     },
-    "bottom-bar-text": {
+    "bottom_bar_text": {
         "message": "Если у вас есть вопросы или предложения, пожалуйста, свяжитесь со мной."
     },
-    "bottom-bar-github": {
+    "bottom_bar_github": {
         "message": "GitHub"
     },
-    "bottom-bar-telegram": {
+    "bottom_bar_telegram": {
         "message": "Telegram"
     },
-    "card-user-count-request-delay": {
+    "card_user_count_request_delay": {
         "message": "Задержка между запросами"
     },
-    "not-update-check": {
+    "not_update_check": {
         "message": "Не проверять обновления"
     },
-    "check-update": {
+    "check_update": {
         "message": "Проверить обновления"
     },
-    "update-available-title": {
+    "update_available_title": {
         "message": "Доступно обновление"
     },
-    "update-available-description": {
+    "update_available_description": {
         "message": "Новая версия уже доступна! Нажмите, чтобы просмотреть детали. Версия: "
     },
     "dismiss": {
         "message": "Отклонить"
     },
-    "card-user-count-template": {
+    "card_user_count_template": {
         "message": "Шаблон текста статистики карточек"
     },
-    "card-user-count-cache-enabled": {
+    "card_user_count_cache_enabled": {
         "message": "Включить кэширование"
     },
-    "card-user-count-cache-max-lifetime": {
+    "card_user_count_cache_max_lifetime": {
         "message": "Максимальное время жизни кэша (часы)"
     },
-    "card-user-count-queue": {
+    "card_user_count_queue": {
         "message": "Размер очереди карточек"
     },
-    "clear-queue": {
+    "clear_queue": {
         "message": "Очистить очередь"
     },
-    "card-cache-controls": {
+    "card_cache_controls": {
         "message": "Кэш карточек"
     },
-    "clear-card-cache": {
+    "clear_card_cache": {
         "message": "Очистить все кэши"
     },
-    "card-user-count-template-editor": {
+    "card_user_count_template_editor": {
         "message": "Редактор шаблона"
     },
-    "card-appearance-settings": {
+    "card_appearance_settings": {
         "message": "Настройки внешнего вида карточек"
     },
-    "card-appearance-description": {
+    "card_appearance_description": {
         "message": "Настройте внешний вид статистики карточек с помощью редактора шаблонов"
     },
-    "open-card-appearance-editor": {
+    "open_card_appearance_editor": {
         "message": "Открыть редактор внешнего вида"
     },
-    "card-preview": {
+    "card_preview": {
         "message": "Предварительный просмотр карточки"
     },
-    "card-preview-description": {
+    "card_preview_description": {
         "message": "Предварительный просмотр показывает, как будет выглядеть ваша карточка с текущими настройками"
     },
-    "card-user-count-settings": {
+    "card_user_count_settings": {
         "message": "Настройки статистики карточек"
     },
-    "template-editor": {
+    "template_editor": {
         "message": "Редактор шаблона"
     },
-    "card-user-count-position": {
+    "card_user_count_position": {
         "message": "Позиция статистики"
     },
-    "card-user-count-style": {
+    "card_user_count_style": {
         "message": "Стиль статистики"
     },
-    "card-user-count-size": {
+    "card_user_count_size": {
         "message": "Размер статистики"
     },
-    "card-user-count-background-color": {
+    "card_user_count_background_color": {
         "message": "Цвет фона"
     },
-    "card-user-count-text-color": {
+    "card_user_count_text_color": {
         "message": "Цвет текста"
     },
-    "card-user-count-opacity": {
+    "card_user_count_opacity": {
         "message": "Прозрачность фона"
     },
-    "card-user-count-hover-action": {
+    "card_user_count_hover_action": {
         "message": "Действие при наведении"
     },
-    "hover-action-none": {
+    "hover_action_none": {
         "message": "Без действия"
     },
-    "hover-action-scale-up": {
+    "hover_action_scale_up": {
         "message": "Увеличить"
     },
-    "hover-action-scale-down": {
+    "hover_action_scale_down": {
         "message": "Уменьшить"
     },
-    "hover-action-fade-out": {
+    "hover_action_fade_out": {
         "message": "Скрыть частично"
     },
-    "hover-action-hide": {
+    "hover_action_hide": {
         "message": "Скрыть полностью"
     },
-    "hover-action-brighten": {
+    "hover_action_brighten": {
         "message": "Осветлить"
     },
-    "top-left": {
+    "top_left": {
         "message": "Верхний левый"
     },
-    "top-center": {
+    "top_center": {
         "message": "Верхний центр"
     },
-    "top-right": {
+    "top_right": {
         "message": "Верхний правый"
     },
-    "bottom-left": {
+    "bottom_left": {
         "message": "Нижний левый"
     },
-    "bottom-center": {
+    "bottom_center": {
         "message": "Нижний центр"
     },
-    "bottom-right": {
+    "bottom_right": {
         "message": "Нижний правый"
     },
     "under": {
@@ -329,250 +335,250 @@
     "large": {
         "message": "Большой"
     },
-    "template-item-type-text": {
+    "template_item_type_text": {
         "message": "Текст"
     },
-    "template-item-type-icon": {
+    "template_item_type_icon": {
         "message": "Иконка"
     },
-    "template-item-type-variable": {
+    "template_item_type_variable": {
         "message": "Переменная"
     },
-    "template-item-placeholder-text": {
+    "template_item_placeholder_text": {
         "message": "Введите текст"
     },
-    "template-add-text": {
+    "template_add_text": {
         "message": "Добавить текст"
     },
-    "template-add-icon": {
+    "template_add_icon": {
         "message": "Добавить иконку"
     },
-    "template-add-variable": {
+    "template_add_variable": {
         "message": "Добавить переменную"
     },
-    "template-empty-state-title": {
+    "template_empty_state_title": {
         "message": "Пока нет элементов шаблона"
     },
-    "template-empty-state-subtitle": {
+    "template_empty_state_subtitle": {
         "message": "Нажмите кнопки ниже, чтобы начать создание шаблона"
     },
-    "template-preview-label": {
+    "template_preview_label": {
         "message": "Предварительный просмотр:"
     },
-    "template-preview-empty": {
+    "template_preview_empty": {
         "message": "Пустой шаблон"
     },
-    "button-icon-none": {
+    "button_icon_none": {
         "message": "Без иконки"
     },
-    "api-integration-settings": {
+    "api_integration_settings": {
         "message": "Интеграция с API"
     },
-    "api-send-stats": {
+    "api_send_stats": {
         "message": "Отправлять статистику на сайт"
     },
-    "api-receive-stats": {
+    "api_receive_stats": {
         "message": "Получать статистику с сайта"
     },
-    "upload-card-data-to-ass": {
+    "upload_card_data_to_ass": {
         "message": "Отправлять данные о карточках на ASS"
     },
-    "upload-card-data-to-ass-description": {
+    "upload_card_data_to_ass_description": {
         "message": "Индексация метаданных карточек (название, изображение и т.д.) для поиска на сайте; отключите, если не хотите отправлять эти данные"
     },
-    "api-website-label": {
+    "api_website_label": {
         "message": "Сайт ASS"
     },
-    "api-website-description": {
+    "api_website_description": {
         "message": "Официальный сайт для интеграции с API и поиска карт."
     },
-    "cards-search-settings": {
+    "cards_search_settings": {
         "message": "Настройки поиска карт"
     },
-    "cards-search-integration": {
+    "cards_search_integration": {
         "message": "Интеграция поиска карт"
     },
-    "cards-search-integration-description": {
+    "cards_search_integration_description": {
         "message": "Добавляет кнопку поиска на страницу базы карт для быстрого поиска через API"
     },
-    "trades-history-filters": {
+    "trades_history_filters": {
         "message": "Фильтры истории обменов (ранг и пользователь)"
     },
-    "trades-preview-enabled": {
+    "trades_preview_enabled": {
         "message": "Показывать превью карточек в обменах"
     },
-    "trades-preview-auto-parse": {
+    "trades_preview_auto_parse": {
         "message": "Автозагрузка превью через парсинг отсутствующих обменов"
     },
-    "trades-preview-auto-start-delay": {
+    "trades_preview_auto_start_delay": {
         "message": "Задержка перед стартом авто-парсинга"
     },
-    "trades-preview-auto-interval": {
+    "trades_preview_auto_interval": {
         "message": "Интервал авто-парсинга"
     },
-    "trades-preview-full-exchange": {
+    "trades_preview_full_exchange": {
         "message": "Показывать полный обмен (все карточки) в списках"
     },
-    "trades-history-big-images": {
+    "trades_history_big_images": {
         "message": "Большие изображения в истории обменов"
     },
-    "remelt-topbar-enabled": {
+    "remelt_topbar_enabled": {
         "message": "Спростить и переместить панель переплавки на верх страницы"
     },
-    "add-need-btn-to-card-dialog": {
+    "add_need_btn_to_card_dialog": {
         "message": "Добавить кнопку \"Хочу карточку\" в диалоге карточки"
     },
-    "not-add-need-btn-to-card-dialog": {
+    "not_add_need_btn_to_card_dialog": {
         "message": "Не добавлять"
     },
-    "add-need-btn-to-card-dialog-can": {
+    "add_need_btn_to_card_dialog_can": {
         "message": "Добавлять, если можно установить"
     },
-    "add-need-btn-to-card-dialog-force": {
+    "add_need_btn_to_card_dialog_force": {
         "message": "Добавлять всегда"
     },
-    "remove-card-list-and-club-rating-in-card-base": {
+    "remove_card_list_and_club_rating_in_card_base": {
         "message": "Убрать ленту карт и тижневой рейтинг клубов в базе карт"
     },
-    "user-card-buttons-editor-title": {
+    "user_card_buttons_editor_title": {
         "message": "Редактор кнопок карточек пользователя"
     },
-    "user-card-buttons-editor-description": {
+    "user_card_buttons_editor_description": {
         "message": "Настройте кнопки быстрого доступа на карточках пользователя"
     },
-    "open-user-card-buttons-editor": {
+    "open_user_card_buttons_editor": {
         "message": "Открыть редактор кнопок"
     },
-    "buttons-preview": {
+    "buttons_preview": {
         "message": "Предварительный просмотр кнопок"
     },
-    "buttons-preview-description": {
+    "buttons_preview_description": {
         "message": "Предварительный просмотр показывает, как будут выглядеть кнопки на карточке пользователя"
     },
-    "buttons-configuration": {
+    "buttons_configuration": {
         "message": "Конфигурация кнопок"
     },
-    "buttons-empty-state-title": {
+    "buttons_empty_state_title": {
         "message": "Пока нет кнопок"
     },
-    "buttons-empty-state-subtitle": {
+    "buttons_empty_state_subtitle": {
         "message": "Добавьте кнопки с помощью секции ниже"
     },
-    "add-button": {
+    "add_button": {
         "message": "Добавить кнопку"
     },
-    "import-export-config": {
+    "import_export_config": {
         "message": "Импорт/Экспорт конфигурации"
     },
-    "export-config": {
+    "export_config": {
         "message": "Экспортировать конфигурацию"
     },
-    "import-config": {
+    "import_config": {
         "message": "Импортировать конфигурацию"
     },
-    "reset-to-default": {
+    "reset_to_default": {
         "message": "Сбросить к стандартным"
     },
-    "button-need": {
+    "button_need": {
         "message": "Нужные карточки"
     },
-    "button-in-my-list": {
+    "button_in_my_list": {
         "message": "В моем списке"
     },
-    "button-unlocked": {
+    "button_unlocked": {
         "message": "Открытые карточки"
     },
-    "button-text-label": {
+    "button_text_label": {
         "message": "Текст:"
     },
-    "button-text-placeholder": {
+    "button_text_placeholder": {
         "message": "Введите текст кнопки"
     },
-    "button-icon-label": {
+    "button_icon_label": {
         "message": "Иконка:"
     },
-    "button-icon-select": {
+    "button_icon_select": {
         "message": "Выбрать иконку"
     },
-    "button-url-label": {
+    "button_url_label": {
         "message": "URL:"
     },
-    "button-enabled": {
+    "button_enabled": {
         "message": "Включено"
     },
-    "confirm-reset": {
+    "confirm_reset": {
         "message": "Вы уверены, что хотите сбросить все настройки к стандартным?"
     },
-    "import-success": {
+    "import_success": {
         "message": "Конфигурация успешно импортирована!"
     },
-    "import-error": {
+    "import_error": {
         "message": "Ошибка при импорте конфигурации"
     },
-    "export-success": {
+    "export_success": {
         "message": "Конфигурация успешно экспортирована!"
     },
-    "export-error": {
+    "export_error": {
         "message": "Ошибка при экспорте конфигурации"
     },
-    "invalid-config-file": {
+    "invalid_config_file": {
         "message": "Неверный формат файла конфигурации"
     },
-    "config-exported": {
+    "config_exported": {
         "message": "Конфигурация экспортирована в файл"
     },
-    "config-imported": {
+    "config_imported": {
         "message": "Конфигурация импортирована из файла"
     },
-    "reset-widgets-confirm": {
+    "reset_widgets_confirm": {
         "message": "Вы уверены, что хотите сбросить все виджеты к стандартным? Это действие нельзя отменить."
     },
-    "pm-card-preview-enabled": {
+    "pm_card_preview_enabled": {
         "message": "Показывать превью карточек в PM Посикунчик"
     },
-    "extension-settings": {
+    "extension_settings": {
         "message": "Настройки расширения"
     },
-    "auto-take-snow-stone": {
+    "auto_take_snow_stone": {
         "message": "Автоматически брать снежный камень"
     },
-    "auto-click-gandama": {
+    "auto_click_gandama": {
         "message": "Автоматически кликать на гандаму"
     },
-    "floating-quick-actions-section": {
+    "floating_quick_actions_section": {
         "message": "Плавающие быстрые действия"
     },
-    "floating-quick-actions-hint": {
+    "floating_quick_actions_hint": {
         "message": "Показывает кнопки только во вкладке сайта в браузере (не поверх всей системы). Выберите переключатели и позицию."
     },
-    "floating-quick-actions-enabled": {
+    "floating_quick_actions_enabled": {
         "message": "Включить плавающую панель"
     },
-    "floating-quick-actions-position": {
+    "floating_quick_actions_position": {
         "message": "Позиция панели"
     },
-    "floating-quick-actions-keys-label": {
+    "floating_quick_actions_keys_label": {
         "message": "Ярлыки переключателей"
     },
-    "floating-quick-actions-pos-bottom-right": {
+    "floating_quick_actions_pos_bottom_right": {
         "message": "Низ справа"
     },
-    "floating-quick-actions-pos-bottom-left": {
+    "floating_quick_actions_pos_bottom_left": {
         "message": "Низ слева"
     },
-    "floating-quick-actions-pos-top-right": {
+    "floating_quick_actions_pos_top_right": {
         "message": "Верх справа"
     },
-    "floating-quick-actions-pos-top-left": {
+    "floating_quick_actions_pos_top_left": {
         "message": "Верх слева"
     },
-    "floating-quick-actions-link-description": {
+    "floating_quick_actions_link_description": {
         "message": "Ярлыки на сайте"
     },
-    "open-floating-quick-actions-page": {
+    "open_floating_quick_actions_page": {
         "message": "Настроить плавающие кнопки…"
     },
-    "back-to-settings": {
+    "back_to_settings": {
         "message": "Назад к настройкам"
     }
 }

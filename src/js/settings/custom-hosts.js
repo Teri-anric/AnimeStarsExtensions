@@ -43,7 +43,7 @@ export async function renderCustomDomains() {
 
     if (hosts.length === 0) {
         const empty = document.createElement('small');
-        empty.textContent = 'site-domains-empty';
+        empty.textContent = 'site_domains_empty';
         list.appendChild(empty);
         const langEl = document.getElementById('language');
         await window.i18n?.changeLang?.(langEl?.value || 'en');

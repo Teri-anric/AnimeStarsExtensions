@@ -795,10 +795,10 @@ function exportWidgetsConfig() {
         URL.revokeObjectURL(url);
 
         // Show success message
-        showNotification('export-success', 'success');
+        showNotification('export_success', 'success');
     } catch (error) {
         console.error('Export error:', error);
-        showNotification('export-error', 'error');
+        showNotification('export_error', 'error');
     }
 }
 
@@ -847,10 +847,10 @@ function importWidgetsConfig(file) {
             syncSelectedWidgetToControls();
             updateCardPreview();
 
-            showNotification('import-success', 'success');
+            showNotification('import_success', 'success');
         } catch (error) {
             console.error('Import error:', error);
-            showNotification('invalid-config-file', 'error');
+            showNotification('invalid_config_file', 'error');
         }
     };
     reader.readAsText(file);
@@ -860,7 +860,7 @@ function importWidgetsConfig(file) {
  * Reset widgets to default configuration
  */
 function resetWidgetsConfig() {
-    if (confirm(window.i18n?.getTranslateText('reset-widgets-confirm') || 'Are you sure you want to reset all widgets to default?')) {
+    if (confirm(window.i18n?.getTranslateText('reset_widgets_confirm') || 'Are you sure you want to reset all widgets to default?')) {
         widgetsState.list = [newWidgetDefaults()];
         widgetsState.selectedId = widgetsState.list[0].id;
         

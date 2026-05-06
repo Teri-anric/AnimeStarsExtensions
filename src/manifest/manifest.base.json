@@ -1,8 +1,8 @@
 {
     "manifest_version": 3,
-    "name": "AnimeStar Extension",
+    "name": "__MSG_extension_name__",
     "version": "0.0.29",
-    "description": "Enhanced functionality for AnimeStar website",
+    "description": "__MSG_extension_description__",
     "default_locale": "en",
     "permissions": [
         "storage",
@@ -185,7 +185,7 @@
     },
     "action": {
         "default_icon": "icons/icon-128.png",
-        "default_title": "AnimeStar Extension",
+        "default_title": "__MSG_extension_name__",
         "default_popup": "pages/settings.html"
     },
     "options_page": "pages/settings.html"

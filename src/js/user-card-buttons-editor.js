@@ -210,7 +210,7 @@ class UserCardButtonsEditor {
         modalHeader.className = 'icon-picker-header';
         
         const title = document.createElement('h3');
-        title.textContent = this.getTranslatedText('button-icon-select');
+        title.textContent = this.getTranslatedText('button_icon_select');
         
         const closeBtn = document.createElement('button');
         closeBtn.className = 'icon-picker-close';
@@ -227,7 +227,7 @@ class UserCardButtonsEditor {
         const noIconBtn = document.createElement('button');
         noIconBtn.className = 'icon-option';
         noIconBtn.dataset.icon = '';
-        noIconBtn.textContent = this.getTranslatedText('button-icon-none');
+        noIconBtn.textContent = this.getTranslatedText('button_icon_none');
         noIconBtn.onclick = () => {
             if (this.iconPickerCustomInput) this.iconPickerCustomInput.value = '';
             this.selectIcon('');
@@ -244,7 +244,7 @@ class UserCardButtonsEditor {
         this.iconPickerCustomInput = customInput;
         const customBtn = document.createElement('button');
         customBtn.type = 'button';
-        customBtn.textContent = this.getTranslatedText('button-icon-select');
+        customBtn.textContent = this.getTranslatedText('button_icon_select');
         customBtn.onclick = () => {
             const cls = (customInput.value || '').trim();
             if (cls) this.selectIcon(cls);
@@ -338,13 +338,13 @@ class UserCardButtonsEditor {
         
         const textLabel = document.createElement('div');
         textLabel.className = 'field-label';
-        textLabel.textContent = this.getTranslatedText('button-text-label');
+        textLabel.textContent = this.getTranslatedText('button_text_label');
         
         const textInput = document.createElement('input');
         textInput.type = 'text';
         textInput.className = 'item-input text-input';
         textInput.value = button.text || '';
-        textInput.placeholder = this.getTranslatedText('button-text-placeholder');
+        textInput.placeholder = this.getTranslatedText('button_text_placeholder');
         textInput.dataset.field = 'text';
         
         textField.appendChild(textLabel);
@@ -357,7 +357,7 @@ class UserCardButtonsEditor {
         
         const iconLabel = document.createElement('div');
         iconLabel.className = 'field-label';
-        iconLabel.textContent = this.getTranslatedText('button-icon-label');
+        iconLabel.textContent = this.getTranslatedText('button_icon_label');
         
         const iconControls = document.createElement('div');
         iconControls.className = 'icon-controls';
@@ -385,7 +385,7 @@ class UserCardButtonsEditor {
         
         const urlLabel = document.createElement('div');
         urlLabel.className = 'field-label';
-        urlLabel.textContent = this.getTranslatedText('button-url-label');
+        urlLabel.textContent = this.getTranslatedText('button_url_label');
         
         const urlInput = document.createElement('input');
         urlInput.type = 'text';
@@ -403,7 +403,7 @@ class UserCardButtonsEditor {
         toggleDiv.className = 'toggle-switch';
         
         const toggleLabel = document.createElement('span');
-        toggleLabel.textContent = this.getTranslatedText('button-enabled');
+        toggleLabel.textContent = this.getTranslatedText('button_enabled');
         
         const toggleInput = document.createElement('input');
         toggleInput.type = 'checkbox';
@@ -503,10 +503,10 @@ class UserCardButtonsEditor {
             icon.className = 'fas fa-link';
             
             const title = document.createElement('p');
-            title.textContent = this.getTranslatedText('buttons-empty-state-title');
+            title.textContent = this.getTranslatedText('buttons_empty_state_title');
             
             const subtitle = document.createElement('small');
-            subtitle.textContent = this.getTranslatedText('buttons-empty-state-subtitle');
+            subtitle.textContent = this.getTranslatedText('buttons_empty_state_subtitle');
             
             emptyState.appendChild(icon);
             emptyState.appendChild(title);
@@ -579,7 +579,7 @@ class UserCardButtonsEditor {
         const resetBtn = document.getElementById('reset-config');
         if (resetBtn) {
             resetBtn.addEventListener('click', () => {
-                if (confirm(this.getTranslatedText('confirm-reset'))) {
+                if (confirm(this.getTranslatedText('confirm_reset'))) {
                     this.resetToDefault();
                 }
             });
@@ -734,13 +734,13 @@ class UserCardButtonsEditor {
                     this.buttons = config.buttons;
                     this.saveButtons();
                     this.render();
-                    alert(this.getTranslatedText('import-success'));
+                    alert(this.getTranslatedText('import_success'));
                 } else {
                     throw new Error('Invalid config format');
                 }
             } catch (error) {
                 console.error('Failed to import config:', error);
-                alert(this.getTranslatedText('import-error'));
+                alert(this.getTranslatedText('import_error'));
             }
         };
         reader.readAsText(file);

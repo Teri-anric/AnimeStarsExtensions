@@ -13,13 +13,13 @@ function buildPanel(root) {
 
     const hint = document.createElement('p');
     hint.className = 'ext-page-lead';
-    hint.textContent = 'floating-quick-actions-hint';
+    hint.textContent = 'floating_quick_actions_hint';
 
     const enableRow = document.createElement('div');
     enableRow.className = 'setting-item fab-enable-row';
     const enableLabel = document.createElement('label');
     enableLabel.setAttribute('for', 'floating-quick-actions-enabled');
-    enableLabel.textContent = 'floating-quick-actions-enabled';
+    enableLabel.textContent = 'floating_quick_actions_enabled';
     const enableToggle = document.createElement('label');
     enableToggle.className = 'toggle';
     const enableInput = document.createElement('input');
@@ -34,14 +34,14 @@ function buildPanel(root) {
 
     const posLabel = document.createElement('label');
     posLabel.setAttribute('for', 'floating-quick-actions-position');
-    posLabel.textContent = 'floating-quick-actions-position';
+    posLabel.textContent = 'floating_quick_actions_position';
     const posSelect = document.createElement('select');
     posSelect.id = 'floating-quick-actions-position';
     for (const { value, labelKey } of [
-        { value: 'bottom-right', labelKey: 'floating-quick-actions-pos-bottom-right' },
-        { value: 'bottom-left', labelKey: 'floating-quick-actions-pos-bottom-left' },
-        { value: 'top-right', labelKey: 'floating-quick-actions-pos-top-right' },
-        { value: 'top-left', labelKey: 'floating-quick-actions-pos-top-left' },
+        { value: 'bottom-right', labelKey: 'floating_quick_actions_pos_bottom_right' },
+        { value: 'bottom-left', labelKey: 'floating_quick_actions_pos_bottom_left' },
+        { value: 'top-right', labelKey: 'floating_quick_actions_pos_top_right' },
+        { value: 'top-left', labelKey: 'floating_quick_actions_pos_top_left' },
     ]) {
         const o = document.createElement('option');
         o.value = value;
@@ -50,7 +50,7 @@ function buildPanel(root) {
     }
 
     const keysLabel = document.createElement('label');
-    keysLabel.textContent = 'floating-quick-actions-keys-label';
+    keysLabel.textContent = 'floating_quick_actions_keys_label';
 
     const keysBox = document.createElement('div');
     keysBox.className = 'fab-keys-grid';
