@@ -672,7 +672,7 @@
         "message": "Додати в групу"
     },
     "fab_display_mode": {
-        "message": "Тип панелі"
+        "message": "Як відкриваються дії"
     },
     "fab_display_mode_bar": {
         "message": "Панель у куті (список або по кліку)"
@@ -715,6 +715,12 @@
     },
     "fab_button_opacity": {
         "message": "Непрозорість (%)"
+    },
+    "fab_button_size": {
+        "message": "Розмір кнопок дій"
+    },
+    "fab_launcher_size": {
+        "message": "Розмір лаунчера"
     },
     "fab_pick_icon": {
         "message": "Обрати іконку"

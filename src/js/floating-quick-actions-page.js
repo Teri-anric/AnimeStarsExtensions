@@ -6,8 +6,6 @@ import {
     collectToggleKeysFromItems,
     newGroupItem,
     FAB_POSITION_PRESETS,
-    FAB_PANEL_LAYOUTS_BAR,
-    FAB_PANEL_LAYOUTS_POPUP,
     fabPanelLayoutIsLauncher,
 } from './fab-config.js';
 import { i18nReady } from './translation.js';
@@ -90,6 +88,21 @@ function parsePath(s) {
 function buildPanel(root) {
     root.innerHTML = '';
 
+    /**
+     * @param {string} titleKey
+     * @param {Node[]} nodes
+     */
+    function createSection(titleKey, nodes, extraClass = '') {
+        const section = document.createElement('section');
+        section.className = `fab-settings-card ${extraClass}`.trim();
+        const title = document.createElement('h2');
+        title.className = 'fab-settings-card-title';
+        title.textContent = titleKey;
+        section.appendChild(title);
+        nodes.forEach((node) => section.appendChild(node));
+        return section;
+    }
+
     const hint = document.createElement('p');
     hint.className = 'ext-page-lead';
     hint.textContent = 'floating_quick_actions_hint';
@@ -122,9 +135,24 @@ function buildPanel(root) {
         o.textContent = `floating_quick_actions_pos_${preset.replace(/-/g, '_')}`;
         posSelect.appendChild(o);
     }
+    const posRow = document.createElement('div');
+    posRow.className = 'fab-control-row';
+    posRow.appendChild(posLabel);
+    posRow.appendChild(posSelect);
 
     const btnLookWrap = document.createElement('div');
-    btnLookWrap.className = 'fab-btn-look-row setting-item';
+    btnLookWrap.className = 'fab-btn-look-row';
+    /**
+     * @param {HTMLLabelElement} label
+     * @param {HTMLElement} control
+     */
+    function appendLookControlRow(label, control) {
+        const row = document.createElement('div');
+        row.className = 'fab-control-row';
+        row.appendChild(label);
+        row.appendChild(control);
+        btnLookWrap.appendChild(row);
+    }
     const bgLabel = document.createElement('label');
     bgLabel.setAttribute('for', 'fab-btn-bg');
     bgLabel.textContent = 'fab_button_bg_color';
@@ -142,27 +170,36 @@ function buildPanel(root) {
     opRange.max = '100';
     opRange.step = '1';
     opRange.className = 'fab-btn-opacity-range';
-    btnLookWrap.appendChild(bgLabel);
-    btnLookWrap.appendChild(bgInput);
-    btnLookWrap.appendChild(opLabel);
-    btnLookWrap.appendChild(opRange);
+    const sizeLabel = document.createElement('label');
+    sizeLabel.setAttribute('for', 'fab-btn-size');
+    sizeLabel.textContent = 'fab_button_size';
+    const sizeRange = document.createElement('input');
+    sizeRange.type = 'range';
+    sizeRange.id = 'fab-btn-size';
+    sizeRange.min = '28';
+    sizeRange.max = '72';
+    sizeRange.step = '1';
+    sizeRange.className = 'fab-btn-size-range';
+    const launcherSizeLabel = document.createElement('label');
+    launcherSizeLabel.setAttribute('for', 'fab-launcher-size');
+    launcherSizeLabel.textContent = 'fab_launcher_size';
+    const launcherSizeRange = document.createElement('input');
+    launcherSizeRange.type = 'range';
+    launcherSizeRange.id = 'fab-launcher-size';
+    launcherSizeRange.min = '28';
+    launcherSizeRange.max = '72';
+    launcherSizeRange.step = '1';
+    launcherSizeRange.className = 'fab-launcher-size-range';
+    appendLookControlRow(bgLabel, bgInput);
+    appendLookControlRow(opLabel, opRange);
+    appendLookControlRow(sizeLabel, sizeRange);
+    appendLookControlRow(launcherSizeLabel, launcherSizeRange);
 
-    const modeWrap = document.createElement('div');
-    modeWrap.className = 'fab-mode-row setting-item';
-    const dmLabel = document.createElement('label');
-    dmLabel.setAttribute('for', 'fab-display-mode');
-    dmLabel.textContent = 'fab_display_mode';
-    const dmSel = document.createElement('select');
-    dmSel.id = 'fab-display-mode';
-    for (const v of ['bar', 'popup']) {
-        const o = document.createElement('option');
-        o.value = v;
-        o.textContent = `fab_display_mode_${v}`;
-        dmSel.appendChild(o);
-    }
+    const actionDisplayRow = document.createElement('div');
+    actionDisplayRow.className = 'fab-control-row';
 
     const panelLayoutWrap = document.createElement('div');
-    panelLayoutWrap.className = 'fab-panel-layout-row setting-item';
+    panelLayoutWrap.className = 'fab-control-row';
     const plLabel = document.createElement('label');
     plLabel.setAttribute('for', 'fab-panel-layout');
     plLabel.textContent = 'fab_panel_layout';
@@ -184,16 +221,14 @@ function buildPanel(root) {
     const liLabel = document.createElement('label');
     liLabel.setAttribute('for', 'fab-launcher-icon-mount');
     liLabel.textContent = 'fab_launcher_icon';
-    modeWrap.appendChild(dmLabel);
-    modeWrap.appendChild(dmSel);
-    modeWrap.appendChild(adLabel);
-    modeWrap.appendChild(adSel);
+    actionDisplayRow.appendChild(adLabel);
+    actionDisplayRow.appendChild(adSel);
 
     panelLayoutWrap.appendChild(plLabel);
     panelLayoutWrap.appendChild(plSel);
 
     const launcherRow = document.createElement('div');
-    launcherRow.className = 'fab-launcher-row setting-item';
+    launcherRow.className = 'fab-control-row';
     launcherRow.id = 'fab-launcher-row';
     const launcherMount = document.createElement('div');
     launcherMount.id = 'fab-launcher-icon-mount';
@@ -228,30 +263,35 @@ function buildPanel(root) {
     itemsEditor.id = 'fab-items-editor';
     itemsEditor.className = 'fab-items-editor';
 
+    root.classList.add('fab-settings-layout');
+    const grid = document.createElement('div');
+    grid.className = 'fab-settings-grid';
+    const leftCol = document.createElement('div');
+    leftCol.className = 'fab-settings-col fab-settings-col--left';
+    const rightCol = document.createElement('div');
+    rightCol.className = 'fab-settings-col fab-settings-col--right';
+
+    leftCol.appendChild(createSection('floating_quick_actions_enabled', [enableRow, posRow], 'fab-card--compact'));
+    leftCol.appendChild(createSection('fab_button_bg_color', [btnLookWrap], 'fab-card--compact'));
+    leftCol.appendChild(createSection('fab_panel_layout', [actionDisplayRow, panelLayoutWrap, launcherRow], 'fab-card--compact'));
+    rightCol.appendChild(createSection('fab_add_actions_title', [search, availableList, addGroupBtn]));
+    rightCol.appendChild(createSection('fab_panel_layout_label', [layoutLabel, itemsEditor]));
+    grid.appendChild(leftCol);
+    grid.appendChild(rightCol);
+
     root.appendChild(hint);
-    root.appendChild(enableRow);
-    root.appendChild(posLabel);
-    root.appendChild(posSelect);
-    root.appendChild(btnLookWrap);
-    root.appendChild(modeWrap);
-    root.appendChild(panelLayoutWrap);
-    root.appendChild(launcherRow);
-    root.appendChild(addSectionLabel);
-    root.appendChild(search);
-    root.appendChild(availableList);
-    root.appendChild(addGroupBtn);
-    root.appendChild(layoutLabel);
-    root.appendChild(itemsEditor);
+    root.appendChild(grid);
 }
 
 function wirePanel() {
     const enableInput = /** @type {HTMLInputElement|null} */ (document.getElementById('floating-quick-actions-enabled'));
     const posSelect = /** @type {HTMLSelectElement|null} */ (document.getElementById('floating-quick-actions-position'));
-    const dmSel = /** @type {HTMLSelectElement|null} */ (document.getElementById('fab-display-mode'));
     const plSel = /** @type {HTMLSelectElement|null} */ (document.getElementById('fab-panel-layout'));
     const adSel = /** @type {HTMLSelectElement|null} */ (document.getElementById('fab-action-display'));
     const bgInput = /** @type {HTMLInputElement|null} */ (document.getElementById('fab-btn-bg'));
     const opRange = /** @type {HTMLInputElement|null} */ (document.getElementById('fab-btn-opacity'));
+    const sizeRange = /** @type {HTMLInputElement|null} */ (document.getElementById('fab-btn-size'));
+    const launcherSizeRange = /** @type {HTMLInputElement|null} */ (document.getElementById('fab-launcher-size'));
     const launcherMount = document.getElementById('fab-launcher-icon-mount');
     const launcherRow = document.getElementById('fab-launcher-row');
     const searchInput = /** @type {HTMLInputElement|null} */ (document.getElementById('fab-add-search'));
@@ -262,11 +302,12 @@ function wirePanel() {
     if (
         !enableInput ||
         !posSelect ||
-        !dmSel ||
         !plSel ||
         !adSel ||
         !bgInput ||
         !opRange ||
+        !sizeRange ||
+        !launcherSizeRange ||
         !launcherMount ||
         !launcherRow ||
         !searchInput ||
@@ -295,15 +336,18 @@ function wirePanel() {
 
     /** @param {FabConfigNormalized} cfg */
     function launcherUiNeeded(cfg) {
-        return cfg.displayMode === 'popup' || fabPanelLayoutIsLauncher(cfg.panelLayout);
+        return fabPanelLayoutIsLauncher(cfg.panelLayout);
     }
 
     /** @param {FabConfigNormalized} cfg */
     function syncPanelLayoutDropdown(cfg) {
-        const layouts =
-            cfg.displayMode === 'popup'
-                ? /** @type {string[]} */ ([...FAB_PANEL_LAYOUTS_POPUP])
-                : /** @type {string[]} */ ([...FAB_PANEL_LAYOUTS_BAR]);
+        const layouts = /** @type {string[]} */ ([
+            'column',
+            'radial_open',
+            'line_open',
+            'radial_launcher',
+            'line_launcher',
+        ]);
         plSel.innerHTML = '';
         for (const v of layouts) {
             const o = document.createElement('option');
@@ -598,11 +642,9 @@ function wirePanel() {
         });
         bgInput.value = cfg.buttonBgColor || '#ffffff';
         opRange.value = String(cfg.buttonOpacity ?? 92);
+        sizeRange.value = String(cfg.buttonSize ?? 40);
+        launcherSizeRange.value = String(cfg.launcherSize ?? 48);
 
-        dmSel.value = cfg.displayMode === 'popup' ? 'popup' : 'bar';
-        dmSel.querySelectorAll('option').forEach((opt) => {
-            opt.textContent = tMsg(`fab_display_mode_${opt.value}`);
-        });
         syncPanelLayoutDropdown(cfg);
 
         adSel.value = cfg.actionDisplay === 'icon' ? 'icon' : 'text';
@@ -628,8 +670,6 @@ function wirePanel() {
             );
         }
 
-        const dmLab = document.querySelector('label[for="fab-display-mode"]');
-        if (dmLab) dmLab.textContent = tMsg('fab_display_mode');
         const plLabEl = document.querySelector('label[for="fab-panel-layout"]');
         if (plLabEl) plLabEl.textContent = tMsg('fab_panel_layout');
         const adLab = document.querySelector('label[for="fab-action-display"]');
@@ -639,8 +679,12 @@ function wirePanel() {
 
         const bgLabEl = document.querySelector('label[for="fab-btn-bg"]');
         const opLabEl = document.querySelector('label[for="fab-btn-opacity"]');
+        const bsLabEl = document.querySelector('label[for="fab-btn-size"]');
+        const lsLabEl = document.querySelector('label[for="fab-launcher-size"]');
         if (bgLabEl) bgLabEl.textContent = tMsg('fab_button_bg_color');
         if (opLabEl) opLabEl.textContent = tMsg('fab_button_opacity');
+        if (bsLabEl) bsLabEl.textContent = tMsg('fab_button_size');
+        if (lsLabEl) lsLabEl.textContent = tMsg('fab_launcher_size');
 
         addGroupBtn.textContent = tMsg('fab_add_group_button');
         const addSec = document.getElementById('fab-add-actions-title');
@@ -693,12 +737,19 @@ function wirePanel() {
         });
     });
 
-    dmSel.addEventListener('change', () => {
+    sizeRange.addEventListener('input', () => {
         readCfg((cfg) => {
-            cfg.displayMode = dmSel.value === 'popup' ? 'popup' : 'bar';
-            if (cfg.displayMode === 'popup' && !FAB_PANEL_LAYOUTS_POPUP.includes(cfg.panelLayout)) {
-                cfg.panelLayout = 'radial_launcher';
-            }
+            const n = Number.parseInt(sizeRange.value, 10);
+            cfg.buttonSize = Number.isNaN(n) ? cfg.buttonSize : Math.min(72, Math.max(28, n));
+            writeCfg(cfg);
+            fullRender();
+        });
+    });
+
+    launcherSizeRange.addEventListener('input', () => {
+        readCfg((cfg) => {
+            const n = Number.parseInt(launcherSizeRange.value, 10);
+            cfg.launcherSize = Number.isNaN(n) ? cfg.launcherSize : Math.min(72, Math.max(28, n));
             writeCfg(cfg);
             fullRender();
         });
@@ -707,6 +758,7 @@ function wirePanel() {
     plSel.addEventListener('change', () => {
         readCfg((cfg) => {
             cfg.panelLayout = /** @type {FabConfigNormalized['panelLayout']} */ (plSel.value);
+            cfg.displayMode = fabPanelLayoutIsLauncher(cfg.panelLayout) ? 'popup' : 'bar';
             writeCfg(cfg);
             fullRender();
         });
@@ -756,7 +808,5 @@ document.addEventListener('DOMContentLoaded', async () => {
         await window.i18n?.changeLang?.(fabPageLang);
         wirePanel();
 
-        const ver = document.getElementById('fab-page-version');
-        if (ver) ver.textContent = chrome.runtime.getManifest().version;
     });
 });

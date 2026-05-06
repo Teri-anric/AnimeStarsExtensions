@@ -5,16 +5,15 @@
     <meta charset="UTF-8">
     <title>Floating quick actions — AnimeStar Extension</title>
     <link rel="stylesheet" href="../styles/dark-theme.css">
-    <link rel="stylesheet" href="../styles/settings.css">
-    <link rel="stylesheet" href="../styles/extension-page.css">
     <link rel="stylesheet" href="../styles/floating_quick_actions.css">
-    <link rel="stylesheet" href="../styles/user-card-buttons-editor.css">
+    <link rel="stylesheet" href="../styles/floating_quick_actions_page.css">
+    <link rel="stylesheet" href="../styles/icon_picker_modal.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <script src="../js/translation.js" type="module"></script>
     <script src="../js/dark-theme.js" type="module"></script>
 </head>
 
-<body>
+<body class="as-fab-page">
     <div class="settings-container ext-page-shell">
         <translate-text>
             <h1 class="section-title">
@@ -25,9 +24,6 @@
             <div class="settings-section">
                 <div id="fab-settings-root"></div>
 
-                <label id="fab-live-preview-label" class="fab-live-preview-heading"></label>
-                <p id="fab-preview-empty" class="fab-preview-empty" hidden></p>
-
                 <div class="ext-page-nav">
                     <a href="settings.html" class="as-btn as-btn--secondary">
                         <i class="fas fa-arrow-left"></i>
@@ -36,7 +32,6 @@
                 </div>
             </div>
 
-            <p class="bottom-bar" id="fab-page-version"></p>
         </translate-text>
     </div>
 

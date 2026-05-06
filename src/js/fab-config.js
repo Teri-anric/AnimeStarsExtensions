@@ -129,6 +129,12 @@ function normalizeOpacityPct(raw) {
     return Math.min(100, Math.max(0, Math.round(n)));
 }
 
+function normalizeButtonSize(raw, fallback = 40) {
+    const n = typeof raw === 'number' ? raw : Number.parseInt(String(raw || ''), 10);
+    if (Number.isNaN(n)) return fallback;
+    return Math.min(72, Math.max(28, Math.round(n)));
+}
+
 function numDrag(v) {
     if (typeof v !== 'number' || Number.isNaN(v)) return 0;
     return Math.round(Math.min(4000, Math.max(-4000, v)));
@@ -137,22 +143,15 @@ function numDrag(v) {
 /** @type {Set<string>} */
 const BAR_LAYOUT_SET = new Set(FAB_PANEL_LAYOUTS_BAR);
 
-/** @type {Set<string>} */
-const POPUP_LAYOUT_SET = new Set(FAB_PANEL_LAYOUTS_POPUP);
-
 /**
  * @param {unknown} rawLayout
- * @param {FabDisplayMode} displayMode
+ * @param {FabDisplayMode} _displayMode kept for backward compatibility
  * @param {Record<string, unknown>} obj full parsed object for legacy migration
  * @returns {FabPanelLayout}
  */
-export function normalizePanelLayout(rawLayout, displayMode, obj) {
+export function normalizePanelLayout(rawLayout, _displayMode, obj) {
     if (typeof rawLayout === 'string' && BAR_LAYOUT_SET.has(rawLayout)) {
-        const pl = /** @type {FabPanelLayout} */ (rawLayout);
-        if (displayMode === 'popup' && !POPUP_LAYOUT_SET.has(pl)) {
-            return 'radial_launcher';
-        }
-        return pl;
+        return /** @type {FabPanelLayout} */ (rawLayout);
     }
 
     const barPanelStyle = obj.barPanelStyle === 'launcher' ? 'launcher' : 'list';
@@ -165,9 +164,6 @@ export function normalizePanelLayout(rawLayout, displayMode, obj) {
         migrated = 'column';
     }
 
-    if (displayMode === 'popup' && !POPUP_LAYOUT_SET.has(migrated)) {
-        return expandLayout === 'line' ? 'line_launcher' : 'radial_launcher';
-    }
     return migrated;
 }
 
@@ -210,6 +206,8 @@ function normalizePositionPreset(preset, obj) {
  *   launcherIcon: string,
  *   buttonBgColor: string,
  *   buttonOpacity: number,
+ *   buttonSize: number,
+ *   launcherSize: number,
  * }} FabConfigNormalized
  */
 
@@ -247,6 +245,8 @@ export function parseFabConfig(raw) {
         launcherIcon: '',
         buttonBgColor: '#ffffff',
         buttonOpacity: 92,
+        buttonSize: 40,
+        launcherSize: 48,
     });
 
     if (typeof raw !== 'string') return fallback;
@@ -268,14 +268,13 @@ export function parseFabConfig(raw) {
         items = keys.map((key) => /** @type {FabToggleItem} */ ({ kind: 'toggle', key }));
     }
 
-    const displayMode = obj.displayMode === 'popup' ? 'popup' : 'bar';
-
     let positionPreset = normalizePositionPreset(
         typeof obj.positionPreset === 'string' ? obj.positionPreset : 'bottom-right',
         obj
     );
 
-    const panelLayout = normalizePanelLayout(obj.panelLayout, /** @type {FabDisplayMode} */ (displayMode), obj);
+    const panelLayout = normalizePanelLayout(obj.panelLayout, 'bar', obj);
+    const displayMode = fabPanelLayoutIsLauncher(panelLayout) ? 'popup' : 'bar';
 
     const actionDisplay = obj.actionDisplay === 'icon' ? 'icon' : 'text';
 
@@ -305,6 +304,8 @@ export function parseFabConfig(raw) {
         launcherIcon,
         buttonBgColor: normalizeHexColor(obj.buttonBgColor),
         buttonOpacity: normalizeOpacityPct(obj.buttonOpacity),
+        buttonSize: normalizeButtonSize(obj.buttonSize, 40),
+        launcherSize: normalizeButtonSize(obj.launcherSize, 48),
     };
 }
 
@@ -342,7 +343,7 @@ export function stringifyFabConfig(cfg) {
         enabled: !!cfg.enabled,
         items: cfg.items || [],
         positionPreset: preset,
-        displayMode: cfg.displayMode === 'popup' ? 'popup' : 'bar',
+        displayMode: fabPanelLayoutIsLauncher(cfg.panelLayout) ? 'popup' : 'bar',
         panelLayout: cfg.panelLayout || 'column',
         actionDisplay: cfg.actionDisplay === 'icon' ? 'icon' : 'text',
         allowDrag,
@@ -352,6 +353,8 @@ export function stringifyFabConfig(cfg) {
             typeof cfg.launcherIcon === 'string' ? String(cfg.launcherIcon).trim().slice(0, 120) : '',
         buttonBgColor: normalizeHexColor(cfg.buttonBgColor),
         buttonOpacity: normalizeOpacityPct(cfg.buttonOpacity),
+        buttonSize: normalizeButtonSize(cfg.buttonSize, 40),
+        launcherSize: normalizeButtonSize(cfg.launcherSize, 48),
     });
 }
 

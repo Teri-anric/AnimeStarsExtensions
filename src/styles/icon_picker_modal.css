@@ -1,0 +1,97 @@
+/* Shared IconPicker modal styles */
+
+.icon-picker-modal {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.7);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 10000;
+}
+
+.icon-picker-modal.hidden {
+    display: none;
+}
+
+.icon-picker-content {
+    background: var(--bg-secondary, #1f1f1f);
+    border-radius: 12px;
+    width: min(600px, 92vw);
+    max-height: 80vh;
+    display: flex;
+    flex-direction: column;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+}
+
+.icon-picker-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 16px 20px;
+    border-bottom: 1px solid var(--border-color, rgba(255, 255, 255, 0.12));
+}
+
+.icon-picker-header h3 {
+    margin: 0;
+    font-size: 1rem;
+}
+
+.icon-picker-close {
+    background: transparent;
+    border: none;
+    color: inherit;
+    cursor: pointer;
+    font-size: 28px;
+    line-height: 1;
+    width: 34px;
+    height: 34px;
+    border-radius: 50%;
+}
+
+.icon-picker-close:hover {
+    background: rgba(255, 255, 255, 0.08);
+}
+
+.custom-icon-wrap {
+    display: flex;
+    gap: 10px;
+    padding: 12px 20px 0;
+}
+
+.custom-icon-input {
+    flex: 1;
+    min-width: 0;
+    border: 1px solid var(--border-color, rgba(255, 255, 255, 0.16));
+    border-radius: 8px;
+    padding: 10px 12px;
+    background-color: var(--bg-secondary, #1f1f1f);
+    color: inherit;
+}
+
+.icons-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(60px, 1fr));
+    gap: 10px;
+    padding: 20px;
+    overflow-y: auto;
+    max-height: calc(80vh - 120px);
+}
+
+.icon-option {
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid var(--border-color, rgba(255, 255, 255, 0.12));
+    border-radius: 10px;
+    padding: 12px;
+    cursor: pointer;
+    font-size: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 56px;
+    color: inherit;
+}
+
+.icon-option:hover {
+    background: rgba(255, 255, 255, 0.12);
+}

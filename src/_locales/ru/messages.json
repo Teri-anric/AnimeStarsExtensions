@@ -672,7 +672,7 @@
         "message": "Добавить в группу"
     },
     "fab_display_mode": {
-        "message": "Тип панели"
+        "message": "Как открываются действия"
     },
     "fab_display_mode_bar": {
         "message": "Панель в углу (список или по нажатию)"
@@ -715,6 +715,12 @@
     },
     "fab_button_opacity": {
         "message": "Непрозрачность (%)"
+    },
+    "fab_button_size": {
+        "message": "Размер кнопок действий"
+    },
+    "fab_launcher_size": {
+        "message": "Размер лаунчера"
     },
     "fab_pick_icon": {
         "message": "Выбрать иконку"

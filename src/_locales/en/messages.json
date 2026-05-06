@@ -672,7 +672,7 @@
         "message": "Add to group"
     },
     "fab_display_mode": {
-        "message": "Panel type"
+        "message": "How actions open"
     },
     "fab_display_mode_bar": {
         "message": "Corner panel (static list or tap-to-open)"
@@ -715,6 +715,12 @@
     },
     "fab_button_opacity": {
         "message": "Opacity (%)"
+    },
+    "fab_button_size": {
+        "message": "Action button size"
+    },
+    "fab_launcher_size": {
+        "message": "Launcher size"
     },
     "fab_pick_icon": {
         "message": "Pick icon"

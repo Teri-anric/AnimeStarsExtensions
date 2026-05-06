@@ -4,9 +4,6 @@
 
     const FAB_PREVIEW_EMPTY_ID = 'fab-preview-empty';
 
-    /** Fan geometry radius (px); formerly tied to density. */
-    const FAB_FAN_RADIUS = 72;
-
     function isFloatingQuickActionsSettingsPage() {
         try {
             const path = window.location.pathname || '';
@@ -204,6 +201,14 @@
         const op = typeof fabCfg.buttonOpacity === 'number' ? fabCfg.buttonOpacity : 92;
         rootEl.style.setProperty('--as-fqa-btn-fill', hexToRgba(hex, op));
         rootEl.style.setProperty('--as-fqa-btn-fill-hover', hexToRgba(hex, Math.min(100, op + 8)));
+        const btnSize = typeof fabCfg.buttonSize === 'number' ? fabCfg.buttonSize : 40;
+        const launcherSize = typeof fabCfg.launcherSize === 'number' ? fabCfg.launcherSize : 48;
+        const scale = Math.max(0.75, Math.min(1.8, btnSize / 40));
+        rootEl.style.setProperty('--as-fqa-action-size', `${btnSize}px`);
+        rootEl.style.setProperty('--as-fqa-launcher-size', `${launcherSize}px`);
+        rootEl.style.setProperty('--as-fqa-btn-font-size', `${Math.round(12 * scale * 10) / 10}px`);
+        rootEl.style.setProperty('--as-fqa-btn-padding-y', `${Math.round(6 * scale)}px`);
+        rootEl.style.setProperty('--as-fqa-btn-padding-x', `${Math.round(10 * scale)}px`);
     }
 
     /**
@@ -246,33 +251,100 @@
         rootEl.style.transform = fabTranslateString(fabCfg, edx, edy);
     }
 
-    function clampSplayToViewport(splay) {
-        if (!splay || splay.hasAttribute('hidden')) return;
-        splay.style.removeProperty('--fab-clamp-x');
-        splay.style.removeProperty('--fab-clamp-y');
-        void splay.offsetWidth;
-        const pad = 10;
-        const r = splay.getBoundingClientRect();
-        let tx = 0;
-        let ty = 0;
-        if (r.left < pad) tx += pad - r.left;
-        if (r.right > innerWidth - pad) tx += innerWidth - pad - r.right;
-        if (r.top < pad) ty += pad - r.top;
-        if (r.bottom > innerHeight - pad) ty += innerHeight - pad - r.bottom;
-        splay.style.setProperty('--fab-clamp-x', `${tx}px`);
-        splay.style.setProperty('--fab-clamp-y', `${ty}px`);
+    function isRectInViewport(rect, pad = 8) {
+        return (
+            rect.left >= pad &&
+            rect.top >= pad &&
+            rect.right <= innerWidth - pad &&
+            rect.bottom <= innerHeight - pad
+        );
     }
 
-    function scheduleClamp(splay) {
+    function radialCandidates(step, limit) {
+        const out = [];
+        // Full-circle radial layout: rings around anchor.
+        for (let ring = 1; out.length < limit; ring += 1) {
+            const radius = step * ring;
+            const count = Math.max(8, Math.round((2 * Math.PI * radius) / step));
+            for (let i = 0; i < count && out.length < limit; i += 1) {
+                const angle = -Math.PI / 2 + (i / count) * (Math.PI * 2);
+                out.push({ x: Math.cos(angle) * radius, y: Math.sin(angle) * radius });
+            }
+        }
+        return out;
+    }
+
+    function lineGridCandidates(stepX, stepY, limit) {
+        const out = [];
+        // Grid layout: grow by square rings around anchor.
+        for (let layer = 1; out.length < limit; layer += 1) {
+            for (let gy = -layer; gy <= layer && out.length < limit; gy += 1) {
+                for (let gx = -layer; gx <= layer && out.length < limit; gx += 1) {
+                    if (Math.max(Math.abs(gx), Math.abs(gy)) !== layer) continue;
+                    out.push({ x: gx * stepX, y: gy * stepY });
+                }
+            }
+        }
+        return out;
+    }
+
+    function layoutSplaySlots(wrap, splay, fabCfg, isLine) {
+        const items = Array.from(splay.children);
+        if (!items.length) return;
+
+        const btnSize = typeof fabCfg.buttonSize === 'number' ? fabCfg.buttonSize : 40;
+        const step = Math.max(btnSize + 12, 48);
+        const candidates = isLine
+            ? lineGridCandidates(step, step, items.length * 22)
+            : radialCandidates(step, items.length * 22);
+
+        const used = new Set();
+        let scanFrom = 0;
+        for (const item of items) {
+            let placed = false;
+            for (let i = scanFrom; i < candidates.length; i += 1) {
+                if (used.has(i)) continue;
+                const c = candidates[i];
+                item.style.setProperty('--fab-rx', `${c.x}px`);
+                item.style.setProperty('--fab-ry', `${c.y}px`);
+                const r = item.getBoundingClientRect();
+                if (!isRectInViewport(r)) continue;
+                used.add(i);
+                scanFrom = i + 1;
+                placed = true;
+                break;
+            }
+            if (!placed) {
+                item.style.setProperty('--fab-rx', `0px`);
+                item.style.setProperty('--fab-ry', `0px`);
+            }
+        }
+    }
+
+    function scheduleSplayPlacement(wrap, splay, fabCfg, isLine) {
         requestAnimationFrame(() => {
-            requestAnimationFrame(() => clampSplayToViewport(splay));
+            requestAnimationFrame(() => {
+                layoutSplaySlots(wrap, splay, fabCfg, isLine);
+            });
         });
     }
 
-    if (!globalThis.__asFqaClampListeners) {
-        globalThis.__asFqaClampListeners = true;
+    if (!globalThis.__asFqaSplayPlacementListeners) {
+        globalThis.__asFqaSplayPlacementListeners = true;
         addEventListener('resize', () => {
-            document.querySelectorAll('.as-fqa-splay:not([hidden])').forEach(clampSplayToViewport);
+            document.querySelectorAll('.as-fqa-popup-wrap').forEach((wrap) => {
+                const splay = wrap.querySelector('.as-fqa-splay');
+                if (!splay) return;
+                const isLine = splay.classList.contains('as-fqa-splay--line');
+                const cfgRaw = wrap.closest('#as-floating-quick-actions')?.dataset.fabCfg || '{}';
+                let cfg;
+                try {
+                    cfg = JSON.parse(cfgRaw);
+                } catch {
+                    cfg = {};
+                }
+                layoutSplaySlots(wrap, splay, cfg, isLine);
+            });
         });
     }
 
@@ -425,9 +497,6 @@
      * @param {boolean} isLine
      */
     function appendSlotsToSplay(splay, slots, sync, fabCfg, isLine) {
-        const n = slots.length;
-        const radius = FAB_FAN_RADIUS;
-
         slots.forEach((slot, i) => {
             let node = null;
             if (slot.kind === 'toggle') {
@@ -436,26 +505,14 @@
                 btn.classList.add('as-fqa-splay-btn');
                 node = btn;
             } else {
-                node = createGroupSplaySlot(slot.item, sync, fabCfg, () => scheduleClamp(splay));
+                node = createGroupSplaySlot(slot.item, sync, fabCfg);
             }
             if (!node) return;
 
-            if (isLine) {
-                splay.appendChild(node);
-            } else {
-                const wrapBtn = document.createElement('div');
-                wrapBtn.className = 'as-fqa-splay-slot';
-                const spread = Math.PI * 0.92;
-                const mid = -Math.PI / 2;
-                const t = n === 1 ? 0.5 : i / (n - 1);
-                const angle = mid - spread / 2 + t * spread;
-                const x = Math.cos(angle) * radius;
-                const y = Math.sin(angle) * radius;
-                wrapBtn.style.setProperty('--fab-rx', `${x}px`);
-                wrapBtn.style.setProperty('--fab-ry', `${y}px`);
-                wrapBtn.appendChild(node);
-                splay.appendChild(wrapBtn);
-            }
+            const wrapBtn = document.createElement('div');
+            wrapBtn.className = `as-fqa-splay-slot ${isLine ? 'as-fqa-splay-slot--line' : 'as-fqa-splay-slot--radial'}`;
+            wrapBtn.appendChild(node);
+            splay.appendChild(wrapBtn);
         });
     }
 
@@ -543,7 +600,7 @@
         wrap.appendChild(spacer);
         rootEl.appendChild(wrap);
 
-        scheduleClamp(splay);
+        scheduleSplayPlacement(wrap, splay, fabCfg, isLine);
         return true;
     }
 
@@ -596,7 +653,7 @@
             if (open) {
                 splay.removeAttribute('hidden');
                 rootEl.classList.add('as-fqa-popup-open');
-                scheduleClamp(splay);
+                scheduleSplayPlacement(wrap, splay, fabCfg, isLine);
                 outsideCloser = (ev) => {
                     if (!rootEl.contains(ev.target)) setOpen(false);
                 };
@@ -780,13 +837,15 @@
         rootEl.id = 'as-floating-quick-actions';
         rootEl.setAttribute('role', 'toolbar');
         rootEl.className = `as-fqa as-fqa-pos-${fabCfg.positionPreset}`;
+        rootEl.dataset.fabCfg = JSON.stringify({
+            buttonSize: fabCfg.buttonSize,
+            launcherSize: fabCfg.launcherSize,
+        });
         applyFabPaint(rootEl, fabCfg);
         applyFabTransform(rootEl, fabCfg);
 
         const layout = fabCfg.panelLayout;
-        const useLauncher =
-            fabCfg.displayMode === 'popup' ||
-            (fabPanelLayoutIsLauncher ? fabPanelLayoutIsLauncher(layout) : false);
+        const useLauncher = fabPanelLayoutIsLauncher ? fabPanelLayoutIsLauncher(layout) : false;
 
         let ok = false;
         if (useLauncher) {
