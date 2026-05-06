@@ -20,7 +20,8 @@
                 "_locales/en/messages.json",
                 "_locales/uk/messages.json",
                 "_locales/ru/messages.json",
-                "js/i18n-runtime.js"
+                "js/i18n-runtime.js",
+                "js/fab-config.js"
             ],
             "matches": [
                 "https://*/*"

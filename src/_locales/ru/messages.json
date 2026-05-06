@@ -549,7 +549,7 @@
         "message": "Плавающие быстрые действия"
     },
     "floating_quick_actions_hint": {
-        "message": "Показывает кнопки только во вкладке сайта в браузере (не поверх всей системы). Выберите переключатели и позицию."
+        "message": "Кнопки показываются только на вкладке сайта. Ищите действия по названию, настраивайте порядок и группы, внешний вид и смещение от угла — превью обновляется сразу."
     },
     "floating_quick_actions_enabled": {
         "message": "Включить плавающую панель"
@@ -577,6 +577,75 @@
     },
     "open_floating_quick_actions_page": {
         "message": "Настроить плавающие кнопки…"
+    },
+    "fab_offset_x": {
+        "message": "Смещение по горизонтали (px)"
+    },
+    "fab_offset_y": {
+        "message": "Смещение по вертикали (px)"
+    },
+    "fab_appearance_density": {
+        "message": "Плотность"
+    },
+    "fab_appearance_variant": {
+        "message": "Стиль"
+    },
+    "fab_density_comfortable": {
+        "message": "Обычная"
+    },
+    "fab_density_compact": {
+        "message": "Компактная"
+    },
+    "fab_variant_default": {
+        "message": "По умолчанию"
+    },
+    "fab_variant_minimal": {
+        "message": "Минимальный"
+    },
+    "fab_variant_filled": {
+        "message": "Заливка"
+    },
+    "fab_add_actions_title": {
+        "message": "Добавить действия"
+    },
+    "fab_add_search_placeholder": {
+        "message": "Поиск по названию…"
+    },
+    "fab_available_add": {
+        "message": "Добавить"
+    },
+    "fab_available_empty": {
+        "message": "Нет совпадений или все действия уже на панели."
+    },
+    "fab_add_group_button": {
+        "message": "Новая группа"
+    },
+    "fab_panel_layout_label": {
+        "message": "Разметка панели"
+    },
+    "fab_live_preview_label": {
+        "message": "Живое превью"
+    },
+    "fab_preview_empty": {
+        "message": "Включите панель и добавьте хотя бы одно действие, чтобы увидеть превью."
+    },
+    "fab_group_more": {
+        "message": "Ещё"
+    },
+    "fab_group_label_prefix": {
+        "message": "Группа:"
+    },
+    "fab_drag_hint": {
+        "message": "Перетащите, чтобы изменить порядок"
+    },
+    "fab_remove_item": {
+        "message": "Убрать"
+    },
+    "fab_group_pick_action": {
+        "message": "Выберите действие…"
+    },
+    "fab_group_add_selected": {
+        "message": "Добавить в группу"
     },
     "back_to_settings": {
         "message": "Назад к настройкам"

@@ -549,7 +549,7 @@
         "message": "Плаваючі швидкі дії"
     },
     "floating_quick_actions_hint": {
-        "message": "Показує кнопки лише у вкладці сайту в браузері (не поверх усієї системи). Оберіть перемикачі та позицію."
+        "message": "Кнопки з’являються лише на вкладці сайту. Шукай дії за назвою, будуй порядок і групи, налаштовуй вигляд і зміщення від кута — превʼю оновлюється одразу."
     },
     "floating_quick_actions_enabled": {
         "message": "Увімкнути плаваючу панель"
@@ -577,6 +577,75 @@
     },
     "open_floating_quick_actions_page": {
         "message": "Налаштувати плаваючі кнопки…"
+    },
+    "fab_offset_x": {
+        "message": "Зміщення по горизонталі (px)"
+    },
+    "fab_offset_y": {
+        "message": "Зміщення по вертикалі (px)"
+    },
+    "fab_appearance_density": {
+        "message": "Щільність"
+    },
+    "fab_appearance_variant": {
+        "message": "Стиль"
+    },
+    "fab_density_comfortable": {
+        "message": "Звичайна"
+    },
+    "fab_density_compact": {
+        "message": "Компактна"
+    },
+    "fab_variant_default": {
+        "message": "За замовчуванням"
+    },
+    "fab_variant_minimal": {
+        "message": "Мінімальний"
+    },
+    "fab_variant_filled": {
+        "message": "Заливка"
+    },
+    "fab_add_actions_title": {
+        "message": "Додати дії"
+    },
+    "fab_add_search_placeholder": {
+        "message": "Пошук за назвою…"
+    },
+    "fab_available_add": {
+        "message": "Додати"
+    },
+    "fab_available_empty": {
+        "message": "Немає збігів або всі дії вже на панелі."
+    },
+    "fab_add_group_button": {
+        "message": "Нова група"
+    },
+    "fab_panel_layout_label": {
+        "message": "Макет панелі"
+    },
+    "fab_live_preview_label": {
+        "message": "Живе превʼю"
+    },
+    "fab_preview_empty": {
+        "message": "Увімкни панель і додай хоча б одну дію, щоб побачити превʼю."
+    },
+    "fab_group_more": {
+        "message": "Більше"
+    },
+    "fab_group_label_prefix": {
+        "message": "Група:"
+    },
+    "fab_drag_hint": {
+        "message": "Тягни, щоб змінити порядок"
+    },
+    "fab_remove_item": {
+        "message": "Прибрати"
+    },
+    "fab_group_pick_action": {
+        "message": "Обери дію…"
+    },
+    "fab_group_add_selected": {
+        "message": "Додати в групу"
     },
     "back_to_settings": {
         "message": "Назад до налаштувань"

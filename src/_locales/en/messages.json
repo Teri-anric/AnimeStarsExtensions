@@ -549,7 +549,7 @@
         "message": "Floating quick actions"
     },
     "floating_quick_actions_hint": {
-        "message": "Shows movable shortcut buttons on the game website tab only (not system-wide). Pick toggles and position."
+        "message": "Shortcut buttons appear only on the game website tab. Search actions by name, arrange order and groups, tune look and corner offset — preview updates live."
     },
     "floating_quick_actions_enabled": {
         "message": "Enable floating panel"
@@ -577,6 +577,75 @@
     },
     "open_floating_quick_actions_page": {
         "message": "Configure floating buttons…"
+    },
+    "fab_offset_x": {
+        "message": "Horizontal offset (px)"
+    },
+    "fab_offset_y": {
+        "message": "Vertical offset (px)"
+    },
+    "fab_appearance_density": {
+        "message": "Density"
+    },
+    "fab_appearance_variant": {
+        "message": "Style"
+    },
+    "fab_density_comfortable": {
+        "message": "Comfortable"
+    },
+    "fab_density_compact": {
+        "message": "Compact"
+    },
+    "fab_variant_default": {
+        "message": "Default"
+    },
+    "fab_variant_minimal": {
+        "message": "Minimal"
+    },
+    "fab_variant_filled": {
+        "message": "Filled"
+    },
+    "fab_add_actions_title": {
+        "message": "Add actions"
+    },
+    "fab_add_search_placeholder": {
+        "message": "Search by name…"
+    },
+    "fab_available_add": {
+        "message": "Add"
+    },
+    "fab_available_empty": {
+        "message": "No matching actions or all are already on the panel."
+    },
+    "fab_add_group_button": {
+        "message": "New group"
+    },
+    "fab_panel_layout_label": {
+        "message": "Panel layout"
+    },
+    "fab_live_preview_label": {
+        "message": "Live preview"
+    },
+    "fab_preview_empty": {
+        "message": "Enable the panel and add at least one action to see the preview."
+    },
+    "fab_group_more": {
+        "message": "More"
+    },
+    "fab_group_label_prefix": {
+        "message": "Group:"
+    },
+    "fab_drag_hint": {
+        "message": "Drag to reorder"
+    },
+    "fab_remove_item": {
+        "message": "Remove"
+    },
+    "fab_group_pick_action": {
+        "message": "Choose an action…"
+    },
+    "fab_group_add_selected": {
+        "message": "Add to group"
     },
     "back_to_settings": {
         "message": "Back to settings"
