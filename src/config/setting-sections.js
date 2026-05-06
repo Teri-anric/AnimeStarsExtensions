@@ -95,6 +95,14 @@ export const SETTING_SECTIONS = [
                 titleKey: 'open_user_card_buttons_editor',
                 anchorId: 'open-user-card-buttons-editor',
             },
+            { kind: 'field', fieldKey: 'header-bookmarks-bar-enabled' },
+            {
+                kind: 'pageLink',
+                descriptionKey: 'header_bookmarks_editor_description',
+                href: 'header-bookmarks-editor.html',
+                titleKey: 'open_header_bookmarks_editor',
+                anchorId: 'open-header-bookmarks-editor',
+            },
             {
                 kind: 'pageLink',
                 descriptionKey: 'floating_quick_actions_link_description',

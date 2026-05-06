@@ -3,31 +3,6 @@
  */
 import IconPicker from './icon-picker.js';
 
-/** Icons commonly useful for quick actions (Font Awesome 6 class names). */
-export const FAB_ICON_CHOICES = [
-    'fas fa-bolt',
-    'fas fa-ellipsis-vertical',
-    'fas fa-grip-lines',
-    'fas fa-sliders',
-    'fas fa-moon',
-    'fas fa-sun',
-    'fas fa-eye',
-    'fas fa-eye-slash',
-    'fas fa-plus',
-    'fas fa-minus',
-    'fas fa-check',
-    'fas fa-list',
-    'fas fa-layer-group',
-    'fas fa-star',
-    'fas fa-fire',
-    'fas fa-gem',
-    'fas fa-circle',
-    'fal fa-search',
-    'fal fa-heart',
-    'fal fa-user',
-    'fal fa-users',
-];
-
 /**
  * @param {{
  *   translate: (key: string) => string,
@@ -48,9 +23,16 @@ export function createFabIconField(opts) {
     const previewI = document.createElement('i');
     previewBtn.appendChild(previewI);
 
+    function resolveForDisplay(cls) {
+        const c = (cls || '').trim();
+        if (!c) return '';
+        if (c.startsWith('fal ')) return 'fas ' + c.slice(4);
+        return c;
+    }
+
     function setPreviewClass(cls) {
         const c = (cls || '').trim();
-        previewI.className = c || 'fas fa-icons';
+        previewI.className = resolveForDisplay(c) || 'fas fa-icons';
     }
 
     setPreviewClass(opts.value);
@@ -72,9 +54,8 @@ export function createFabIconField(opts) {
     });
 
     const picker = new IconPicker({
-        icons: FAB_ICON_CHOICES,
         translate: opts.translate,
-        resolveIconClass: (c) => c,
+        resolveIconClass: resolveForDisplay,
     });
 
     pickBtn.addEventListener('click', () => {

@@ -54,31 +54,6 @@ class TemplateEditor {
         ];
 
         this.availableVariables = Object.values(parseTypeToVariablesMap).flat().concat(['cardId', 'newLine']);
-        this.availableIcons = [
-            'fal fa-search',
-            'fal fa-heart',
-            'fal fa-unlock',
-            'fal fa-lock',
-            'fal fa-trophy',
-            'fal fa-star',
-            'fal fa-fire',
-            'fal fa-gem',
-            'fal fa-list',
-            'fal fa-user',
-            'fal fa-users',
-            'fal fa-exchange-alt',
-            'fal fa-eye',
-            'fal fa-plus',
-            'fal fa-minus',
-            'fal fa-check',
-            'fal fa-times',
-            'fal fa-filter',
-            'fal fa-sort',
-            'fal fa-bookmark',
-            'fal fa-tag',
-            'fal fa-link',
-            'fal fa-history'
-        ];
         this.iconPicker = null;
 
         this.draggedItem = null;
@@ -96,7 +71,6 @@ class TemplateEditor {
         this.attachEventListeners();
         // Create shared icon picker once
         this.iconPicker = new IconPicker({
-            icons: this.availableIcons,
             translate: (key) => this.getTranslatedText(key),
             resolveIconClass: (cls) => this.resolveIconClass(cls)
         });

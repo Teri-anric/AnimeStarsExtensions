@@ -449,6 +449,27 @@
     "open_user_card_buttons_editor": {
         "message": "Відкрити редактор кнопок"
     },
+    "header_bookmarks_bar_enabled": {
+        "message": "Панель закладок під шапкою"
+    },
+    "header_bookmarks_bar_enabled_description": {
+        "message": "Показує смугу посилань під шапкою сайту (URL задаються в редакторі)."
+    },
+    "header_bookmarks_editor_title": {
+        "message": "Редактор закладок під шапкою"
+    },
+    "header_bookmarks_editor_description": {
+        "message": "Редагувати посилання під шапкою (База, Паки, Промо тощо)"
+    },
+    "open_header_bookmarks_editor": {
+        "message": "Відкрити редактор закладок під шапкою"
+    },
+    "header_bookmarks_preview_title": {
+        "message": "Попередній перегляд"
+    },
+    "header_bookmarks_preview_description": {
+        "message": "Приблизний вигляд смуги на сайті (на вузькому екрані підписи ховаються)."
+    },
     "buttons_preview": {
         "message": "Попередній перегляд кнопок"
     },

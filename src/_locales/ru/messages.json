@@ -449,6 +449,27 @@
     "open_user_card_buttons_editor": {
         "message": "Открыть редактор кнопок"
     },
+    "header_bookmarks_bar_enabled": {
+        "message": "Панель закладок под шапкой"
+    },
+    "header_bookmarks_bar_enabled_description": {
+        "message": "Показывает полоску ссылок под шапкой сайта (URL задаются в редакторе)."
+    },
+    "header_bookmarks_editor_title": {
+        "message": "Редактор закладок под шапкой"
+    },
+    "header_bookmarks_editor_description": {
+        "message": "Редактировать ссылки под шапкой (База, Паки, Промо и т.д.)"
+    },
+    "open_header_bookmarks_editor": {
+        "message": "Открыть редактор закладок под шапкой"
+    },
+    "header_bookmarks_preview_title": {
+        "message": "Предпросмотр"
+    },
+    "header_bookmarks_preview_description": {
+        "message": "Примерный вид полоски на сайте (на узком экране подписи скрываются)."
+    },
     "buttons_preview": {
         "message": "Предварительный просмотр кнопок"
     },

@@ -108,6 +108,13 @@ export const SETTING_FIELDS = {
         defaultValue: true,
         quickAction: true,
     },
+    'header-bookmarks-bar-enabled': {
+        type: 'checkbox',
+        labelKey: 'header_bookmarks_bar_enabled',
+        descriptionKey: 'header_bookmarks_bar_enabled_description',
+        defaultValue: false,
+        quickAction: true,
+    },
     'add-need-btn-to-card-dialog': {
         type: 'select',
         labelKey: 'add_need_btn_to_card_dialog',

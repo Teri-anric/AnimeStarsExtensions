@@ -71,6 +71,18 @@
                 "https://*/*"
             ],
             "js": [
+                "./scripts/header_bookmarks_bar.js"
+            ],
+            "css": [
+                "./styles/header_bookmarks_bar.css"
+            ],
+            "run_at": "document_idle"
+        },
+        {
+            "matches": [
+                "https://*/*"
+            ],
+            "js": [
                 "./scripts/card_indexer.js",
                 "./scripts/card_widgets.js"
             ],

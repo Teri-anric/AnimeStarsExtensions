@@ -449,6 +449,27 @@
     "open_user_card_buttons_editor": {
         "message": "Open Buttons Editor"
     },
+    "header_bookmarks_bar_enabled": {
+        "message": "Header bookmarks bar"
+    },
+    "header_bookmarks_bar_enabled_description": {
+        "message": "Show a customizable strip of links below the site header (same URLs as in the editor)."
+    },
+    "header_bookmarks_editor_title": {
+        "message": "Header Bookmarks Editor"
+    },
+    "header_bookmarks_editor_description": {
+        "message": "Edit links under the header (Base, Packs, Promo, …)"
+    },
+    "open_header_bookmarks_editor": {
+        "message": "Open Header Bookmarks Editor"
+    },
+    "header_bookmarks_preview_title": {
+        "message": "Preview"
+    },
+    "header_bookmarks_preview_description": {
+        "message": "Approximate look of the bar on the site (labels hide on narrow screens)."
+    },
     "buttons_preview": {
         "message": "Buttons Preview"
     },

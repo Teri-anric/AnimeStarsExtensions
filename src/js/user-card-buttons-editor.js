@@ -5,6 +5,7 @@
 
 // Import translation system
 import i18n, { i18nReady } from './translation.js';
+import { ICON_PICKER_ICONS } from './icon-picker.js';
 
 // Default button configurations
 const DEFAULT_BUTTONS = [
@@ -135,9 +136,14 @@ class UserCardButtonsEditor {
             containerId: 'buttons-editor',
             previewId: 'preview-buttons',
             storageKey: 'user-card-buttons-config',
+            /** When set, used instead of {@link DEFAULT_BUTTONS} for load/reset. */
+            defaultButtons: null,
+            exportFilename: 'user-card-buttons-config.json',
+            /** Shape for {@link addButton} when creating a new row (id is always regenerated). */
+            defaultNewButton: null,
             ...options
         };
-        
+
         this.container = document.getElementById(this.options.containerId);
         this.previewContainer = document.getElementById(this.options.previewId);
         this.buttons = [];
@@ -146,34 +152,19 @@ class UserCardButtonsEditor {
         this.customButtonCounter = 0;
         this.currentIconPickerIndex = -1;
         
-        // Available Font Awesome icons as a simple list (store fal for site, preview as fas)
-        this.availableIcons = [
-            'fal fa-search',
-            'fal fa-heart',
-            'fal fa-unlock',
-            'fal fa-lock',
-            'fal fa-trophy',
-            'fal fa-star',
-            'fal fa-fire',
-            'fal fa-gem',
-            'fal fa-list',
-            'fal fa-user',
-            'fal fa-users',
-            'fal fa-exchange-alt',
-            'fal fa-eye',
-            'fal fa-plus',
-            'fal fa-minus',
-            'fal fa-check',
-            'fal fa-times',
-            'fal fa-filter',
-            'fal fa-sort',
-            'fal fa-bookmark',
-            'fal fa-tag',
-            'fal fa-link',
-            'fal fa-history'
-        ];
+        // Available Font Awesome icons (store fal for site, preview as fas)
+        this.availableIcons = ICON_PICKER_ICONS;
         
         this.init();
+    }
+
+    /** @returns {typeof DEFAULT_BUTTONS} */
+    getFactoryDefaultButtons() {
+        const d = this.options.defaultButtons;
+        if (Array.isArray(d) && d.length) {
+            return JSON.parse(JSON.stringify(d));
+        }
+        return JSON.parse(JSON.stringify(DEFAULT_BUTTONS));
     }
 
     init() {
@@ -186,6 +177,7 @@ class UserCardButtonsEditor {
         this.loadSavedButtons();
         this.render();
         this.attachEventListeners();
+        this.attachStorageListener();
     }
 
     // Convert fal -> fas for preview in extension, keep original for storage/site
@@ -200,7 +192,7 @@ class UserCardButtonsEditor {
     createIconPickerModal() {
         // Create modal backdrop
         const modal = document.createElement('div');
-        modal.id = 'icon-picker-modal';
+        modal.id = 'icon-picker-modal-' + this.options.storageKey.replace(/[^a-z0-9_-]/gi, '_');
         modal.className = 'icon-picker-modal hidden';
         
         const modalContent = document.createElement('div');
@@ -586,13 +578,29 @@ class UserCardButtonsEditor {
         }
     }
 
+    attachStorageListener() {
+        if (typeof chrome === 'undefined' || !chrome.storage?.onChanged) return;
+        chrome.storage.onChanged.addListener((changes, namespace) => {
+            if (namespace !== 'sync') return;
+            if (!changes[this.options.storageKey]) return;
+            this.loadSavedButtons();
+        });
+    }
+
     addButton() {
+        const base =
+            this.options.defaultNewButton && typeof this.options.defaultNewButton === 'object'
+                ? { ...this.options.defaultNewButton }
+                : {
+                      enabled: true,
+                      text: '',
+                      icon: '',
+                      url: '/user/cards/?name={USERNAME}',
+                  };
         const button = {
+            ...base,
             id: `button-${Date.now()}`,
-            enabled: true,
-            text: '',
-            icon: '',
-            url: '/user/cards/?name={USERNAME}'
+            enabled: base.enabled !== false,
         };
 
         this.buttons.push(button);
@@ -668,7 +676,9 @@ class UserCardButtonsEditor {
                 icon.className = this.resolveIconClass(button.icon);
                 link.appendChild(icon);
                 if (button.text) {
-                    link.appendChild(document.createTextNode(' ' + button.text));
+                    const span = document.createElement('span');
+                    span.textContent = String(button.text);
+                    link.appendChild(span);
                 }
             } else if (button.text) {
                 link.textContent = button.text;
@@ -696,11 +706,11 @@ class UserCardButtonsEditor {
                         this.buttons = JSON.parse(settings[this.options.storageKey]);
                     } catch (e) {
                         console.error('Failed to parse button config:', e);
-                        this.buttons = [...DEFAULT_BUTTONS];
+                        this.buttons = this.getFactoryDefaultButtons();
                     }
                 } else {
                     // Use default buttons
-                    this.buttons = [...DEFAULT_BUTTONS];
+                    this.buttons = this.getFactoryDefaultButtons();
                 }
                 this.render();
             });
@@ -719,7 +729,7 @@ class UserCardButtonsEditor {
         
         const link = document.createElement('a');
         link.href = url;
-        link.download = 'user-card-buttons-config.json';
+        link.download = this.options.exportFilename || 'user-card-buttons-config.json';
         link.click();
         
         URL.revokeObjectURL(url);
@@ -747,7 +757,7 @@ class UserCardButtonsEditor {
     }
 
     resetToDefault() {
-        this.buttons = JSON.parse(JSON.stringify(DEFAULT_BUTTONS));
+        this.buttons = this.getFactoryDefaultButtons();
         this.saveButtons();
         this.render();
     }
