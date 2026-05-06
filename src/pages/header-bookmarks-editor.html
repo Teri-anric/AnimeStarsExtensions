@@ -3,62 +3,63 @@
 
 <head>
     <meta charset="UTF-8">
-    <title>User Card Buttons Editor - AnimeStar Extension</title>
+    <title>Header Bookmarks - AnimeStar Extension</title>
     <link rel="stylesheet" href="../styles/dark-theme.css">
     <link rel="stylesheet" href="../styles/extension-page.css">
     <link rel="stylesheet" href="../styles/user-card-buttons-editor.css">
+    <link rel="stylesheet" href="../styles/header_bookmarks_bar.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css">
     <script src="../js/translation.js" type="module"></script>
     <script src="../js/dark-theme.js" type="module"></script>
+    <style>
+        .header-bookmarks-preview-wrap {
+            display: flex;
+            justify-content: center;
+            padding: 12px 0;
+        }
+        .header-bookmarks-preview-wrap .as-ext-header-bookmarks {
+            pointer-events: none;
+        }
+    </style>
 </head>
 
 <body>
     <div class="settings-container">
         <translate-text>
             <h1 class="section-title">
-                <i class="fas fa-link"></i> 
-                <span>user_card_buttons_editor_title</span>
+                <i class="fas fa-bookmark"></i>
+                <span>header_bookmarks_editor_title</span>
             </h1>
-            
-            <!-- Preview Section -->
+
             <div class="preview-section">
                 <h2>
                     <i class="fas fa-eye"></i>
-                    <span>buttons_preview</span>
+                    <span>header_bookmarks_preview_title</span>
                 </h2>
                 <p class="preview-description">
-                    <span>buttons_preview_description</span>
+                    <span>header_bookmarks_preview_description</span>
                 </p>
-                
-                <div class="preview-buttons-container">
-                    <div class="user-card-buttons" id="preview-buttons">
-                        <!-- Buttons will be rendered here -->
+                <div class="header-bookmarks-preview-wrap">
+                    <div class="as-ext-header-bookmarks" id="header-bookmarks-preview">
+                        <!-- Preview links -->
                     </div>
                 </div>
             </div>
-            
+
             <div class="settings-section">
                 <h2>
                     <i class="fas fa-cog"></i>
                     <span>buttons_configuration</span>
                 </h2>
-                
-                <!-- Buttons Editor -->
                 <div class="setting-item multi-line">
-                    <div id="buttons-editor" class="buttons-editor">
-                        <!-- Buttons editor content will be dynamically created -->
-                    </div>
+                    <div id="header-bookmarks-editor" class="buttons-editor"></div>
                 </div>
-
-                <!-- Add Button Controls -->
                 <div class="add-button-section">
                     <button class="add-custom-btn main-add-btn">
                         <i class="fas fa-plus"></i>
                         <span>add_button</span>
                     </button>
                 </div>
-
-                <!-- Import/Export Section -->
                 <div class="import-export-section">
                     <h3>
                         <i class="fas fa-exchange-alt"></i>
@@ -83,9 +84,7 @@
             </div>
         </translate-text>
     </div>
-
-    <script src="../js/user-card-buttons-editor.js" type="module"></script>
+    <script src="../js/header-bookmarks-editor.js" type="module"></script>
 </body>
 
 </html>
-

@@ -1,8 +1,9 @@
 {
     "manifest_version": 3,
-    "name": "AnimeStar Extension",
+    "name": "__MSG_extension_name__",
     "version": "0.0.29",
-    "description": "Enhanced functionality for AnimeStar website",
+    "description": "__MSG_extension_description__",
+    "default_locale": "en",
     "permissions": [
         "storage",
         "alarms",
@@ -12,6 +13,20 @@
         "https://raw.githubusercontent.com/Teri-anric/AnimeStarsExtensions/*",
         "https://ass-api.strawberrycat.dev/*",
         "https://ass.strawberrycat.dev/*"
+    ],
+    "web_accessible_resources": [
+        {
+            "resources": [
+                "_locales/en/messages.json",
+                "_locales/uk/messages.json",
+                "_locales/ru/messages.json",
+                "js/i18n-runtime.js",
+                "js/fab-config.js"
+            ],
+            "matches": [
+                "https://*/*"
+            ]
+        }
     ],
     "content_scripts": [
         {
@@ -36,6 +51,30 @@
             ],
             "css": [
                 "./styles/fix_header.css"
+            ],
+            "run_at": "document_idle"
+        },
+        {
+            "matches": [
+                "https://*/*"
+            ],
+            "js": [
+                "./scripts/floating_quick_actions.js"
+            ],
+            "css": [
+                "./styles/floating_quick_actions.css"
+            ],
+            "run_at": "document_idle"
+        },
+        {
+            "matches": [
+                "https://*/*"
+            ],
+            "js": [
+                "./scripts/header_bookmarks_bar.js"
+            ],
+            "css": [
+                "./styles/header_bookmarks_bar.css"
             ],
             "run_at": "document_idle"
         },
@@ -159,7 +198,7 @@
     },
     "action": {
         "default_icon": "icons/icon-128.png",
-        "default_title": "AnimeStar Extension",
+        "default_title": "__MSG_extension_name__",
         "default_popup": "pages/settings.html"
     },
     "options_page": "pages/settings.html"

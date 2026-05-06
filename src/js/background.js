@@ -1,63 +1,27 @@
-import { i18n } from './translation.js';
+import {
+    buildDefaultSettingsFromFields,
+    SETTING_FIELDS,
+    SETTING_FIELDS_REGISTRY_LOCAL_KEY,
+} from '../config/setting-fields.js';
+import { EXTRA_DEFAULT_SETTINGS } from '../config/default-settings-extra.js';
+import { FLOATING_QUICK_ACTIONS_KEY } from './fab-config.js';
 // Backgrounds
 import './backgrounds/card_user_count.js';
 import './backgrounds/ass-api.js';
 // import './backgrounds/owner_card_map.js'; # DISABLED
 
-// Default settings
+function persistSettingFieldsRegistry() {
+    chrome.storage.local.set({
+        [SETTING_FIELDS_REGISTRY_LOCAL_KEY]: SETTING_FIELDS,
+    });
+}
+
+persistSettingFieldsRegistry();
+
+// Default settings (registry fields + extra keys not on the main settings form)
 const DEFAULT_SETTINGS = {
-    'auto-seen-card': true,
-    'auto-watchlist-fix': true,
-    'club-boost-auto': true,
-    'club-boost-replace-auto': true,
-    'club-boost-refresh-cooldown': 600,
-    'club-boost-action-cooldown': 500,
-    'club-boost-replace-stale-ms': 12000,
-    'club-boost-replace-skip-cooldown-ms': 1600,
-    'api-domain': '',
-    'add-my-cards-button': true,
-    'add-user-cards-buttons': true,
-    'language': 'uk',
-    'last-checked-version': null,
-    'card-user-count': true,
-    'card-user-count-event-target': 'mousedown-1',
-    'card-user-count-request-delay': 2,
-    'card-user-count-template-items': JSON.stringify([
-        { type: 'variable', variable: 'need' },
-        { type: 'text', text: ' | ' },
-        { type: 'variable', variable: 'owner' },
-        { type: 'text', text: ' | ' },
-        { type: 'variable', variable: 'trade' }
-    ]),
-    'card-user-count-cache-enabled': true,
-    'card-user-count-cache-max-lifetime': 168,
-    'card-user-count-position': 'bottom-right',
-    'card-user-count-style': 'default',
-    'card-user-count-size': 'medium',
-    'card-user-count-background-color': '',
-    'card-user-count-text-color': '',
-    'card-user-count-opacity': 80,
-    'card-user-count-hover-action': 'none',
-    'not-update-check': false,
-    'auto-take-heavenly-stone': true,
-    'auto-take-cinema-stone': true,
-    'add-need-btn-to-card-dialog': 'can',
-    'remove-card-list-and-club-rating-in-card-base': false,
-    'trades-history-filters': true,
-    'owner-card-map-sync-enabled': false,
-    'trades-preview-enabled': true,
-    'trades-preview-auto-parse': true,
-    'trades-preview-auto-start-delay': 500,
-    'trades-preview-auto-interval': 1200,
-    'trades-preview-full-exchange': false,
-    'trades-history-big-images': false,
-    'custom-hosts': ['animesss.tv', 'animesss.com'],
-    'auto-take-snow-stone': true,
-    'auto-click-gandama': true,
-    'hide-snow': false,
-    'clubs-boost-block-images': false,
-    'boss-boost-auto': false,
-    'upload-card-data-to-ass': true,
+    ...buildDefaultSettingsFromFields(),
+    ...EXTRA_DEFAULT_SETTINGS,
 };
 
 const MIGRATIONS = [
@@ -152,6 +116,17 @@ const MIGRATIONS = [
         migrateVersion: 4,
         migrate: () => {}, // Delete migration of test release version
     },
+    {
+        migrateVersion: 5,
+        migrate: () => {
+            chrome.storage.sync.get(['floating-quick-actions'], (data) => {
+                if (data['floating-quick-actions'] !== undefined) return;
+                chrome.storage.sync.set({
+                    'floating-quick-actions': EXTRA_DEFAULT_SETTINGS['floating-quick-actions'],
+                });
+            });
+        },
+    },
 ];
 
 function setDefaultSettings() {
@@ -238,9 +213,9 @@ chrome.alarms.onAlarm.addListener((alarm) => {
     }
 });
 
-// Optional: Add listener for settings changes if needed in future
 chrome.storage.onChanged.addListener((changes, namespace) => {
-    if (namespace != 'sync') return;
+    if (namespace !== 'sync') return;
+    if (changes[FLOATING_QUICK_ACTIONS_KEY]) persistSettingFieldsRegistry();
     console.log('Settings changed:', changes);
 });
 
@@ -285,6 +260,34 @@ async function updateBoostImageBlockingRuleForTab(sender, enable) {
 }
 
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
+    if (message?.action === 'get_setting_fields') {
+        persistSettingFieldsRegistry();
+        sendResponse({ settingFields: SETTING_FIELDS });
+        return;
+    }
+    if (message?.action === 'open_extension_page') {
+        try {
+            const rawUrl = typeof message.url === 'string' ? message.url.trim() : '';
+            if (!rawUrl) {
+                sendResponse({ success: false, error: 'Missing url' });
+                return;
+            }
+            const base = chrome.runtime.getURL('');
+            if (!rawUrl.startsWith(base)) {
+                sendResponse({ success: false, error: 'Invalid extension url' });
+                return;
+            }
+            chrome.tabs.create({ url: rawUrl, active: true }, () => {
+                const err = chrome.runtime.lastError;
+                if (err) sendResponse({ success: false, error: err.message });
+                else sendResponse({ success: true });
+            });
+            return true;
+        } catch (e) {
+            sendResponse({ success: false, error: e?.message || String(e) });
+            return;
+        }
+    }
     if (message?.action === 'boost_block_images') {
         const enable = message.enable !== false;
         const result = updateBoostImageBlockingRuleForTab(sender, enable);
@@ -296,5 +299,6 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
         } else {
             sendResponse(result);
         }
+        return;
     }
 });

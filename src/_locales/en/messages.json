@@ -1,0 +1,800 @@
+{
+    "extension_name": {
+        "message": "AnimeStar Extension"
+    },
+    "extension_description": {
+        "message": "Enhanced functionality for AnimeStar website"
+    },
+    "language": {
+        "message": "Language"
+    },
+    "language_uk": {
+        "message": "Ukrainian"
+    },
+    "language_en": {
+        "message": "English"
+    },
+    "language_ru": {
+        "message": "Russian"
+    },
+    "language_inspect": {
+        "message": "Inspect"
+    },
+    "select_language": {
+        "message": "Select Language"
+    },
+    "auto_features": {
+        "message": "Automatic Features"
+    },
+    "exchange_settings": {
+        "message": "Exchange Settings"
+    },
+    "ui_customization": {
+        "message": "UI Customization"
+    },
+    "dark_theme": {
+        "message": "Dark Theme"
+    },
+    "hide_snow": {
+        "message": "Hide snow"
+    },
+    "auto_seen_card": {
+        "message": "Automatically take cards from watching"
+    },
+    "auto_seen_card_stack": {
+        "message": "Stack cards from watching"
+    },
+    "auto_watchlist_fix": {
+        "message": "Collection is a watchlist"
+    },
+    "auto_take_heavenly_stone": {
+        "message": "Take heavenly stone automatically"
+    },
+    "auto_take_cinema_stone": {
+        "message": "Take cinema stones automatically"
+    },
+    "auto_stone_click_base_delay_ms": {
+        "message": "Base delay for stone clicks"
+    },
+    "auto_stone_click_growth_delay_ms": {
+        "message": "Extra delay for each next stone"
+    },
+    "auto_stone_click_delay_description": {
+        "message": "To reduce load and 520 risks after idle periods, each next stone click gets additional delay."
+    },
+    "add_my_cards_button": {
+        "message": "Add \"My Cards\" button to the header"
+    },
+    "add_user_cards_buttons": {
+        "message": "Add buttons for quick access to user's open cards"
+    },
+    "club_boost_auto": {
+        "message": "Automatic club boost"
+    },
+    "club_boost_replace_auto": {
+        "message": "Automatic card skips (mine replace)"
+    },
+    "boss_boost_auto": {
+        "message": "Automatic boss boost"
+    },
+    "card_user_count": {
+        "message": "Show card statistics"
+    },
+    "card_user_count_event_target": {
+        "message": "Event target for showing card statistics"
+    },
+    "only_cache": {
+        "message": "Only cache"
+    },
+    "save_settings": {
+        "message": "Save Settings"
+    },
+    "automatic": {
+        "message": "Automatic"
+    },
+    "mousedown_0": {
+        "message": "Left mouse button"
+    },
+    "mousedown_1": {
+        "message": "Middle mouse button"
+    },
+    "mousedown_2": {
+        "message": "Right mouse button"
+    },
+    "mouseover": {
+        "message": "Mouse over"
+    },
+    "club_settings": {
+        "message": "Club Settings"
+    },
+    "settings_title": {
+        "message": "Extension Settings"
+    },
+    "site_domains": {
+        "message": "Site domain(s)"
+    },
+    "site_domains_add_label": {
+        "message": "Add domain manually (when the site changes domain)"
+    },
+    "site_domains_add_btn": {
+        "message": "Add domain"
+    },
+    "site_domains_help": {
+        "message": "Add the website domain, then reload the site tab."
+    },
+    "site_domains_empty": {
+        "message": "No additional domains."
+    },
+    "site_domains_invalid": {
+        "message": "Invalid domain. Enter a hostname or URL (e.g. animestars.org)."
+    },
+    "site_domains_requesting": {
+        "message": "Saving domain…"
+    },
+    "site_domains_added": {
+        "message": "Domain added. Reload the website page."
+    },
+    "site_domains_removing": {
+        "message": "Removing domain…"
+    },
+    "site_domains_removed": {
+        "message": "Domain removed."
+    },
+    "site_domains_error": {
+        "message": "Error"
+    },
+    "remove": {
+        "message": "Remove"
+    },
+    "clubs_boost_block_images": {
+        "message": "Block card images on club boost page"
+    },
+    "club_boost_refresh_cooldown": {
+        "message": "Refresh Interval"
+    },
+    "club_boost_action_cooldown": {
+        "message": "Boost Interval"
+    },
+    "club_boost_cooldown_description": {
+        "message": "Settings for automatic club boost intervals (ms)"
+    },
+    "club_boost_replace_stale_ms": {
+        "message": "Card skip: time with no card change"
+    },
+    "club_boost_replace_stale_description": {
+        "message": "If the offered card stays the same on screen for this long (no one takes it from contributions), a skip is triggered (replace). Also skips immediately when no club member can donate this card (empty “can contribute” list). Only when “Automatic card boost” is enabled."
+    },
+    "club_boost_replace_skip_cooldown_ms": {
+        "message": "Delay between card skips"
+    },
+    "club_boost_replace_skip_cooldown_description": {
+        "message": "Minimum time between two replace clicks so the site is not hit twice in a row."
+    },
+    "club_boost_hotkey_description": {
+        "message": "Hotkeys for club boost control:\n- B: Toggle Automatic Boost\n- C: Toggle Automatic Card Skips"
+    },
+    "update_notification_title": {
+        "message": "AnimeStar Extension Update Available"
+    },
+    "update_notification_message": {
+        "message": "New version $VERSION$ is available! Click to see details.",
+        "placeholders": {
+            "version": {
+                "content": "$1",
+                "example": "1.0.0"
+            }
+        }
+    },
+    "update_notification_button": {
+        "message": "View Details"
+    },
+    "bottom_bar_text": {
+        "message": "If you have any questions or feedback, feel free to reach out!"
+    },
+    "bottom_bar_github": {
+        "message": "GitHub"
+    },
+    "bottom_bar_telegram": {
+        "message": "Telegram"
+    },
+    "card_user_count_request_delay": {
+        "message": "Request delay"
+    },
+    "not_update_check": {
+        "message": "Not check for updates"
+    },
+    "check_update": {
+        "message": "Check for update"
+    },
+    "update_available_title": {
+        "message": "Update Available"
+    },
+    "update_available_description": {
+        "message": "New version is available! Click to see details. Version: "
+    },
+    "dismiss": {
+        "message": "Dismiss"
+    },
+    "card_user_count_cache_enabled": {
+        "message": "Cache enabled"
+    },
+    "card_user_count_cache_max_lifetime": {
+        "message": "Cache maximum lifetime (hours)"
+    },
+    "card_user_count_queue": {
+        "message": "Card queue size"
+    },
+    "clear_queue": {
+        "message": "Clear queue"
+    },
+    "card_cache_controls": {
+        "message": "Card cache"
+    },
+    "clear_card_cache": {
+        "message": "Clear all caches"
+    },
+    "card_user_count_template": {
+        "message": "Card statistics text template"
+    },
+    "card_user_count_template_editor": {
+        "message": "Template Editor"
+    },
+    "card_appearance_settings": {
+        "message": "Card Appearance Settings"
+    },
+    "card_appearance_description": {
+        "message": "Customize the appearance of card statistics using the template editor"
+    },
+    "open_card_appearance_editor": {
+        "message": "Open Appearance Editor"
+    },
+    "card_preview": {
+        "message": "Card Preview"
+    },
+    "card_preview_description": {
+        "message": "Preview shows how your card will look with current settings"
+    },
+    "card_user_count_settings": {
+        "message": "Card Statistics Settings"
+    },
+    "template_editor": {
+        "message": "Template Editor"
+    },
+    "card_user_count_position": {
+        "message": "Statistics Position"
+    },
+    "card_user_count_style": {
+        "message": "Statistics Style"
+    },
+    "card_user_count_size": {
+        "message": "Statistics Size"
+    },
+    "card_user_count_background_color": {
+        "message": "Background Color"
+    },
+    "card_user_count_text_color": {
+        "message": "Text Color"
+    },
+    "card_user_count_opacity": {
+        "message": "Background Opacity"
+    },
+    "card_user_count_font_size_scale": {
+        "message": "Statistics font scale"
+    },
+    "card_user_count_hover_action": {
+        "message": "Hover Action"
+    },
+    "hover_action_none": {
+        "message": "None"
+    },
+    "hover_action_scale_up": {
+        "message": "Scale Up"
+    },
+    "hover_action_scale_down": {
+        "message": "Scale Down"
+    },
+    "hover_action_fade_out": {
+        "message": "Fade Out"
+    },
+    "hover_action_hide": {
+        "message": "Hide"
+    },
+    "hover_action_brighten": {
+        "message": "Brighten"
+    },
+    "top_left": {
+        "message": "Top Left"
+    },
+    "top_center": {
+        "message": "Top Center"
+    },
+    "top_right": {
+        "message": "Top Right"
+    },
+    "bottom_left": {
+        "message": "Bottom Left"
+    },
+    "bottom_center": {
+        "message": "Bottom Center"
+    },
+    "bottom_right": {
+        "message": "Bottom Right"
+    },
+    "under": {
+        "message": "Under Card"
+    },
+    "default": {
+        "message": "Default"
+    },
+    "minimal": {
+        "message": "Minimal"
+    },
+    "bordered": {
+        "message": "Bordered"
+    },
+    "pill": {
+        "message": "Pill"
+    },
+    "badge": {
+        "message": "Badge"
+    },
+    "small": {
+        "message": "Small"
+    },
+    "medium": {
+        "message": "Medium"
+    },
+    "large": {
+        "message": "Large"
+    },
+    "template_item_type_text": {
+        "message": "Text"
+    },
+    "template_item_type_icon": {
+        "message": "Icon"
+    },
+    "template_item_type_variable": {
+        "message": "Variable"
+    },
+    "template_item_placeholder_text": {
+        "message": "Enter text"
+    },
+    "template_add_text": {
+        "message": "Add Text"
+    },
+    "template_add_icon": {
+        "message": "Add Icon"
+    },
+    "template_add_variable": {
+        "message": "Add Variable"
+    },
+    "template_empty_state_title": {
+        "message": "No template items yet"
+    },
+    "template_empty_state_subtitle": {
+        "message": "Click the buttons below to start building your template"
+    },
+    "template_preview_label": {
+        "message": "Preview:"
+    },
+    "template_preview_empty": {
+        "message": "Empty template"
+    },
+    "button_icon_none": {
+        "message": "No icon"
+    },
+    "api_integration_settings": {
+        "message": "API Integration"
+    },
+    "api_send_stats": {
+        "message": "Send statistics to website"
+    },
+    "api_receive_stats": {
+        "message": "Receive statistics from website"
+    },
+    "upload_card_data_to_ass": {
+        "message": "Upload card metadata to ASS"
+    },
+    "upload_card_data_to_ass_description": {
+        "message": "Sends card metadata (name, image, etc.) for site search; turn off if you do not want this data sent"
+    },
+    "api_website_label": {
+        "message": "ASS website"
+    },
+    "api_website_description": {
+        "message": "Official site used for API integration and card search."
+    },
+    "cards_search_settings": {
+        "message": "Cards Search Settings"
+    },
+    "cards_search_integration": {
+        "message": "Cards Search Integration"
+    },
+    "cards_search_integration_description": {
+        "message": "Adds a search button to the cards base page for quick search via API"
+    },
+    "trades_history_filters": {
+        "message": "Trades history filters (rank and user)"
+    },
+    "trades_preview_enabled": {
+        "message": "Show trade card previews"
+    },
+    "trades_preview_auto_parse": {
+        "message": "Auto-load previews by parsing missing trades"
+    },
+    "trades_preview_auto_start_delay": {
+        "message": "Auto-parse start delay"
+    },
+    "trades_preview_auto_interval": {
+        "message": "Auto-parse interval"
+    },
+    "trades_preview_full_exchange": {
+        "message": "Show full exchange (all cards) in lists"
+    },
+    "trades_history_big_images": {
+        "message": "Bigger images in trades history"
+    },
+    "remelt_topbar_enabled": {
+        "message": "Simplify and move smelting top bar to the top of the page"
+    },
+    "add_need_btn_to_card_dialog": {
+        "message": "Add \"Need\" button to card dialog"
+    },
+    "not_add_need_btn_to_card_dialog": {
+        "message": "Not add"
+    },
+    "add_need_btn_to_card_dialog_can": {
+        "message": "Add if can set"
+    },
+    "add_need_btn_to_card_dialog_force": {
+        "message": "Add always"
+    },
+    "remove_card_list_and_club_rating_in_card_base": {
+        "message": "Remove card list and club rating in card base"
+    },
+    "user_card_buttons_editor_title": {
+        "message": "User Card Buttons Editor"
+    },
+    "user_card_buttons_editor_description": {
+        "message": "Configure quick access buttons on user cards"
+    },
+    "open_user_card_buttons_editor": {
+        "message": "Open Buttons Editor"
+    },
+    "header_bookmarks_bar_enabled": {
+        "message": "Header bookmarks bar"
+    },
+    "header_bookmarks_bar_enabled_description": {
+        "message": "Show a customizable strip of links below the site header (same URLs as in the editor)."
+    },
+    "header_bookmarks_editor_title": {
+        "message": "Header Bookmarks Editor"
+    },
+    "header_bookmarks_editor_description": {
+        "message": "Edit links under the header (Base, Packs, Promo, …)"
+    },
+    "open_header_bookmarks_editor": {
+        "message": "Open Header Bookmarks Editor"
+    },
+    "header_bookmarks_preview_title": {
+        "message": "Preview"
+    },
+    "header_bookmarks_preview_description": {
+        "message": "Approximate look of the bar on the site (labels hide on narrow screens)."
+    },
+    "buttons_preview": {
+        "message": "Buttons Preview"
+    },
+    "buttons_preview_description": {
+        "message": "Preview shows how buttons will look on the user card"
+    },
+    "buttons_configuration": {
+        "message": "Buttons Configuration"
+    },
+    "buttons_empty_state_title": {
+        "message": "No buttons yet"
+    },
+    "buttons_empty_state_subtitle": {
+        "message": "Add buttons using the section below"
+    },
+    "add_button": {
+        "message": "Add Button"
+    },
+    "import_export_config": {
+        "message": "Import/Export Configuration"
+    },
+    "export_config": {
+        "message": "Export Configuration"
+    },
+    "import_config": {
+        "message": "Import Configuration"
+    },
+    "reset_to_default": {
+        "message": "Reset to Default"
+    },
+    "button_need": {
+        "message": "Need Cards"
+    },
+    "button_in_my_list": {
+        "message": "In My List"
+    },
+    "button_unlocked": {
+        "message": "Unlocked Cards"
+    },
+    "button_text_label": {
+        "message": "Text:"
+    },
+    "button_text_placeholder": {
+        "message": "Enter button text"
+    },
+    "button_icon_label": {
+        "message": "Icon:"
+    },
+    "button_icon_select": {
+        "message": "Select Icon"
+    },
+    "button_url_label": {
+        "message": "URL:"
+    },
+    "button_enabled": {
+        "message": "Enabled"
+    },
+    "confirm_reset": {
+        "message": "Are you sure you want to reset all settings to default?"
+    },
+    "import_success": {
+        "message": "Configuration imported successfully!"
+    },
+    "import_error": {
+        "message": "Error importing configuration"
+    },
+    "export_success": {
+        "message": "Configuration exported successfully!"
+    },
+    "export_error": {
+        "message": "Error exporting configuration"
+    },
+    "invalid_config_file": {
+        "message": "Invalid configuration file format"
+    },
+    "config_exported": {
+        "message": "Configuration exported to file"
+    },
+    "config_imported": {
+        "message": "Configuration imported from file"
+    },
+    "reset_widgets_confirm": {
+        "message": "Are you sure you want to reset all widgets to default? This action cannot be undone."
+    },
+    "pm_card_preview_enabled": {
+        "message": "Show card previews in PM Postikuncik"
+    },
+    "extension_settings": {
+        "message": "Extension Settings"
+    },
+    "auto_take_snow_stone": {
+        "message": "Take snow stone automatically"
+    },
+    "auto_click_gandama": {
+        "message": "Click gandama automatically"
+    },
+    "floating_quick_actions_section": {
+        "message": "Floating quick actions"
+    },
+    "floating_quick_actions_hint": {
+        "message": "Shortcut buttons appear only on the game website tab. Search actions by name, arrange order and groups, tune appearance — preview updates live."
+    },
+    "floating_quick_actions_enabled": {
+        "message": "Enable floating panel"
+    },
+    "floating_quick_actions_position": {
+        "message": "Panel position"
+    },
+    "floating_quick_actions_keys_label": {
+        "message": "Toggle shortcuts"
+    },
+    "floating_quick_actions_pos_bottom_right": {
+        "message": "Bottom right"
+    },
+    "floating_quick_actions_pos_bottom_left": {
+        "message": "Bottom left"
+    },
+    "floating_quick_actions_pos_top_right": {
+        "message": "Top right"
+    },
+    "floating_quick_actions_pos_top_left": {
+        "message": "Top left"
+    },
+    "floating_quick_actions_pos_floating": {
+        "message": "Floating — drag to move"
+    },
+    "floating_quick_actions_pos_fixed": {
+        "message": "Fixed — stays after drag (no further dragging)"
+    },
+    "floating_quick_actions_link_description": {
+        "message": "Shortcuts on the website"
+    },
+    "open_floating_quick_actions_page": {
+        "message": "Configure floating buttons…"
+    },
+    "fab_offset_x": {
+        "message": "Horizontal offset (px)"
+    },
+    "fab_offset_y": {
+        "message": "Vertical offset (px)"
+    },
+    "fab_appearance_density": {
+        "message": "Density"
+    },
+    "fab_appearance_variant": {
+        "message": "Style"
+    },
+    "fab_density_comfortable": {
+        "message": "Comfortable"
+    },
+    "fab_density_compact": {
+        "message": "Compact"
+    },
+    "fab_variant_default": {
+        "message": "Default"
+    },
+    "fab_variant_minimal": {
+        "message": "Minimal"
+    },
+    "fab_variant_filled": {
+        "message": "Filled"
+    },
+    "fab_add_actions_title": {
+        "message": "Add actions"
+    },
+    "fab_add_search_placeholder": {
+        "message": "Search by name…"
+    },
+    "fab_available_add": {
+        "message": "Add"
+    },
+    "fab_available_empty": {
+        "message": "No matching actions or all are already on the panel."
+    },
+    "fab_add_group_button": {
+        "message": "New group"
+    },
+    "fab_add_link_button": {
+        "message": "New link"
+    },
+    "fab_panel_layout": {
+        "message": "How actions are arranged"
+    },
+    "fab_panel_layout_column": {
+        "message": "Always — vertical list"
+    },
+    "fab_panel_layout_radial_open": {
+        "message": "Always — fan (arc)"
+    },
+    "fab_panel_layout_line_open": {
+        "message": "Always — row"
+    },
+    "fab_panel_layout_radial_launcher": {
+        "message": "After tap — fan (arc)"
+    },
+    "fab_panel_layout_line_launcher": {
+        "message": "After tap — row"
+    },
+    "fab_panel_layout_label": {
+        "message": "Panel layout"
+    },
+    "fab_live_preview_label": {
+        "message": "Live preview"
+    },
+    "fab_preview_empty": {
+        "message": "Enable the panel and add at least one action to see the preview."
+    },
+    "fab_group_more": {
+        "message": "More"
+    },
+    "fab_group_label_prefix": {
+        "message": "Group:"
+    },
+    "fab_drag_hint": {
+        "message": "Drag to reorder"
+    },
+    "fab_remove_item": {
+        "message": "Remove"
+    },
+    "fab_group_pick_action": {
+        "message": "Choose an action…"
+    },
+    "fab_group_add_selected": {
+        "message": "Add to group"
+    },
+    "fab_link_item_title": {
+        "message": "Link:"
+    },
+    "fab_link_label_placeholder": {
+        "message": "Button label"
+    },
+    "fab_link_url_placeholder": {
+        "message": "URL (https://...)"
+    },
+    "fab_display_mode": {
+        "message": "How actions open"
+    },
+    "fab_display_mode_bar": {
+        "message": "Corner panel (static list or tap-to-open)"
+    },
+    "fab_display_mode_popup": {
+        "message": "Popup launcher (actions on click)"
+    },
+    "fab_expand_layout": {
+        "message": "Open actions as"
+    },
+    "fab_expand_radial": {
+        "message": "Fan (arc)"
+    },
+    "fab_expand_line": {
+        "message": "Row (line)"
+    },
+    "fab_action_display": {
+        "message": "Action buttons"
+    },
+    "fab_action_icon": {
+        "message": "Round icons"
+    },
+    "fab_action_text": {
+        "message": "Text (as before)"
+    },
+    "fab_allow_drag": {
+        "message": "Floating position — drag with the mouse"
+    },
+    "fab_bar_panel_style": {
+        "message": "Bar layout"
+    },
+    "fab_bar_panel_list": {
+        "message": "Always show list"
+    },
+    "fab_bar_panel_launcher": {
+        "message": "Tap main button (fan / row)"
+    },
+    "fab_button_bg_color": {
+        "message": "Button color"
+    },
+    "fab_button_text_color": {
+        "message": "Text color"
+    },
+    "fab_button_opacity": {
+        "message": "Opacity (%)"
+    },
+    "fab_button_size": {
+        "message": "Action button size"
+    },
+    "fab_button_radius": {
+        "message": "Button corner rounding"
+    },
+    "fab_button_gap": {
+        "message": "Spacing between buttons"
+    },
+    "fab_launcher_size": {
+        "message": "Launcher size"
+    },
+    "fab_pick_icon": {
+        "message": "Pick icon"
+    },
+    "fab_launcher_icon": {
+        "message": "Main button icon"
+    },
+    "fab_launcher_icon_placeholder": {
+        "message": "e.g. fas fa-bolt"
+    },
+    "fab_icon_placeholder": {
+        "message": "Icon class (optional)"
+    },
+    "fab_launcher_title": {
+        "message": "Quick actions"
+    },
+    "fab_drag_move_title": {
+        "message": "Drag to move bar"
+    },
+    "back_to_settings": {
+        "message": "Back to settings"
+    }
+}

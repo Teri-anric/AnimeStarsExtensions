@@ -1,0 +1,71 @@
+/* Спільний вигляд смуги посилань (прев’ю в редакторі та контент на сайті) */
+
+.as-ext-header-bookmarks {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    flex-wrap: wrap;
+    gap: 6px 8px;
+    padding: 2px 10px;
+    border-radius: 8px;
+    box-sizing: border-box;
+    background: linear-gradient(
+            135deg,
+            rgba(0, 0, 0, 0.22) 0%,
+            rgba(0, 0, 0, 0) 50%
+        ),
+        linear-gradient(
+            90deg,
+            rgba(115, 48, 68, 0.18) 0%,
+            rgba(70, 40, 52, 0.88) 50%,
+            rgba(48, 28, 38, 0.95) 100%
+        );
+    border: 1px solid rgba(255, 255, 255, 0.12);
+}
+
+.as-ext-header-bookmarks a {
+    pointer-events: auto;
+    text-decoration: none !important;
+    color: #e8e8e8 !important;
+    font-size: 13px;
+    font-weight: 500;
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    padding: 3px 8px;
+    border-radius: 8px;
+    border: 1px solid rgba(255, 255, 255, 0.14);
+    background-color: rgba(0, 0, 0, 0.12);
+    transition: background-color 0.2s, border-color 0.2s;
+}
+
+.as-ext-header-bookmarks a:hover {
+    background-color: rgba(255, 255, 255, 0.08);
+    border-color: rgba(255, 255, 255, 0.28);
+}
+
+.as-ext-header-bookmarks a i {
+    font-size: 14px;
+    opacity: 0.95;
+}
+
+/* На вузькому екрані ховаємо текст після іконки (`i` + `span`) */
+@media (max-width: 800px) {
+    .as-ext-header-bookmarks a > i ~ span {
+        display: none;
+    }
+}
+
+/* Один div на сайті: фіксація під шапкою та відступи від країв вікна */
+#as-ext-header-bookmarks {
+    position: fixed;
+    left: 0;
+    right: 0;
+    z-index: 1;
+    margin-left: auto;
+    margin-right: auto;
+    max-width: 1285px;
+    width: calc(100% - 24px);
+    padding: 2px 12px;
+    pointer-events: none;
+}

@@ -9,7 +9,7 @@
     background: rgba(0, 0, 0, 0.8);
     color: white;
     padding: 4px 8px;
-    font-size: 11px;
+    font-size: calc(11px * var(--as-card-user-count-font-scale, 1));
     font-family: Arial, sans-serif;
     border-radius: 4px;
     z-index: 10;
@@ -87,12 +87,12 @@
 
 /* Size Variations */
 .card-user-count.size-small {
-    font-size: 9px;
+    font-size: calc(9px * var(--as-card-user-count-font-scale, 1));
     padding: 2px 6px;
 }
 
 .card-user-count.size-large {
-    font-size: 13px;
+    font-size: calc(13px * var(--as-card-user-count-font-scale, 1));
     padding: 6px 10px;
 }
 

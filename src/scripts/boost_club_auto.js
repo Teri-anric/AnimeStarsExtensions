@@ -194,7 +194,9 @@ chrome.storage.sync.get(['custom-hosts'], (data) => {
     }
 
     function tickClubReplaceAutomation() {
-        if (SKIP_START_TIME < Date.now() || !checkBoostLimit(true)) return;
+        if (SKIP_START_TIME > Date.now() || !checkBoostLimit(true)) {
+            return;
+        };
         if (isBossPage || !CONFIG.replaceAutoEnabled) {
             replaceFingerprintInit = false;
             return;
@@ -240,7 +242,7 @@ chrome.storage.sync.get(['custom-hosts'], (data) => {
             CONFIG.boostCooldown = settings['club-boost-action-cooldown'] || 500;
             CONFIG.replaceStaleMs = Number(settings['club-boost-replace-stale-ms']) || 12000;
             CONFIG.replaceSkipCooldownMs = Number(settings['club-boost-replace-skip-cooldown-ms']) || 1600;
-            CONFIG.replaceAutoEnabled = settings['club-boost-replace-auto'];
+            CONFIG.replaceAutoEnabled = Boolean(settings['club-boost-replace-auto']);
 
             if (settings[AUTO_KEY]) {
                 startBoosting();

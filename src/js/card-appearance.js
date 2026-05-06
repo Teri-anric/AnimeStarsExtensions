@@ -3,6 +3,8 @@
  * Handles template editor initialization, preview updates, and settings management
  */
 
+import { i18nReady } from './translation.js';
+
 // Import TemplateEditor from module
 // Note: This will be loaded via script tag, so we'll check for it globally
 
@@ -20,7 +22,8 @@ const SETTINGS_CONFIG = {
         'card-user-count-hover-action'
     ],
     ranges: [
-        'card-user-count-opacity'
+        'card-user-count-opacity',
+        'card-user-count-font-size-scale'
     ],
     colors: [
         'card-user-count-background-color',
@@ -47,6 +50,7 @@ function newWidgetDefaults() {
         backgroundColor: '#000000',
         textColor: '#ffffff',
         opacity: 80,
+        fontSizeScale: 100,
         hoverAction: 'none',
         templateItems: [
             { type: 'variable', variable: 'need' },
@@ -229,6 +233,7 @@ function syncSelectedWidgetToControls() {
         ['card-user-count-background-color', 'backgroundColor'],
         ['card-user-count-text-color', 'textColor'],
         ['card-user-count-opacity', 'opacity'],
+        ['card-user-count-font-size-scale', 'fontSizeScale'],
         ['card-user-count-hover-action', 'hoverAction'],
     ]);
     m.forEach((wk, elId) => {
@@ -276,6 +281,7 @@ function saveControlsToSelectedWidget() {
         ['card-user-count-background-color', 'backgroundColor'],
         ['card-user-count-text-color', 'textColor'],
         ['card-user-count-opacity', 'opacity'],
+        ['card-user-count-font-size-scale', 'fontSizeScale'],
         ['card-user-count-hover-action', 'hoverAction'],
         ['card-user-count-position-top', 'positionTopPercent'],
         ['card-user-count-position-left', 'positionLeftPercent'],
@@ -336,7 +342,7 @@ function initializeTemplateEditor() {
 /**
  * Load settings from Chrome storage
  */
-function loadSettings() {
+async function loadSettings() {
     const allSettings = [
         ...SETTINGS_CONFIG.checkboxes,
         ...SETTINGS_CONFIG.selects,
@@ -346,62 +352,59 @@ function loadSettings() {
         'language'
     ];
 
-    chrome.storage.sync.get(allSettings, function (settings) {
-        // Load language settings
-        window.i18n.changeLang(settings.language);
-        // Load checkbox settings
-        SETTINGS_CONFIG.checkboxes.forEach(key => {
-            const element = document.getElementById(key);
-            if (element) {
-                element.checked = settings[key] || false;
-            }
-        });
-
-        // Load select settings
-        SETTINGS_CONFIG.selects.forEach(key => {
-            const element = document.getElementById(key);
-            if (element) {
-                element.value = settings[key] || '';
-            }
-        });
-
-        // Load range settings
-        SETTINGS_CONFIG.ranges.forEach(key => {
-            const element = document.getElementById(key);
-            if (element) {
-                element.value = settings[key] || element.getAttribute('value') || 0;
-                const valueSpan = element.parentNode.querySelector('.slider-value');
-                if (valueSpan) {
-                    valueSpan.textContent = element.value;
-                }
-            }
-        });
-
-        // Load color settings
-        SETTINGS_CONFIG.colors.forEach(key => {
-            const element = document.getElementById(key);
-            if (element) {
-                const defaultValue = key.includes('background') ? '#000000' : '#ffffff';
-                element.value = settings[key] || defaultValue;
-            }
-        });
-
-        // Load widgets
-        let widgets = [];
-        if (settings['card-widgets']) {
-            try {
-                widgets = typeof settings['card-widgets'] === 'string' ? JSON.parse(settings['card-widgets']) : settings['card-widgets'];
-            } catch { }
-        }
-        if (!Array.isArray(widgets) || widgets.length === 0) {
-            widgets = [newWidgetDefaults()];
-        }
-        widgetsState.list = widgets;
-        widgetsState.selectedId = widgets[0].id;
-        renderWidgetsList();
-        syncSelectedWidgetToControls();
-        setTimeout(updateCardPreview, 100);
+    const settings = await new Promise((resolve) => {
+        chrome.storage.sync.get(allSettings, resolve);
     });
+
+    await window.i18n.changeLang(settings.language);
+
+    SETTINGS_CONFIG.checkboxes.forEach(key => {
+        const element = document.getElementById(key);
+        if (element) {
+            element.checked = settings[key] || false;
+        }
+    });
+
+    SETTINGS_CONFIG.selects.forEach(key => {
+        const element = document.getElementById(key);
+        if (element) {
+            element.value = settings[key] || '';
+        }
+    });
+
+    SETTINGS_CONFIG.ranges.forEach(key => {
+        const element = document.getElementById(key);
+        if (element) {
+            element.value = settings[key] || element.getAttribute('value') || 0;
+            const valueSpan = element.parentNode.querySelector('.slider-value');
+            if (valueSpan) {
+                valueSpan.textContent = element.value;
+            }
+        }
+    });
+
+    SETTINGS_CONFIG.colors.forEach(key => {
+        const element = document.getElementById(key);
+        if (element) {
+            const defaultValue = key.includes('background') ? '#000000' : '#ffffff';
+            element.value = settings[key] || defaultValue;
+        }
+    });
+
+    let widgets = [];
+    if (settings['card-widgets']) {
+        try {
+            widgets = typeof settings['card-widgets'] === 'string' ? JSON.parse(settings['card-widgets']) : settings['card-widgets'];
+        } catch { }
+    }
+    if (!Array.isArray(widgets) || widgets.length === 0) {
+        widgets = [newWidgetDefaults()];
+    }
+    widgetsState.list = widgets;
+    widgetsState.selectedId = widgets[0].id;
+    renderWidgetsList();
+    syncSelectedWidgetToControls();
+    setTimeout(updateCardPreview, 100);
 }
 
 /**
@@ -463,11 +466,10 @@ function setupEventListeners() {
 /**
  * Initialize the card appearance page
  */
-function initializeCardAppearancePage() {
-    // Card appearance page initialization
-
+async function initializeCardAppearancePage() {
+    await i18nReady;
     // Load settings
-    loadSettings();
+    await loadSettings();
 
     // Setup event listeners
     setupEventListeners();
@@ -642,10 +644,12 @@ function updateCardPreview() {
         let textColor = w.textColor || '#ffffff';
         const opacity = typeof w.opacity === 'number' ? w.opacity : 80;
         const hoverAction = w.hoverAction || 'none';
+        const fontSizeScale = typeof w.fontSizeScale === 'number' ? w.fontSizeScale : 100;
 
 
         const countElement = document.createElement('div');
         countElement.className = 'card-user-count';
+        countElement.style.setProperty('--as-card-user-count-font-scale', String(Math.max(60, Math.min(220, fontSizeScale)) / 100));
         if (position !== 'custom') {
             countElement.classList.add(`position-${position}`);
         }
@@ -754,7 +758,9 @@ function formatTemplateItems(templateItems, values) {
     }).join('');
 }
 // Initialize when page loads
-document.addEventListener('DOMContentLoaded', initializeCardAppearancePage);
+document.addEventListener('DOMContentLoaded', () => {
+    initializeCardAppearancePage().catch((e) => console.error(e));
+});
 
     // Also add a global function for manual testing
     window.testPreview = updateCardPreview;
@@ -778,6 +784,7 @@ function exportWidgetsConfig() {
                 'card-user-count-background-color': document.getElementById('card-user-count-background-color')?.value || '#000000',
                 'card-user-count-text-color': document.getElementById('card-user-count-text-color')?.value || '#ffffff',
                 'card-user-count-opacity': document.getElementById('card-user-count-opacity')?.value || 80,
+                'card-user-count-font-size-scale': document.getElementById('card-user-count-font-size-scale')?.value || 100,
                 'card-user-count-hover-action': document.getElementById('card-user-count-hover-action')?.value || 'none'
             }
         };
@@ -795,10 +802,10 @@ function exportWidgetsConfig() {
         URL.revokeObjectURL(url);
 
         // Show success message
-        showNotification('export-success', 'success');
+        showNotification('export_success', 'success');
     } catch (error) {
         console.error('Export error:', error);
-        showNotification('export-error', 'error');
+        showNotification('export_error', 'error');
     }
 }
 
@@ -847,10 +854,10 @@ function importWidgetsConfig(file) {
             syncSelectedWidgetToControls();
             updateCardPreview();
 
-            showNotification('import-success', 'success');
+            showNotification('import_success', 'success');
         } catch (error) {
             console.error('Import error:', error);
-            showNotification('invalid-config-file', 'error');
+            showNotification('invalid_config_file', 'error');
         }
     };
     reader.readAsText(file);
@@ -860,7 +867,7 @@ function importWidgetsConfig(file) {
  * Reset widgets to default configuration
  */
 function resetWidgetsConfig() {
-    if (confirm(window.i18n?.getTranslateText('reset-widgets-confirm', 'en') || 'Are you sure you want to reset all widgets to default?')) {
+    if (confirm(window.i18n?.getTranslateText('reset_widgets_confirm') || 'Are you sure you want to reset all widgets to default?')) {
         widgetsState.list = [newWidgetDefaults()];
         widgetsState.selectedId = widgetsState.list[0].id;
         
@@ -875,6 +882,7 @@ function resetWidgetsConfig() {
             'card-user-count-background-color': '#000000',
             'card-user-count-text-color': '#ffffff',
             'card-user-count-opacity': 80,
+            'card-user-count-font-size-scale': 100,
             'card-user-count-hover-action': 'none'
         };
 
@@ -934,7 +942,7 @@ function showNotification(message, type = 'info') {
     }
 
     // Set message text
-    const messageText = window.i18n?.getTranslateText(message, 'en') || message;
+    const messageText = window.i18n?.getTranslateText(message) || message;
     notification.textContent = messageText;
 
     // Add to page
