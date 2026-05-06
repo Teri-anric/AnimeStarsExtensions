@@ -240,6 +240,8 @@ chrome.storage.sync.get(['custom-hosts'], (data) => {
     if (size !== 'medium') {
       elm.classList.add(`size-${size}`);
     }
+    const fontSizeScale = typeof widget.fontSizeScale === 'number' ? widget.fontSizeScale : 100;
+    elm.style.setProperty('--as-card-user-count-font-scale', String(Math.max(60, Math.min(220, fontSizeScale)) / 100));
 
     // Hover action
     const hoverAction = widget.hoverAction || 'none';
@@ -522,6 +524,7 @@ chrome.storage.sync.get(['custom-hosts'], (data) => {
       backgroundColor: w.backgroundColor || '',
       textColor: w.textColor || '',
       opacity: typeof w.opacity === 'number' ? w.opacity : 80,
+      fontSizeScale: typeof w.fontSizeScale === 'number' ? Math.max(60, Math.min(220, w.fontSizeScale)) : 100,
       hoverAction: w.hoverAction || 'none',
       templateItems: Array.isArray(w.templateItems) ? w.templateItems : [],
     }));

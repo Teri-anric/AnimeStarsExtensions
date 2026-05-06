@@ -50,6 +50,15 @@
     "auto_take_cinema_stone": {
         "message": "Автоматично брати камені в кінотеатрі"
     },
+    "auto_stone_click_base_delay_ms": {
+        "message": "Базова затримка кліку по каменях"
+    },
+    "auto_stone_click_growth_delay_ms": {
+        "message": "Додаткова затримка для кожного наступного каменя"
+    },
+    "auto_stone_click_delay_description": {
+        "message": "Щоб зменшити навантаження і ризик помилок після простою: кожен наступний камінь клікається з додатковою затримкою."
+    },
     "auto_watchlist_fix": {
         "message": "Колекція як список перегляду"
     },
@@ -268,6 +277,9 @@
     },
     "card_user_count_opacity": {
         "message": "Прозорість фону"
+    },
+    "card_user_count_font_size_scale": {
+        "message": "Масштаб шрифту статистики"
     },
     "card_user_count_hover_action": {
         "message": "Дія при наведенні"

@@ -77,6 +77,15 @@ export const SETTING_SECTIONS = [
             },
             { kind: 'field', fieldKey: 'auto-take-heavenly-stone' },
             { kind: 'field', fieldKey: 'auto-take-cinema-stone' },
+            {
+                kind: 'sub',
+                id: 'auto-stone-click-delays',
+                showIf: { 'auto-take-cinema-stone': true },
+                children: [
+                    { kind: 'field', fieldKey: 'auto-stone-click-base-delay-ms' },
+                    { kind: 'field', fieldKey: 'auto-stone-click-growth-delay-ms' },
+                ],
+            },
         ],
     },
     {

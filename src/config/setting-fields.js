@@ -77,6 +77,26 @@ export const SETTING_FIELDS = {
         defaultValue: true,
         quickAction: true,
     },
+    'auto-stone-click-base-delay-ms': {
+        type: 'range',
+        labelKey: 'auto_stone_click_base_delay_ms',
+        min: 200,
+        max: 5000,
+        step: 100,
+        unit: 'ms',
+        defaultValue: 900,
+        descriptionKey: 'auto_stone_click_delay_description',
+    },
+    'auto-stone-click-growth-delay-ms': {
+        type: 'range',
+        labelKey: 'auto_stone_click_growth_delay_ms',
+        min: 0,
+        max: 3000,
+        step: 50,
+        unit: 'ms',
+        defaultValue: 250,
+        descriptionKey: 'auto_stone_click_delay_description',
+    },
 
     'dark-theme': {
         type: 'checkbox',

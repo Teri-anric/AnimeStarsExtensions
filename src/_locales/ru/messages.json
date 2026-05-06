@@ -53,6 +53,15 @@
     "auto_take_cinema_stone": {
         "message": "Автоматически брать камни в кинотеатре"
     },
+    "auto_stone_click_base_delay_ms": {
+        "message": "Базовая задержка клика по камням"
+    },
+    "auto_stone_click_growth_delay_ms": {
+        "message": "Дополнительная задержка для каждого следующего камня"
+    },
+    "auto_stone_click_delay_description": {
+        "message": "Чтобы снизить нагрузку и риск ошибки 520 после простоя: каждый следующий камень кликается с дополнительной задержкой."
+    },
     "add_my_cards_button": {
         "message": "Добавить кнопку \"Мои карточки\" в заголовок"
     },
@@ -268,6 +277,9 @@
     },
     "card_user_count_opacity": {
         "message": "Прозрачность фона"
+    },
+    "card_user_count_font_size_scale": {
+        "message": "Масштаб шрифта статистики"
     },
     "card_user_count_hover_action": {
         "message": "Действие при наведении"

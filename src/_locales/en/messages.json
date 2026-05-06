@@ -53,6 +53,15 @@
     "auto_take_cinema_stone": {
         "message": "Take cinema stones automatically"
     },
+    "auto_stone_click_base_delay_ms": {
+        "message": "Base delay for stone clicks"
+    },
+    "auto_stone_click_growth_delay_ms": {
+        "message": "Extra delay for each next stone"
+    },
+    "auto_stone_click_delay_description": {
+        "message": "To reduce load and 520 risks after idle periods, each next stone click gets additional delay."
+    },
     "add_my_cards_button": {
         "message": "Add \"My Cards\" button to the header"
     },
@@ -268,6 +277,9 @@
     },
     "card_user_count_opacity": {
         "message": "Background Opacity"
+    },
+    "card_user_count_font_size_scale": {
+        "message": "Statistics font scale"
     },
     "card_user_count_hover_action": {
         "message": "Hover Action"

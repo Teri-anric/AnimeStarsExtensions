@@ -22,7 +22,8 @@ const SETTINGS_CONFIG = {
         'card-user-count-hover-action'
     ],
     ranges: [
-        'card-user-count-opacity'
+        'card-user-count-opacity',
+        'card-user-count-font-size-scale'
     ],
     colors: [
         'card-user-count-background-color',
@@ -49,6 +50,7 @@ function newWidgetDefaults() {
         backgroundColor: '#000000',
         textColor: '#ffffff',
         opacity: 80,
+        fontSizeScale: 100,
         hoverAction: 'none',
         templateItems: [
             { type: 'variable', variable: 'need' },
@@ -231,6 +233,7 @@ function syncSelectedWidgetToControls() {
         ['card-user-count-background-color', 'backgroundColor'],
         ['card-user-count-text-color', 'textColor'],
         ['card-user-count-opacity', 'opacity'],
+        ['card-user-count-font-size-scale', 'fontSizeScale'],
         ['card-user-count-hover-action', 'hoverAction'],
     ]);
     m.forEach((wk, elId) => {
@@ -278,6 +281,7 @@ function saveControlsToSelectedWidget() {
         ['card-user-count-background-color', 'backgroundColor'],
         ['card-user-count-text-color', 'textColor'],
         ['card-user-count-opacity', 'opacity'],
+        ['card-user-count-font-size-scale', 'fontSizeScale'],
         ['card-user-count-hover-action', 'hoverAction'],
         ['card-user-count-position-top', 'positionTopPercent'],
         ['card-user-count-position-left', 'positionLeftPercent'],
@@ -640,10 +644,12 @@ function updateCardPreview() {
         let textColor = w.textColor || '#ffffff';
         const opacity = typeof w.opacity === 'number' ? w.opacity : 80;
         const hoverAction = w.hoverAction || 'none';
+        const fontSizeScale = typeof w.fontSizeScale === 'number' ? w.fontSizeScale : 100;
 
 
         const countElement = document.createElement('div');
         countElement.className = 'card-user-count';
+        countElement.style.setProperty('--as-card-user-count-font-scale', String(Math.max(60, Math.min(220, fontSizeScale)) / 100));
         if (position !== 'custom') {
             countElement.classList.add(`position-${position}`);
         }
@@ -778,6 +784,7 @@ function exportWidgetsConfig() {
                 'card-user-count-background-color': document.getElementById('card-user-count-background-color')?.value || '#000000',
                 'card-user-count-text-color': document.getElementById('card-user-count-text-color')?.value || '#ffffff',
                 'card-user-count-opacity': document.getElementById('card-user-count-opacity')?.value || 80,
+                'card-user-count-font-size-scale': document.getElementById('card-user-count-font-size-scale')?.value || 100,
                 'card-user-count-hover-action': document.getElementById('card-user-count-hover-action')?.value || 'none'
             }
         };
@@ -875,6 +882,7 @@ function resetWidgetsConfig() {
             'card-user-count-background-color': '#000000',
             'card-user-count-text-color': '#ffffff',
             'card-user-count-opacity': 80,
+            'card-user-count-font-size-scale': 100,
             'card-user-count-hover-action': 'none'
         };
 
