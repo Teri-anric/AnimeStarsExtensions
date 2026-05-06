@@ -32,10 +32,12 @@
                 "https://*/*"
             ],
             "js": [
-                "./scripts/fix_header.js"
+                "./scripts/fix_header.js",
+                "./scripts/floating_quick_actions.js"
             ],
             "css": [
-                "./styles/fix_header.css"
+                "./styles/fix_header.css",
+                "./styles/floating_quick_actions.css"
             ],
             "run_at": "document_idle"
         },

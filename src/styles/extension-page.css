@@ -1,0 +1,99 @@
+/**
+ * Shared layout + buttons for extension HTML pages (settings, FAB editor, etc.).
+ * Safe to combine with settings.css / dark-theme.css.
+ */
+
+.section-title {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    font-size: 1.5rem;
+    margin: 0 0 16px 0;
+    color: var(--text-secondary, #2c3e50);
+}
+
+.section-title i {
+    opacity: 0.85;
+}
+
+.ext-page-shell {
+    max-width: 720px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.as-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    padding: 8px 14px;
+    border-radius: 8px;
+    font-size: 14px;
+    font-family: inherit;
+    cursor: pointer;
+    border: 1px solid transparent;
+    transition: background-color 0.2s ease, border-color 0.2s ease, opacity 0.2s ease;
+}
+
+.as-btn:disabled {
+    opacity: 0.55;
+    cursor: not-allowed;
+}
+
+.as-btn--primary {
+    background-color: var(--button-bg, #2c3e50);
+    color: #fff;
+    border-color: var(--button-bg, #2c3e50);
+}
+
+.as-btn--primary:hover:not(:disabled) {
+    background-color: var(--button-hover, #34495e);
+}
+
+.as-btn--secondary {
+    background-color: var(--bg-secondary, #fff);
+    color: var(--text-primary, #333);
+    border-color: var(--border-color, #ddd);
+}
+
+.as-btn--secondary:hover:not(:disabled) {
+    background-color: var(--bg-tertiary, #f4f4f4);
+}
+
+.as-btn--danger {
+    background-color: #c62828;
+    color: #fff;
+    border-color: #c62828;
+}
+
+.as-btn--danger:hover:not(:disabled) {
+    background-color: #b71c1c;
+}
+
+.as-ext-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    color: var(--link-color, #3498db);
+    text-decoration: none;
+    font-weight: 500;
+}
+
+.as-ext-link:hover {
+    color: var(--link-hover, #5dade2);
+}
+
+.ext-page-nav {
+    margin-top: 24px;
+    padding-top: 16px;
+    border-top: 1px solid var(--border-color, #ddd);
+}
+
+.ext-page-lead {
+    margin: 0 0 16px 0;
+    font-size: 14px;
+    color: var(--text-secondary, #555);
+    line-height: 1.45;
+}

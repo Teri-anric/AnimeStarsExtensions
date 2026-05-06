@@ -179,6 +179,18 @@ const AnimeStarExtensionTranslationEnglish = {
     'extension-settings': 'Extension Settings',
     'auto-take-snow-stone': 'Take snow stone automatically',
     'auto-click-gandama': 'Click gandama automatically',
+    'floating-quick-actions-section': 'Floating quick actions',
+    'floating-quick-actions-hint': 'Shows movable shortcut buttons on the game website tab only (not system-wide). Pick toggles and position.',
+    'floating-quick-actions-enabled': 'Enable floating panel',
+    'floating-quick-actions-position': 'Panel position',
+    'floating-quick-actions-keys-label': 'Toggle shortcuts',
+    'floating-quick-actions-pos-bottom-right': 'Bottom right',
+    'floating-quick-actions-pos-bottom-left': 'Bottom left',
+    'floating-quick-actions-pos-top-right': 'Top right',
+    'floating-quick-actions-pos-top-left': 'Top left',
+    'floating-quick-actions-link-description': 'Shortcuts on the website',
+    'open-floating-quick-actions-page': 'Configure floating buttons…',
+    'back-to-settings': 'Back to settings',
 }
 
 export default AnimeStarExtensionTranslationEnglish;

@@ -1,0 +1,57 @@
+#as-floating-quick-actions.as-fqa {
+    position: fixed;
+    z-index: 2147483646;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    max-width: min(220px, 42vw);
+    pointer-events: none;
+    font-family: system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
+}
+
+#as-floating-quick-actions.as-fqa .as-fqa-btn {
+    pointer-events: auto;
+    cursor: pointer;
+    border: 1px solid rgba(0, 0, 0, 0.15);
+    border-radius: 8px;
+    padding: 6px 10px;
+    font-size: 12px;
+    line-height: 1.25;
+    text-align: left;
+    background: rgba(255, 255, 255, 0.92);
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.12);
+    color: #222;
+    max-width: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+#as-floating-quick-actions.as-fqa .as-fqa-btn:hover {
+    background: rgba(255, 255, 255, 1);
+}
+
+#as-floating-quick-actions.as-fqa .as-fqa-btn.as-fqa-btn-on {
+    background: rgba(76, 175, 80, 0.22);
+    border-color: rgba(46, 125, 50, 0.45);
+}
+
+.as-fqa-pos-bottom-right {
+    bottom: 12px;
+    right: 12px;
+}
+
+.as-fqa-pos-bottom-left {
+    bottom: 12px;
+    left: 12px;
+}
+
+.as-fqa-pos-top-right {
+    top: 12px;
+    right: 12px;
+}
+
+.as-fqa-pos-top-left {
+    top: 12px;
+    left: 12px;
+}

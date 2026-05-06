@@ -607,3 +607,26 @@ body.dark-theme .check-update-btn:hover {
 body.dark-theme .dismiss-update-btn:hover {
     background-color: #d32f2f;
 }
+
+.fab-settings-hint {
+    display: block;
+    margin-bottom: 12px;
+    color: var(--text-muted, #666);
+}
+
+.fab-enable-row {
+    margin-bottom: 12px;
+}
+
+.fab-keys-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 8px;
+    margin-top: 8px;
+}
+
+.fab-key-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}

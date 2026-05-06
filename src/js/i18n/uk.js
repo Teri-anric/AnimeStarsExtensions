@@ -181,6 +181,18 @@ const AnimeStarExtensionTranslationUkraine = {
     'extension-settings': 'Налаштування розширення',
     'auto-take-snow-stone': 'Автоматично брати сніжний камінь',
     'auto-click-gandama': 'Автоматично ловити гандаму',
+    'floating-quick-actions-section': 'Плаваючі швидкі дії',
+    'floating-quick-actions-hint': 'Показує кнопки лише у вкладці сайту в браузері (не поверх усієї системи). Оберіть перемикачі та позицію.',
+    'floating-quick-actions-enabled': 'Увімкнути плаваючу панель',
+    'floating-quick-actions-position': 'Позиція панелі',
+    'floating-quick-actions-keys-label': 'Ярлики перемикачів',
+    'floating-quick-actions-pos-bottom-right': 'Низ праворуч',
+    'floating-quick-actions-pos-bottom-left': 'Низ ліворуч',
+    'floating-quick-actions-pos-top-right': 'Верх праворуч',
+    'floating-quick-actions-pos-top-left': 'Верх ліворуч',
+    'floating-quick-actions-link-description': 'Ярлики на сайті',
+    'open-floating-quick-actions-page': 'Налаштувати плаваючі кнопки…',
+    'back-to-settings': 'Назад до налаштувань',
 }
 
 export default AnimeStarExtensionTranslationUkraine;

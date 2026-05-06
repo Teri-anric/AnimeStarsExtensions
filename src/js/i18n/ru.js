@@ -181,6 +181,18 @@ export const AnimeStarExtensionTranslationRussian = {
     'extension-settings': 'Настройки расширения',
     'auto-take-snow-stone': 'Автоматически брать снежный камень',
     'auto-click-gandama': 'Автоматически кликать на гандаму',
+    'floating-quick-actions-section': 'Плавающие быстрые действия',
+    'floating-quick-actions-hint': 'Показывает кнопки только во вкладке сайта в браузере (не поверх всей системы). Выберите переключатели и позицию.',
+    'floating-quick-actions-enabled': 'Включить плавающую панель',
+    'floating-quick-actions-position': 'Позиция панели',
+    'floating-quick-actions-keys-label': 'Ярлыки переключателей',
+    'floating-quick-actions-pos-bottom-right': 'Низ справа',
+    'floating-quick-actions-pos-bottom-left': 'Низ слева',
+    'floating-quick-actions-pos-top-right': 'Верх справа',
+    'floating-quick-actions-pos-top-left': 'Верх слева',
+    'floating-quick-actions-link-description': 'Ярлыки на сайте',
+    'open-floating-quick-actions-page': 'Настроить плавающие кнопки…',
+    'back-to-settings': 'Назад к настройкам',
 }
 
 export default AnimeStarExtensionTranslationRussian;
