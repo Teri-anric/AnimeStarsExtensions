@@ -57,7 +57,7 @@ export function wireField(fieldKey) {
     }
 }
 
-export function applyInitialValues(settings) {
+export async function applyInitialValues(settings) {
     const keys = getRegistryStorageKeys();
     for (const key of keys) {
         const def = SETTING_FIELDS[key];
@@ -91,7 +91,7 @@ export function applyInitialValues(settings) {
         }
     }
 
-    window.i18n.changeLang(settings.language);
+    await window.i18n.changeLang(settings.language);
 
     if (getEffectiveCheckboxFromStorage(settings, 'dark-theme')) {
         document.body.classList.add('dark-theme');

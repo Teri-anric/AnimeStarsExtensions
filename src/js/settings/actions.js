@@ -21,8 +21,8 @@ export const SETTING_ACTIONS = {
             }
         }
     },
-    language: (value) => {
-        window.i18n.changeLang(value);
-        renderCustomDomains().catch(() => {});
+    language: async (value) => {
+        await window.i18n.changeLang(value);
+        await renderCustomDomains().catch(() => {});
     },
 };

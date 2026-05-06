@@ -3,6 +3,7 @@
     "name": "AnimeStar Extension",
     "version": "0.0.29",
     "description": "Enhanced functionality for AnimeStar website",
+    "default_locale": "en",
     "permissions": [
         "storage",
         "alarms",
@@ -12,6 +13,19 @@
         "https://raw.githubusercontent.com/Teri-anric/AnimeStarsExtensions/*",
         "https://ass-api.strawberrycat.dev/*",
         "https://ass.strawberrycat.dev/*"
+    ],
+    "web_accessible_resources": [
+        {
+            "resources": [
+                "_locales/en/messages.json",
+                "_locales/uk/messages.json",
+                "_locales/ru/messages.json",
+                "js/i18n-runtime.js"
+            ],
+            "matches": [
+                "https://*/*"
+            ]
+        }
     ],
     "content_scripts": [
         {
@@ -32,11 +46,21 @@
                 "https://*/*"
             ],
             "js": [
-                "./scripts/fix_header.js",
+                "./scripts/fix_header.js"
+            ],
+            "css": [
+                "./styles/fix_header.css"
+            ],
+            "run_at": "document_idle"
+        },
+        {
+            "matches": [
+                "https://*/*"
+            ],
+            "js": [
                 "./scripts/floating_quick_actions.js"
             ],
             "css": [
-                "./styles/fix_header.css",
                 "./styles/floating_quick_actions.css"
             ],
             "run_at": "document_idle"
@@ -166,7 +190,11 @@
     },
     "options_page": "pages/settings.html",
     "background": {
-        "service_worker": "./js/background.js",
-        "type": "module"
+        "page": "pages/background.html"
+    },
+    "browser_specific_settings": {
+        "gecko": {
+            "id": "animestars-extension@teri-anric.github.io"
+        }
     }
 }

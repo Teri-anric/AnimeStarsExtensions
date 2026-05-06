@@ -1,0 +1,578 @@
+{
+    "language": {
+        "message": "Язык"
+    },
+    "language-uk": {
+        "message": "Украинский"
+    },
+    "language-en": {
+        "message": "Английский"
+    },
+    "language-ru": {
+        "message": "Русский"
+    },
+    "language-inspect": {
+        "message": "Просмотр"
+    },
+    "select-language": {
+        "message": "Выберите язык"
+    },
+    "auto-features": {
+        "message": "Автоматические функции"
+    },
+    "exchange-settings": {
+        "message": "Настройки обменов"
+    },
+    "ui-customization": {
+        "message": "Кастомизация интерфейса"
+    },
+    "dark-theme": {
+        "message": "Темная тема"
+    },
+    "hide-snow": {
+        "message": "Убрать снег"
+    },
+    "auto-seen-card": {
+        "message": "Автоматически просматривать карточки"
+    },
+    "auto-seen-card-stack": {
+        "message": "Складывать карточки из просмотра"
+    },
+    "auto-watchlist-fix": {
+        "message": "Коллекция как список просмотра"
+    },
+    "auto-take-heavenly-stone": {
+        "message": "Автоматически брать небесный камень"
+    },
+    "auto-take-cinema-stone": {
+        "message": "Автоматически брать камни в кинотеатре"
+    },
+    "add-my-cards-button": {
+        "message": "Добавить кнопку \"Мои карточки\" в заголовок"
+    },
+    "add-user-cards-buttons": {
+        "message": "Добавить кнопки быстрого доступа к открытым карточкам пользователя"
+    },
+    "club-boost-auto": {
+        "message": "Автоматический вклад в клуб"
+    },
+    "club-boost-replace-auto": {
+        "message": "Автоматический скип карт (замена в шахте)"
+    },
+    "boss-boost-auto": {
+        "message": "Автоматический буст босса"
+    },
+    "card-user-count": {
+        "message": "Показать статистику карточек"
+    },
+    "card-user-count-event-target": {
+        "message": "Событие для показа статистики карточек"
+    },
+    "only-cache": {
+        "message": "Только кэш"
+    },
+    "save-settings": {
+        "message": "Сохранить настройки"
+    },
+    "automatic": {
+        "message": "Автоматический"
+    },
+    "mousedown-0": {
+        "message": "Левая кнопка мыши"
+    },
+    "mousedown-1": {
+        "message": "Средняя кнопка мыши"
+    },
+    "mousedown-2": {
+        "message": "Правая кнопка мыши"
+    },
+    "mouseover": {
+        "message": "Наведение мыши"
+    },
+    "club-settings": {
+        "message": "Настройки клуба"
+    },
+    "settings-title": {
+        "message": "Настройки расширения"
+    },
+    "site-domains": {
+        "message": "Домен(ы) сайта"
+    },
+    "site-domains-add-label": {
+        "message": "Добавить домен вручную (когда сайт сменил домен)"
+    },
+    "site-domains-add-btn": {
+        "message": "Добавить домен"
+    },
+    "site-domains-help": {
+        "message": "Добавьте домен сайта, затем перезагрузите вкладку с сайтом."
+    },
+    "site-domains-empty": {
+        "message": "Нет дополнительных доменов."
+    },
+    "site-domains-invalid": {
+        "message": "Неверный домен. Укажите hostname или URL (например animestars.org)."
+    },
+    "site-domains-requesting": {
+        "message": "Сохраняю домен…"
+    },
+    "site-domains-added": {
+        "message": "Домен добавлен. Обновите страницу сайта."
+    },
+    "site-domains-removing": {
+        "message": "Удаляю домен…"
+    },
+    "site-domains-removed": {
+        "message": "Домен удалён."
+    },
+    "site-domains-error": {
+        "message": "Ошибка"
+    },
+    "remove": {
+        "message": "Удалить"
+    },
+    "clubs-boost-block-images": {
+        "message": "Блокировать изображения карт в топе клуба"
+    },
+    "club-boost-refresh-cooldown": {
+        "message": "Интервал обновления"
+    },
+    "club-boost-action-cooldown": {
+        "message": "Интервал усиления"
+    },
+    "club-boost-cooldown-description": {
+        "message": "Настройки интервалов автоматического усиления клуба (мс)"
+    },
+    "club-boost-replace-stale-ms": {
+        "message": "Скип карт: время без смены карты"
+    },
+    "club-boost-replace-stale-description": {
+        "message": "Если за это время карта на экране так и не сменилась (никто не забирает её из взносов) — нажимается замена (скип). Отдельно сразу скипает, если никто из клуба не может внести эту карту (пустой список «Могут внести»). Работает только при включённом «Автоматический клад карт»."
+    },
+    "club-boost-replace-skip-cooldown-ms": {
+        "message": "Задержка между скипами карт"
+    },
+    "club-boost-replace-skip-cooldown-description": {
+        "message": "Минимальный интервал между двумя нажатиями «заменить», чтобы не отправить запрос дважды подряд."
+    },
+    "club-boost-hotkey-description": {
+        "message": "Горячие клавиши для управления бустом клуба:\n- B: Включить/Выключить автоматический вклад в клуб\n- C: Включить/Выключить автоматический скип карт"
+    },
+    "update-notification-title": {
+        "message": "Доступно обновление расширения AnimeStar"
+    },
+    "update-notification-message": {
+        "message": "Новая версия $VERSION$ уже доступна! Нажмите, чтобы просмотреть детали.",
+        "placeholders": {
+            "version": {
+                "content": "$1",
+                "example": "1.0.0"
+            }
+        }
+    },
+    "update-notification-button": {
+        "message": "Просмотреть детали"
+    },
+    "bottom-bar-text": {
+        "message": "Если у вас есть вопросы или предложения, пожалуйста, свяжитесь со мной."
+    },
+    "bottom-bar-github": {
+        "message": "GitHub"
+    },
+    "bottom-bar-telegram": {
+        "message": "Telegram"
+    },
+    "card-user-count-request-delay": {
+        "message": "Задержка между запросами"
+    },
+    "not-update-check": {
+        "message": "Не проверять обновления"
+    },
+    "check-update": {
+        "message": "Проверить обновления"
+    },
+    "update-available-title": {
+        "message": "Доступно обновление"
+    },
+    "update-available-description": {
+        "message": "Новая версия уже доступна! Нажмите, чтобы просмотреть детали. Версия: "
+    },
+    "dismiss": {
+        "message": "Отклонить"
+    },
+    "card-user-count-template": {
+        "message": "Шаблон текста статистики карточек"
+    },
+    "card-user-count-cache-enabled": {
+        "message": "Включить кэширование"
+    },
+    "card-user-count-cache-max-lifetime": {
+        "message": "Максимальное время жизни кэша (часы)"
+    },
+    "card-user-count-queue": {
+        "message": "Размер очереди карточек"
+    },
+    "clear-queue": {
+        "message": "Очистить очередь"
+    },
+    "card-cache-controls": {
+        "message": "Кэш карточек"
+    },
+    "clear-card-cache": {
+        "message": "Очистить все кэши"
+    },
+    "card-user-count-template-editor": {
+        "message": "Редактор шаблона"
+    },
+    "card-appearance-settings": {
+        "message": "Настройки внешнего вида карточек"
+    },
+    "card-appearance-description": {
+        "message": "Настройте внешний вид статистики карточек с помощью редактора шаблонов"
+    },
+    "open-card-appearance-editor": {
+        "message": "Открыть редактор внешнего вида"
+    },
+    "card-preview": {
+        "message": "Предварительный просмотр карточки"
+    },
+    "card-preview-description": {
+        "message": "Предварительный просмотр показывает, как будет выглядеть ваша карточка с текущими настройками"
+    },
+    "card-user-count-settings": {
+        "message": "Настройки статистики карточек"
+    },
+    "template-editor": {
+        "message": "Редактор шаблона"
+    },
+    "card-user-count-position": {
+        "message": "Позиция статистики"
+    },
+    "card-user-count-style": {
+        "message": "Стиль статистики"
+    },
+    "card-user-count-size": {
+        "message": "Размер статистики"
+    },
+    "card-user-count-background-color": {
+        "message": "Цвет фона"
+    },
+    "card-user-count-text-color": {
+        "message": "Цвет текста"
+    },
+    "card-user-count-opacity": {
+        "message": "Прозрачность фона"
+    },
+    "card-user-count-hover-action": {
+        "message": "Действие при наведении"
+    },
+    "hover-action-none": {
+        "message": "Без действия"
+    },
+    "hover-action-scale-up": {
+        "message": "Увеличить"
+    },
+    "hover-action-scale-down": {
+        "message": "Уменьшить"
+    },
+    "hover-action-fade-out": {
+        "message": "Скрыть частично"
+    },
+    "hover-action-hide": {
+        "message": "Скрыть полностью"
+    },
+    "hover-action-brighten": {
+        "message": "Осветлить"
+    },
+    "top-left": {
+        "message": "Верхний левый"
+    },
+    "top-center": {
+        "message": "Верхний центр"
+    },
+    "top-right": {
+        "message": "Верхний правый"
+    },
+    "bottom-left": {
+        "message": "Нижний левый"
+    },
+    "bottom-center": {
+        "message": "Нижний центр"
+    },
+    "bottom-right": {
+        "message": "Нижний правый"
+    },
+    "under": {
+        "message": "Под карточкой"
+    },
+    "default": {
+        "message": "Стандартный"
+    },
+    "minimal": {
+        "message": "Минимальный"
+    },
+    "bordered": {
+        "message": "С рамкой"
+    },
+    "pill": {
+        "message": "Пилюля"
+    },
+    "badge": {
+        "message": "Значок"
+    },
+    "small": {
+        "message": "Малый"
+    },
+    "medium": {
+        "message": "Средний"
+    },
+    "large": {
+        "message": "Большой"
+    },
+    "template-item-type-text": {
+        "message": "Текст"
+    },
+    "template-item-type-icon": {
+        "message": "Иконка"
+    },
+    "template-item-type-variable": {
+        "message": "Переменная"
+    },
+    "template-item-placeholder-text": {
+        "message": "Введите текст"
+    },
+    "template-add-text": {
+        "message": "Добавить текст"
+    },
+    "template-add-icon": {
+        "message": "Добавить иконку"
+    },
+    "template-add-variable": {
+        "message": "Добавить переменную"
+    },
+    "template-empty-state-title": {
+        "message": "Пока нет элементов шаблона"
+    },
+    "template-empty-state-subtitle": {
+        "message": "Нажмите кнопки ниже, чтобы начать создание шаблона"
+    },
+    "template-preview-label": {
+        "message": "Предварительный просмотр:"
+    },
+    "template-preview-empty": {
+        "message": "Пустой шаблон"
+    },
+    "button-icon-none": {
+        "message": "Без иконки"
+    },
+    "api-integration-settings": {
+        "message": "Интеграция с API"
+    },
+    "api-send-stats": {
+        "message": "Отправлять статистику на сайт"
+    },
+    "api-receive-stats": {
+        "message": "Получать статистику с сайта"
+    },
+    "upload-card-data-to-ass": {
+        "message": "Отправлять данные о карточках на ASS"
+    },
+    "upload-card-data-to-ass-description": {
+        "message": "Индексация метаданных карточек (название, изображение и т.д.) для поиска на сайте; отключите, если не хотите отправлять эти данные"
+    },
+    "api-website-label": {
+        "message": "Сайт ASS"
+    },
+    "api-website-description": {
+        "message": "Официальный сайт для интеграции с API и поиска карт."
+    },
+    "cards-search-settings": {
+        "message": "Настройки поиска карт"
+    },
+    "cards-search-integration": {
+        "message": "Интеграция поиска карт"
+    },
+    "cards-search-integration-description": {
+        "message": "Добавляет кнопку поиска на страницу базы карт для быстрого поиска через API"
+    },
+    "trades-history-filters": {
+        "message": "Фильтры истории обменов (ранг и пользователь)"
+    },
+    "trades-preview-enabled": {
+        "message": "Показывать превью карточек в обменах"
+    },
+    "trades-preview-auto-parse": {
+        "message": "Автозагрузка превью через парсинг отсутствующих обменов"
+    },
+    "trades-preview-auto-start-delay": {
+        "message": "Задержка перед стартом авто-парсинга"
+    },
+    "trades-preview-auto-interval": {
+        "message": "Интервал авто-парсинга"
+    },
+    "trades-preview-full-exchange": {
+        "message": "Показывать полный обмен (все карточки) в списках"
+    },
+    "trades-history-big-images": {
+        "message": "Большие изображения в истории обменов"
+    },
+    "remelt-topbar-enabled": {
+        "message": "Спростить и переместить панель переплавки на верх страницы"
+    },
+    "add-need-btn-to-card-dialog": {
+        "message": "Добавить кнопку \"Хочу карточку\" в диалоге карточки"
+    },
+    "not-add-need-btn-to-card-dialog": {
+        "message": "Не добавлять"
+    },
+    "add-need-btn-to-card-dialog-can": {
+        "message": "Добавлять, если можно установить"
+    },
+    "add-need-btn-to-card-dialog-force": {
+        "message": "Добавлять всегда"
+    },
+    "remove-card-list-and-club-rating-in-card-base": {
+        "message": "Убрать ленту карт и тижневой рейтинг клубов в базе карт"
+    },
+    "user-card-buttons-editor-title": {
+        "message": "Редактор кнопок карточек пользователя"
+    },
+    "user-card-buttons-editor-description": {
+        "message": "Настройте кнопки быстрого доступа на карточках пользователя"
+    },
+    "open-user-card-buttons-editor": {
+        "message": "Открыть редактор кнопок"
+    },
+    "buttons-preview": {
+        "message": "Предварительный просмотр кнопок"
+    },
+    "buttons-preview-description": {
+        "message": "Предварительный просмотр показывает, как будут выглядеть кнопки на карточке пользователя"
+    },
+    "buttons-configuration": {
+        "message": "Конфигурация кнопок"
+    },
+    "buttons-empty-state-title": {
+        "message": "Пока нет кнопок"
+    },
+    "buttons-empty-state-subtitle": {
+        "message": "Добавьте кнопки с помощью секции ниже"
+    },
+    "add-button": {
+        "message": "Добавить кнопку"
+    },
+    "import-export-config": {
+        "message": "Импорт/Экспорт конфигурации"
+    },
+    "export-config": {
+        "message": "Экспортировать конфигурацию"
+    },
+    "import-config": {
+        "message": "Импортировать конфигурацию"
+    },
+    "reset-to-default": {
+        "message": "Сбросить к стандартным"
+    },
+    "button-need": {
+        "message": "Нужные карточки"
+    },
+    "button-in-my-list": {
+        "message": "В моем списке"
+    },
+    "button-unlocked": {
+        "message": "Открытые карточки"
+    },
+    "button-text-label": {
+        "message": "Текст:"
+    },
+    "button-text-placeholder": {
+        "message": "Введите текст кнопки"
+    },
+    "button-icon-label": {
+        "message": "Иконка:"
+    },
+    "button-icon-select": {
+        "message": "Выбрать иконку"
+    },
+    "button-url-label": {
+        "message": "URL:"
+    },
+    "button-enabled": {
+        "message": "Включено"
+    },
+    "confirm-reset": {
+        "message": "Вы уверены, что хотите сбросить все настройки к стандартным?"
+    },
+    "import-success": {
+        "message": "Конфигурация успешно импортирована!"
+    },
+    "import-error": {
+        "message": "Ошибка при импорте конфигурации"
+    },
+    "export-success": {
+        "message": "Конфигурация успешно экспортирована!"
+    },
+    "export-error": {
+        "message": "Ошибка при экспорте конфигурации"
+    },
+    "invalid-config-file": {
+        "message": "Неверный формат файла конфигурации"
+    },
+    "config-exported": {
+        "message": "Конфигурация экспортирована в файл"
+    },
+    "config-imported": {
+        "message": "Конфигурация импортирована из файла"
+    },
+    "reset-widgets-confirm": {
+        "message": "Вы уверены, что хотите сбросить все виджеты к стандартным? Это действие нельзя отменить."
+    },
+    "pm-card-preview-enabled": {
+        "message": "Показывать превью карточек в PM Посикунчик"
+    },
+    "extension-settings": {
+        "message": "Настройки расширения"
+    },
+    "auto-take-snow-stone": {
+        "message": "Автоматически брать снежный камень"
+    },
+    "auto-click-gandama": {
+        "message": "Автоматически кликать на гандаму"
+    },
+    "floating-quick-actions-section": {
+        "message": "Плавающие быстрые действия"
+    },
+    "floating-quick-actions-hint": {
+        "message": "Показывает кнопки только во вкладке сайта в браузере (не поверх всей системы). Выберите переключатели и позицию."
+    },
+    "floating-quick-actions-enabled": {
+        "message": "Включить плавающую панель"
+    },
+    "floating-quick-actions-position": {
+        "message": "Позиция панели"
+    },
+    "floating-quick-actions-keys-label": {
+        "message": "Ярлыки переключателей"
+    },
+    "floating-quick-actions-pos-bottom-right": {
+        "message": "Низ справа"
+    },
+    "floating-quick-actions-pos-bottom-left": {
+        "message": "Низ слева"
+    },
+    "floating-quick-actions-pos-top-right": {
+        "message": "Верх справа"
+    },
+    "floating-quick-actions-pos-top-left": {
+        "message": "Верх слева"
+    },
+    "floating-quick-actions-link-description": {
+        "message": "Ярлыки на сайте"
+    },
+    "open-floating-quick-actions-page": {
+        "message": "Настроить плавающие кнопки…"
+    },
+    "back-to-settings": {
+        "message": "Назад к настройкам"
+    }
+}

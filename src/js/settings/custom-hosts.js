@@ -46,7 +46,7 @@ export async function renderCustomDomains() {
         empty.textContent = 'site-domains-empty';
         list.appendChild(empty);
         const langEl = document.getElementById('language');
-        window.i18n?.changeLang?.(langEl?.value || 'en');
+        await window.i18n?.changeLang?.(langEl?.value || 'en');
         return;
     }
 
@@ -78,7 +78,7 @@ export async function renderCustomDomains() {
         list.appendChild(row);
     }
     const langEl = document.getElementById('language');
-    window.i18n?.changeLang?.(langEl?.value || 'en');
+    await window.i18n?.changeLang?.(langEl?.value || 'en');
 }
 
 export async function setupCustomDomainsUI() {

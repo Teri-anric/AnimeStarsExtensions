@@ -25,25 +25,35 @@
         return;
     }
 
-    let translations = {};
-    let translationsLang = '';
+    let messages = {};
+    let messagesLang = '';
+    let formatMessageFn = (entry) => entry?.message ?? '';
 
     async function ensureTranslations(lang) {
-        const safe = ['uk', 'en', 'ru'].includes(lang) ? lang : 'en';
-        if (translationsLang === safe && Object.keys(translations).length) return;
-        translationsLang = safe;
-        translations = {};
+        let safe = lang === '$inspect' ? '$inspect' : ['uk', 'en', 'ru'].includes(lang) ? lang : 'en';
+        if (safe === '$inspect') {
+            messages = {};
+            messagesLang = safe;
+            return;
+        }
+        if (messagesLang === safe && Object.keys(messages).length) return;
+        messagesLang = safe;
+        messages = {};
         try {
-            const url = chrome.runtime.getURL(`js/i18n/${safe}.js`);
-            const mod = await import(url);
-            translations = mod.default || {};
-        } catch {
-            translations = {};
+            const mod = await import(chrome.runtime.getURL('js/i18n-runtime.js'));
+            formatMessageFn = mod.formatMessage;
+            messages = await mod.loadLocaleMessages(safe);
+        } catch (e) {
+            console.error('[AnimeStars ext] floating_quick_actions i18n load failed', e);
+            messages = {};
         }
     }
 
     function t(key) {
-        return translations[key] || key;
+        if (messagesLang === '$inspect') return key;
+        const entry = messages[key];
+        if (!entry) return key;
+        return formatMessageFn(entry);
     }
 
     function parseFab(raw) {

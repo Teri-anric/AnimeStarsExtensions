@@ -5,8 +5,11 @@ import { updateVisibilityRoots } from './visibility.js';
 import { wireField, applyInitialValues } from './wire-fields.js';
 import { setupCustomDomainsUI } from './custom-hosts.js';
 import { setupDeclarativeRuntime, checkForUpdateNotification } from './setup-extras.js';
+import { i18nReady } from '../translation.js';
 
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded', async () => {
+    await i18nReady;
+
     const root = document.getElementById('settings-root');
     if (!root) return;
 
@@ -14,8 +17,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const allKeys = getRegistryStorageKeys();
 
-    chrome.storage.sync.get(allKeys, (settings) => {
-        applyInitialValues(settings);
+    chrome.storage.sync.get(allKeys, async (settings) => {
+        await applyInitialValues(settings);
 
         for (const key of allKeys) {
             wireField(key);
@@ -45,6 +48,4 @@ document.addEventListener('DOMContentLoaded', () => {
     const versionElement = document.getElementById('current-version');
     if (versionElement) versionElement.textContent = currentVersion;
 
-    const langEl = document.getElementById('language');
-    window.i18n?.changeLang?.(langEl?.value || 'en');
 });

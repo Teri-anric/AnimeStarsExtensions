@@ -4,6 +4,7 @@ import {
     parseFabConfig,
     stringifyFabConfig,
 } from './fab-config.js';
+import { i18nReady } from './translation.js';
 
 let fabPageLang = 'uk';
 
@@ -110,7 +111,7 @@ function wirePanel() {
                 });
             });
         }
-        window.i18n?.changeLang?.(fabPageLang);
+        void window.i18n?.changeLang?.(fabPageLang);
     }
 
     readCfg((cfg) => {
@@ -149,14 +150,16 @@ function wirePanel() {
     });
 }
 
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded', async () => {
+    await i18nReady;
+
     const root = document.getElementById('fab-settings-root');
     if (!root) return;
 
-    chrome.storage.sync.get(['language'], (r) => {
+    chrome.storage.sync.get(['language'], async (r) => {
         fabPageLang = r.language || 'uk';
         buildPanel(root);
-        window.i18n?.changeLang?.(fabPageLang);
+        await window.i18n?.changeLang?.(fabPageLang);
         wirePanel();
 
         const ver = document.getElementById('fab-page-version');

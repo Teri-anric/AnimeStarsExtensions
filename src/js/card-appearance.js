@@ -3,6 +3,8 @@
  * Handles template editor initialization, preview updates, and settings management
  */
 
+import { i18nReady } from './translation.js';
+
 // Import TemplateEditor from module
 // Note: This will be loaded via script tag, so we'll check for it globally
 
@@ -336,7 +338,7 @@ function initializeTemplateEditor() {
 /**
  * Load settings from Chrome storage
  */
-function loadSettings() {
+async function loadSettings() {
     const allSettings = [
         ...SETTINGS_CONFIG.checkboxes,
         ...SETTINGS_CONFIG.selects,
@@ -346,62 +348,59 @@ function loadSettings() {
         'language'
     ];
 
-    chrome.storage.sync.get(allSettings, function (settings) {
-        // Load language settings
-        window.i18n.changeLang(settings.language);
-        // Load checkbox settings
-        SETTINGS_CONFIG.checkboxes.forEach(key => {
-            const element = document.getElementById(key);
-            if (element) {
-                element.checked = settings[key] || false;
-            }
-        });
-
-        // Load select settings
-        SETTINGS_CONFIG.selects.forEach(key => {
-            const element = document.getElementById(key);
-            if (element) {
-                element.value = settings[key] || '';
-            }
-        });
-
-        // Load range settings
-        SETTINGS_CONFIG.ranges.forEach(key => {
-            const element = document.getElementById(key);
-            if (element) {
-                element.value = settings[key] || element.getAttribute('value') || 0;
-                const valueSpan = element.parentNode.querySelector('.slider-value');
-                if (valueSpan) {
-                    valueSpan.textContent = element.value;
-                }
-            }
-        });
-
-        // Load color settings
-        SETTINGS_CONFIG.colors.forEach(key => {
-            const element = document.getElementById(key);
-            if (element) {
-                const defaultValue = key.includes('background') ? '#000000' : '#ffffff';
-                element.value = settings[key] || defaultValue;
-            }
-        });
-
-        // Load widgets
-        let widgets = [];
-        if (settings['card-widgets']) {
-            try {
-                widgets = typeof settings['card-widgets'] === 'string' ? JSON.parse(settings['card-widgets']) : settings['card-widgets'];
-            } catch { }
-        }
-        if (!Array.isArray(widgets) || widgets.length === 0) {
-            widgets = [newWidgetDefaults()];
-        }
-        widgetsState.list = widgets;
-        widgetsState.selectedId = widgets[0].id;
-        renderWidgetsList();
-        syncSelectedWidgetToControls();
-        setTimeout(updateCardPreview, 100);
+    const settings = await new Promise((resolve) => {
+        chrome.storage.sync.get(allSettings, resolve);
     });
+
+    await window.i18n.changeLang(settings.language);
+
+    SETTINGS_CONFIG.checkboxes.forEach(key => {
+        const element = document.getElementById(key);
+        if (element) {
+            element.checked = settings[key] || false;
+        }
+    });
+
+    SETTINGS_CONFIG.selects.forEach(key => {
+        const element = document.getElementById(key);
+        if (element) {
+            element.value = settings[key] || '';
+        }
+    });
+
+    SETTINGS_CONFIG.ranges.forEach(key => {
+        const element = document.getElementById(key);
+        if (element) {
+            element.value = settings[key] || element.getAttribute('value') || 0;
+            const valueSpan = element.parentNode.querySelector('.slider-value');
+            if (valueSpan) {
+                valueSpan.textContent = element.value;
+            }
+        }
+    });
+
+    SETTINGS_CONFIG.colors.forEach(key => {
+        const element = document.getElementById(key);
+        if (element) {
+            const defaultValue = key.includes('background') ? '#000000' : '#ffffff';
+            element.value = settings[key] || defaultValue;
+        }
+    });
+
+    let widgets = [];
+    if (settings['card-widgets']) {
+        try {
+            widgets = typeof settings['card-widgets'] === 'string' ? JSON.parse(settings['card-widgets']) : settings['card-widgets'];
+        } catch { }
+    }
+    if (!Array.isArray(widgets) || widgets.length === 0) {
+        widgets = [newWidgetDefaults()];
+    }
+    widgetsState.list = widgets;
+    widgetsState.selectedId = widgets[0].id;
+    renderWidgetsList();
+    syncSelectedWidgetToControls();
+    setTimeout(updateCardPreview, 100);
 }
 
 /**
@@ -463,11 +462,10 @@ function setupEventListeners() {
 /**
  * Initialize the card appearance page
  */
-function initializeCardAppearancePage() {
-    // Card appearance page initialization
-
+async function initializeCardAppearancePage() {
+    await i18nReady;
     // Load settings
-    loadSettings();
+    await loadSettings();
 
     // Setup event listeners
     setupEventListeners();
@@ -754,7 +752,9 @@ function formatTemplateItems(templateItems, values) {
     }).join('');
 }
 // Initialize when page loads
-document.addEventListener('DOMContentLoaded', initializeCardAppearancePage);
+document.addEventListener('DOMContentLoaded', () => {
+    initializeCardAppearancePage().catch((e) => console.error(e));
+});
 
     // Also add a global function for manual testing
     window.testPreview = updateCardPreview;
@@ -860,7 +860,7 @@ function importWidgetsConfig(file) {
  * Reset widgets to default configuration
  */
 function resetWidgetsConfig() {
-    if (confirm(window.i18n?.getTranslateText('reset-widgets-confirm', 'en') || 'Are you sure you want to reset all widgets to default?')) {
+    if (confirm(window.i18n?.getTranslateText('reset-widgets-confirm') || 'Are you sure you want to reset all widgets to default?')) {
         widgetsState.list = [newWidgetDefaults()];
         widgetsState.selectedId = widgetsState.list[0].id;
         
@@ -934,7 +934,7 @@ function showNotification(message, type = 'info') {
     }
 
     // Set message text
-    const messageText = window.i18n?.getTranslateText(message, 'en') || message;
+    const messageText = window.i18n?.getTranslateText(message) || message;
     notification.textContent = messageText;
 
     // Add to page

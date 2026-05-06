@@ -1,0 +1,578 @@
+{
+    "language": {
+        "message": "Language"
+    },
+    "language-uk": {
+        "message": "Ukrainian"
+    },
+    "language-en": {
+        "message": "English"
+    },
+    "language-ru": {
+        "message": "Russian"
+    },
+    "language-inspect": {
+        "message": "Inspect"
+    },
+    "select-language": {
+        "message": "Select Language"
+    },
+    "auto-features": {
+        "message": "Automatic Features"
+    },
+    "exchange-settings": {
+        "message": "Exchange Settings"
+    },
+    "ui-customization": {
+        "message": "UI Customization"
+    },
+    "dark-theme": {
+        "message": "Dark Theme"
+    },
+    "hide-snow": {
+        "message": "Hide snow"
+    },
+    "auto-seen-card": {
+        "message": "Automatically take cards from watching"
+    },
+    "auto-seen-card-stack": {
+        "message": "Stack cards from watching"
+    },
+    "auto-watchlist-fix": {
+        "message": "Collection is a watchlist"
+    },
+    "auto-take-heavenly-stone": {
+        "message": "Take heavenly stone automatically"
+    },
+    "auto-take-cinema-stone": {
+        "message": "Take cinema stones automatically"
+    },
+    "add-my-cards-button": {
+        "message": "Add \"My Cards\" button to the header"
+    },
+    "add-user-cards-buttons": {
+        "message": "Add buttons for quick access to user's open cards"
+    },
+    "club-boost-auto": {
+        "message": "Automatic club boost"
+    },
+    "club-boost-replace-auto": {
+        "message": "Automatic card skips (mine replace)"
+    },
+    "boss-boost-auto": {
+        "message": "Automatic boss boost"
+    },
+    "card-user-count": {
+        "message": "Show card statistics"
+    },
+    "card-user-count-event-target": {
+        "message": "Event target for showing card statistics"
+    },
+    "only-cache": {
+        "message": "Only cache"
+    },
+    "save-settings": {
+        "message": "Save Settings"
+    },
+    "automatic": {
+        "message": "Automatic"
+    },
+    "mousedown-0": {
+        "message": "Left mouse button"
+    },
+    "mousedown-1": {
+        "message": "Middle mouse button"
+    },
+    "mousedown-2": {
+        "message": "Right mouse button"
+    },
+    "mouseover": {
+        "message": "Mouse over"
+    },
+    "club-settings": {
+        "message": "Club Settings"
+    },
+    "settings-title": {
+        "message": "Extension Settings"
+    },
+    "site-domains": {
+        "message": "Site domain(s)"
+    },
+    "site-domains-add-label": {
+        "message": "Add domain manually (when the site changes domain)"
+    },
+    "site-domains-add-btn": {
+        "message": "Add domain"
+    },
+    "site-domains-help": {
+        "message": "Add the website domain, then reload the site tab."
+    },
+    "site-domains-empty": {
+        "message": "No additional domains."
+    },
+    "site-domains-invalid": {
+        "message": "Invalid domain. Enter a hostname or URL (e.g. animestars.org)."
+    },
+    "site-domains-requesting": {
+        "message": "Saving domain…"
+    },
+    "site-domains-added": {
+        "message": "Domain added. Reload the website page."
+    },
+    "site-domains-removing": {
+        "message": "Removing domain…"
+    },
+    "site-domains-removed": {
+        "message": "Domain removed."
+    },
+    "site-domains-error": {
+        "message": "Error"
+    },
+    "remove": {
+        "message": "Remove"
+    },
+    "clubs-boost-block-images": {
+        "message": "Block card images on club boost page"
+    },
+    "club-boost-refresh-cooldown": {
+        "message": "Refresh Interval"
+    },
+    "club-boost-action-cooldown": {
+        "message": "Boost Interval"
+    },
+    "club-boost-cooldown-description": {
+        "message": "Settings for automatic club boost intervals (ms)"
+    },
+    "club-boost-replace-stale-ms": {
+        "message": "Card skip: time with no card change"
+    },
+    "club-boost-replace-stale-description": {
+        "message": "If the offered card stays the same on screen for this long (no one takes it from contributions), a skip is triggered (replace). Also skips immediately when no club member can donate this card (empty “can contribute” list). Only when “Automatic card boost” is enabled."
+    },
+    "club-boost-replace-skip-cooldown-ms": {
+        "message": "Delay between card skips"
+    },
+    "club-boost-replace-skip-cooldown-description": {
+        "message": "Minimum time between two replace clicks so the site is not hit twice in a row."
+    },
+    "club-boost-hotkey-description": {
+        "message": "Hotkeys for club boost control:\n- B: Toggle Automatic Boost\n- C: Toggle Automatic Card Skips"
+    },
+    "update-notification-title": {
+        "message": "AnimeStar Extension Update Available"
+    },
+    "update-notification-message": {
+        "message": "New version $VERSION$ is available! Click to see details.",
+        "placeholders": {
+            "version": {
+                "content": "$1",
+                "example": "1.0.0"
+            }
+        }
+    },
+    "update-notification-button": {
+        "message": "View Details"
+    },
+    "bottom-bar-text": {
+        "message": "If you have any questions or feedback, feel free to reach out!"
+    },
+    "bottom-bar-github": {
+        "message": "GitHub"
+    },
+    "bottom-bar-telegram": {
+        "message": "Telegram"
+    },
+    "card-user-count-request-delay": {
+        "message": "Request delay"
+    },
+    "not-update-check": {
+        "message": "Not check for updates"
+    },
+    "check-update": {
+        "message": "Check for update"
+    },
+    "update-available-title": {
+        "message": "Update Available"
+    },
+    "update-available-description": {
+        "message": "New version is available! Click to see details. Version: "
+    },
+    "dismiss": {
+        "message": "Dismiss"
+    },
+    "card-user-count-cache-enabled": {
+        "message": "Cache enabled"
+    },
+    "card-user-count-cache-max-lifetime": {
+        "message": "Cache maximum lifetime (hours)"
+    },
+    "card-user-count-queue": {
+        "message": "Card queue size"
+    },
+    "clear-queue": {
+        "message": "Clear queue"
+    },
+    "card-cache-controls": {
+        "message": "Card cache"
+    },
+    "clear-card-cache": {
+        "message": "Clear all caches"
+    },
+    "card-user-count-template": {
+        "message": "Card statistics text template"
+    },
+    "card-user-count-template-editor": {
+        "message": "Template Editor"
+    },
+    "card-appearance-settings": {
+        "message": "Card Appearance Settings"
+    },
+    "card-appearance-description": {
+        "message": "Customize the appearance of card statistics using the template editor"
+    },
+    "open-card-appearance-editor": {
+        "message": "Open Appearance Editor"
+    },
+    "card-preview": {
+        "message": "Card Preview"
+    },
+    "card-preview-description": {
+        "message": "Preview shows how your card will look with current settings"
+    },
+    "card-user-count-settings": {
+        "message": "Card Statistics Settings"
+    },
+    "template-editor": {
+        "message": "Template Editor"
+    },
+    "card-user-count-position": {
+        "message": "Statistics Position"
+    },
+    "card-user-count-style": {
+        "message": "Statistics Style"
+    },
+    "card-user-count-size": {
+        "message": "Statistics Size"
+    },
+    "card-user-count-background-color": {
+        "message": "Background Color"
+    },
+    "card-user-count-text-color": {
+        "message": "Text Color"
+    },
+    "card-user-count-opacity": {
+        "message": "Background Opacity"
+    },
+    "card-user-count-hover-action": {
+        "message": "Hover Action"
+    },
+    "hover-action-none": {
+        "message": "None"
+    },
+    "hover-action-scale-up": {
+        "message": "Scale Up"
+    },
+    "hover-action-scale-down": {
+        "message": "Scale Down"
+    },
+    "hover-action-fade-out": {
+        "message": "Fade Out"
+    },
+    "hover-action-hide": {
+        "message": "Hide"
+    },
+    "hover-action-brighten": {
+        "message": "Brighten"
+    },
+    "top-left": {
+        "message": "Top Left"
+    },
+    "top-center": {
+        "message": "Top Center"
+    },
+    "top-right": {
+        "message": "Top Right"
+    },
+    "bottom-left": {
+        "message": "Bottom Left"
+    },
+    "bottom-center": {
+        "message": "Bottom Center"
+    },
+    "bottom-right": {
+        "message": "Bottom Right"
+    },
+    "under": {
+        "message": "Under Card"
+    },
+    "default": {
+        "message": "Default"
+    },
+    "minimal": {
+        "message": "Minimal"
+    },
+    "bordered": {
+        "message": "Bordered"
+    },
+    "pill": {
+        "message": "Pill"
+    },
+    "badge": {
+        "message": "Badge"
+    },
+    "small": {
+        "message": "Small"
+    },
+    "medium": {
+        "message": "Medium"
+    },
+    "large": {
+        "message": "Large"
+    },
+    "template-item-type-text": {
+        "message": "Text"
+    },
+    "template-item-type-icon": {
+        "message": "Icon"
+    },
+    "template-item-type-variable": {
+        "message": "Variable"
+    },
+    "template-item-placeholder-text": {
+        "message": "Enter text"
+    },
+    "template-add-text": {
+        "message": "Add Text"
+    },
+    "template-add-icon": {
+        "message": "Add Icon"
+    },
+    "template-add-variable": {
+        "message": "Add Variable"
+    },
+    "template-empty-state-title": {
+        "message": "No template items yet"
+    },
+    "template-empty-state-subtitle": {
+        "message": "Click the buttons below to start building your template"
+    },
+    "template-preview-label": {
+        "message": "Preview:"
+    },
+    "template-preview-empty": {
+        "message": "Empty template"
+    },
+    "button-icon-none": {
+        "message": "No icon"
+    },
+    "api-integration-settings": {
+        "message": "API Integration"
+    },
+    "api-send-stats": {
+        "message": "Send statistics to website"
+    },
+    "api-receive-stats": {
+        "message": "Receive statistics from website"
+    },
+    "upload-card-data-to-ass": {
+        "message": "Upload card metadata to ASS"
+    },
+    "upload-card-data-to-ass-description": {
+        "message": "Sends card metadata (name, image, etc.) for site search; turn off if you do not want this data sent"
+    },
+    "api-website-label": {
+        "message": "ASS website"
+    },
+    "api-website-description": {
+        "message": "Official site used for API integration and card search."
+    },
+    "cards-search-settings": {
+        "message": "Cards Search Settings"
+    },
+    "cards-search-integration": {
+        "message": "Cards Search Integration"
+    },
+    "cards-search-integration-description": {
+        "message": "Adds a search button to the cards base page for quick search via API"
+    },
+    "trades-history-filters": {
+        "message": "Trades history filters (rank and user)"
+    },
+    "trades-preview-enabled": {
+        "message": "Show trade card previews"
+    },
+    "trades-preview-auto-parse": {
+        "message": "Auto-load previews by parsing missing trades"
+    },
+    "trades-preview-auto-start-delay": {
+        "message": "Auto-parse start delay"
+    },
+    "trades-preview-auto-interval": {
+        "message": "Auto-parse interval"
+    },
+    "trades-preview-full-exchange": {
+        "message": "Show full exchange (all cards) in lists"
+    },
+    "trades-history-big-images": {
+        "message": "Bigger images in trades history"
+    },
+    "remelt-topbar-enabled": {
+        "message": "Simplify and move smelting top bar to the top of the page"
+    },
+    "add-need-btn-to-card-dialog": {
+        "message": "Add \"Need\" button to card dialog"
+    },
+    "not-add-need-btn-to-card-dialog": {
+        "message": "Not add"
+    },
+    "add-need-btn-to-card-dialog-can": {
+        "message": "Add if can set"
+    },
+    "add-need-btn-to-card-dialog-force": {
+        "message": "Add always"
+    },
+    "remove-card-list-and-club-rating-in-card-base": {
+        "message": "Remove card list and club rating in card base"
+    },
+    "user-card-buttons-editor-title": {
+        "message": "User Card Buttons Editor"
+    },
+    "user-card-buttons-editor-description": {
+        "message": "Configure quick access buttons on user cards"
+    },
+    "open-user-card-buttons-editor": {
+        "message": "Open Buttons Editor"
+    },
+    "buttons-preview": {
+        "message": "Buttons Preview"
+    },
+    "buttons-preview-description": {
+        "message": "Preview shows how buttons will look on the user card"
+    },
+    "buttons-configuration": {
+        "message": "Buttons Configuration"
+    },
+    "buttons-empty-state-title": {
+        "message": "No buttons yet"
+    },
+    "buttons-empty-state-subtitle": {
+        "message": "Add buttons using the section below"
+    },
+    "add-button": {
+        "message": "Add Button"
+    },
+    "import-export-config": {
+        "message": "Import/Export Configuration"
+    },
+    "export-config": {
+        "message": "Export Configuration"
+    },
+    "import-config": {
+        "message": "Import Configuration"
+    },
+    "reset-to-default": {
+        "message": "Reset to Default"
+    },
+    "button-need": {
+        "message": "Need Cards"
+    },
+    "button-in-my-list": {
+        "message": "In My List"
+    },
+    "button-unlocked": {
+        "message": "Unlocked Cards"
+    },
+    "button-text-label": {
+        "message": "Text:"
+    },
+    "button-text-placeholder": {
+        "message": "Enter button text"
+    },
+    "button-icon-label": {
+        "message": "Icon:"
+    },
+    "button-icon-select": {
+        "message": "Select Icon"
+    },
+    "button-url-label": {
+        "message": "URL:"
+    },
+    "button-enabled": {
+        "message": "Enabled"
+    },
+    "confirm-reset": {
+        "message": "Are you sure you want to reset all settings to default?"
+    },
+    "import-success": {
+        "message": "Configuration imported successfully!"
+    },
+    "import-error": {
+        "message": "Error importing configuration"
+    },
+    "export-success": {
+        "message": "Configuration exported successfully!"
+    },
+    "export-error": {
+        "message": "Error exporting configuration"
+    },
+    "invalid-config-file": {
+        "message": "Invalid configuration file format"
+    },
+    "config-exported": {
+        "message": "Configuration exported to file"
+    },
+    "config-imported": {
+        "message": "Configuration imported from file"
+    },
+    "reset-widgets-confirm": {
+        "message": "Are you sure you want to reset all widgets to default? This action cannot be undone."
+    },
+    "pm-card-preview-enabled": {
+        "message": "Show card previews in PM Postikuncik"
+    },
+    "extension-settings": {
+        "message": "Extension Settings"
+    },
+    "auto-take-snow-stone": {
+        "message": "Take snow stone automatically"
+    },
+    "auto-click-gandama": {
+        "message": "Click gandama automatically"
+    },
+    "floating-quick-actions-section": {
+        "message": "Floating quick actions"
+    },
+    "floating-quick-actions-hint": {
+        "message": "Shows movable shortcut buttons on the game website tab only (not system-wide). Pick toggles and position."
+    },
+    "floating-quick-actions-enabled": {
+        "message": "Enable floating panel"
+    },
+    "floating-quick-actions-position": {
+        "message": "Panel position"
+    },
+    "floating-quick-actions-keys-label": {
+        "message": "Toggle shortcuts"
+    },
+    "floating-quick-actions-pos-bottom-right": {
+        "message": "Bottom right"
+    },
+    "floating-quick-actions-pos-bottom-left": {
+        "message": "Bottom left"
+    },
+    "floating-quick-actions-pos-top-right": {
+        "message": "Top right"
+    },
+    "floating-quick-actions-pos-top-left": {
+        "message": "Top left"
+    },
+    "floating-quick-actions-link-description": {
+        "message": "Shortcuts on the website"
+    },
+    "open-floating-quick-actions-page": {
+        "message": "Configure floating buttons…"
+    },
+    "back-to-settings": {
+        "message": "Back to settings"
+    }
+}

@@ -1,0 +1,578 @@
+{
+    "language": {
+        "message": "Мова"
+    },
+    "language-uk": {
+        "message": "Українська"
+    },
+    "language-en": {
+        "message": "Англійська"
+    },
+    "language-ru": {
+        "message": "Російська"
+    },
+    "language-inspect": {
+        "message": "Огляд"
+    },
+    "select-language": {
+        "message": "Оберіть мову"
+    },
+    "auto-features": {
+        "message": "Автоматичні функції"
+    },
+    "exchange-settings": {
+        "message": "Налаштування обмінів"
+    },
+    "ui-customization": {
+        "message": "Кастомізація інтерфейсу"
+    },
+    "dark-theme": {
+        "message": "Темна тема"
+    },
+    "hide-snow": {
+        "message": "Прибрати сніг"
+    },
+    "auto-seen-card": {
+        "message": "Автоматично переглядати картки"
+    },
+    "auto-seen-card-stack": {
+        "message": "Складати картки з перегляду"
+    },
+    "auto-take-heavenly-stone": {
+        "message": "Автоматично брати небесний камінь"
+    },
+    "auto-take-cinema-stone": {
+        "message": "Автоматично брати камені в кінотеатрі"
+    },
+    "auto-watchlist-fix": {
+        "message": "Колекція як список перегляду"
+    },
+    "add-my-cards-button": {
+        "message": "Додати кнопку \"Мої картки\" в заголовок"
+    },
+    "add-user-cards-buttons": {
+        "message": "Додати кнопки швидкого доступу до відкритих карток користувача"
+    },
+    "club-boost-auto": {
+        "message": "Автоматичний вклад в клуб"
+    },
+    "club-boost-replace-auto": {
+        "message": "Автоматичний скіп карт (заміна на шахті)"
+    },
+    "boss-boost-auto": {
+        "message": "Автоматичний буст боса"
+    },
+    "card-user-count": {
+        "message": "Показати статистику карток"
+    },
+    "card-user-count-event-target": {
+        "message": "Подія для показу статистики карток"
+    },
+    "only-cache": {
+        "message": "Тільки кеш"
+    },
+    "save-settings": {
+        "message": "Зберегти налаштування"
+    },
+    "automatic": {
+        "message": "Автоматичний"
+    },
+    "mousedown-0": {
+        "message": "Ліва кнопка миші"
+    },
+    "mousedown-1": {
+        "message": "Середня кнопка миші"
+    },
+    "mousedown-2": {
+        "message": "Права кнопка миші"
+    },
+    "mouseover": {
+        "message": "Наведення миші"
+    },
+    "club-settings": {
+        "message": "Налаштування клубу"
+    },
+    "settings-title": {
+        "message": "Налаштування розширення"
+    },
+    "site-domains": {
+        "message": "Домен(и) сайту"
+    },
+    "site-domains-add-label": {
+        "message": "Додати домен вручну (коли сайт переїхав)"
+    },
+    "site-domains-add-btn": {
+        "message": "Додати домен"
+    },
+    "site-domains-help": {
+        "message": "Додайте домен сайту. Після цього перезавантажте вкладку з сайтом."
+    },
+    "site-domains-empty": {
+        "message": "Немає додаткових доменів."
+    },
+    "site-domains-invalid": {
+        "message": "Невірний домен. Вкажіть hostname або URL (наприклад animestars.org)."
+    },
+    "site-domains-requesting": {
+        "message": "Зберігаю домен…"
+    },
+    "site-domains-added": {
+        "message": "Домен додано. Оновіть сторінку сайту."
+    },
+    "site-domains-removing": {
+        "message": "Видаляю домен…"
+    },
+    "site-domains-removed": {
+        "message": "Домен видалено."
+    },
+    "site-domains-error": {
+        "message": "Помилка"
+    },
+    "remove": {
+        "message": "Видалити"
+    },
+    "clubs-boost-block-images": {
+        "message": "Блокувати зображення карток в топі клубу"
+    },
+    "club-boost-refresh-cooldown": {
+        "message": "Інтервал оновлення"
+    },
+    "club-boost-action-cooldown": {
+        "message": "Інтервал вкладу в клуб"
+    },
+    "club-boost-cooldown-description": {
+        "message": "Налаштування інтервалів автоматичного вкладу в клуб/босс (мс)"
+    },
+    "club-boost-replace-stale-ms": {
+        "message": "Скіп карт: час без зміни картки"
+    },
+    "club-boost-replace-stale-description": {
+        "message": "Якщо за цей час картка на екрані так і не змінилась (ніхто її не забирає з внеску) — натискається заміна (скіп). Окремо одразу скіпає, якщо ніхто з клубу не може внести цю картку (порожній список «Можуть внести»). Працює лише коли увімкнено «Автоматичний клад карт»."
+    },
+    "club-boost-replace-skip-cooldown-ms": {
+        "message": "Затримка між скіпами карт"
+    },
+    "club-boost-replace-skip-cooldown-description": {
+        "message": "Мінімальний інтервал між двома натисканнями «замінити», щоб не відправити запит двічі поспіль і не перевантажити сторінку."
+    },
+    "club-boost-hotkey-description": {
+        "message": "Гарячі клавіші для керування вкладом в клуб:\n- B: Увімкнути/Вимкнути автоматичний вклад в клуб\n- C: Увімкнути/Вимкнути автоматичний скіп карт"
+    },
+    "update-notification-title": {
+        "message": "Доступне оновлення розширення AnimeStar"
+    },
+    "update-notification-message": {
+        "message": "Нова версія $VERSION$ вже доступна! Натисніть, щоб переглянути деталі.",
+        "placeholders": {
+            "version": {
+                "content": "$1",
+                "example": "1.0.0"
+            }
+        }
+    },
+    "update-notification-button": {
+        "message": "Переглянути деталі"
+    },
+    "bottom-bar-text": {
+        "message": "Якщо у вас є питання або побажання, будь ласка, зв'яжіться зі мною."
+    },
+    "bottom-bar-github": {
+        "message": "GitHub"
+    },
+    "bottom-bar-telegram": {
+        "message": "Telegram"
+    },
+    "card-user-count-request-delay": {
+        "message": "Затримка між запитами"
+    },
+    "not-update-check": {
+        "message": "Не перевіряти оновлення"
+    },
+    "check-update": {
+        "message": "Перевірити оновлення"
+    },
+    "update-available-title": {
+        "message": "Доступне оновлення"
+    },
+    "update-available-description": {
+        "message": "Нова версія вже доступна! Натисніть, щоб переглянути деталі. Версія: "
+    },
+    "dismiss": {
+        "message": "Відхилити"
+    },
+    "card-user-count-template": {
+        "message": "Шаблон текста статистики карток"
+    },
+    "card-user-count-cache-enabled": {
+        "message": "Включити кешування"
+    },
+    "card-user-count-cache-max-lifetime": {
+        "message": "Максимальний час життя кешу (години)"
+    },
+    "card-user-count-queue": {
+        "message": "Розмір черги карток"
+    },
+    "clear-queue": {
+        "message": "Очистити чергу"
+    },
+    "card-cache-controls": {
+        "message": "Кеш карток"
+    },
+    "clear-card-cache": {
+        "message": "Очистити всі кеші"
+    },
+    "card-user-count-template-editor": {
+        "message": "Редактор шаблону"
+    },
+    "card-appearance-settings": {
+        "message": "Налаштування зовнішнього вигляду карток"
+    },
+    "card-appearance-description": {
+        "message": "Налаштуйте зовнішній вигляд статистики карток за допомогою редактора шаблонів"
+    },
+    "open-card-appearance-editor": {
+        "message": "Відкрити редактор зовнішнього вигляду"
+    },
+    "card-preview": {
+        "message": "Попередній перегляд картки"
+    },
+    "card-preview-description": {
+        "message": "Попередній перегляд показує, як виглядатиме ваша картка з поточними налаштуваннями"
+    },
+    "card-user-count-settings": {
+        "message": "Налаштування статистики карток"
+    },
+    "template-editor": {
+        "message": "Редактор шаблону"
+    },
+    "card-user-count-position": {
+        "message": "Позиція статистики"
+    },
+    "card-user-count-style": {
+        "message": "Стиль статистики"
+    },
+    "card-user-count-size": {
+        "message": "Розмір статистики"
+    },
+    "card-user-count-background-color": {
+        "message": "Колір фону"
+    },
+    "card-user-count-text-color": {
+        "message": "Колір тексту"
+    },
+    "card-user-count-opacity": {
+        "message": "Прозорість фону"
+    },
+    "card-user-count-hover-action": {
+        "message": "Дія при наведенні"
+    },
+    "hover-action-none": {
+        "message": "Без дії"
+    },
+    "hover-action-scale-up": {
+        "message": "Збільшити"
+    },
+    "hover-action-scale-down": {
+        "message": "Зменшити"
+    },
+    "hover-action-fade-out": {
+        "message": "Приховати частково"
+    },
+    "hover-action-hide": {
+        "message": "Приховати повністю"
+    },
+    "hover-action-brighten": {
+        "message": "Освітлити"
+    },
+    "top-left": {
+        "message": "Верхній лівий"
+    },
+    "top-center": {
+        "message": "Верхній центр"
+    },
+    "top-right": {
+        "message": "Верхній правий"
+    },
+    "bottom-left": {
+        "message": "Нижній лівий"
+    },
+    "bottom-center": {
+        "message": "Нижній центр"
+    },
+    "bottom-right": {
+        "message": "Нижній правий"
+    },
+    "under": {
+        "message": "Під карткою"
+    },
+    "default": {
+        "message": "Стандартний"
+    },
+    "minimal": {
+        "message": "Мінімальний"
+    },
+    "bordered": {
+        "message": "З рамкою"
+    },
+    "pill": {
+        "message": "Пілюля"
+    },
+    "badge": {
+        "message": "Значок"
+    },
+    "small": {
+        "message": "Малий"
+    },
+    "medium": {
+        "message": "Середній"
+    },
+    "large": {
+        "message": "Великий"
+    },
+    "template-item-type-text": {
+        "message": "Текст"
+    },
+    "template-item-type-icon": {
+        "message": "Іконка"
+    },
+    "template-item-type-variable": {
+        "message": "Змінна"
+    },
+    "template-item-placeholder-text": {
+        "message": "Введіть текст"
+    },
+    "template-add-text": {
+        "message": "Додати текст"
+    },
+    "template-add-icon": {
+        "message": "Додати іконку"
+    },
+    "template-add-variable": {
+        "message": "Додати змінну"
+    },
+    "template-empty-state-title": {
+        "message": "Поки немає елементів шаблону"
+    },
+    "template-empty-state-subtitle": {
+        "message": "Натисніть кнопки нижче, щоб почати створення шаблону"
+    },
+    "template-preview-label": {
+        "message": "Попередній перегляд:"
+    },
+    "template-preview-empty": {
+        "message": "Порожній шаблон"
+    },
+    "button-icon-none": {
+        "message": "Без іконки"
+    },
+    "api-integration-settings": {
+        "message": "Інтеграція з API"
+    },
+    "api-send-stats": {
+        "message": "Відправляти статистику на сайт"
+    },
+    "api-receive-stats": {
+        "message": "Отримувати статистику з сайту"
+    },
+    "upload-card-data-to-ass": {
+        "message": "Надсилати дані про картки на ASS"
+    },
+    "upload-card-data-to-ass-description": {
+        "message": "Індексація метаданих карток (назва, зображення тощо) для пошуку на сайті; вимкніть, якщо не хочете надсилати ці дані"
+    },
+    "api-website-label": {
+        "message": "Сайт ASS"
+    },
+    "api-website-description": {
+        "message": "Офіційний сайт для інтеграції з API та пошуку карт."
+    },
+    "cards-search-settings": {
+        "message": "Налаштування пошуку карт"
+    },
+    "cards-search-integration": {
+        "message": "Інтеграція пошуку карт"
+    },
+    "cards-search-integration-description": {
+        "message": "Додає кнопку пошуку до сторінки бази карт для швидкого пошуку через API"
+    },
+    "trades-history-filters": {
+        "message": "Фільтри історії обміну (ранг і користувач)"
+    },
+    "trades-preview-enabled": {
+        "message": "Показувати превʼю карток в обмінах"
+    },
+    "trades-preview-auto-parse": {
+        "message": "Авто-завантаження превʼю через парсинг відсутніх обмінів"
+    },
+    "trades-preview-auto-start-delay": {
+        "message": "Затримка перед стартом авто-парсингу"
+    },
+    "trades-preview-auto-interval": {
+        "message": "Інтервал авто-парсингу"
+    },
+    "trades-preview-full-exchange": {
+        "message": "Показувати повний обмін (усі картки) у списках"
+    },
+    "trades-history-big-images": {
+        "message": "Більші зображення в історії обмінів"
+    },
+    "remelt-topbar-enabled": {
+        "message": "Спростити і перемістити панель переплавки на верх сторінки"
+    },
+    "add-need-btn-to-card-dialog": {
+        "message": "Додати кнопку \"Хочу картку\" в діалоговому вікні картки"
+    },
+    "not-add-need-btn-to-card-dialog": {
+        "message": "Не додавати"
+    },
+    "add-need-btn-to-card-dialog-can": {
+        "message": "Додавати, якщо можна встановити"
+    },
+    "add-need-btn-to-card-dialog-force": {
+        "message": "Додавати завжди"
+    },
+    "remove-card-list-and-club-rating-in-card-base": {
+        "message": "Прибрати стрічку карт і тижневий рейтинг клубів в базі карт"
+    },
+    "user-card-buttons-editor-title": {
+        "message": "Редактор кнопок карток користувача"
+    },
+    "user-card-buttons-editor-description": {
+        "message": "Налаштуйте кнопки швидкого доступу на картках користувача"
+    },
+    "open-user-card-buttons-editor": {
+        "message": "Відкрити редактор кнопок"
+    },
+    "buttons-preview": {
+        "message": "Попередній перегляд кнопок"
+    },
+    "buttons-preview-description": {
+        "message": "Попередній перегляд показує, як виглядатимуть кнопки на картці користувача"
+    },
+    "buttons-configuration": {
+        "message": "Конфігурація кнопок"
+    },
+    "buttons-empty-state-title": {
+        "message": "Поки немає кнопок"
+    },
+    "buttons-empty-state-subtitle": {
+        "message": "Додайте кнопки за допомогою секції нижче"
+    },
+    "add-button": {
+        "message": "Додати кнопку"
+    },
+    "import-export-config": {
+        "message": "Імпорт/Експорт конфігурації"
+    },
+    "export-config": {
+        "message": "Експортувати конфігурацію"
+    },
+    "import-config": {
+        "message": "Імпортувати конфігурацію"
+    },
+    "reset-to-default": {
+        "message": "Скинути до стандартних"
+    },
+    "button-need": {
+        "message": "Потрібні картки"
+    },
+    "button-in-my-list": {
+        "message": "У моєму списку"
+    },
+    "button-unlocked": {
+        "message": "Відкриті картки"
+    },
+    "button-text-label": {
+        "message": "Текст:"
+    },
+    "button-text-placeholder": {
+        "message": "Введіть текст кнопки"
+    },
+    "button-icon-label": {
+        "message": "Іконка:"
+    },
+    "button-icon-select": {
+        "message": "Вибрати іконку"
+    },
+    "button-url-label": {
+        "message": "URL:"
+    },
+    "button-enabled": {
+        "message": "Увімкнено"
+    },
+    "confirm-reset": {
+        "message": "Ви впевнені, що хочете скинути всі налаштування до стандартних?"
+    },
+    "import-success": {
+        "message": "Конфігурацію успішно імпортовано!"
+    },
+    "import-error": {
+        "message": "Помилка при імпорті конфігурації"
+    },
+    "export-success": {
+        "message": "Конфігурацію успішно експортовано!"
+    },
+    "export-error": {
+        "message": "Помилка при експорті конфігурації"
+    },
+    "invalid-config-file": {
+        "message": "Невірний формат файлу конфігурації"
+    },
+    "config-exported": {
+        "message": "Конфігурацію експортовано в файл"
+    },
+    "config-imported": {
+        "message": "Конфігурацію імпортовано з файлу"
+    },
+    "reset-widgets-confirm": {
+        "message": "Ви впевнені, що хочете скинути всі віджети до стандартних? Цю дію неможливо скасувати."
+    },
+    "pm-card-preview-enabled": {
+        "message": "Показувати превʼю карток в PM Посикунчик"
+    },
+    "extension-settings": {
+        "message": "Налаштування розширення"
+    },
+    "auto-take-snow-stone": {
+        "message": "Автоматично брати сніжний камінь"
+    },
+    "auto-click-gandama": {
+        "message": "Автоматично ловити гандаму"
+    },
+    "floating-quick-actions-section": {
+        "message": "Плаваючі швидкі дії"
+    },
+    "floating-quick-actions-hint": {
+        "message": "Показує кнопки лише у вкладці сайту в браузері (не поверх усієї системи). Оберіть перемикачі та позицію."
+    },
+    "floating-quick-actions-enabled": {
+        "message": "Увімкнути плаваючу панель"
+    },
+    "floating-quick-actions-position": {
+        "message": "Позиція панелі"
+    },
+    "floating-quick-actions-keys-label": {
+        "message": "Ярлики перемикачів"
+    },
+    "floating-quick-actions-pos-bottom-right": {
+        "message": "Низ праворуч"
+    },
+    "floating-quick-actions-pos-bottom-left": {
+        "message": "Низ ліворуч"
+    },
+    "floating-quick-actions-pos-top-right": {
+        "message": "Верх праворуч"
+    },
+    "floating-quick-actions-pos-top-left": {
+        "message": "Верх ліворуч"
+    },
+    "floating-quick-actions-link-description": {
+        "message": "Ярлики на сайті"
+    },
+    "open-floating-quick-actions-page": {
+        "message": "Налаштувати плаваючі кнопки…"
+    },
+    "back-to-settings": {
+        "message": "Назад до налаштувань"
+    }
+}

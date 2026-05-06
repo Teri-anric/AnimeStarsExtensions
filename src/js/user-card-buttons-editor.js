@@ -4,7 +4,7 @@
  */
 
 // Import translation system
-import i18n from './translation.js';
+import i18n, { i18nReady } from './translation.js';
 
 // Default button configurations
 const DEFAULT_BUTTONS = [
@@ -210,7 +210,7 @@ class UserCardButtonsEditor {
         modalHeader.className = 'icon-picker-header';
         
         const title = document.createElement('h3');
-        title.textContent = this.getTranslatedText('button-icon-select', this.getCurrentLanguage());
+        title.textContent = this.getTranslatedText('button-icon-select');
         
         const closeBtn = document.createElement('button');
         closeBtn.className = 'icon-picker-close';
@@ -227,7 +227,7 @@ class UserCardButtonsEditor {
         const noIconBtn = document.createElement('button');
         noIconBtn.className = 'icon-option';
         noIconBtn.dataset.icon = '';
-        noIconBtn.textContent = this.getTranslatedText('button-icon-none', this.getCurrentLanguage());
+        noIconBtn.textContent = this.getTranslatedText('button-icon-none');
         noIconBtn.onclick = () => {
             if (this.iconPickerCustomInput) this.iconPickerCustomInput.value = '';
             this.selectIcon('');
@@ -244,7 +244,7 @@ class UserCardButtonsEditor {
         this.iconPickerCustomInput = customInput;
         const customBtn = document.createElement('button');
         customBtn.type = 'button';
-        customBtn.textContent = this.getTranslatedText('button-icon-select', this.getCurrentLanguage());
+        customBtn.textContent = this.getTranslatedText('button-icon-select');
         customBtn.onclick = () => {
             const cls = (customInput.value || '').trim();
             if (cls) this.selectIcon(cls);
@@ -307,20 +307,11 @@ class UserCardButtonsEditor {
     }
 
     // Helper method to get translated text
-    getTranslatedText(key, lang = 'en') {
+    getTranslatedText(key) {
         if (typeof window !== 'undefined' && window.i18n) {
-            return window.i18n.getTranslateText(key, lang);
+            return window.i18n.getTranslateText(key);
         }
-        return i18n.getTranslateText(key, lang);
-    }
-
-    // Helper method to get current language
-    getCurrentLanguage() {
-        if (typeof window !== 'undefined' && window.document) {
-            const htmlLang = document.documentElement.lang;
-            return htmlLang || 'en';
-        }
-        return 'en';
+        return i18n.getTranslateText(key);
     }
 
     createButtonItem(button, index) {
@@ -339,8 +330,6 @@ class UserCardButtonsEditor {
         const content = document.createElement('div');
         content.className = 'button-item-content';
 
-        const currentLang = this.getCurrentLanguage();
-
         // No inline icon preview here to avoid duplicate visuals
 
         // Text field
@@ -349,13 +338,13 @@ class UserCardButtonsEditor {
         
         const textLabel = document.createElement('div');
         textLabel.className = 'field-label';
-        textLabel.textContent = this.getTranslatedText('button-text-label', currentLang);
+        textLabel.textContent = this.getTranslatedText('button-text-label');
         
         const textInput = document.createElement('input');
         textInput.type = 'text';
         textInput.className = 'item-input text-input';
         textInput.value = button.text || '';
-        textInput.placeholder = this.getTranslatedText('button-text-placeholder', currentLang);
+        textInput.placeholder = this.getTranslatedText('button-text-placeholder');
         textInput.dataset.field = 'text';
         
         textField.appendChild(textLabel);
@@ -368,7 +357,7 @@ class UserCardButtonsEditor {
         
         const iconLabel = document.createElement('div');
         iconLabel.className = 'field-label';
-        iconLabel.textContent = this.getTranslatedText('button-icon-label', currentLang);
+        iconLabel.textContent = this.getTranslatedText('button-icon-label');
         
         const iconControls = document.createElement('div');
         iconControls.className = 'icon-controls';
@@ -396,7 +385,7 @@ class UserCardButtonsEditor {
         
         const urlLabel = document.createElement('div');
         urlLabel.className = 'field-label';
-        urlLabel.textContent = this.getTranslatedText('button-url-label', currentLang);
+        urlLabel.textContent = this.getTranslatedText('button-url-label');
         
         const urlInput = document.createElement('input');
         urlInput.type = 'text';
@@ -414,7 +403,7 @@ class UserCardButtonsEditor {
         toggleDiv.className = 'toggle-switch';
         
         const toggleLabel = document.createElement('span');
-        toggleLabel.textContent = this.getTranslatedText('button-enabled', currentLang);
+        toggleLabel.textContent = this.getTranslatedText('button-enabled');
         
         const toggleInput = document.createElement('input');
         toggleInput.type = 'checkbox';
@@ -502,8 +491,6 @@ class UserCardButtonsEditor {
             this.container.removeChild(this.container.firstChild);
         }
         
-        const currentLang = this.getCurrentLanguage();
-        
         // Create items container
         const itemsContainer = document.createElement('div');
         itemsContainer.className = 'buttons-items-container';
@@ -516,10 +503,10 @@ class UserCardButtonsEditor {
             icon.className = 'fas fa-link';
             
             const title = document.createElement('p');
-            title.textContent = this.getTranslatedText('buttons-empty-state-title', currentLang);
+            title.textContent = this.getTranslatedText('buttons-empty-state-title');
             
             const subtitle = document.createElement('small');
-            subtitle.textContent = this.getTranslatedText('buttons-empty-state-subtitle', currentLang);
+            subtitle.textContent = this.getTranslatedText('buttons-empty-state-subtitle');
             
             emptyState.appendChild(icon);
             emptyState.appendChild(title);
@@ -592,7 +579,7 @@ class UserCardButtonsEditor {
         const resetBtn = document.getElementById('reset-config');
         if (resetBtn) {
             resetBtn.addEventListener('click', () => {
-                if (confirm(this.getTranslatedText('confirm-reset', this.getCurrentLanguage()))) {
+                if (confirm(this.getTranslatedText('confirm-reset'))) {
                     this.resetToDefault();
                 }
             });
@@ -747,13 +734,13 @@ class UserCardButtonsEditor {
                     this.buttons = config.buttons;
                     this.saveButtons();
                     this.render();
-                    alert(this.getTranslatedText('import-success', this.getCurrentLanguage()));
+                    alert(this.getTranslatedText('import-success'));
                 } else {
                     throw new Error('Invalid config format');
                 }
             } catch (error) {
                 console.error('Failed to import config:', error);
-                alert(this.getTranslatedText('import-error', this.getCurrentLanguage()));
+                alert(this.getTranslatedText('import-error'));
             }
         };
         reader.readAsText(file);
@@ -777,12 +764,9 @@ class UserCardButtonsEditor {
     }
 }
 
-// Initialize on page load
-document.addEventListener('DOMContentLoaded', () => {
-    // Wait for translations to load
-    setTimeout(() => {
-        window.userCardButtonsEditor = new UserCardButtonsEditor();
-    }, 100);
+document.addEventListener('DOMContentLoaded', async () => {
+    await i18nReady;
+    window.userCardButtonsEditor = new UserCardButtonsEditor();
 });
 
 // Export for use in other modules

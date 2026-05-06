@@ -97,7 +97,7 @@ class TemplateEditor {
         // Create shared icon picker once
         this.iconPicker = new IconPicker({
             icons: this.availableIcons,
-            translate: (key) => this.getTranslatedText(key, this.getCurrentLanguage()),
+            translate: (key) => this.getTranslatedText(key),
             resolveIconClass: (cls) => this.resolveIconClass(cls)
         });
     }
@@ -107,21 +107,11 @@ class TemplateEditor {
         this.attachEventListeners();
     }
 
-    // Helper method to get translated text
-    getTranslatedText(key, lang = 'en') {
+    getTranslatedText(key) {
         if (typeof window !== 'undefined' && window.i18n) {
-            return window.i18n.getTranslateText(key, lang);
+            return window.i18n.getTranslateText(key);
         }
-        return i18n.getTranslateText(key, lang);
-    }
-
-    // Helper method to get current language
-    getCurrentLanguage() {
-        if (typeof window !== 'undefined' && window.document) {
-            const htmlLang = document.documentElement.lang;
-            return htmlLang || 'en';
-        }
-        return 'en';
+        return i18n.getTranslateText(key);
     }
 
     resolveIconClass(iconClass) {
@@ -145,25 +135,23 @@ class TemplateEditor {
         const content = document.createElement('div');
         content.className = 'template-item-content';
 
-        const currentLang = this.getCurrentLanguage();
-
         if (item.type === 'text') {
             const typeLabel = document.createElement('span');
             typeLabel.className = 'item-type-label';
-            typeLabel.textContent = this.getTranslatedText('template-item-type-text', currentLang);
+            typeLabel.textContent = this.getTranslatedText('template-item-type-text');
             
             const input = document.createElement('input');
             input.type = 'text';
             input.className = 'item-input';
             input.value = item.text || '';
-            input.placeholder = this.getTranslatedText('template-item-placeholder-text', currentLang);
+            input.placeholder = this.getTranslatedText('template-item-placeholder-text');
             
             content.appendChild(typeLabel);
             content.appendChild(input);
         } else if (item.type === 'icon') {
             const typeLabel = document.createElement('span');
             typeLabel.className = 'item-type-label';
-            typeLabel.textContent = this.getTranslatedText('template-item-type-icon', currentLang);
+            typeLabel.textContent = this.getTranslatedText('template-item-type-icon');
 
             const iconControls = document.createElement('div');
             iconControls.className = 'icon-controls';
@@ -189,7 +177,7 @@ class TemplateEditor {
         } else if (item.type === 'variable') {
             const typeLabel = document.createElement('span');
             typeLabel.className = 'item-type-label';
-            typeLabel.textContent = this.getTranslatedText('template-item-type-variable', currentLang);
+            typeLabel.textContent = this.getTranslatedText('template-item-type-variable');
             
             const select = document.createElement('select');
             select.className = 'variable-select';
@@ -289,8 +277,6 @@ class TemplateEditor {
             this.container.removeChild(this.container.firstChild);
         }
         
-        const currentLang = this.getCurrentLanguage();
-        
         // Create items container
         const itemsContainer = document.createElement('div');
         itemsContainer.className = 'template-items-container';
@@ -303,10 +289,10 @@ class TemplateEditor {
             icon.className = 'fas fa-plus-circle';
             
             const title = document.createElement('p');
-            title.textContent = this.getTranslatedText('template-empty-state-title', currentLang);
+            title.textContent = this.getTranslatedText('template-empty-state-title');
             
             const subtitle = document.createElement('small');
-            subtitle.textContent = this.getTranslatedText('template-empty-state-subtitle', currentLang);
+            subtitle.textContent = this.getTranslatedText('template-empty-state-subtitle');
             
             emptyState.appendChild(icon);
             emptyState.appendChild(title);
@@ -331,7 +317,7 @@ class TemplateEditor {
         textIcon.className = 'fas fa-font';
         addTextBtn.appendChild(textIcon);
         addTextBtn.appendChild(document.createTextNode(' '));
-        addTextBtn.appendChild(document.createTextNode(this.getTranslatedText('template-add-text', currentLang)));
+        addTextBtn.appendChild(document.createTextNode(this.getTranslatedText('template-add-text')));
         
         // Add Icon button
         const addIconBtn = document.createElement('button');
@@ -342,7 +328,7 @@ class TemplateEditor {
         iconIcon.className = 'fas fa-icons';
         addIconBtn.appendChild(iconIcon);
         addIconBtn.appendChild(document.createTextNode(' '));
-        addIconBtn.appendChild(document.createTextNode(this.getTranslatedText('template-add-icon', currentLang)));
+        addIconBtn.appendChild(document.createTextNode(this.getTranslatedText('template-add-icon')));
         
         // Add Variable button
         const addVariableBtn = document.createElement('button');
@@ -353,7 +339,7 @@ class TemplateEditor {
         variableIcon.className = 'fas fa-code';
         addVariableBtn.appendChild(variableIcon);
         addVariableBtn.appendChild(document.createTextNode(' '));
-        addVariableBtn.appendChild(document.createTextNode(this.getTranslatedText('template-add-variable', currentLang)));
+        addVariableBtn.appendChild(document.createTextNode(this.getTranslatedText('template-add-variable')));
         
         buttonsDiv.appendChild(addTextBtn);
         buttonsDiv.appendChild(addIconBtn);
@@ -450,19 +436,17 @@ class TemplateEditor {
         const items = this.container.querySelectorAll('.template-item[data-index]');
         const newItems = [];
         
-        const currentLang = this.getCurrentLanguage();
-        
         items.forEach((itemDiv) => {
             const typeLabel = itemDiv.querySelector('.item-type-label').textContent;
             
             // Compare with localized text to determine type
-            if (typeLabel === this.getTranslatedText('template-item-type-text', currentLang)) {
+            if (typeLabel === this.getTranslatedText('template-item-type-text')) {
                 const text = itemDiv.querySelector('.item-input').value;
                 newItems.push({ type: 'text', text });
-            } else if (typeLabel === this.getTranslatedText('template-item-type-icon', currentLang)) {
+            } else if (typeLabel === this.getTranslatedText('template-item-type-icon')) {
                 const icon = itemDiv.dataset.icon || '';
                 newItems.push({ type: 'icon', icon });
-            } else if (typeLabel === this.getTranslatedText('template-item-type-variable', currentLang)) {
+            } else if (typeLabel === this.getTranslatedText('template-item-type-variable')) {
                 const variable = itemDiv.querySelector('.variable-select').value;
                 newItems.push({ type: 'variable', variable });
             }
@@ -477,7 +461,6 @@ class TemplateEditor {
         const previewDiv = document.getElementById(this.options.previewId);
         if (!previewDiv) return;
 
-        const currentLang = this.getCurrentLanguage();
         const mockData = { 
             cardId: 4779,
             need: 14, 
@@ -541,7 +524,7 @@ class TemplateEditor {
         eyeIcon.className = 'fas fa-eye';
         previewLabel.appendChild(eyeIcon);
         previewLabel.appendChild(document.createTextNode(' '));
-        previewLabel.appendChild(document.createTextNode(this.getTranslatedText('template-preview-label', currentLang)));
+        previewLabel.appendChild(document.createTextNode(this.getTranslatedText('template-preview-label')));
 
         const previewContent = document.createElement('div');
         previewContent.className = 'preview-content';
@@ -550,7 +533,7 @@ class TemplateEditor {
             previewContent.innerHTML = preview;
         } else {
             const emptyText = document.createElement('em');
-            emptyText.textContent = this.getTranslatedText('template-preview-empty', currentLang);
+            emptyText.textContent = this.getTranslatedText('template-preview-empty');
             previewContent.appendChild(emptyText);
         }
 
