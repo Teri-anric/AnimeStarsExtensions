@@ -3,7 +3,7 @@
 .as-fqa {
     display: flex;
     flex-direction: column;
-    gap: 6px;
+    gap: var(--as-fqa-btn-gap, 6px);
     max-width: min(220px, 99vw);
     pointer-events: none;
     font-family: system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
@@ -18,7 +18,7 @@
     pointer-events: auto;
     cursor: pointer;
     border: 1px solid rgba(0, 0, 0, 0.15);
-    border-radius: 8px;
+    border-radius: var(--as-fqa-btn-radius, 8px);
     padding: var(--as-fqa-btn-padding-y, 6px) var(--as-fqa-btn-padding-x, 10px);
     font-size: var(--as-fqa-btn-font-size, 12px);
     line-height: 1.25;
@@ -82,13 +82,13 @@
 .as-fqa-group {
     display: flex;
     flex-direction: column;
-    gap: 4px;
+    gap: var(--as-fqa-btn-gap, 4px);
 }
 
 .as-fqa-group .as-fqa-group-children {
     display: flex;
     flex-direction: column;
-    gap: 4px;
+    gap: var(--as-fqa-btn-gap, 4px);
     padding-left: 8px;
     margin-left: 4px;
     border-left: 2px solid rgba(0, 0, 0, 0.12);
@@ -120,7 +120,7 @@
     height: var(--as-fqa-launcher-size, 48px);
     min-width: var(--as-fqa-launcher-size, 48px);
     min-height: var(--as-fqa-launcher-size, 48px);
-    border-radius: 50%;
+    border-radius: var(--as-fqa-btn-radius, 50%);
     padding: 0;
     display: inline-flex;
     align-items: center;
@@ -187,6 +187,16 @@
     pointer-events: none;
 }
 
+.as-fqa-launcher--decor {
+    opacity: 0.85;
+    cursor: grab;
+    pointer-events: auto;
+}
+
+#as-floating-quick-actions.as-fqa--dragging .as-fqa-launcher--decor {
+    cursor: grabbing;
+}
+
 .as-fqa-splay-group-wrap {
     position: relative;
     display: flex;
@@ -224,7 +234,7 @@
     height: var(--as-fqa-action-size, 40px);
     min-width: var(--as-fqa-action-size, 40px);
     min-height: var(--as-fqa-action-size, 40px);
-    border-radius: 50%;
+    border-radius: var(--as-fqa-btn-radius, 50%);
     padding: 0;
     display: inline-flex;
     align-items: center;

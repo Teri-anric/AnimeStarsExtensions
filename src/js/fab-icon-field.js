@@ -38,11 +38,13 @@ export const FAB_ICON_CHOICES = [
 export function createFabIconField(opts) {
     const wrap = document.createElement('div');
     wrap.className = 'fab-icon-field';
+    wrap.draggable = false;
 
     const previewBtn = document.createElement('button');
     previewBtn.type = 'button';
     previewBtn.className = 'fab-icon-field-preview as-btn as-btn--secondary';
     previewBtn.title = opts.translate('fab_pick_icon');
+    previewBtn.draggable = false;
     const previewI = document.createElement('i');
     previewBtn.appendChild(previewI);
 
@@ -57,6 +59,17 @@ export function createFabIconField(opts) {
     pickBtn.type = 'button';
     pickBtn.className = 'as-btn as-btn--secondary fab-icon-field-open';
     pickBtn.textContent = opts.translate('fab_pick_icon');
+    pickBtn.draggable = false;
+
+    // This field sits inside draggable rows; block drag start so click opens the picker.
+    [wrap, previewBtn, pickBtn].forEach((el) => {
+        el.addEventListener('pointerdown', (e) => e.stopPropagation());
+        el.addEventListener('mousedown', (e) => e.stopPropagation());
+        el.addEventListener('dragstart', (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+        });
+    });
 
     const picker = new IconPicker({
         icons: FAB_ICON_CHOICES,

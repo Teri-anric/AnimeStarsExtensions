@@ -719,6 +719,12 @@
     "fab_button_size": {
         "message": "Action button size"
     },
+    "fab_button_radius": {
+        "message": "Button corner rounding"
+    },
+    "fab_button_gap": {
+        "message": "Spacing between buttons"
+    },
     "fab_launcher_size": {
         "message": "Launcher size"
     },

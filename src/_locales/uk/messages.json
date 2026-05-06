@@ -719,6 +719,12 @@
     "fab_button_size": {
         "message": "Розмір кнопок дій"
     },
+    "fab_button_radius": {
+        "message": "Заокруглення кнопок"
+    },
+    "fab_button_gap": {
+        "message": "Відстань між кнопками"
+    },
     "fab_launcher_size": {
         "message": "Розмір лаунчера"
     },

@@ -190,10 +190,32 @@ function buildPanel(root) {
     launcherSizeRange.max = '72';
     launcherSizeRange.step = '1';
     launcherSizeRange.className = 'fab-launcher-size-range';
+    const radiusLabel = document.createElement('label');
+    radiusLabel.setAttribute('for', 'fab-btn-radius');
+    radiusLabel.textContent = 'fab_button_radius';
+    const radiusRange = document.createElement('input');
+    radiusRange.type = 'range';
+    radiusRange.id = 'fab-btn-radius';
+    radiusRange.min = '0';
+    radiusRange.max = '50';
+    radiusRange.step = '1';
+    radiusRange.className = 'fab-btn-radius-range';
+    const gapLabel = document.createElement('label');
+    gapLabel.setAttribute('for', 'fab-btn-gap');
+    gapLabel.textContent = 'fab_button_gap';
+    const gapRange = document.createElement('input');
+    gapRange.type = 'range';
+    gapRange.id = 'fab-btn-gap';
+    gapRange.min = '0';
+    gapRange.max = '32';
+    gapRange.step = '1';
+    gapRange.className = 'fab-btn-gap-range';
     appendLookControlRow(bgLabel, bgInput);
     appendLookControlRow(opLabel, opRange);
     appendLookControlRow(sizeLabel, sizeRange);
     appendLookControlRow(launcherSizeLabel, launcherSizeRange);
+    appendLookControlRow(radiusLabel, radiusRange);
+    appendLookControlRow(gapLabel, gapRange);
 
     const actionDisplayRow = document.createElement('div');
     actionDisplayRow.className = 'fab-control-row';
@@ -292,6 +314,8 @@ function wirePanel() {
     const opRange = /** @type {HTMLInputElement|null} */ (document.getElementById('fab-btn-opacity'));
     const sizeRange = /** @type {HTMLInputElement|null} */ (document.getElementById('fab-btn-size'));
     const launcherSizeRange = /** @type {HTMLInputElement|null} */ (document.getElementById('fab-launcher-size'));
+    const radiusRange = /** @type {HTMLInputElement|null} */ (document.getElementById('fab-btn-radius'));
+    const gapRange = /** @type {HTMLInputElement|null} */ (document.getElementById('fab-btn-gap'));
     const launcherMount = document.getElementById('fab-launcher-icon-mount');
     const launcherRow = document.getElementById('fab-launcher-row');
     const searchInput = /** @type {HTMLInputElement|null} */ (document.getElementById('fab-add-search'));
@@ -308,6 +332,8 @@ function wirePanel() {
         !opRange ||
         !sizeRange ||
         !launcherSizeRange ||
+        !radiusRange ||
+        !gapRange ||
         !launcherMount ||
         !launcherRow ||
         !searchInput ||
@@ -644,6 +670,8 @@ function wirePanel() {
         opRange.value = String(cfg.buttonOpacity ?? 92);
         sizeRange.value = String(cfg.buttonSize ?? 40);
         launcherSizeRange.value = String(cfg.launcherSize ?? 48);
+        radiusRange.value = String(cfg.buttonRadius ?? 12);
+        gapRange.value = String(cfg.buttonGap ?? 12);
 
         syncPanelLayoutDropdown(cfg);
 
@@ -685,6 +713,10 @@ function wirePanel() {
         if (opLabEl) opLabEl.textContent = tMsg('fab_button_opacity');
         if (bsLabEl) bsLabEl.textContent = tMsg('fab_button_size');
         if (lsLabEl) lsLabEl.textContent = tMsg('fab_launcher_size');
+        const radLabEl = document.querySelector('label[for="fab-btn-radius"]');
+        const gapLabEl = document.querySelector('label[for="fab-btn-gap"]');
+        if (radLabEl) radLabEl.textContent = tMsg('fab_button_radius');
+        if (gapLabEl) gapLabEl.textContent = tMsg('fab_button_gap');
 
         addGroupBtn.textContent = tMsg('fab_add_group_button');
         const addSec = document.getElementById('fab-add-actions-title');
@@ -750,6 +782,24 @@ function wirePanel() {
         readCfg((cfg) => {
             const n = Number.parseInt(launcherSizeRange.value, 10);
             cfg.launcherSize = Number.isNaN(n) ? cfg.launcherSize : Math.min(72, Math.max(28, n));
+            writeCfg(cfg);
+            fullRender();
+        });
+    });
+
+    radiusRange.addEventListener('input', () => {
+        readCfg((cfg) => {
+            const n = Number.parseInt(radiusRange.value, 10);
+            cfg.buttonRadius = Number.isNaN(n) ? cfg.buttonRadius : Math.min(50, Math.max(0, n));
+            writeCfg(cfg);
+            fullRender();
+        });
+    });
+
+    gapRange.addEventListener('input', () => {
+        readCfg((cfg) => {
+            const n = Number.parseInt(gapRange.value, 10);
+            cfg.buttonGap = Number.isNaN(n) ? cfg.buttonGap : Math.min(32, Math.max(0, n));
             writeCfg(cfg);
             fullRender();
         });

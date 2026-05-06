@@ -135,6 +135,20 @@ function normalizeButtonSize(raw, fallback = 40) {
     return Math.min(72, Math.max(28, Math.round(n)));
 }
 
+/** Corner rounding as % of half the shorter side (0–50). */
+function normalizeRadiusPct(raw, fallback = 12) {
+    const n = typeof raw === 'number' ? raw : Number.parseInt(String(raw || ''), 10);
+    if (Number.isNaN(n)) return fallback;
+    return Math.min(50, Math.max(0, Math.round(n)));
+}
+
+/** Extra spacing between action buttons (px). */
+function normalizeGapPx(raw, fallback = 12) {
+    const n = typeof raw === 'number' ? raw : Number.parseInt(String(raw || ''), 10);
+    if (Number.isNaN(n)) return fallback;
+    return Math.min(32, Math.max(0, Math.round(n)));
+}
+
 function numDrag(v) {
     if (typeof v !== 'number' || Number.isNaN(v)) return 0;
     return Math.round(Math.min(4000, Math.max(-4000, v)));
@@ -208,6 +222,8 @@ function normalizePositionPreset(preset, obj) {
  *   buttonOpacity: number,
  *   buttonSize: number,
  *   launcherSize: number,
+ *   buttonRadius: number,
+ *   buttonGap: number,
  * }} FabConfigNormalized
  */
 
@@ -247,6 +263,8 @@ export function parseFabConfig(raw) {
         buttonOpacity: 92,
         buttonSize: 40,
         launcherSize: 48,
+        buttonRadius: 12,
+        buttonGap: 12,
     });
 
     if (typeof raw !== 'string') return fallback;
@@ -306,6 +324,8 @@ export function parseFabConfig(raw) {
         buttonOpacity: normalizeOpacityPct(obj.buttonOpacity),
         buttonSize: normalizeButtonSize(obj.buttonSize, 40),
         launcherSize: normalizeButtonSize(obj.launcherSize, 48),
+        buttonRadius: normalizeRadiusPct(obj.buttonRadius, 12),
+        buttonGap: normalizeGapPx(obj.buttonGap, 12),
     };
 }
 
@@ -355,6 +375,8 @@ export function stringifyFabConfig(cfg) {
         buttonOpacity: normalizeOpacityPct(cfg.buttonOpacity),
         buttonSize: normalizeButtonSize(cfg.buttonSize, 40),
         launcherSize: normalizeButtonSize(cfg.launcherSize, 48),
+        buttonRadius: normalizeRadiusPct(cfg.buttonRadius, 12),
+        buttonGap: normalizeGapPx(cfg.buttonGap, 12),
     });
 }
 

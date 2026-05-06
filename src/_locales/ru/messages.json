@@ -719,6 +719,12 @@
     "fab_button_size": {
         "message": "Размер кнопок действий"
     },
+    "fab_button_radius": {
+        "message": "Скругление кнопок"
+    },
+    "fab_button_gap": {
+        "message": "Расстояние между кнопками"
+    },
     "fab_launcher_size": {
         "message": "Размер лаунчера"
     },

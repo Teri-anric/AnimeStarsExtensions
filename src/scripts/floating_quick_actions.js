@@ -47,6 +47,10 @@
                 launcherIcon: '',
                 buttonBgColor: '#ffffff',
                 buttonOpacity: 92,
+                buttonSize: 40,
+                launcherSize: 48,
+                buttonRadius: 12,
+                buttonGap: 12,
             };
             if (typeof raw !== 'string') return fb;
             try {
@@ -209,6 +213,10 @@
         rootEl.style.setProperty('--as-fqa-btn-font-size', `${Math.round(12 * scale * 10) / 10}px`);
         rootEl.style.setProperty('--as-fqa-btn-padding-y', `${Math.round(6 * scale)}px`);
         rootEl.style.setProperty('--as-fqa-btn-padding-x', `${Math.round(10 * scale)}px`);
+        const radius = typeof fabCfg.buttonRadius === 'number' ? fabCfg.buttonRadius : 12;
+        const gap = typeof fabCfg.buttonGap === 'number' ? fabCfg.buttonGap : 12;
+        rootEl.style.setProperty('--as-fqa-btn-radius', `${radius}%`);
+        rootEl.style.setProperty('--as-fqa-btn-gap', `${gap}px`);
     }
 
     /**
@@ -293,7 +301,8 @@
         if (!items.length) return;
 
         const btnSize = typeof fabCfg.buttonSize === 'number' ? fabCfg.buttonSize : 40;
-        const step = Math.max(btnSize + 12, 48);
+        const gap = typeof fabCfg.buttonGap === 'number' ? fabCfg.buttonGap : 12;
+        const step = Math.max(btnSize + gap, btnSize + 4);
         const candidates = isLine
             ? lineGridCandidates(step, step, items.length * 22)
             : radialCandidates(step, items.length * 22);
@@ -592,12 +601,80 @@
 
         if (!splay.childNodes.length) return false;
 
-        const spacer = document.createElement('div');
-        spacer.className = 'as-fqa-open-layout-anchor';
-        spacer.setAttribute('aria-hidden', 'true');
+        const anchorBtn = document.createElement('button');
+        anchorBtn.type = 'button';
+        anchorBtn.className = 'as-fqa-btn as-fqa-launcher as-fqa-launcher--decor';
+        anchorBtn.setAttribute('aria-hidden', 'true');
+        anchorBtn.setAttribute('tabindex', '-1');
+        const lic = fabCfg.launcherIcon && fabCfg.launcherIcon.trim() ? fabCfg.launcherIcon.trim() : 'fas fa-bolt';
+        const li = document.createElement('i');
+        li.className = lic;
+        li.setAttribute('aria-hidden', 'true');
+        anchorBtn.appendChild(li);
+
+        anchorBtn.addEventListener('click', (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+        });
+
+        const dragOkOpen = fabPresetAllowsDrag ? fabPresetAllowsDrag(fabCfg.positionPreset) : false;
+        const DRAG_THRESHOLD_OPEN = 8;
+        if (dragOkOpen) {
+            anchorBtn.addEventListener('pointerdown', (e) => {
+                const sess = {
+                    pid: e.pointerId,
+                    sx: e.clientX,
+                    sy: e.clientY,
+                    dragging: false,
+                    bx: baseDragPixels(fabCfg).x,
+                    by: baseDragPixels(fabCfg).y,
+                };
+                try {
+                    anchorBtn.setPointerCapture(e.pointerId);
+                } catch (_) {}
+                rootEl.classList.add('as-fqa--dragging');
+
+                const onMove = (ev) => {
+                    if (sess.pid !== ev.pointerId) return;
+                    const mx = ev.clientX - sess.sx;
+                    const my = ev.clientY - sess.sy;
+                    if (!sess.dragging && Math.hypot(mx, my) < DRAG_THRESHOLD_OPEN) return;
+                    sess.dragging = true;
+                    applyFabTransform(rootEl, fabCfg, mx, my);
+                };
+
+                const onUp = (ev) => {
+                    if (sess.pid !== ev.pointerId) return;
+                    try {
+                        anchorBtn.releasePointerCapture(ev.pointerId);
+                    } catch (_) {}
+                    anchorBtn.removeEventListener('pointermove', onMove);
+                    anchorBtn.removeEventListener('pointerup', onUp);
+                    anchorBtn.removeEventListener('pointercancel', onUp);
+                    rootEl.classList.remove('as-fqa--dragging');
+
+                    const mx = ev.clientX - sess.sx;
+                    const my = ev.clientY - sess.sy;
+                    if (sess.dragging || Math.hypot(mx, my) >= DRAG_THRESHOLD_OPEN) {
+                        const nx = sess.bx + mx;
+                        const ny = sess.by + my;
+                        fabCfg.dragX = nx;
+                        fabCfg.dragY = ny;
+                        applyFabTransform(rootEl, fabCfg, 0, 0);
+                        persistDragPosition(nx, ny);
+                    } else {
+                        applyFabTransform(rootEl, fabCfg, 0, 0);
+                    }
+                };
+
+                anchorBtn.addEventListener('pointermove', onMove);
+                anchorBtn.addEventListener('pointerup', onUp);
+                anchorBtn.addEventListener('pointercancel', onUp);
+            });
+        }
 
         wrap.appendChild(splay);
-        wrap.appendChild(spacer);
+        wrap.appendChild(anchorBtn);
         rootEl.appendChild(wrap);
 
         scheduleSplayPlacement(wrap, splay, fabCfg, isLine);
@@ -840,6 +917,7 @@
         rootEl.dataset.fabCfg = JSON.stringify({
             buttonSize: fabCfg.buttonSize,
             launcherSize: fabCfg.launcherSize,
+            buttonGap: fabCfg.buttonGap,
         });
         applyFabPaint(rootEl, fabCfg);
         applyFabTransform(rootEl, fabCfg);
@@ -855,7 +933,6 @@
             renderFabItems(rootEl, fabCfg.items, sync, fabCfg);
             ok = rootEl.childNodes.length > 0;
         } else if (layout === 'radial_open' || layout === 'line_open') {
-            attachBarDragHandle(rootEl, fabCfg);
             ok = renderOpenFanBar(rootEl, fabCfg, sync);
         }
 

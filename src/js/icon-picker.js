@@ -110,6 +110,32 @@ class IconPicker {
         });
     }
 
+    _bindModalActionsToCurrentInstance() {
+        if (!this.modal) return;
+
+        const closeBtn = this.modal.querySelector('.icon-picker-close');
+        if (closeBtn) {
+            closeBtn.onclick = () => this.close();
+        }
+
+        const customBtn = this.modal.querySelector('.custom-icon-wrap button');
+        if (customBtn) {
+            customBtn.onclick = () => {
+                const cls = (this.iconPickerCustomInput?.value || '').trim();
+                this._select(cls);
+            };
+        }
+
+        const iconButtons = this.modal.querySelectorAll('.icon-option');
+        iconButtons.forEach((btn) => {
+            const iconClass = btn instanceof HTMLElement ? btn.dataset.icon || '' : '';
+            btn.onclick = () => {
+                if (this.iconPickerCustomInput) this.iconPickerCustomInput.value = iconClass;
+                this._select(iconClass);
+            };
+        });
+    }
+
     open(currentIcon, onSelect) {
         this.onSelect = onSelect;
         if (!this.modal) {
@@ -120,6 +146,7 @@ class IconPicker {
                 return;
             }
         }
+        this._bindModalActionsToCurrentInstance();
         if (this.iconPickerCustomInput) this.iconPickerCustomInput.value = currentIcon || '';
         this.modal.classList.remove('hidden');
     }
