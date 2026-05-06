@@ -10,8 +10,9 @@ export const FLOATING_QUICK_ACTIONS_KEY = 'floating-quick-actions';
 
 /**
  * @typedef {{ kind: 'toggle', key: string, icon?: string }} FabToggleItem
+ * @typedef {{ kind: 'link', label: string, url: string, icon?: string }} FabLinkItem
  * @typedef {{ kind: 'group', id: string, labelKey?: string, items: FabItem[] }} FabGroupItem
- * @typedef {FabToggleItem|FabGroupItem} FabItem
+ * @typedef {FabToggleItem|FabLinkItem|FabGroupItem} FabItem
  */
 
 /** @typedef {'bar'|'popup'} FabDisplayMode */
@@ -62,6 +63,18 @@ export function normalizeFabItem(raw, depth = 0) {
         const tgl = { kind: 'toggle', key };
         if (icon) tgl.icon = icon;
         return tgl;
+    }
+
+    if (kind === 'link') {
+        const label = typeof o.label === 'string' ? o.label.trim().slice(0, 120) : '';
+        const url = typeof o.url === 'string' ? o.url.trim().slice(0, 1024) : '';
+        if (!label || !url) return null;
+        const icon =
+            typeof o.icon === 'string' && o.icon.trim() ? String(o.icon).trim().slice(0, 120) : undefined;
+        /** @type {FabLinkItem} */
+        const link = { kind: 'link', label, url };
+        if (icon) link.icon = icon;
+        return link;
     }
 
     if (kind === 'group') {

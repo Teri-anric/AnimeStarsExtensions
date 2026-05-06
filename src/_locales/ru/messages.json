@@ -647,6 +647,9 @@
     "fab_add_group_button": {
         "message": "Новая группа"
     },
+    "fab_add_link_button": {
+        "message": "Новая ссылка"
+    },
     "fab_panel_layout": {
         "message": "Как расположены действия"
     },
@@ -691,6 +694,15 @@
     },
     "fab_group_add_selected": {
         "message": "Добавить в группу"
+    },
+    "fab_link_item_title": {
+        "message": "Ссылка:"
+    },
+    "fab_link_label_placeholder": {
+        "message": "Название кнопки"
+    },
+    "fab_link_url_placeholder": {
+        "message": "URL (https://...)"
     },
     "fab_display_mode": {
         "message": "Как открываются действия"

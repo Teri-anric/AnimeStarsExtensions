@@ -276,5 +276,6 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
         } else {
             sendResponse(result);
         }
+        return;
     }
 });

@@ -134,10 +134,43 @@
         if (!hosts.includes(window.location.hostname)) return;
     }
 
-    const SETTING_FIELDS = await loadSettingFieldsRegistry();
-    if (!SETTING_FIELDS) {
+    const BASE_SETTING_FIELDS = await loadSettingFieldsRegistry();
+    if (!BASE_SETTING_FIELDS) {
         console.error('[AnimeStars ext] floating_quick_actions: SETTING_FIELDS registry unavailable');
         return;
+    }
+    const CARD_WIDGET_TOGGLE_PREFIX = 'card-widget-toggle:';
+
+    function parseCardWidgetsConfig(raw) {
+        if (typeof raw !== 'string') return [];
+        try {
+            const v = JSON.parse(raw);
+            return Array.isArray(v) ? v : [];
+        } catch {
+            return [];
+        }
+    }
+
+    function buildCardWidgetActionFields(sync) {
+        const out = {};
+        const widgets = parseCardWidgetsConfig(sync?.['card-widgets']);
+        for (const widget of widgets) {
+            const id = typeof widget?.id === 'string' ? widget.id.trim() : '';
+            if (!id) continue;
+            const widgetName = typeof widget?.name === 'string' && widget.name.trim() ? widget.name.trim() : id;
+            out[`${CARD_WIDGET_TOGGLE_PREFIX}${id}`] = {
+                type: 'widget_toggle',
+                labelKey: `Widget: ${widgetName}`,
+            };
+        }
+        return out;
+    }
+
+    function getEffectiveSettingFields(sync) {
+        return {
+            ...BASE_SETTING_FIELDS,
+            ...buildCardWidgetActionFields(sync),
+        };
     }
 
     let messages = {};
@@ -451,14 +484,61 @@
     function launcherSlots(items) {
         const slots = [];
         for (const it of items || []) {
-            if (it.kind === 'toggle') {
+            if (it.kind === 'toggle' || it.kind === 'link') {
                 slots.push({ kind: 'toggle', item: it });
             } else if (it.kind === 'group') {
-                const ch = Array.isArray(it.items) ? it.items.filter((c) => c.kind === 'toggle') : [];
+                const ch = Array.isArray(it.items) ? it.items.filter((c) => c.kind === 'toggle' || c.kind === 'link') : [];
                 if (ch.length) slots.push({ kind: 'group', item: it });
             }
         }
         return slots;
+    }
+
+    function createLinkControl(item, fabCfg) {
+        const label = typeof item.label === 'string' ? item.label.trim() : '';
+        const href = resolveFqaLinkUrl(item.url);
+        if (!label || !href) return null;
+
+        const btn = document.createElement('a');
+        btn.className = 'as-fqa-btn';
+        btn.href = href;
+        btn.title = label;
+
+        const iconClass = typeof item.icon === 'string' ? item.icon.trim() : '';
+        const useIcon = fabCfg.actionDisplay === 'icon' && Boolean(iconClass);
+        if (useIcon) {
+            btn.classList.add('as-fqa-btn--circle');
+            const iEl = document.createElement('i');
+            iEl.className = iconClass;
+            iEl.setAttribute('aria-hidden', 'true');
+            btn.appendChild(iEl);
+            const sr = document.createElement('span');
+            sr.className = 'as-fqa-sr-only';
+            sr.textContent = label;
+            btn.appendChild(sr);
+        } else {
+            btn.textContent = label;
+        }
+
+        return btn;
+    }
+
+    function getCurrentUsername() {
+        return (
+            document.querySelector('.lgn__name > span')?.textContent?.trim() ||
+            document.querySelector('.usn__name > h1')?.textContent?.trim() ||
+            ''
+        );
+    }
+
+    function resolveFqaLinkUrl(rawUrl) {
+        let next = String(rawUrl || '').trim();
+        if (!next) return '';
+        const username = getCurrentUsername();
+        next = next.replace(/\{USERNAME\}/g, username).replace(/\{USER\}/g, username);
+        if (/^https?:\/\//i.test(next)) return next;
+        if (next.startsWith('/')) return window.location.origin + next;
+        return next;
     }
 
     /**
@@ -495,6 +575,50 @@
         return storedValue;
     }
 
+    function parseCardWidgetsFromSync(sync) {
+        const raw = sync?.['card-widgets'];
+        if (typeof raw !== 'string') return [];
+        try {
+            const arr = JSON.parse(raw);
+            return Array.isArray(arr) ? arr : [];
+        } catch {
+            return [];
+        }
+    }
+
+    function getWidgetIdFromToggleKey(key) {
+        if (typeof key !== 'string' || !key.startsWith(CARD_WIDGET_TOGGLE_PREFIX)) return '';
+        return key.slice(CARD_WIDGET_TOGGLE_PREFIX.length).trim();
+    }
+
+    function getWidgetEnabledByKey(sync, key) {
+        const widgetId = getWidgetIdFromToggleKey(key);
+        if (!widgetId) return false;
+        const widgets = parseCardWidgetsFromSync(sync);
+        const widget = widgets.find((w) => w?.id === widgetId);
+        return Boolean(widget?.enabled);
+    }
+
+    function toggleWidgetByKey(key) {
+        const widgetId = getWidgetIdFromToggleKey(key);
+        if (!widgetId) return;
+        chrome.storage.sync.get(['card-widgets'], (sync) => {
+            const widgets = parseCardWidgetsFromSync(sync);
+            if (!widgets.length) return;
+            let changed = false;
+            const next = widgets.map((w) => {
+                if (w?.id !== widgetId) return w;
+                changed = true;
+                return {
+                    ...w,
+                    enabled: !Boolean(w?.enabled),
+                };
+            });
+            if (!changed) return;
+            chrome.storage.sync.set({ 'card-widgets': JSON.stringify(next) });
+        });
+    }
+
     function coerceRangeValue(def, raw) {
         const min = Number(def.min ?? 0);
         const max = Number(def.max ?? 100);
@@ -514,7 +638,7 @@
     }
 
     function valueSuffix(def, value) {
-        if (def.type === 'checkbox') return value ? 'ON' : 'OFF';
+        if (def.type === 'checkbox' || def.type === 'widget_toggle') return value ? 'ON' : 'OFF';
         if (def.type === 'select') return optionLabel(def, value);
         if (def.type === 'range') return `${value}${def.unit ? ` ${def.unit}` : ''}`;
         if (def.type === 'action_property') return String(value ?? 0);
@@ -522,7 +646,7 @@
     }
 
     function applyButtonVisualState(btn, def, value, label, useIcon, compactMode) {
-        if (def.type === 'checkbox') {
+        if (def.type === 'checkbox' || def.type === 'widget_toggle') {
             const on = Boolean(value);
             btn.classList.toggle('as-fqa-btn-on', on);
             btn.setAttribute('aria-pressed', on ? 'true' : 'false');
@@ -630,21 +754,27 @@
         pop.setAttribute('role', 'listbox');
 
         const opts = Array.isArray(def.options) ? def.options : [];
-        for (const opt of opts) {
-            if (!opt || opt.inspect || String(opt.value) === '$inspect') continue;
-            const oBtn = document.createElement('button');
-            oBtn.type = 'button';
-            oBtn.className = 'as-fqa-field-pop__opt';
-            oBtn.setAttribute('role', 'option');
-            oBtn.dataset.value = String(opt.value);
-            oBtn.textContent = t(opt.labelKey || String(opt.value));
-            oBtn.addEventListener('pointerdown', (e) => e.stopPropagation());
-            oBtn.addEventListener('click', (e) => {
-                e.stopPropagation();
-                chrome.storage.sync.set({ [fieldKey]: opt.value }, () => closeActiveFieldPopover());
-            });
-            pop.appendChild(oBtn);
-        }
+        chrome.storage.sync.get([fieldKey], (stored) => {
+            const currentValue = stored[fieldKey];
+            for (const opt of opts) {
+                if (!opt || opt.inspect || String(opt.value) === '$inspect') continue;
+                const oBtn = document.createElement('button');
+                oBtn.type = 'button';
+                oBtn.className = 'as-fqa-field-pop__opt';
+                oBtn.setAttribute('role', 'option');
+                oBtn.dataset.value = String(opt.value);
+                oBtn.textContent = t(opt.labelKey || String(opt.value));
+                const isSelected = String(currentValue ?? '') === String(opt.value);
+                oBtn.setAttribute('aria-selected', isSelected ? 'true' : 'false');
+                oBtn.classList.toggle('as-fqa-field-pop__opt--selected', isSelected);
+                oBtn.addEventListener('pointerdown', (e) => e.stopPropagation());
+                oBtn.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    chrome.storage.sync.set({ [fieldKey]: opt.value }, () => closeActiveFieldPopover());
+                });
+                pop.appendChild(oBtn);
+            }
+        });
 
         applyFabThemeVarsToPopover(anchorBtn, pop);
         document.body.appendChild(pop);
@@ -759,9 +889,9 @@
     /** Background poll interval for `action_property` readouts (ms). */
     const ACTION_PROPERTY_REFRESH_MS = 300;
 
-    function createActionPropertyReadout(item, sync, fabCfg, metricRefreshers) {
+    function createActionPropertyReadout(item, sync, fabCfg, metricRefreshers, settingFields) {
         const key = item.key;
-        const meta = SETTING_FIELDS[key];
+        const meta = settingFields[key];
         if (!meta || meta.type !== 'action_property' || meta.action?.type !== 'runtime_message') return null;
 
         const readout = document.createElement('span');
@@ -794,13 +924,13 @@
         return readout;
     }
 
-    function wireFieldButton(btn, item, sync, useIcon, compactMode) {
+    function wireFieldButton(btn, item, sync, useIcon, compactMode, settingFields) {
         const key = item.key;
-        const meta = SETTING_FIELDS[key];
+        const meta = settingFields[key];
         if (!meta) return;
         btn.dataset.settingKey = key;
         const label = t(meta.labelKey);
-        let uiValue = getFieldValue(meta, sync[key]);
+        let uiValue = meta.type === 'widget_toggle' ? getWidgetEnabledByKey(sync, key) : getFieldValue(meta, sync[key]);
         applyButtonVisualState(btn, meta, uiValue, label, useIcon, compactMode);
 
         btn.addEventListener('click', (ev) => {
@@ -814,9 +944,13 @@
             }
 
             chrome.storage.sync.get([key], (r) => {
-                const def = SETTING_FIELDS[key];
+                const def = settingFields[key];
                 if (!def) return;
                 const cur = r[key];
+                if (def.type === 'widget_toggle') {
+                    toggleWidgetByKey(key);
+                    return;
+                }
                 if (def.type === 'checkbox') {
                     chrome.storage.sync.set({ [key]: !effectiveBool(def, cur) });
                     return;
@@ -837,13 +971,16 @@
      * @param {Record<string, unknown>} sync
      * @param {ReturnType<parseFabConfig>} fabCfg
      */
-    function createFieldControl(item, sync, fabCfg, metricRefreshers) {
+    function createFieldControl(item, sync, fabCfg, metricRefreshers, settingFields) {
+        if (item.kind === 'link') {
+            return createLinkControl(item, fabCfg);
+        }
         const key = item.key;
-        const meta = SETTING_FIELDS[key];
+        const meta = settingFields[key];
         if (!meta) return null;
-        if (!['checkbox', 'select', 'range', 'action', 'action_property'].includes(meta.type)) return null;
+        if (!['checkbox', 'select', 'range', 'action', 'action_property', 'widget_toggle'].includes(meta.type)) return null;
         if (meta.type === 'action_property') {
-            return createActionPropertyReadout(item, sync, fabCfg, metricRefreshers);
+            return createActionPropertyReadout(item, sync, fabCfg, metricRefreshers, settingFields);
         }
 
         const btn = document.createElement('button');
@@ -869,7 +1006,7 @@
         }
 
         const compactMode = fabCfg.actionDisplay !== 'text';
-        wireFieldButton(btn, item, sync, useIcon, compactMode);
+        wireFieldButton(btn, item, sync, useIcon, compactMode, settingFields);
         return btn;
     }
 
@@ -879,7 +1016,7 @@
      * @param {ReturnType<parseFabConfig>} fabCfg
      * @param {() => void} [onToggle]
      */
-    function createGroupSplaySlot(group, sync, fabCfg, metricRefreshers, onToggle) {
+    function createGroupSplaySlot(group, sync, fabCfg, metricRefreshers, settingFields, onToggle) {
         const wrap = document.createElement('div');
         wrap.className = 'as-fqa-splay-group-wrap';
 
@@ -896,8 +1033,8 @@
         panel.setAttribute('hidden', '');
 
         for (const child of group.items || []) {
-            if (child.kind !== 'toggle') continue;
-            const btn = createFieldControl(child, sync, fabCfg, metricRefreshers);
+            if (child.kind !== 'toggle' && child.kind !== 'link') continue;
+            const btn = createFieldControl(child, sync, fabCfg, metricRefreshers, settingFields);
             if (!btn) continue;
             btn.classList.add('as-fqa-splay-inner-btn');
             panel.appendChild(btn);
@@ -926,16 +1063,16 @@
      * @param {ReturnType<parseFabConfig>} fabCfg
      * @param {boolean} isLine
      */
-    function appendSlotsToSplay(splay, slots, sync, fabCfg, isLine, metricRefreshers) {
+    function appendSlotsToSplay(splay, slots, sync, fabCfg, isLine, metricRefreshers, settingFields) {
         slots.forEach((slot, i) => {
             let node = null;
             if (slot.kind === 'toggle') {
-                const btn = createFieldControl(slot.item, sync, fabCfg, metricRefreshers);
+                const btn = createFieldControl(slot.item, sync, fabCfg, metricRefreshers, settingFields);
                 if (!btn) return;
                 btn.classList.add('as-fqa-splay-btn');
                 node = btn;
             } else {
-                node = createGroupSplaySlot(slot.item, sync, fabCfg, metricRefreshers);
+                node = createGroupSplaySlot(slot.item, sync, fabCfg, metricRefreshers, settingFields);
             }
             if (!node) return;
 
@@ -951,10 +1088,10 @@
      * @param {unknown[]} items
      * @param {Record<string, unknown>} sync
      */
-    function renderFabItems(rootEl, items, sync, fabCfg, metricRefreshers) {
+    function renderFabItems(rootEl, items, sync, fabCfg, metricRefreshers, settingFields) {
         for (const item of items) {
-            if (item.kind === 'toggle') {
-                const btn = createFieldControl(item, sync, fabCfg, metricRefreshers);
+            if (item.kind === 'toggle' || item.kind === 'link') {
+                const btn = createFieldControl(item, sync, fabCfg, metricRefreshers, settingFields);
                 if (btn) rootEl.appendChild(btn);
             } else if (item.kind === 'group') {
                 const children = Array.isArray(item.items) ? item.items : [];
@@ -976,7 +1113,7 @@
                 panel.className = 'as-fqa-group-children';
                 panel.setAttribute('hidden', '');
 
-                renderFabItems(panel, children, sync, fabCfg, metricRefreshers);
+                renderFabItems(panel, children, sync, fabCfg, metricRefreshers, settingFields);
 
                 if (panel.childNodes.length === 0) continue;
 
@@ -1002,7 +1139,7 @@
      * @param {ReturnType<parseFabConfig>} fabCfg
      * @param {Record<string, unknown>} sync
      */
-    function renderOpenFanBar(rootEl, fabCfg, sync, metricRefreshers) {
+    function renderOpenFanBar(rootEl, fabCfg, sync, metricRefreshers, settingFields) {
         const slots = launcherSlots(fabCfg.items);
         if (slots.length === 0) return false;
 
@@ -1018,7 +1155,7 @@
             : 'as-fqa-splay as-fqa-splay--radial as-fqa-splay--always-visible';
         splay.setAttribute('role', 'menu');
 
-        appendSlotsToSplay(splay, slots, sync, fabCfg, isLine, metricRefreshers);
+        appendSlotsToSplay(splay, slots, sync, fabCfg, isLine, metricRefreshers, settingFields);
 
         if (!splay.childNodes.length) return false;
 
@@ -1111,7 +1248,7 @@
      * @param {ReturnType<parseFabConfig>} fabCfg
      * @param {Record<string, unknown>} sync
      */
-    function renderLauncherUi(rootEl, fabCfg, sync, metricRefreshers) {
+    function renderLauncherUi(rootEl, fabCfg, sync, metricRefreshers, settingFields) {
         const slots = launcherSlots(fabCfg.items);
         if (slots.length === 0) return false;
 
@@ -1128,7 +1265,7 @@
         splay.setAttribute('hidden', '');
         splay.setAttribute('role', 'menu');
 
-        appendSlotsToSplay(splay, slots, sync, fabCfg, isLine, metricRefreshers);
+        appendSlotsToSplay(splay, slots, sync, fabCfg, isLine, metricRefreshers, settingFields);
 
         if (!splay.childNodes.length) return false;
 
@@ -1369,18 +1506,19 @@
 
         const metricRefreshers = [];
 
+        const settingFields = getEffectiveSettingFields(sync);
         const layout = fabCfg.panelLayout;
         const useLauncher = fabPanelLayoutIsLauncher ? fabPanelLayoutIsLauncher(layout) : false;
 
         let ok = false;
         if (useLauncher) {
-            ok = renderLauncherUi(rootEl, fabCfg, sync, metricRefreshers);
+            ok = renderLauncherUi(rootEl, fabCfg, sync, metricRefreshers, settingFields);
         } else if (layout === 'column') {
             attachBarDragHandle(rootEl, fabCfg);
-            renderFabItems(rootEl, fabCfg.items, sync, fabCfg, metricRefreshers);
+            renderFabItems(rootEl, fabCfg.items, sync, fabCfg, metricRefreshers, settingFields);
             ok = rootEl.childNodes.length > 0;
         } else if (layout === 'radial_open' || layout === 'line_open') {
-            ok = renderOpenFanBar(rootEl, fabCfg, sync, metricRefreshers);
+            ok = renderOpenFanBar(rootEl, fabCfg, sync, metricRefreshers, settingFields);
         }
 
         if (!ok || rootEl.childNodes.length === 0) {
@@ -1441,8 +1579,9 @@
         const keys = Object.keys(changes);
         const fabRelated =
             keys.includes(FLOATING_QUICK_ACTIONS_KEY) ||
+            keys.includes('card-widgets') ||
             keys.includes('language') ||
-            keys.some((k) => SETTING_FIELDS[k]);
+            keys.some((k) => BASE_SETTING_FIELDS[k]);
         if (fabRelated) scheduleRefresh();
     });
 

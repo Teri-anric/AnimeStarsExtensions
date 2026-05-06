@@ -32,6 +32,20 @@
     white-space: nowrap;
 }
 
+/* Keep anchor-based actions visually identical to button elements. */
+.as-fqa a.as-fqa-btn,
+.as-fqa a.as-fqa-btn:visited,
+.as-fqa a.as-fqa-btn:hover,
+.as-fqa a.as-fqa-btn:active {
+    color: var(--as-fqa-btn-text, #222);
+    text-decoration: none;
+}
+
+.as-fqa a.as-fqa-btn {
+    display: inline-flex;
+    align-items: center;
+}
+
 .as-fqa .as-fqa-btn:hover {
     background: var(--as-fqa-btn-fill-hover, rgba(255, 255, 255, 1));
 }
@@ -322,6 +336,12 @@
 
 .as-fqa-field-pop__opt:hover {
     background: color-mix(in srgb, var(--as-fqa-btn-text, #222) 14%, transparent);
+}
+
+.as-fqa-field-pop__opt--selected {
+    border-color: color-mix(in srgb, var(--as-fqa-btn-text, #222) 35%, transparent);
+    background: color-mix(in srgb, var(--as-fqa-btn-text, #222) 18%, transparent);
+    font-weight: 600;
 }
 
 .as-fqa-field-pop__range-row {

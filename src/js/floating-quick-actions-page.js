@@ -12,13 +12,46 @@ import { i18nReady } from './translation.js';
 import { createFabIconField } from './fab-icon-field.js';
 
 let fabPageLang = 'uk';
+const CARD_WIDGET_TOGGLE_PREFIX = 'card-widget-toggle:';
 
 /** @typedef {import('./fab-config.js').FabConfigNormalized} FabConfigNormalized */
 
-function trLabel(key) {
-    const def = SETTING_FIELDS[key];
+function trLabel(key, allFields = SETTING_FIELDS) {
+    const def = allFields[key];
     if (!def) return key;
     return window.i18n?.getTranslateText?.(def.labelKey) ?? def.labelKey;
+}
+
+function parseCardWidgetsConfig(raw) {
+    if (typeof raw !== 'string') return [];
+    try {
+        const v = JSON.parse(raw);
+        return Array.isArray(v) ? v : [];
+    } catch {
+        return [];
+    }
+}
+
+function buildDynamicWidgetActionFields(data) {
+    const out = {};
+    const widgets = parseCardWidgetsConfig(data?.['card-widgets']);
+    for (const widget of widgets) {
+        const id = typeof widget?.id === 'string' ? widget.id.trim() : '';
+        if (!id) continue;
+        const widgetName = typeof widget?.name === 'string' && widget.name.trim() ? widget.name.trim() : id;
+        out[`${CARD_WIDGET_TOGGLE_PREFIX}${id}`] = {
+            type: 'widget_toggle',
+            labelKey: `Widget: ${widgetName}`,
+        };
+    }
+    return out;
+}
+
+function getAllFieldsWithDynamicActions(data) {
+    return {
+        ...SETTING_FIELDS,
+        ...buildDynamicWidgetActionFields(data),
+    };
 }
 
 /**
@@ -83,6 +116,15 @@ function parsePath(s) {
     } catch {
         return null;
     }
+}
+
+function newLinkItem() {
+    return {
+        kind: 'link',
+        label: 'Cards',
+        url: '/user/cards/?name={USERNAME}',
+        icon: 'fa-solid fa-link',
+    };
 }
 
 function buildPanel(root) {
@@ -284,6 +326,11 @@ function buildPanel(root) {
     addGroupBtn.id = 'fab-add-group-btn';
     addGroupBtn.className = 'as-btn as-btn--secondary';
     addGroupBtn.textContent = 'fab_add_group_button';
+    const addLinkBtn = document.createElement('button');
+    addLinkBtn.type = 'button';
+    addLinkBtn.id = 'fab-add-link-btn';
+    addLinkBtn.className = 'as-btn as-btn--secondary';
+    addLinkBtn.textContent = 'fab_add_link_button';
 
     const layoutLabel = document.createElement('label');
     layoutLabel.id = 'fab-panel-layout-label';
@@ -304,7 +351,7 @@ function buildPanel(root) {
     leftCol.appendChild(createSection('floating_quick_actions_enabled', [enableRow, posRow], 'fab-card--compact'));
     leftCol.appendChild(createSection('fab_button_bg_color', [btnLookWrap], 'fab-card--compact'));
     leftCol.appendChild(createSection('fab_panel_layout', [actionDisplayRow, panelLayoutWrap, launcherRow], 'fab-card--compact'));
-    rightCol.appendChild(createSection('fab_add_actions_title', [search, availableList, addGroupBtn]));
+    rightCol.appendChild(createSection('fab_add_actions_title', [search, availableList, addGroupBtn, addLinkBtn]));
     rightCol.appendChild(createSection('fab_panel_layout_label', [layoutLabel, itemsEditor]));
     grid.appendChild(leftCol);
     grid.appendChild(rightCol);
@@ -330,6 +377,7 @@ function wirePanel() {
     const searchInput = /** @type {HTMLInputElement|null} */ (document.getElementById('fab-add-search'));
     const availableList = document.getElementById('fab-available-list');
     const addGroupBtn = document.getElementById('fab-add-group-btn');
+    const addLinkBtn = document.getElementById('fab-add-link-btn');
     const itemsEditor = document.getElementById('fab-items-editor');
 
     if (
@@ -349,12 +397,13 @@ function wirePanel() {
         !searchInput ||
         !availableList ||
         !addGroupBtn ||
+        !addLinkBtn ||
         !itemsEditor
     ) {
         return;
     }
 
-    const qaKeys = getQuickActionFieldKeys();
+    const qaBaseKeys = getQuickActionFieldKeys();
 
     function tMsg(key) {
         return window.i18n?.getTranslateText?.(key) ?? key;
@@ -464,14 +513,19 @@ function wirePanel() {
         });
     }
 
-    function renderAvailableList(cfg) {
+    function renderAvailableList(cfg, data) {
         availableList.innerHTML = '';
         const q = searchInput.value.trim().toLowerCase();
         const used = collectToggleKeysFromItems(cfg.items);
+        const allFields = getAllFieldsWithDynamicActions(data);
+        const qaKeys = Object.keys(allFields).filter((k) => {
+            const type = allFields[k]?.type;
+            return ['checkbox', 'select', 'range', 'action', 'action_property', 'widget_toggle'].includes(type);
+        });
 
         for (const key of qaKeys) {
             if (used.has(key)) continue;
-            const lab = trLabel(key);
+            const lab = trLabel(key, allFields);
             if (q && !lab.toLowerCase().includes(q) && !key.toLowerCase().includes(q)) continue;
 
             const row = document.createElement('div');
@@ -508,7 +562,7 @@ function wirePanel() {
      * @param {number[]} path
      * @param {FabConfigNormalized} cfg
      */
-    function renderEditorItem(item, path, cfg) {
+    function renderEditorItem(item, path, cfg, data) {
         const row = document.createElement('div');
         row.className = 'fab-edit-row';
         row.dataset.path = pathStr(path);
@@ -523,10 +577,11 @@ function wirePanel() {
         body.className = 'fab-edit-row-body';
 
         if (item.kind === 'toggle') {
-            const meta = SETTING_FIELDS[item.key];
+            const allFields = getAllFieldsWithDynamicActions(data);
+            const meta = allFields[item.key];
             const title = document.createElement('span');
             title.className = 'fab-edit-title';
-            title.textContent = meta ? trLabel(item.key) : item.key;
+            title.textContent = meta ? trLabel(item.key, allFields) : item.key;
             body.appendChild(title);
             const iconMount = document.createElement('div');
             iconMount.className = 'fab-toggle-icon-mount';
@@ -538,6 +593,57 @@ function wirePanel() {
                         readCfg((c) => {
                             const tItem = itemAtPath(c, path);
                             if (tItem && tItem.kind === 'toggle') {
+                                const v = cls.trim();
+                                if (v) tItem.icon = v.slice(0, 120);
+                                else delete tItem.icon;
+                                writeCfg(c);
+                                fullRender();
+                            }
+                        });
+                    },
+                })
+            );
+            body.appendChild(iconMount);
+        } else if (item.kind === 'link') {
+            const title = document.createElement('span');
+            title.className = 'fab-edit-title';
+            title.textContent = tMsg('fab_link_item_title');
+            const labelInput = document.createElement('input');
+            labelInput.type = 'text';
+            labelInput.className = 'fab-group-label-input';
+            labelInput.placeholder = tMsg('fab_link_label_placeholder');
+            labelInput.value = item.label || '';
+            const urlInput = document.createElement('input');
+            urlInput.type = 'text';
+            urlInput.className = 'fab-group-label-input';
+            urlInput.placeholder = tMsg('fab_link_url_placeholder');
+            urlInput.value = item.url || '';
+            const persist = () => {
+                readCfg((c) => {
+                    const tItem = itemAtPath(c, path);
+                    if (tItem && tItem.kind === 'link') {
+                        tItem.label = labelInput.value.trim().slice(0, 120);
+                        tItem.url = urlInput.value.trim().slice(0, 1024);
+                        writeCfg(c);
+                        fullRender();
+                    }
+                });
+            };
+            labelInput.addEventListener('change', persist);
+            urlInput.addEventListener('change', persist);
+            body.appendChild(title);
+            body.appendChild(labelInput);
+            body.appendChild(urlInput);
+            const iconMount = document.createElement('div');
+            iconMount.className = 'fab-toggle-icon-mount';
+            iconMount.appendChild(
+                createFabIconField({
+                    translate: tMsg,
+                    value: item.icon || '',
+                    onCommit: (cls) => {
+                        readCfg((c) => {
+                            const tItem = itemAtPath(c, path);
+                            if (tItem && tItem.kind === 'link') {
                                 const v = cls.trim();
                                 if (v) tItem.icon = v.slice(0, 120);
                                 else delete tItem.icon;
@@ -596,8 +702,13 @@ function wirePanel() {
         return row;
     }
 
-    function renderEditorNested(cfg) {
+    function renderEditorNested(cfg, data) {
         itemsEditor.innerHTML = '';
+        const allFields = getAllFieldsWithDynamicActions(data);
+        const qaKeys = Object.keys(allFields).filter((k) => {
+            const type = allFields[k]?.type;
+            return ['checkbox', 'select', 'range', 'action', 'action_property', 'widget_toggle'].includes(type);
+        });
 
         const rootList = document.createElement('div');
         rootList.className = 'fab-edit-root-list';
@@ -607,7 +718,7 @@ function wirePanel() {
             block.className = 'fab-edit-block';
 
             const path = [i];
-            const row = renderEditorItem(item, path, cfg);
+            const row = renderEditorItem(item, path, cfg, data);
             block.appendChild(row);
 
             if (item.kind === 'group') {
@@ -628,7 +739,7 @@ function wirePanel() {
                     if (used.has(key)) continue;
                     const o = document.createElement('option');
                     o.value = key;
-                    o.textContent = trLabel(key);
+                    o.textContent = trLabel(key, allFields);
                     sel.appendChild(o);
                 }
 
@@ -650,12 +761,26 @@ function wirePanel() {
 
                 addWrap.appendChild(sel);
                 addWrap.appendChild(addChildBtn);
+                const addChildLinkBtn = document.createElement('button');
+                addChildLinkBtn.type = 'button';
+                addChildLinkBtn.className = 'as-btn as-btn--secondary';
+                addChildLinkBtn.textContent = tMsg('fab_add_link_button');
+                addChildLinkBtn.addEventListener('click', () => {
+                    readCfg((c) => {
+                        const g = c.items[i];
+                        if (!g || g.kind !== 'group') return;
+                        g.items.push(newLinkItem());
+                        writeCfg(c);
+                        fullRender();
+                    });
+                });
+                addWrap.appendChild(addChildLinkBtn);
                 nest.appendChild(addWrap);
 
                 item.items.forEach((child, ci) => {
-                    if (child.kind !== 'toggle') return;
+                    if (child.kind !== 'toggle' && child.kind !== 'link') return;
                     const cpath = [i, ci];
-                    const crow = renderEditorItem(child, cpath, cfg);
+                    const crow = renderEditorItem(child, cpath, cfg, data);
                     nest.appendChild(crow);
                 });
 
@@ -732,6 +857,7 @@ function wirePanel() {
         if (gapLabEl) gapLabEl.textContent = tMsg('fab_button_gap');
 
         addGroupBtn.textContent = tMsg('fab_add_group_button');
+        addLinkBtn.textContent = tMsg('fab_add_link_button');
         const addSec = document.getElementById('fab-add-actions-title');
         if (addSec) addSec.textContent = tMsg('fab_add_actions_title');
         const lay = document.getElementById('fab-panel-layout-label');
@@ -742,10 +868,10 @@ function wirePanel() {
     }
 
     function fullRender() {
-        readCfg((cfg) => {
+        readCfg((cfg, data) => {
             syncStaticControls(cfg);
-            renderAvailableList(cfg);
-            renderEditorNested(cfg);
+            renderAvailableList(cfg, data);
+            renderEditorNested(cfg, data);
         });
     }
 
@@ -844,7 +970,7 @@ function wirePanel() {
     });
 
     searchInput.addEventListener('input', () => {
-        readCfg((cfg) => renderAvailableList(cfg));
+        readCfg((cfg, data) => renderAvailableList(cfg, data));
     });
 
     addGroupBtn.addEventListener('click', () => {
@@ -855,10 +981,19 @@ function wirePanel() {
         });
     });
 
+    addLinkBtn.addEventListener('click', () => {
+        readCfg((cfg) => {
+            cfg.items.push(newLinkItem());
+            writeCfg(cfg);
+            fullRender();
+        });
+    });
+
     chrome.storage.onChanged.addListener((changes, namespace) => {
         if (namespace !== 'sync') return;
         const relevant =
             changes[FLOATING_QUICK_ACTIONS_KEY] ||
+            changes['card-widgets'] ||
             changes.language ||
             Object.keys(changes).some((k) => SETTING_FIELDS[k]);
         if (relevant) fullRender();
