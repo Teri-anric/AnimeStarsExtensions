@@ -484,25 +484,56 @@
     function launcherSlots(items) {
         const slots = [];
         for (const it of items || []) {
-            if (it.kind === 'toggle' || it.kind === 'link') {
+            if (it.kind === 'toggle' || it.kind === 'link' || it.kind === 'page_link') {
                 slots.push({ kind: 'toggle', item: it });
             } else if (it.kind === 'group') {
-                const ch = Array.isArray(it.items) ? it.items.filter((c) => c.kind === 'toggle' || c.kind === 'link') : [];
+                const ch = Array.isArray(it.items)
+                    ? it.items.filter((c) => c.kind === 'toggle' || c.kind === 'link' || c.kind === 'page_link')
+                    : [];
                 if (ch.length) slots.push({ kind: 'group', item: it });
             }
         }
         return slots;
     }
 
+    function resolveFqaPageUrl(rawPage) {
+        const p = String(rawPage || '').trim();
+        if (!p) return '';
+        try {
+            if (!chrome?.runtime?.getURL) return '';
+            const trimmed = p.replace(/^\//, '');
+            const path = trimmed.startsWith('pages/') ? trimmed : `pages/${trimmed}`;
+            return chrome.runtime.getURL(path);
+        } catch {
+            return '';
+        }
+    }
+
     function createLinkControl(item, fabCfg) {
         const label = typeof item.label === 'string' ? item.label.trim() : '';
-        const href = resolveFqaLinkUrl(item.url);
+        const href = item.kind === 'page_link' ? resolveFqaPageUrl(item.page) : resolveFqaLinkUrl(item.url);
         if (!label || !href) return null;
 
         const btn = document.createElement('a');
         btn.className = 'as-fqa-btn';
         btn.href = href;
         btn.title = label;
+        if (item.kind === 'page_link') {
+            btn.target = '_blank';
+            btn.rel = 'noopener noreferrer';
+            btn.addEventListener('click', (e) => {
+                // Use background `tabs.create` for reliable opening of extension pages from a website tab.
+                e.preventDefault();
+                e.stopPropagation();
+                try {
+                    chrome.runtime.sendMessage({ action: 'open_extension_page', url: href }).catch(() => {
+                        window.open(href, '_blank', 'noopener,noreferrer');
+                    });
+                } catch {
+                    window.open(href, '_blank', 'noopener,noreferrer');
+                }
+            });
+        }
 
         const iconClass = typeof item.icon === 'string' ? item.icon.trim() : '';
         const useIcon = fabCfg.actionDisplay === 'icon' && Boolean(iconClass);
@@ -972,7 +1003,7 @@
      * @param {ReturnType<parseFabConfig>} fabCfg
      */
     function createFieldControl(item, sync, fabCfg, metricRefreshers, settingFields) {
-        if (item.kind === 'link') {
+        if (item.kind === 'link' || item.kind === 'page_link') {
             return createLinkControl(item, fabCfg);
         }
         const key = item.key;

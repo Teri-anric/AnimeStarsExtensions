@@ -11,8 +11,9 @@ export const FLOATING_QUICK_ACTIONS_KEY = 'floating-quick-actions';
 /**
  * @typedef {{ kind: 'toggle', key: string, icon?: string }} FabToggleItem
  * @typedef {{ kind: 'link', label: string, url: string, icon?: string }} FabLinkItem
+ * @typedef {{ kind: 'page_link', label: string, page: string, icon?: string }} FabPageLinkItem
  * @typedef {{ kind: 'group', id: string, labelKey?: string, items: FabItem[] }} FabGroupItem
- * @typedef {FabToggleItem|FabLinkItem|FabGroupItem} FabItem
+ * @typedef {FabToggleItem|FabLinkItem|FabPageLinkItem|FabGroupItem} FabItem
  */
 
 /** @typedef {'bar'|'popup'} FabDisplayMode */
@@ -75,6 +76,18 @@ export function normalizeFabItem(raw, depth = 0) {
         const link = { kind: 'link', label, url };
         if (icon) link.icon = icon;
         return link;
+    }
+
+    if (kind === 'page_link') {
+        const label = typeof o.label === 'string' ? o.label.trim().slice(0, 120) : '';
+        const page = typeof o.page === 'string' ? o.page.trim().slice(0, 256) : '';
+        if (!label || !page) return null;
+        const icon =
+            typeof o.icon === 'string' && o.icon.trim() ? String(o.icon).trim().slice(0, 120) : undefined;
+        /** @type {FabPageLinkItem} */
+        const pl = { kind: 'page_link', label, page };
+        if (icon) pl.icon = icon;
+        return pl;
     }
 
     if (kind === 'group') {

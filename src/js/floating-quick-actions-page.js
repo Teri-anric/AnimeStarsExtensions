@@ -1,4 +1,5 @@
 import { SETTING_FIELDS, getQuickActionFieldKeys } from '../config/setting-fields.js';
+import { SETTING_SECTIONS } from '../config/setting-sections.js';
 import {
     FLOATING_QUICK_ACTIONS_KEY,
     parseFabConfig,
@@ -15,6 +16,43 @@ let fabPageLang = 'uk';
 const CARD_WIDGET_TOGGLE_PREFIX = 'card-widget-toggle:';
 
 /** @typedef {import('./fab-config.js').FabConfigNormalized} FabConfigNormalized */
+
+/**
+ * Extract `{titleKey, href}` entries from `SETTING_SECTIONS` (recursive).
+ * @param {unknown} nodes
+ * @param {Array<{ titleKey: string, href: string }>} [into]
+ */
+function collectPageLinks(nodes, into = []) {
+    if (!Array.isArray(nodes)) return into;
+    for (const n of nodes) {
+        if (!n || typeof n !== 'object') continue;
+        const kind = /** @type {any} */ (n).kind;
+        if (kind === 'pageLink') {
+            const titleKey = /** @type {any} */ (n).titleKey;
+            const href = /** @type {any} */ (n).href;
+            if (typeof titleKey === 'string' && titleKey.trim() && typeof href === 'string' && href.trim()) {
+                into.push({ titleKey: titleKey.trim(), href: href.trim() });
+            }
+        }
+        const children = /** @type {any} */ (n).children;
+        if (Array.isArray(children)) collectPageLinks(children, into);
+    }
+    return into;
+}
+
+function getUniquePageLinks() {
+    const all = collectPageLinks(SETTING_SECTIONS);
+    /** @type {Array<{ titleKey: string, href: string }>} */
+    const out = [];
+    const seen = new Set();
+    for (const x of all) {
+        const key = `${x.titleKey}@@${x.href}`;
+        if (seen.has(key)) continue;
+        seen.add(key);
+        out.push(x);
+    }
+    return out;
+}
 
 function trLabel(key, allFields = SETTING_FIELDS) {
     const def = allFields[key];
@@ -549,6 +587,39 @@ function wirePanel() {
             availableList.appendChild(row);
         }
 
+        // Add internal extension pages (pageLink nodes) as link actions
+        const pageLinks = getUniquePageLinks();
+        for (const pl of pageLinks) {
+            const label = tMsg(pl.titleKey);
+            const searchHay = `${label} ${pl.titleKey} ${pl.href}`.toLowerCase();
+            if (q && !searchHay.includes(q)) continue;
+
+            const row = document.createElement('div');
+            row.className = 'fab-available-row';
+            const span = document.createElement('span');
+            span.className = 'fab-available-row-label';
+            span.textContent = label;
+            const addBtn = document.createElement('button');
+            addBtn.type = 'button';
+            addBtn.className = 'as-btn as-btn--primary fab-available-add';
+            addBtn.textContent = tMsg('fab_available_add');
+            addBtn.addEventListener('click', () => {
+                readCfg((c) => {
+                    c.items.push({
+                        kind: 'page_link',
+                        label,
+                        page: pl.href,
+                        icon: 'fa-solid fa-arrow-up-right-from-square',
+                    });
+                    writeCfg(c);
+                    fullRender();
+                });
+            });
+            row.appendChild(span);
+            row.appendChild(addBtn);
+            availableList.appendChild(row);
+        }
+
         if (!availableList.childNodes.length) {
             const empty = document.createElement('p');
             empty.className = 'fab-available-empty';
@@ -604,7 +675,7 @@ function wirePanel() {
                 })
             );
             body.appendChild(iconMount);
-        } else if (item.kind === 'link') {
+        } else if (item.kind === 'link' || item.kind === 'page_link') {
             const title = document.createElement('span');
             title.className = 'fab-edit-title';
             title.textContent = tMsg('fab_link_item_title');
@@ -616,14 +687,18 @@ function wirePanel() {
             const urlInput = document.createElement('input');
             urlInput.type = 'text';
             urlInput.className = 'fab-group-label-input';
-            urlInput.placeholder = tMsg('fab_link_url_placeholder');
-            urlInput.value = item.url || '';
+            urlInput.placeholder = item.kind === 'page_link' ? 'pages/settings.html' : tMsg('fab_link_url_placeholder');
+            urlInput.value = item.kind === 'page_link' ? (item.page || '') : (item.url || '');
             const persist = () => {
                 readCfg((c) => {
                     const tItem = itemAtPath(c, path);
-                    if (tItem && tItem.kind === 'link') {
+                    if (tItem && (tItem.kind === 'link' || tItem.kind === 'page_link')) {
                         tItem.label = labelInput.value.trim().slice(0, 120);
-                        tItem.url = urlInput.value.trim().slice(0, 1024);
+                        if (tItem.kind === 'page_link') {
+                            tItem.page = urlInput.value.trim().slice(0, 256);
+                        } else {
+                            tItem.url = urlInput.value.trim().slice(0, 1024);
+                        }
                         writeCfg(c);
                         fullRender();
                     }
@@ -643,7 +718,7 @@ function wirePanel() {
                     onCommit: (cls) => {
                         readCfg((c) => {
                             const tItem = itemAtPath(c, path);
-                            if (tItem && tItem.kind === 'link') {
+                            if (tItem && (tItem.kind === 'link' || tItem.kind === 'page_link')) {
                                 const v = cls.trim();
                                 if (v) tItem.icon = v.slice(0, 120);
                                 else delete tItem.icon;

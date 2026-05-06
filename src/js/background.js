@@ -265,6 +265,29 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
         sendResponse({ settingFields: SETTING_FIELDS });
         return;
     }
+    if (message?.action === 'open_extension_page') {
+        try {
+            const rawUrl = typeof message.url === 'string' ? message.url.trim() : '';
+            if (!rawUrl) {
+                sendResponse({ success: false, error: 'Missing url' });
+                return;
+            }
+            const base = chrome.runtime.getURL('');
+            if (!rawUrl.startsWith(base)) {
+                sendResponse({ success: false, error: 'Invalid extension url' });
+                return;
+            }
+            chrome.tabs.create({ url: rawUrl, active: true }, () => {
+                const err = chrome.runtime.lastError;
+                if (err) sendResponse({ success: false, error: err.message });
+                else sendResponse({ success: true });
+            });
+            return true;
+        } catch (e) {
+            sendResponse({ success: false, error: e?.message || String(e) });
+            return;
+        }
+    }
     if (message?.action === 'boost_block_images') {
         const enable = message.enable !== false;
         const result = updateBoostImageBlockingRuleForTab(sender, enable);
