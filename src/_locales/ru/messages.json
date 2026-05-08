@@ -794,6 +794,102 @@
     "fab_drag_move_title": {
         "message": "Тяните чтобы сдвинуть панель"
     },
+    "cards_search_title": {
+        "message": "Поиск карт"
+    },
+    "cards_search_placeholder": {
+        "message": "Имя персонажа или название аниме..."
+    },
+    "cards_search_filters_button_title": {
+        "message": "Фильтры"
+    },
+    "cards_search_filters_title": {
+        "message": "Фильтры карт"
+    },
+    "cards_search_filters_apply": {
+        "message": "Применить"
+    },
+    "cards_search_filters_reset": {
+        "message": "Сбросить"
+    },
+    "cards_search_filter_anime_name": {
+        "message": "Название аниме"
+    },
+    "cards_search_filter_author": {
+        "message": "Автор"
+    },
+    "cards_search_filter_order_by": {
+        "message": "Сортировка"
+    },
+    "cards_search_order_by_id": {
+        "message": "ID записи"
+    },
+    "cards_search_order_by_card_id": {
+        "message": "ID карточки"
+    },
+    "cards_search_order_by_name": {
+        "message": "Название карточки"
+    },
+    "cards_search_order_by_anime_name": {
+        "message": "Название аниме"
+    },
+    "cards_search_order_by_rank": {
+        "message": "Ранг"
+    },
+    "cards_search_order_by_stats_count": {
+        "message": "Количество статов"
+    },
+    "cards_search_order_by_trade_count": {
+        "message": "Готовы обменять"
+    },
+    "cards_search_order_by_need_count": {
+        "message": "Хочу"
+    },
+    "cards_search_order_by_owned_count": {
+        "message": "Владельцы"
+    },
+    "cards_search_order_by_unlocked_owned_count": {
+        "message": "Открытые"
+    },
+    "cards_search_order_by_created_at": {
+        "message": "Дата создания"
+    },
+    "cards_search_order_by_updated_at": {
+        "message": "Дата обновления"
+    },
+    "cards_search_filter_trade_count": {
+        "message": "Готовы обменять"
+    },
+    "cards_search_filter_need_count": {
+        "message": "Хочу"
+    },
+    "cards_search_filter_owned_count": {
+        "message": "Владельцы"
+    },
+    "cards_search_filter_unlocked_owned_count": {
+        "message": "Открытые"
+    },
+    "cards_search_plus_ranks": {
+        "message": "Только плюс ранги"
+    },
+    "cards_search_minus_ranks": {
+        "message": "Только не плюс ранги"
+    },
+    "cards_search_between_from": {
+        "message": "от"
+    },
+    "cards_search_between_to": {
+        "message": "до"
+    },
+    "cards_search_invalid_json": {
+        "message": "Некорректный JSON запроса"
+    },
+    "cards_search_no_results": {
+        "message": "Карты не найдены"
+    },
+    "cards_search_error": {
+        "message": "Ошибка поиска"
+    },
     "back_to_settings": {
         "message": "Назад к настройкам"
     }

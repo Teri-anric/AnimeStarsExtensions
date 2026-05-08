@@ -7,15 +7,82 @@ chrome.storage.sync.get(['custom-hosts'], (data) => {
         ENABLED: false,
         REMOVE_CARD_LIST_AND_CLUB_RATING_IN_CARD_BASE: false,
     };
+    let messages = {};
+    let formatMessageFn = (entry) => entry?.message ?? '';
+    let messagesLang = '';
 
+    const DEFAULT_RANKS = ["ass", "s_plus", "s", "a_plus", "a", "b_plus", "b", "c_plus", "c", "d_plus", "d", "e_plus", "e"];
+    const PLUS_RANKS = DEFAULT_RANKS.filter((rank) => rank.endsWith('_plus'));
+    const ORDER_BY_OPTIONS = ["id", "card_id", "name", "anime_name", "rank", "stats_count", "trade_count", "need_count", "owned_count", "unlocked_owned_count", "created_at", "updated_at"];
+    const ORDER_BY_LABEL_KEYS = {
+        id: 'cards_search_order_by_id',
+        card_id: 'cards_search_order_by_card_id',
+        name: 'cards_search_order_by_name',
+        anime_name: 'cards_search_order_by_anime_name',
+        rank: 'cards_search_order_by_rank',
+        stats_count: 'cards_search_order_by_stats_count',
+        trade_count: 'cards_search_order_by_trade_count',
+        need_count: 'cards_search_order_by_need_count',
+        owned_count: 'cards_search_order_by_owned_count',
+        unlocked_owned_count: 'cards_search_order_by_unlocked_owned_count',
+        created_at: 'cards_search_order_by_created_at',
+        updated_at: 'cards_search_order_by_updated_at',
+    };
+    const RANGE_FILTER_FIELDS = [
+        { key: 'trade_count', labelKey: 'cards_search_filter_trade_count' },
+        { key: 'need_count', labelKey: 'cards_search_filter_need_count' },
+        { key: 'owned_count', labelKey: 'cards_search_filter_owned_count' },
+        { key: 'unlocked_owned_count', labelKey: 'cards_search_filter_unlocked_owned_count' },
+    ];
     const PAGE_STATE = {
         query: '',
         page: 1,
+        filters: {},
+        rankMode: 'all',
     };
+    let searchDebounceTimer = null;
+
+    function parseInteger(value) {
+        if (value === '' || value == null) return null;
+        const parsed = parseInt(value, 10);
+        return Number.isFinite(parsed) ? parsed : null;
+    }
+
+    async function ensureTranslations(lang) {
+        const safe = ['uk', 'en', 'ru'].includes(lang) ? lang : 'en';
+        if (messagesLang === safe && Object.keys(messages).length) return;
+        messagesLang = safe;
+        messages = {};
+        try {
+            const mod = await import(chrome.runtime.getURL('js/i18n-runtime.js'));
+            formatMessageFn = mod.formatMessage;
+            messages = await mod.loadLocaleMessages(safe);
+        } catch (error) {
+            console.error('[AnimeStars ext] cards_search_integration i18n load failed', error);
+            messages = {};
+        }
+    }
+
+    function t(key) {
+        const entry = messages[key];
+        if (entry) return formatMessageFn(entry);
+        return key;
+    }
+
+    function parseFilterJson(query) {
+        if (!query || !query.trim().startsWith("{")) return null;
+        try {
+            return JSON.parse(query);
+        } catch (e) {
+            alert(t('cards_search_invalid_json'));
+            return undefined;
+        }
+    }
 
     function createSearchElements() {
         const tabsContainer = document.querySelector('.tabs.tabs--center');
         if (!tabsContainer) return;
+        if (document.querySelector('.tabs__item.tabs__search-toggle')) return;
         const tabsMenu = tabsContainer.querySelector('.justify-center .tab__menu');
         if (!tabsMenu) return;
 
@@ -23,7 +90,7 @@ chrome.storage.sync.get(['custom-hosts'], (data) => {
         const searchTabButton = document.createElement('button');
         searchTabButton.className = 'tabs__item tabs__search-toggle';
         searchTabButton.innerHTML = '<i class="fal fa-search"></i>';
-        searchTabButton.title = 'Поиск карт';
+        searchTabButton.title = t('cards_search_title');
         searchTabButton.addEventListener('click', toggleSearchInput);
 
         const searchTabCount = document.createElement('span');
@@ -42,20 +109,154 @@ chrome.storage.sync.get(['custom-hosts'], (data) => {
         searchInput.type = 'text';
         searchInput.className = 'form__field card-filter-form__search';
         searchInput.id = 'tabs_search';
-        searchInput.placeholder = 'Имя персонажа или название аниме...';
-        searchInput.addEventListener('change', handleSearchInput);
+        searchInput.placeholder = t('cards_search_placeholder');
+        searchInput.addEventListener('input', scheduleSearch);
+        searchInput.addEventListener('keydown', (event) => {
+            if (event.key !== 'Enter') return;
+            event.preventDefault();
+            handleSearchInput(event);
+        });
 
         // Create search button
         const searchButton = document.createElement('button');
+        searchButton.type = 'button';
         searchButton.className = 'card-filter__search-btn';
         searchButton.innerHTML = '<i class="fal fa-search"></i>';
-        searchButton.addEventListener('click', handleSearchInput);
+        searchButton.addEventListener('click', (event) => {
+            event.preventDefault();
+            handleSearchInput(event);
+        });
 
-        searchForm.appendChild(searchInput);
-        searchForm.appendChild(searchButton);
+        const searchInputWrapper = document.createElement('div');
+        searchInputWrapper.className = 'card-filter-form__search-row';
+        searchInputWrapper.appendChild(searchInput);
+
+        const filtersButton = document.createElement('button');
+        filtersButton.type = 'button';
+        filtersButton.className = 'card-filter__filters-btn';
+        filtersButton.title = t('cards_search_filters_button_title');
+        filtersButton.innerHTML = '<i class="fal fa-sliders-h"></i>';
+        filtersButton.addEventListener('click', openFiltersModal);
+        searchInputWrapper.appendChild(filtersButton);
+
+        searchInputWrapper.appendChild(searchButton);
+        searchForm.appendChild(searchInputWrapper);
+        createFiltersModal();
 
         // Insert after tabs container
         tabsContainer.parentNode.insertBefore(searchForm, tabsContainer.nextSibling);
+    }
+
+    function scheduleSearch() {
+        window.clearTimeout(searchDebounceTimer);
+        searchDebounceTimer = window.setTimeout(() => {
+            handleSearchInput();
+        }, 250);
+    }
+
+    function collectFiltersFromForm() {
+        const getValue = (key) => document.querySelector(`[data-filter-key="${key}"]`)?.value?.trim?.() ?? '';
+        const filters = RANGE_FILTER_FIELDS.reduce((acc, field) => {
+            acc[`${field.key}_min`] = parseInteger(getValue(`${field.key}_min`));
+            acc[`${field.key}_max`] = parseInteger(getValue(`${field.key}_max`));
+            return acc;
+        }, {});
+        filters.anime_name = getValue('anime_name');
+        filters.author = getValue('author');
+        filters.order_by = getValue('order_by') || 'id';
+        return filters;
+    }
+
+    function resetFilters() {
+        document.querySelectorAll('[data-filter-key]').forEach((field) => {
+            field.value = '';
+        });
+        PAGE_STATE.filters = collectFiltersFromForm();
+        handleSearchInput();
+    }
+
+    function createFiltersModal() {
+        if (document.getElementById('cards-search-filters-modal')) return;
+        const modal = document.createElement('div');
+        modal.id = 'cards-search-filters-modal';
+        modal.className = 'card-filter-modal xfield-filter-modal hidden';
+        modal.innerHTML = `
+            <div class="card-filter-modal__content xfield-filter-modal__content">
+                <div class="card-filter-modal__header xfield-filter-modal__header">
+                    <div class="card-filter-modal__title xfield-filter-modal__title">${t('cards_search_filters_title')}</div>
+                    <button type="button" class="tabs__item card-filter-modal__close xfield-filter-modal__close" aria-label="Закрыть">
+                        <i class="fal fa-times"></i>
+                    </button>
+                </div>
+                <div class="card-filter-modal__body xfield-filter-modal__body">
+                    <label class="card-filter-modal__field xfield-filter-modal__field">
+                        <span class="card-filter-modal__label xfield-filter-modal__label">${t('cards_search_filter_anime_name')}</span>
+                        <input type="text" class="form__field card-filter-modal__input xfield-filter-modal__input" data-filter-key="anime_name" placeholder="${t('cards_search_filter_anime_name')}">
+                    </label>
+                    <label class="card-filter-modal__field xfield-filter-modal__field">
+                        <span class="card-filter-modal__label xfield-filter-modal__label">${t('cards_search_filter_author')}</span>
+                        <input type="text" class="form__field card-filter-modal__input xfield-filter-modal__input" data-filter-key="author" placeholder="${t('cards_search_filter_author')}">
+                    </label>
+                    ${RANGE_FILTER_FIELDS.map((field) => `
+                        <label class="card-filter-modal__field xfield-filter-modal__field">
+                            <span class="card-filter-modal__label xfield-filter-modal__label">${t(field.labelKey)}</span>
+                            <div class="card-filter-modal__between xfield-filter-modal__between">
+                                <input type="number" min="0" class="form__field card-filter-modal__input xfield-filter-modal__input" data-filter-key="${field.key}_min" placeholder="${t('cards_search_between_from')}">
+                                <span class="card-filter-modal__dash xfield-filter-modal__dash">—</span>
+                                <input type="number" min="0" class="form__field card-filter-modal__input xfield-filter-modal__input" data-filter-key="${field.key}_max" placeholder="${t('cards_search_between_to')}">
+                            </div>
+                        </label>
+                    `).join('')}
+                    <label class="card-filter-modal__field xfield-filter-modal__field">
+                        <span class="card-filter-modal__label xfield-filter-modal__label">${t('cards_search_filter_order_by')}</span>
+                        <select class="form__field card-filter-modal__input xfield-filter-modal__input" data-filter-key="order_by">
+                            ${ORDER_BY_OPTIONS.map((value) => `<option value="${value}">${t(ORDER_BY_LABEL_KEYS[value] || value)}</option>`).join('')}
+                        </select>
+                    </label>
+                </div>
+                <div class="card-filter-modal__actions xfield-filter-modal__actions">
+                    <button type="button" class="tabs__item card-filter-modal__btn xfield-filter-modal__btn card-filter-modal__apply">${t('cards_search_filters_apply')}</button>
+                    <button type="button" class="tabs__item card-filter-modal__btn xfield-filter-modal__btn card-filter-modal__reset">${t('cards_search_filters_reset')}</button>
+                </div>
+            </div>
+        `;
+        document.body.appendChild(modal);
+
+        modal.addEventListener('click', (event) => {
+            if (event.target === modal) closeFiltersModal();
+        });
+        modal.querySelector('.card-filter-modal__close')?.addEventListener('click', closeFiltersModal);
+        modal.querySelector('.card-filter-modal__apply')?.addEventListener('click', () => {
+            PAGE_STATE.filters = collectFiltersFromForm();
+            closeFiltersModal();
+            handleSearchInput();
+        });
+        modal.querySelector('.card-filter-modal__reset')?.addEventListener('click', () => {
+            resetFilters();
+            closeFiltersModal();
+        });
+        modal.querySelectorAll('[data-filter-key]').forEach((field) => {
+            field.addEventListener('input', scheduleSearch);
+            field.addEventListener('keydown', (event) => {
+                if (event.key !== 'Enter') return;
+                event.preventDefault();
+                PAGE_STATE.filters = collectFiltersFromForm();
+                closeFiltersModal();
+                handleSearchInput();
+            });
+        });
+    }
+
+    function openFiltersModal() {
+        const modal = document.getElementById('cards-search-filters-modal');
+        if (!modal) return;
+        modal.classList.remove('hidden');
+    }
+
+    function closeFiltersModal() {
+        const modal = document.getElementById('cards-search-filters-modal');
+        if (!modal) return;
+        modal.classList.add('hidden');
     }
 
     function toggleSearchInput() {
@@ -89,7 +290,58 @@ chrome.storage.sync.get(['custom-hosts'], (data) => {
             tab.replaceWith(newTab);
             newTab.addEventListener('click', handleRankClick);
         });
+        ensureRankModeButtons();
         searchTabButton.classList.add('tabs__item--active');
+    }
+
+    function ensureRankModeButtons() {
+        const rankTab = document.querySelector('.tabs__navigate__rank');
+        if (!rankTab || !rankTab.parentElement) return;
+        let plusButton = rankTab.parentElement.querySelector('.tabs__navigate__rank__plus');
+        let minusButton = rankTab.parentElement.querySelector('.tabs__navigate__rank__minus');
+
+        if (!plusButton) {
+            plusButton = document.createElement('button');
+            plusButton.type = 'button';
+            plusButton.className = 'tabs__item tabs__navigate__rank__plus';
+            plusButton.dataset.plus = '1';
+            plusButton.textContent = '+';
+            rankTab.parentElement.appendChild(plusButton);
+        }
+        if (!minusButton) {
+            minusButton = document.createElement('button');
+            minusButton.type = 'button';
+            minusButton.className = 'tabs__item tabs__navigate__rank__minus';
+            minusButton.dataset.minus = '1';
+            minusButton.textContent = '-';
+            rankTab.parentElement.insertBefore(minusButton, plusButton.nextSibling);
+        }
+
+        const freshPlus = plusButton.cloneNode(true);
+        plusButton.replaceWith(freshPlus);
+        freshPlus.classList.toggle('tabs__item--active', PAGE_STATE.rankMode === 'plus');
+        freshPlus.title = t('cards_search_plus_ranks');
+        freshPlus.addEventListener('click', handlePlusRankClick);
+
+        const freshMinus = minusButton.cloneNode(true);
+        minusButton.replaceWith(freshMinus);
+        freshMinus.classList.toggle('tabs__item--active', PAGE_STATE.rankMode === 'minus');
+        freshMinus.title = t('cards_search_minus_ranks');
+        freshMinus.addEventListener('click', handleMinusRankClick);
+    }
+
+    function handlePlusRankClick(event) {
+        event.preventDefault();
+        PAGE_STATE.rankMode = PAGE_STATE.rankMode === 'plus' ? 'all' : 'plus';
+        ensureRankModeButtons();
+        handleSearchInput();
+    }
+
+    function handleMinusRankClick(event) {
+        event.preventDefault();
+        PAGE_STATE.rankMode = PAGE_STATE.rankMode === 'minus' ? 'all' : 'minus';
+        ensureRankModeButtons();
+        handleSearchInput();
     }
 
     function handleRankClick(e) {
@@ -116,7 +368,8 @@ chrome.storage.sync.get(['custom-hosts'], (data) => {
 
     function handleSearchInput(event) {
         const searchInput = document.querySelector(".card-filter-form__search");
-        PAGE_STATE.query = searchInput.value;
+        PAGE_STATE.query = searchInput?.value || '';
+        PAGE_STATE.filters = collectFiltersFromForm();
         PAGE_STATE.page = 1;
         searchResults();
     }
@@ -129,31 +382,73 @@ chrome.storage.sync.get(['custom-hosts'], (data) => {
                 rank.push(tab.dataset.rank);
             }
         });
-        return rank.length > 0 ? rank : null;
+        return rank;
     }
 
-    function buildFilterQuery(query) {
-        if (query.startsWith("{")) {
-            try {
-                return JSON.parse(query);
-            } catch (e) {
-                alert("Invalid query");
-                return null;
+    function getSelectedRankFilter() {
+        const activeRanks = getActiveRanks();
+        let ranks = activeRanks.length > 0 ? activeRanks : DEFAULT_RANKS;
+        if (PAGE_STATE.rankMode === 'plus') {
+            ranks = ranks.filter((rank) => PLUS_RANKS.includes(rank));
+            if (ranks.length === 0) ranks = [...PLUS_RANKS];
+        } else if (PAGE_STATE.rankMode === 'minus') {
+            ranks = ranks.filter((rank) => !PLUS_RANKS.includes(rank));
+            if (ranks.length === 0) {
+                ranks = DEFAULT_RANKS.filter((rank) => !PLUS_RANKS.includes(rank));
             }
         }
-        return {
-            and: [
-                {
-                    or: [
-                        { card_id: { eq: parseInt(query) || 0 } },
-                        { name: { icontains: query } },
-                        { anime_name: { icontains: query } },
-                        { author: { eq: query } },
-                    ]
-                },
-                { rank: { in: (getActiveRanks() || ["ass", "s_plus", "s", "a_plus", "a", "b_plus", "b", "c_plus", "c", "d_plus", "d", "e_plus", "e"]) } }
-            ]
+        return ranks;
+    }
+
+    function buildFilterQuery(query, filters = {}) {
+        const parsedJson = parseFilterJson(query);
+        if (parsedJson === undefined) return null;
+        if (parsedJson) return parsedJson;
+
+        const normalizedQuery = query?.trim?.() || '';
+        const andConditions = [];
+        const searchOrConditions = [];
+        const hasAnimeNameFilter = !!filters.anime_name?.trim?.();
+
+        if (normalizedQuery) {
+            if (hasAnimeNameFilter) {
+                searchOrConditions.push({ name: { icontains: normalizedQuery } });
+            } else {
+                const queryCardId = parseInteger(normalizedQuery);
+                if (queryCardId != null && queryCardId > 0) {
+                    searchOrConditions.push({ card_id: { eq: queryCardId } });
+                }
+                searchOrConditions.push(
+                    { name: { icontains: normalizedQuery } },
+                    { anime_name: { icontains: normalizedQuery } },
+                    { author: { icontains: normalizedQuery } },
+                );
+            }
         }
+        if (searchOrConditions.length > 0) {
+            andConditions.push({ or: searchOrConditions });
+        }
+
+        const animeName = filters.anime_name?.trim?.();
+        if (animeName) andConditions.push({ anime_name: { icontains: animeName } });
+
+        const author = filters.author?.trim?.();
+        if (author) andConditions.push({ author: { icontains: author } });
+
+        RANGE_FILTER_FIELDS.forEach(({ key }) => {
+            const minValue = filters[`${key}_min`];
+            const maxValue = filters[`${key}_max`];
+            if (minValue != null && maxValue != null) {
+                andConditions.push({ [key]: { between: [minValue, maxValue] } });
+            } else if (minValue != null) {
+                andConditions.push({ [key]: { gte: minValue } });
+            } else if (maxValue != null) {
+                andConditions.push({ [key]: { lte: maxValue } });
+            }
+        });
+
+        andConditions.push({ rank: { in: getSelectedRankFilter() } });
+        return andConditions.length > 0 ? { and: andConditions } : {};
     }
 
     async function searchResults() {
@@ -162,10 +457,13 @@ chrome.storage.sync.get(['custom-hosts'], (data) => {
         searchTabCount.hidden = false;
 
         try {
+            const builtFilter = buildFilterQuery(PAGE_STATE.query, PAGE_STATE.filters);
+            if (builtFilter == null) return;
             const searchQuery = {
-                filter: buildFilterQuery(PAGE_STATE.query),
+                filter: builtFilter,
+                order_by: PAGE_STATE.filters.order_by || 'id',
                 page: PAGE_STATE.page,
-                per_page: 63
+                per_page: 50,
             };
 
             const response = await chrome.runtime.sendMessage({
@@ -194,7 +492,7 @@ chrome.storage.sync.get(['custom-hosts'], (data) => {
         updatePaginationForSearch(data);
 
         if (data.items.length === 0) {
-            cardsContainer.innerHTML = '<div class="no-results">Карты не найдены</div>';
+            cardsContainer.innerHTML = `<div class="no-results">${t('cards_search_no_results')}</div>`;
             return;
         }
 
@@ -349,7 +647,7 @@ chrome.storage.sync.get(['custom-hosts'], (data) => {
     function displaySearchError() {
         const cardsContainer = document.querySelector('.anime-cards.anime-cards--full-page');
         if (cardsContainer) {
-            cardsContainer.innerHTML = '<div class="search-error">Ошибка поиска</div>';
+            cardsContainer.innerHTML = `<div class="search-error">${t('cards_search_error')}</div>`;
         }
     }
 
@@ -364,7 +662,8 @@ chrome.storage.sync.get(['custom-hosts'], (data) => {
 
 
     // Load settings and initialize
-    chrome.storage.sync.get(['cards-search-integration', 'remove-card-list-and-club-rating-in-card-base'], (settings) => {
+    chrome.storage.sync.get(['cards-search-integration', 'remove-card-list-and-club-rating-in-card-base', 'language'], async (settings) => {
+        await ensureTranslations(settings.language);
         CONFIG.ENABLED = settings['cards-search-integration'] || false;
         CONFIG.REMOVE_CARD_LIST_AND_CLUB_RATING_IN_CARD_BASE = settings['remove-card-list-and-club-rating-in-card-base'] || false;
         removeCardListAndClubRatingInCardBase();
@@ -378,6 +677,7 @@ chrome.storage.sync.get(['custom-hosts'], (data) => {
                 PAGE_STATE.page = 1;
                 const searchInput = document.querySelector('.card-filter-form__search');
                 if (searchInput) searchInput.value = search;
+                PAGE_STATE.filters = collectFiltersFromForm();
                 searchResults();
             }
         }
@@ -403,7 +703,21 @@ chrome.storage.sync.get(['custom-hosts'], (data) => {
                     searchForm.remove();
                     if (searchForm.style.display === 'block') window.location.reload();
                 }
+                const filterModal = document.getElementById('cards-search-filters-modal');
+                if (filterModal) filterModal.remove();
             }
+        }
+
+        if (changes['language'] && changes['language'].oldValue !== changes['language'].newValue) {
+            ensureTranslations(changes['language'].newValue).then(() => {
+                const searchTabButton = document.querySelector('.tabs__item.tabs__search-toggle');
+                if (searchTabButton) searchTabButton.remove();
+                const searchForm = document.querySelector('.card-filter-form__controls');
+                if (searchForm) searchForm.remove();
+                const filterModal = document.getElementById('cards-search-filters-modal');
+                if (filterModal) filterModal.remove();
+                if (CONFIG.ENABLED) createSearchElements();
+            });
         }
     });
     })();

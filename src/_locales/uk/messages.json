@@ -513,7 +513,7 @@
         "message": "Скинути до стандартних"
     },
     "button_need": {
-        "message": "Потрібні картки"
+        "message": "Хочу картки"
     },
     "button_in_my_list": {
         "message": "У моєму списку"
@@ -793,6 +793,102 @@
     },
     "fab_drag_move_title": {
         "message": "Тягни щоб зрушити панель"
+    },
+    "cards_search_title": {
+        "message": "Пошук карток"
+    },
+    "cards_search_placeholder": {
+        "message": "Ім'я персонажа або назва аніме..."
+    },
+    "cards_search_filters_button_title": {
+        "message": "Фільтри"
+    },
+    "cards_search_filters_title": {
+        "message": "Фільтри карток"
+    },
+    "cards_search_filters_apply": {
+        "message": "Застосувати"
+    },
+    "cards_search_filters_reset": {
+        "message": "Скинути"
+    },
+    "cards_search_filter_anime_name": {
+        "message": "Назва аніме"
+    },
+    "cards_search_filter_author": {
+        "message": "Автор"
+    },
+    "cards_search_filter_order_by": {
+        "message": "Сортування"
+    },
+    "cards_search_order_by_id": {
+        "message": "ID запису"
+    },
+    "cards_search_order_by_card_id": {
+        "message": "ID картки"
+    },
+    "cards_search_order_by_name": {
+        "message": "Назва картки"
+    },
+    "cards_search_order_by_anime_name": {
+        "message": "Назва аніме"
+    },
+    "cards_search_order_by_rank": {
+        "message": "Ранг"
+    },
+    "cards_search_order_by_stats_count": {
+        "message": "Кількість статів"
+    },
+    "cards_search_order_by_trade_count": {
+        "message": "Готові обміняти"
+    },
+    "cards_search_order_by_need_count": {
+        "message": "Хочу"
+    },
+    "cards_search_order_by_owned_count": {
+        "message": "Власники"
+    },
+    "cards_search_order_by_unlocked_owned_count": {
+        "message": "Відкриті"
+    },
+    "cards_search_order_by_created_at": {
+        "message": "Дата створення"
+    },
+    "cards_search_order_by_updated_at": {
+        "message": "Дата оновлення"
+    },
+    "cards_search_filter_trade_count": {
+        "message": "Готові обміняти"
+    },
+    "cards_search_filter_need_count": {
+        "message": "Хочу"
+    },
+    "cards_search_filter_owned_count": {
+        "message": "Власники"
+    },
+    "cards_search_filter_unlocked_owned_count": {
+        "message": "Відкриті"
+    },
+    "cards_search_plus_ranks": {
+        "message": "Тільки плюс ранги"
+    },
+    "cards_search_minus_ranks": {
+        "message": "Тільки без плюс рангів"
+    },
+    "cards_search_between_from": {
+        "message": "від"
+    },
+    "cards_search_between_to": {
+        "message": "до"
+    },
+    "cards_search_invalid_json": {
+        "message": "Некоректний JSON запиту"
+    },
+    "cards_search_no_results": {
+        "message": "Картки не знайдено"
+    },
+    "cards_search_error": {
+        "message": "Помилка пошуку"
     },
     "back_to_settings": {
         "message": "Назад до налаштувань"

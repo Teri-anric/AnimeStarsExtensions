@@ -794,6 +794,102 @@
     "fab_drag_move_title": {
         "message": "Drag to move bar"
     },
+    "cards_search_title": {
+        "message": "Cards search"
+    },
+    "cards_search_placeholder": {
+        "message": "Character name or anime title..."
+    },
+    "cards_search_filters_button_title": {
+        "message": "Filters"
+    },
+    "cards_search_filters_title": {
+        "message": "Card filters"
+    },
+    "cards_search_filters_apply": {
+        "message": "Apply"
+    },
+    "cards_search_filters_reset": {
+        "message": "Reset"
+    },
+    "cards_search_filter_anime_name": {
+        "message": "Anime title"
+    },
+    "cards_search_filter_author": {
+        "message": "Author"
+    },
+    "cards_search_filter_order_by": {
+        "message": "Sorting"
+    },
+    "cards_search_order_by_id": {
+        "message": "Entry ID"
+    },
+    "cards_search_order_by_card_id": {
+        "message": "Card ID"
+    },
+    "cards_search_order_by_name": {
+        "message": "Card name"
+    },
+    "cards_search_order_by_anime_name": {
+        "message": "Anime name"
+    },
+    "cards_search_order_by_rank": {
+        "message": "Rank"
+    },
+    "cards_search_order_by_stats_count": {
+        "message": "Stats count"
+    },
+    "cards_search_order_by_trade_count": {
+        "message": "Trades"
+    },
+    "cards_search_order_by_need_count": {
+        "message": "Want"
+    },
+    "cards_search_order_by_owned_count": {
+        "message": "Owners"
+    },
+    "cards_search_order_by_unlocked_owned_count": {
+        "message": "Unlocked owners"
+    },
+    "cards_search_order_by_created_at": {
+        "message": "Created date"
+    },
+    "cards_search_order_by_updated_at": {
+        "message": "Updated date"
+    },
+    "cards_search_filter_trade_count": {
+        "message": "Trades"
+    },
+    "cards_search_filter_need_count": {
+        "message": "Want"
+    },
+    "cards_search_filter_owned_count": {
+        "message": "Owners"
+    },
+    "cards_search_filter_unlocked_owned_count": {
+        "message": "Unlocked"
+    },
+    "cards_search_plus_ranks": {
+        "message": "Only plus ranks"
+    },
+    "cards_search_minus_ranks": {
+        "message": "Only non-plus ranks"
+    },
+    "cards_search_between_from": {
+        "message": "from"
+    },
+    "cards_search_between_to": {
+        "message": "to"
+    },
+    "cards_search_invalid_json": {
+        "message": "Invalid query JSON"
+    },
+    "cards_search_no_results": {
+        "message": "Cards not found"
+    },
+    "cards_search_error": {
+        "message": "Search error"
+    },
     "back_to_settings": {
         "message": "Back to settings"
     }
