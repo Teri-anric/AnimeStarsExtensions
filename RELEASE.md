@@ -1,15 +1,19 @@
-# AnimeStar Extension v0.0.29
+# AnimeStar Extension v0.0.30
 
 ## Overview
 
+You can now build your own floating action buttons on site pages (custom text, icons, colors, links, and behavior) and add quick bookmarks directly to the page header with a dedicated editor. Card search now includes extra filters, and club helpers now include automatic card skip behavior for mine replacements. Cinema auto-stone now has configurable click speed, and several daily-use tools (boost automation helpers, remelt topbar, card appearance editor, profile card buttons, and general settings/translation polish) also feel more stable and polished.
+
+## Changes
+
 ### User-facing
 
-- **ASS without extension login**: API usage no longer depends on storing an extension token or opening ASS to “connect”; the popup focuses on a simple link to the ASS site and a dedicated **upload card metadata to ASS** toggle.
-- **Faster / leaner card stats**: Need/owner/trade and deck rank summaries can be filled from ASS bulk responses that match the new API shape, with freshness tied to explicit update timestamps.
-- **Boost image blocking**: Blocking is tied to the page lifecycle so network rules are released when you leave the boost page (including bfcache restores).
-- **More ranks everywhere**: Deck widgets and optional profile quick buttons support intermediate ranks (S+, A+, B+, …) aligned with the site’s rank model.
-- **Settings cleanup**: Less clutter around API diagnostics; clearer control over whether browsed card metadata is uploaded for ASS search.
-- **Cinema & remelt**: Tweaked auto-stone timing and remelt top bar layout for smoother day-to-day use.
+- **Floating quick actions**: New in-page floating button panel with deep customization (position, style, icon, text, action/link), plus a separate editor page.
+- **Header bookmarks bar**: New configurable bookmark strip in the page header with its own editor and localized labels.
+- **Cards search filters**: Search integration now includes new filters, plus richer UI/styling and better extension-side interaction handling.
+- **Club auto card skip (mine replacement)**: Added automatic card skip flow for club usage when replacing cards on the mine page.
+- **Cinema auto-stone speed control**: Added a setting to adjust the click speed/delay for automatic cinema stone collection.
+- **Quality-of-life fixes**: Multiple refinements for boost automation, remelt topbar behavior, card appearance editor, user card quick buttons, plus settings architecture cleanup and multilingual runtime consistency.
 
 ## Quick install (need for 1-3 days from release for approval from Google and Mozilla)
 🦊 Firefox Add-ons: https://addons.mozilla.org/firefox/addon/animestar-extension/  
