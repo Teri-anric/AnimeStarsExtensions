@@ -449,6 +449,9 @@
     "add_need_btn_to_card_dialog_force": {
         "message": "Додавати завжди"
     },
+    "card_modal_star_button": {
+        "message": "Додати кнопку \"Зірки\" в діалоговому вікні картки"
+    },
     "remove_card_list_and_club_rating_in_card_base": {
         "message": "Прибрати стрічку карт і тижневий рейтинг клубів в базі карт"
     },

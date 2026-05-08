@@ -449,6 +449,9 @@
     "add_need_btn_to_card_dialog_force": {
         "message": "Add always"
     },
+    "card_modal_star_button": {
+        "message": "Add \"Stars\" button to card dialog"
+    },
     "remove_card_list_and_club_rating_in_card_base": {
         "message": "Remove card list and club rating in card base"
     },

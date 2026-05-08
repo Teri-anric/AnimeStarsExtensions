@@ -142,7 +142,7 @@ class UserCardButtonsEditor {
         this.loadSavedButtons();
         this.render();
         this.attachEventListeners();
-        this.attachStorageListener();
+        // this.attachStorageListener();
     }
 
     // Convert fal -> fas for preview in extension, keep original for storage/site

@@ -84,7 +84,8 @@
             ],
             "js": [
                 "./scripts/card_indexer.js",
-                "./scripts/card_widgets.js"
+                "./scripts/card_widgets.js",
+                "./scripts/card_modal_star_button.js"
             ],
             "css": [
                 "./styles/card_user_count.css"

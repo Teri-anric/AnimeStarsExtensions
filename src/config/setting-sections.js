@@ -120,6 +120,7 @@ export const SETTING_SECTIONS = [
                 anchorId: 'open-floating-quick-actions-page',
             },
             { kind: 'field', fieldKey: 'add-need-btn-to-card-dialog' },
+            { kind: 'field', fieldKey: 'card-modal-star-button' },
             { kind: 'field', fieldKey: 'remove-card-list-and-club-rating-in-card-base' },
             { kind: 'field', fieldKey: 'remelt-topbar-enabled' },
             { kind: 'field', fieldKey: 'pm-card-preview-enabled' },

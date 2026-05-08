@@ -145,6 +145,12 @@ export const SETTING_FIELDS = {
             { value: 'force', labelKey: 'add_need_btn_to_card_dialog_force' },
         ],
     },
+    'card-modal-star-button': {
+        type: 'checkbox',
+        labelKey: 'card_modal_star_button',
+        defaultValue: true,
+        quickAction: true,
+    },
     'remove-card-list-and-club-rating-in-card-base': {
         type: 'checkbox',
         labelKey: 'remove_card_list_and_club_rating_in_card_base',
@@ -254,8 +260,7 @@ export const SETTING_FIELDS = {
     'club-boost-replace-auto': {
         type: 'checkbox',
         labelKey: 'club_boost_replace_auto',
-        defaultValue: true,
-        checkboxDefaultTrue: true,
+        defaultValue: false,
         quickAction: true,
     },
     'club-boost-replace-stale-ms': {
