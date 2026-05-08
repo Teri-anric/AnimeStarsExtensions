@@ -1,0 +1,27 @@
+@import url("https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css");
+
+.fa-ufo{
+    content: url("https://cdn-icons-png.flaticon.com/32/3306/3306671.png");
+}
+.fa-bell-school {
+    content: url("https://cdn-icons-png.flaticon.com/32/7587/7587723.png");
+}
+.fa-balloon {
+    content: url("https://cdn-icons-png.flaticon.com/32/657/657469.png");
+}
+
+.fa-bookmark-slash {
+    content: url("https://cdn-icons-png.flaticon.com/32/16842/16842141.png");
+}
+
+.fa-bowl-food {
+    content: url("https://cdn-icons-png.flaticon.com/32/11493/11493268.png");
+}
+
+.fa-bridge {
+    content: url("https://cdn-icons-png.flaticon.com/32/358/358788.png");
+}
+
+.fa-card-spade{
+    content: url("https://cdn-icons-png.flaticon.com/32/15674/15674210.png");
+}

@@ -31,25 +31,11 @@ const DEFAULT_BUTTONS = [
         url: '/user/cards/?name={USERNAME}&locked=0'
     },
     {
-        id: 'rank-s_plus',
-        enabled: false,
-        text: 'S+',
-        icon: '',
-        url: '/user/cards/?name={USERNAME}&locked=0&rank=s_plus'
-    },
-    {
         id: 'rank-s',
         enabled: true,
         text: 'S',
         icon: '',
         url: '/user/cards/?name={USERNAME}&locked=0&rank=s'
-    },
-    {
-        id: 'rank-a_plus',
-        enabled: false,
-        text: 'A+',
-        icon: '',
-        url: '/user/cards/?name={USERNAME}&locked=0&rank=a_plus'
     },
     {
         id: 'rank-a',
@@ -59,25 +45,11 @@ const DEFAULT_BUTTONS = [
         url: '/user/cards/?name={USERNAME}&locked=0&rank=a'
     },
     {
-        id: 'rank-b_plus',
-        enabled: false,
-        text: 'B+',
-        icon: '',
-        url: '/user/cards/?name={USERNAME}&locked=0&rank=b_plus'
-    },
-    {
         id: 'rank-b',
         enabled: true,
         text: 'B',
         icon: '',
         url: '/user/cards/?name={USERNAME}&locked=0&rank=b'
-    },
-    {
-        id: 'rank-c_plus',
-        enabled: false,
-        text: 'C+',
-        icon: '',
-        url: '/user/cards/?name={USERNAME}&locked=0&rank=c_plus'
     },
     {
         id: 'rank-c',
@@ -87,25 +59,11 @@ const DEFAULT_BUTTONS = [
         url: '/user/cards/?name={USERNAME}&locked=0&rank=c'
     },
     {
-        id: 'rank-d_plus',
-        enabled: false,
-        text: 'D+',
-        icon: '',
-        url: '/user/cards/?name={USERNAME}&locked=0&rank=d_plus'
-    },
-    {
         id: 'rank-d',
         enabled: true,
         text: 'D',
         icon: '',
         url: '/user/cards/?name={USERNAME}&locked=0&rank=d'
-    },
-    {
-        id: 'rank-e_plus',
-        enabled: false,
-        text: 'E+',
-        icon: '',
-        url: '/user/cards/?name={USERNAME}&locked=0&rank=e_plus'
     },
     {
         id: 'rank-e',
@@ -127,6 +85,13 @@ const DEFAULT_BUTTONS = [
         text: '',
         icon: 'fal fa-history',
         url: 'https://animestars.org/trades/history/?kind=calsel_reciever&user={USER}'
+    },
+    {
+        id: 'club',
+        enabled: false,
+        text: '',
+        icon: 'fal fa-ufo',
+        url: '/clubs/{CLUB_ID}/'
     }
 ];
 

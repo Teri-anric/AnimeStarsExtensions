@@ -13,6 +13,13 @@ const HEADER_DEFAULT_BOOKMARKS = [
     },
     { id: 'hb-packs', enabled: true, text: 'Паки', icon: 'fal fa-box-open', url: '/cards/pack/' },
     { id: 'hb-promo', enabled: true, text: 'Промо', icon: 'fal fa-gift', url: '/promo_codes/' },
+    { 
+        id: 'hb-club-boost', 
+        enabled: false, 
+        text: 'Внести вклад', 
+        icon: 'fal fa-users', 
+        url: '/clubs/boost/?id={CLUB_ID}'
+    },
 ];
 
 document.addEventListener('DOMContentLoaded', async () => {

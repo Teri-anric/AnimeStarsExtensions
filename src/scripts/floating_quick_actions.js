@@ -558,15 +558,23 @@
         return (
             document.querySelector('.lgn__name > span')?.textContent?.trim() ||
             document.querySelector('.usn__name > h1')?.textContent?.trim() ||
-            ''
+            'okimoto'
         );
+    }
+
+    function getCurrentClubId(){
+        const CLUB_URL = document.querySelector('.lgn__menu a')?.href;
+        if (!CLUB_URL?.includes('clubs/')) return '1';
+        return CLUB_URL.slice(0, -1)?.split('/')?.pop() || '1';
     }
 
     function resolveFqaLinkUrl(rawUrl) {
         let next = String(rawUrl || '').trim();
         if (!next) return '';
         const username = getCurrentUsername();
+        const clubId = getCurrentClubId();
         next = next.replace(/\{USERNAME\}/g, username).replace(/\{USER\}/g, username);
+        next = next.replace(/\{CLUB_ID\}/g, clubId);
         if (/^https?:\/\//i.test(next)) return next;
         if (next.startsWith('/')) return window.location.origin + next;
         return next;

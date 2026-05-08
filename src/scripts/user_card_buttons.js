@@ -2,8 +2,15 @@ chrome.storage.sync.get(['custom-hosts'], (data) => {
     const hosts = Array.isArray(data?.['custom-hosts']) ? data['custom-hosts'] : [];
     if (!hosts.includes(window.location.hostname)) return;
 
+    function getUserClubId(){
+        const CLUB_URL = document.querySelector('.usn__club-item-top a')?.href;
+        if (!CLUB_URL?.includes('clubs/')) return '1';
+        return CLUB_URL.slice(0, -1)?.split('/')?.pop() || '1';
+    }
+
     (function () {
     let USERNAME = document.querySelector(".usn__name > h1")?.textContent?.trim?.();
+    let CLUB_ID = getUserClubId();
     if (!USERNAME) return console.log('user_card_buttons: USERNAME not found');
 
     let currentButtonsContainer = null;
@@ -43,7 +50,7 @@ chrome.storage.sync.get(['custom-hosts'], (data) => {
             if (!hasIcon && !hasText) return; // skip blank links
 
             const link = document.createElement("a");
-            const url = String(button.url || '').replace('{USERNAME}', USERNAME).replace('{USER}', USERNAME);
+            const url = String(button.url || '').replace('{USERNAME}', USERNAME).replace('{USER}', USERNAME).replace('{CLUB_ID}', CLUB_ID);
             link.href = url;
 
             if (hasIcon) {
