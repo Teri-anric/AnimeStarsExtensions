@@ -284,6 +284,41 @@ export const SETTING_FIELDS = {
         descriptionKey: 'club_boost_replace_skip_cooldown_description',
     },
 
+    'labyrinth-map-enabled': {
+        type: 'checkbox',
+        labelKey: 'labyrinth_map_enabled',
+        defaultValue: true,
+        quickAction: true,
+    },
+    'labyrinth-map-sync-enabled': {
+        type: 'checkbox',
+        labelKey: 'labyrinth_map_sync_enabled',
+        defaultValue: true,
+        quickAction: true,
+    },
+    'labyrinth-auto-mine-enabled': {
+        type: 'checkbox',
+        labelKey: 'labyrinth_auto_mine_enabled',
+        defaultValue: true,
+        quickAction: true,
+    },
+    'labyrinth-auto-boss-enabled': {
+        type: 'checkbox',
+        labelKey: 'labyrinth_auto_boss_enabled',
+        defaultValue: true,
+        quickAction: true,
+    },
+    'labyrinth-auto-action-delay-ms': {
+        type: 'range',
+        labelKey: 'labyrinth_auto_action_delay_ms',
+        min: 300,
+        max: 5000,
+        step: 100,
+        unit: 'ms',
+        defaultValue: 900,
+        descriptionKey: 'labyrinth_auto_action_delay_description',
+    },
+
     'card-user-count': {
         type: 'checkbox',
         labelKey: 'card_user_count',

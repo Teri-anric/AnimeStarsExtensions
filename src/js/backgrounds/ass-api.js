@@ -38,6 +38,26 @@ async function getCardDetail(message, sender) {
     }
 }
 
+async function getLabyrinthRooms(message, sender) {
+    try {
+        const data = await AssApiClient.getLabyrinthRooms(message?.bounds || {});
+        return { success: true, data };
+    } catch (error) {
+        console.error('Get labyrinth rooms failed:', error);
+        return { success: false, error: error.message };
+    }
+}
+
+async function getLabyrinthSummary(message, sender) {
+    try {
+        const data = await AssApiClient.getLabyrinthSummary();
+        return { success: true, data };
+    } catch (error) {
+        console.error('Get labyrinth summary failed:', error);
+        return { success: false, error: error.message };
+    }
+}
+
 // --- Card index queue ---
 const CARD_INDEX_BATCH_SIZE = 50;
 const CARD_INDEX_DEBOUNCE_MS = 2000;
@@ -77,6 +97,17 @@ async function indexCards(message, sender) {
     cardIndexTimer = setTimeout(flushCardIndexQueue, CARD_INDEX_DEBOUNCE_MS);
     return { success: true };
 }
+
+async function uploadLabyrinthRooms(message, sender) {
+    const stored = await chrome.storage.sync.get('labyrinth-map-sync-enabled');
+    if (stored['labyrinth-map-sync-enabled'] === false) {
+        return { success: true, skipped: true };
+    }
+    const rooms = Array.isArray(message?.rooms) ? message.rooms : [];
+    if (rooms.length === 0) return { success: true, count: 0 };
+    const data = await AssApiClient.submitLabyrinthRooms(rooms);
+    return { success: true, data };
+}
 // --- End card index queue ---
 
 const actionMap = {
@@ -85,6 +116,9 @@ const actionMap = {
     'search_cards': searchCards,
     'get_card_detail': getCardDetail,
     'upload_card_data_to_ass': indexCards,
+    'get_labyrinth_rooms': getLabyrinthRooms,
+    'get_labyrinth_summary': getLabyrinthSummary,
+    'upload_labyrinth_rooms_to_ass': uploadLabyrinthRooms,
 };
 
 

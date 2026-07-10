@@ -21,7 +21,8 @@
                 "_locales/uk/messages.json",
                 "_locales/ru/messages.json",
                 "js/i18n-runtime.js",
-                "js/fab-config.js"
+                "js/fab-config.js",
+                "scripts/labyrinth_bridge.js"
             ],
             "matches": [
                 "https://*/*"
@@ -177,6 +178,19 @@
             ],
             "css": [
                 "./styles/boost_club.css"
+            ],
+            "run_at": "document_idle"
+        },
+        {
+            "matches": [
+                "https://*/labyrinth/",
+                "https://*/labyrinth/*"
+            ],
+            "js": [
+                "./scripts/labyrinth.js"
+            ],
+            "css": [
+                "./styles/labyrinth.css"
             ],
             "run_at": "document_idle"
         },
