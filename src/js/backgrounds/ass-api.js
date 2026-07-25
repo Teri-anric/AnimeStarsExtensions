@@ -77,6 +77,30 @@ async function indexCards(message, sender) {
     cardIndexTimer = setTimeout(flushCardIndexQueue, CARD_INDEX_DEBOUNCE_MS);
     return { success: true };
 }
+
+async function syncDeckSnapshot(message, sender) {
+    const stored = await chrome.storage.sync.get(UPLOAD_CARD_DATA_SETTING_KEY);
+    if (stored[UPLOAD_CARD_DATA_SETTING_KEY] === false) {
+        return { success: true, skipped: true };
+    }
+    const animeId = parseInt(message?.anime_id, 10);
+    const cards = message?.cards;
+    if (!animeId || !Array.isArray(cards) || cards.length === 0) return { success: false };
+    await AssApiClient.submitDeckSnapshot(animeId, cards);
+    return { success: true };
+}
+
+async function reportDeletedCard(message, sender) {
+    const cardId = parseInt(message?.card_id, 10);
+    if (!cardId) return { success: false };
+    try {
+        await AssApiClient.reportDeletedCard(cardId);
+        return { success: true };
+    } catch (error) {
+        if (error?.message?.startsWith('HTTP 404:')) return { success: true, missing: true };
+        throw error;
+    }
+}
 // --- End card index queue ---
 
 const actionMap = {
@@ -85,6 +109,8 @@ const actionMap = {
     'search_cards': searchCards,
     'get_card_detail': getCardDetail,
     'upload_card_data_to_ass': indexCards,
+    'sync_deck_snapshot_to_ass': syncDeckSnapshot,
+    'report_deleted_card_to_ass': reportDeletedCard,
 };
 
 

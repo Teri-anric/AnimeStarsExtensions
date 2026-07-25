@@ -205,8 +205,36 @@ chrome.storage.sync.get(['custom-hosts'], (data) => {
     };
   }
 
+  function isCardsReplacementsPage() {
+    return /^\/user\/[^/]+\/cards_replacements\/?$/.test(window.location.pathname);
+  }
+
+  function isCardsCreatedModerationPage() {
+    if (!/^\/user\/[^/]+\/cards_created\/?$/.test(window.location.pathname)) {
+      return false;
+    }
+    return Boolean(document.querySelector(
+      '.tabs__navigate__in__moderation.tabs__item--active',
+    ));
+  }
+
+  function shouldSkipCardUpload(elm) {
+    if (isCardsReplacementsPage() || isCardsCreatedModerationPage()) return true;
+
+    const publicationWrapper = elm.closest('.anime-cards__item-wrapper-gl');
+    if (publicationWrapper?.querySelector('.card-votes__btn[data-kind="0"]')) {
+      return true;
+    }
+
+    const replacementSide = elm.closest('.card-replace-vote__side');
+    return Boolean(replacementSide?.querySelector('.card-replace-vote__badge--new'));
+  }
+
   function enqueueCardData(elms) {
-    const cards = elms.map(extractCardData).filter(Boolean);
+    const cards = elms
+      .filter((elm) => !shouldSkipCardUpload(elm))
+      .map(extractCardData)
+      .filter(Boolean);
     if (cards.length === 0) return;
     chrome.runtime.sendMessage({ action: 'upload_card_data_to_ass', cards });
   }
@@ -270,5 +298,4 @@ chrome.storage.sync.get(['custom-hosts'], (data) => {
   });
   })();
 });
-
 

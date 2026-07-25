@@ -168,6 +168,16 @@
         },
         {
             "matches": [
+                "https://*/user/*/anime_progress/*/",
+                "https://*/user/*/anime_progress/*/*"
+            ],
+            "js": [
+                "./scripts/deck_sync.js"
+            ],
+            "run_at": "document_idle"
+        },
+        {
+            "matches": [
                 "https://*/clubs/boost/*",
                 "https://*/boss_invansion/*"
             ],

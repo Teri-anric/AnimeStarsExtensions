@@ -18,6 +18,7 @@ const ASS_API_CONFIG = {
         CARD_STATS_QUERY: '/api/card/stats/',
         CARD_STATS_ADD: '/api/card/stats/add',
         CARD_BULK_UPSERT: '/api/card/bulk',
+        CARD_DECK_SYNC: '/api/card/bulk/deck-sync',
 
         EXTENSION_CARDS_BY_IMAGE_PATHS: '/api/extension/cards/by-image-paths',
         EXTENSION_DECKS_RANK_COUNTS: '/api/extension/decks/rank-counts',
@@ -349,6 +350,21 @@ class AssApiClient {
             console.error('Submit cards error:', error);
             throw error;
         }
+    }
+
+    static async submitDeckSnapshot(animeId, cards) {
+        if (!animeId || !cards || cards.length === 0) return { status: 'ok', count: 0 };
+        return await this.makeRequest(ASS_API_CONFIG.ENDPOINTS.CARD_DECK_SYNC, {
+            method: 'POST',
+            body: JSON.stringify({ anime_id: animeId, cards }),
+        });
+    }
+
+    static async reportDeletedCard(cardId) {
+        if (!cardId) return null;
+        return await this.makeRequest(`/api/card/${encodeURIComponent(cardId)}/report-deleted-card`, {
+            method: 'POST',
+        });
     }
 
     static async clearCache() {
