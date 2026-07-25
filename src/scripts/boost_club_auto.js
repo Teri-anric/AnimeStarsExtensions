@@ -9,7 +9,7 @@ chrome.storage.sync.get(['custom-hosts'], (data) => {
     const isBossPage = window.location.pathname.includes('boss_invansion');
     const AUTO_KEY = isBossPage ? 'boss-boost-auto' : 'club-boost-auto';
 
-    const TICK_INTERVAL_MS = 100;
+    const TICK_INTERVAL_MS = 200;
     const SKIP_START_TIME = new Date().setUTCHours(18, 3, 0, 0); // 18:03:00 UTC
 
     const CONFIG = {
@@ -18,7 +18,7 @@ chrome.storage.sync.get(['custom-hosts'], (data) => {
         boostCooldown: 500,
         replaceStaleMs: 12000,
         replaceSkipCooldownMs: 1600,
-        replaceAutoEnabled: true,
+        replaceAutoEnabled: false,
         isCurrentBoosting: () => {
             return boostIntervalID != null || refreshIntervalID != null;
         },
@@ -152,27 +152,18 @@ chrome.storage.sync.get(['custom-hosts'], (data) => {
     // fingerprint unchanged for CONFIG.replaceStaleMs (if club-boost-replace-auto).
     // CONFIG.replaceSkipCooldownMs avoids double server requests between skips.
     // -------------------------------------------------------------------------
-    let replaceFingerprintInit = false;
     let lastCardFingerprint = '';
     let lastFingerprintChangeAt = 0;
     let lastReplaceClickAt = 0;
 
     function getClubBoostCardFingerprint() {
-        const wrap = document.querySelector('.club-boost .club-boost__image');
-        const img = wrap?.querySelector('img');
+        const img = document.querySelector('.club-boost .club-boost__image img');
         const src = (
             img?.getAttribute('src') ||
             img?.dataset?.assBoostOriginalSrc ||
             ''
         ).trim();
-        const cardId =
-            wrap?.getAttribute('data-last-card-id') ||
-            wrap?.getAttribute('data-index-card-id') ||
-            wrap?.getAttribute('data-last-parsed-card-id') ||
-            img?.getAttribute('data-card-id') ||
-            img?.dataset?.cardId ||
-            '';
-        return `${src}|${cardId}`;
+        return `${src}`;
     }
 
     function clubBoostHasNoContributors() {
@@ -186,7 +177,6 @@ chrome.storage.sync.get(['custom-hosts'], (data) => {
         if (!btn || btn.disabled) return false;
         const now = Date.now();
         if (now - lastReplaceClickAt < CONFIG.replaceSkipCooldownMs) return false;
-        clearDLEPush();
         btn.click();
         lastReplaceClickAt = now;
         lastFingerprintChangeAt = now;
@@ -198,21 +188,9 @@ chrome.storage.sync.get(['custom-hosts'], (data) => {
             return;
         };
         if (isBossPage || !CONFIG.replaceAutoEnabled) {
-            replaceFingerprintInit = false;
-            return;
-        }
-        const replaceBtn = document.querySelector('.club-boost__replace-btn');
-        if (!replaceBtn) {
-            replaceFingerprintInit = false;
             return;
         }
         const now = Date.now();
-        if (!replaceFingerprintInit) {
-            lastCardFingerprint = getClubBoostCardFingerprint();
-            lastFingerprintChangeAt = now;
-            replaceFingerprintInit = true;
-            return;
-        }
         const fp = getClubBoostCardFingerprint();
         if (fp !== lastCardFingerprint) {
             lastCardFingerprint = fp;
@@ -251,32 +229,21 @@ chrome.storage.sync.get(['custom-hosts'], (data) => {
         },
     );
 
-    chrome.storage.onChanged.addListener((changes, namespace) => {
-        if (namespace != "sync") return;
-
-        const changedKeys = Object.keys(changes);
-        const replaceOnlyKeys = new Set([
-            'club-boost-replace-auto',
-            'club-boost-replace-stale-ms',
-            'club-boost-replace-skip-cooldown-ms',
-        ]);
-        const onlyReplaceSettings = changedKeys.length > 0 && changedKeys.every((k) => replaceOnlyKeys.has(k));
-
-        if (changes['club-boost-replace-auto'] != undefined) {
+    chrome.storage.sync.onChanged.addListener((changes, namespace) => {
+        if (changes['club-boost-replace-auto']) {
             CONFIG.replaceAutoEnabled = Boolean(changes['club-boost-replace-auto'].newValue);
         }
-        if (changes['club-boost-replace-stale-ms'] != undefined) {
+        if (changes['club-boost-replace-stale-ms']) {
             CONFIG.replaceStaleMs = Number(changes['club-boost-replace-stale-ms'].newValue) || 12000;
         }
-        if (changes['club-boost-replace-skip-cooldown-ms'] != undefined) {
+        if (changes['club-boost-replace-skip-cooldown-ms']) {
             CONFIG.replaceSkipCooldownMs = Number(changes['club-boost-replace-skip-cooldown-ms'].newValue) || 1600;
         }
-        if (onlyReplaceSettings) return;
 
-        if (changes['club-boost-refresh-cooldown'] != undefined) {
+        if (changes['club-boost-refresh-cooldown']) {
             CONFIG.refreshCooldown = changes['club-boost-refresh-cooldown'].newValue;
         }
-        if (changes['club-boost-action-cooldown'] != undefined) {
+        if (changes['club-boost-action-cooldown']) {
             CONFIG.boostCooldown = changes['club-boost-action-cooldown'].newValue;
         }
         stopBoosting(true);

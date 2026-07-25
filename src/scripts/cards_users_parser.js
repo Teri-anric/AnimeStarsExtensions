@@ -86,10 +86,14 @@ chrome.storage.sync.get(['custom-hosts'], (data) => {
         const urlParams = new URLSearchParams(window.location.search);
         const cardId = urlParams.get('id');
         const ImageContainer = document.querySelector('.ncard__img');
-        const cardImage = ImageContainer.querySelector('img');
+        const cardImage = ImageContainer?.querySelector('img');
 
-        const animeLink = new URL(ImageContainer?.href).pathname;
-        const image = new URL(cardImage?.src).pathname;
+        const animeLink = ImageContainer?.href
+            ? new URL(ImageContainer.href, window.location.origin).pathname
+            : null;
+        const image = cardImage?.src
+            ? new URL(cardImage.src, window.location.origin).pathname
+            : null;
         if (!cardId || !animeLink || !image) return;
         uploadCardDataToAss({
             card_id: parseInt(cardId),
@@ -105,6 +109,13 @@ chrome.storage.sync.get(['custom-hosts'], (data) => {
 
     async function main() {
         console.log('Cards users parser started');
+        const cardId = new URLSearchParams(window.location.search).get('id');
+        const missingCard = document.querySelector('.message-info__content')?.textContent
+            ?.includes('Данной карты не существует');
+        if (cardId && missingCard) {
+            sendMessageBG({ action: 'report_deleted_card_to_ass', card_id: parseInt(cardId, 10) });
+            return;
+        }
         const cardData = parseCardDataFromPage();
         if (cardData) {
             updateCardDataCache(cardData);

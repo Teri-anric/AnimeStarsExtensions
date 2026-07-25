@@ -108,6 +108,30 @@ async function uploadLabyrinthRooms(message, sender) {
     const data = await AssApiClient.submitLabyrinthRooms(rooms);
     return { success: true, data };
 }
+
+async function syncDeckSnapshot(message, sender) {
+    const stored = await chrome.storage.sync.get(UPLOAD_CARD_DATA_SETTING_KEY);
+    if (stored[UPLOAD_CARD_DATA_SETTING_KEY] === false) {
+        return { success: true, skipped: true };
+    }
+    const animeId = parseInt(message?.anime_id, 10);
+    const cards = message?.cards;
+    if (!animeId || !Array.isArray(cards) || cards.length === 0) return { success: false };
+    await AssApiClient.submitDeckSnapshot(animeId, cards);
+    return { success: true };
+}
+
+async function reportDeletedCard(message, sender) {
+    const cardId = parseInt(message?.card_id, 10);
+    if (!cardId) return { success: false };
+    try {
+        await AssApiClient.reportDeletedCard(cardId);
+        return { success: true };
+    } catch (error) {
+        if (error?.message?.startsWith('HTTP 404:')) return { success: true, missing: true };
+        throw error;
+    }
+}
 // --- End card index queue ---
 
 const actionMap = {
@@ -119,6 +143,8 @@ const actionMap = {
     'get_labyrinth_rooms': getLabyrinthRooms,
     'get_labyrinth_summary': getLabyrinthSummary,
     'upload_labyrinth_rooms_to_ass': uploadLabyrinthRooms,
+    'sync_deck_snapshot_to_ass': syncDeckSnapshot,
+    'report_deleted_card_to_ass': reportDeletedCard,
 };
 
 
