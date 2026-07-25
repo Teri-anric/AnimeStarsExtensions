@@ -99,10 +99,38 @@ chrome.storage.sync.get(['custom-hosts'], (hostData) => {
 
         function getKnownRooms() {
             const mapData = labyrinthData?.mapData || labyrinthData?.map_data || {};
-            const rooms = collectRoomsFromValue(mapData);
+            // `steps` is the persistent path. Do not include `current` here:
+            // while an emission is active it represents a temporary room state.
+            const rooms = collectRoomsFromValue(mapData.steps || mapData.rooms || mapData.map || mapData.items);
             const byCoord = new Map();
             rooms.forEach((room) => byCoord.set(roomKey(room.x, room.y), room));
             return Array.from(byCoord.values());
+        }
+
+        function isEmissionActive(data) {
+            const emission = data?.emission || data?.emission_data;
+            return emission?.active === true || emission?.active === 1 || emission?.active === '1';
+        }
+
+        function getCurrentRoom() {
+            const mapData = labyrinthData?.mapData || labyrinthData?.map_data || {};
+            const current = normalizeRoom(mapData.current || labyrinthData?.current);
+            if (!current) return null;
+
+            // The current coordinate sometimes has no event of its own. In that
+            // case the last matching step contains the event shown to the user.
+            if (current.event) return current;
+            const matchingStep = [...(mapData.steps || [])]
+                .reverse()
+                .find((step) => asInt(step?.x) === current.x && asInt(step?.y) === current.y);
+            return matchingStep ? { ...current, event: getRoomEvent(matchingStep) } : current;
+        }
+
+        function getEmissionObservations() {
+            if (!isEmissionActive(labyrinthData)) return [];
+            const current = getCurrentRoom();
+            if (!current?.event) return [];
+            return [{ x: current.x, y: current.y, emission_event: current.event }];
         }
 
         function getVisibleBounds() {
@@ -258,7 +286,9 @@ chrome.storage.sync.get(['custom-hosts'], (hostData) => {
             if (!data || typeof data !== 'object') return;
             labyrinthData = data;
             waitingForPageUpdateSince = 0;
-            const rooms = getKnownRooms();
+            const rooms = isEmissionActive(data)
+                ? getEmissionObservations()
+                : getKnownRooms();
             queueRoomsUpload(rooms);
             applyMapClasses();
             refreshSharedRooms();

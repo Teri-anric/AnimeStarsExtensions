@@ -897,7 +897,7 @@
         "message": "Назад к настройкам"
     },
     "labyrinth_settings": {
-        "message": "Лабиринт"
+        "message": "Лабиринт (Beta)"
     },
     "labyrinth_map_enabled": {
         "message": "Подсвечивать карту лабиринта"
