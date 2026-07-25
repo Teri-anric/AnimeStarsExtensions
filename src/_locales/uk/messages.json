@@ -895,5 +895,26 @@
     },
     "back_to_settings": {
         "message": "Назад до налаштувань"
+    },
+    "labyrinth_settings": {
+        "message": "Лабіринт (Beta)"
+    },
+    "labyrinth_map_enabled": {
+        "message": "Підсвічувати карту лабіринту"
+    },
+    "labyrinth_map_sync_enabled": {
+        "message": "Синхронізувати відкриті кімнати"
+    },
+    "labyrinth_auto_mine_enabled": {
+        "message": "Автоматично збирати шахту"
+    },
+    "labyrinth_auto_boss_enabled": {
+        "message": "Автоматично бити босів лабіринту"
+    },
+    "labyrinth_auto_action_delay_ms": {
+        "message": "Затримка дій лабіринту"
+    },
+    "labyrinth_auto_action_delay_description": {
+        "message": "Пауза між кліками по штатних кнопках шахти та босів."
     }
 }

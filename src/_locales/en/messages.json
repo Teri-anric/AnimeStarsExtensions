@@ -895,5 +895,26 @@
     },
     "back_to_settings": {
         "message": "Back to settings"
+    },
+    "labyrinth_settings": {
+        "message": "Labyrinth (Beta)"
+    },
+    "labyrinth_map_enabled": {
+        "message": "Highlight labyrinth map"
+    },
+    "labyrinth_map_sync_enabled": {
+        "message": "Sync discovered rooms"
+    },
+    "labyrinth_auto_mine_enabled": {
+        "message": "Auto collect mine"
+    },
+    "labyrinth_auto_boss_enabled": {
+        "message": "Auto hit labyrinth bosses"
+    },
+    "labyrinth_auto_action_delay_ms": {
+        "message": "Labyrinth action delay"
+    },
+    "labyrinth_auto_action_delay_description": {
+        "message": "Pause between clicks on the site's mine and boss buttons."
     }
 }

@@ -23,6 +23,9 @@ const ASS_API_CONFIG = {
         EXTENSION_CARDS_BY_IMAGE_PATHS: '/api/extension/cards/by-image-paths',
         EXTENSION_DECKS_RANK_COUNTS: '/api/extension/decks/rank-counts',
         EXTENSION_OWNER_COUNTS_LAST_BULK: '/api/extension/cards/owner-counts/last/bulk',
+        EXTENSION_LABYRINTH_MAP: '/api/extension/labyrinth/map',
+        EXTENSION_LABYRINTH_MAP_SUMMARY: '/api/extension/labyrinth/map/summary',
+        EXTENSION_LABYRINTH_ROOMS_BULK: '/api/extension/labyrinth/rooms/bulk',
 
         HEALTH: '/health'
     },
@@ -350,6 +353,28 @@ class AssApiClient {
             console.error('Submit cards error:', error);
             throw error;
         }
+    }
+
+    static async getLabyrinthRooms(bounds) {
+        const params = new URLSearchParams();
+        ['min_x', 'max_x', 'min_y', 'max_y', 'updated_after'].forEach((key) => {
+            if (bounds?.[key] !== undefined && bounds[key] !== null && bounds[key] !== '') {
+                params.set(key, String(bounds[key]));
+            }
+        });
+        return await this.makeRequest(`${ASS_API_CONFIG.ENDPOINTS.EXTENSION_LABYRINTH_MAP}?${params}`);
+    }
+
+    static async getLabyrinthSummary() {
+        return await this.makeRequest(ASS_API_CONFIG.ENDPOINTS.EXTENSION_LABYRINTH_MAP_SUMMARY);
+    }
+
+    static async submitLabyrinthRooms(rooms) {
+        if (!Array.isArray(rooms) || rooms.length === 0) return { status: 'ok', count: 0 };
+        return await this.makeRequest(ASS_API_CONFIG.ENDPOINTS.EXTENSION_LABYRINTH_ROOMS_BULK, {
+            method: 'POST',
+            body: JSON.stringify({ rooms }),
+        });
     }
 
     static async submitDeckSnapshot(animeId, cards) {

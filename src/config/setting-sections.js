@@ -185,6 +185,27 @@ export const SETTING_SECTIONS = [
     },
     {
         kind: 'section',
+        titleKey: 'labyrinth_settings',
+        children: [
+            { kind: 'field', fieldKey: 'labyrinth-map-enabled' },
+            {
+                kind: 'field',
+                fieldKey: 'labyrinth-map-sync-enabled',
+                showIf: { 'labyrinth-map-enabled': true },
+            },
+            { kind: 'field', fieldKey: 'labyrinth-auto-mine-enabled' },
+            { kind: 'field', fieldKey: 'labyrinth-auto-boss-enabled' },
+            {
+                kind: 'sub',
+                id: 'labyrinth-auto-action-subsettings',
+                children: [
+                    { kind: 'field', fieldKey: 'labyrinth-auto-action-delay-ms' },
+                ],
+            },
+        ],
+    },
+    {
+        kind: 'section',
         titleKey: 'card_user_count_settings',
         children: [
             { kind: 'field', fieldKey: 'card-user-count' },

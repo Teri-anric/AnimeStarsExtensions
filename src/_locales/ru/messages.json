@@ -895,5 +895,26 @@
     },
     "back_to_settings": {
         "message": "Назад к настройкам"
+    },
+    "labyrinth_settings": {
+        "message": "Лабиринт (Beta)"
+    },
+    "labyrinth_map_enabled": {
+        "message": "Подсвечивать карту лабиринта"
+    },
+    "labyrinth_map_sync_enabled": {
+        "message": "Синхронизировать открытые комнаты"
+    },
+    "labyrinth_auto_mine_enabled": {
+        "message": "Автоматически собирать шахту"
+    },
+    "labyrinth_auto_boss_enabled": {
+        "message": "Автоматически бить боссов лабиринта"
+    },
+    "labyrinth_auto_action_delay_ms": {
+        "message": "Задержка действий лабиринта"
+    },
+    "labyrinth_auto_action_delay_description": {
+        "message": "Пауза между кликами по штатным кнопкам шахты и боссов."
     }
 }
