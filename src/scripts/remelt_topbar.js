@@ -157,6 +157,15 @@ chrome.storage.sync.get(['custom-hosts'], (data) => {
     }
   }
 
+  function moveRecipeToTopbar(topbar) {
+    const recipe = document.querySelector('.rf-recipe, [data-remelt-recipe]');
+    if (!recipe || recipe.parentElement === topbar) return;
+
+    recipe.classList.add('remelt-ext__recipe');
+    const resultWrap = topbar.querySelector('.remelt-ext__result');
+    topbar.insertBefore(recipe, resultWrap || null);
+  }
+
   function ensureStartButtonProxy(topbar) {
     const actionWrap = topbar.querySelector('.remelt-ext__action');
     if (!actionWrap) return;
@@ -196,6 +205,7 @@ chrome.storage.sync.get(['custom-hosts'], (data) => {
   function apply() {
     const topbar = ensureTopbar();
     if (!topbar) return;
+    moveRecipeToTopbar(topbar);
     syncSlotsFromWrapper(topbar);
     syncResultToTopbar(topbar);
     ensureStartButtonProxy(topbar);

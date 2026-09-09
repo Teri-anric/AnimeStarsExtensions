@@ -27,6 +27,9 @@ test('card and remelt indexers observe dynamic UI updates', () => {
   assert.match(remelt, /function bindDomObserverOnce\(\)/u);
   assert.match(remelt, /data-remelt-root/u);
   assert.match(remelt, /data-remelt-slot/u);
+  assert.match(remelt, /function moveRecipeToTopbar\(topbar\)/u);
+  assert.match(remelt, /topbar\.insertBefore\(recipe, resultWrap \|\| null\)/u);
+  assert.match(statsCss, /\.card-user-count/u);
 });
 
 test('card widgets absorb stale extension-context errors after a dev reload', () => {
