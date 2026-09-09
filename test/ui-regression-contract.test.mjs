@@ -1,0 +1,29 @@
+import assert from 'node:assert/strict';
+import { readFile } from 'node:fs/promises';
+import test from 'node:test';
+
+const indexer = await readFile(new URL('../src/scripts/card_indexer.js', import.meta.url), 'utf8');
+const remelt = await readFile(new URL('../src/scripts/remelt_topbar.js', import.meta.url), 'utf8');
+const statsCss = await readFile(new URL('../src/styles/card_user_count.css', import.meta.url), 'utf8');
+
+test('card indexing keeps the post-update card containers and ID attributes covered', () => {
+  for (const selector of [
+    '.noffer__img',
+    '.card-filter-list__card',
+    '.deck__item',
+    '.card-pack__card',
+    '.card-show__placeholder',
+  ]) {
+    assert.match(indexer, new RegExp(selector.replaceAll('.', '\\.'), 'u'));
+    assert.match(statsCss, new RegExp(selector.replaceAll('.', '\\.'), 'u'));
+  }
+  assert.match(indexer, /data-card-id/);
+  assert.match(indexer, /data-owner-id/);
+});
+
+test('card and remelt indexers observe dynamic UI updates', () => {
+  assert.match(indexer, /attributeFilter: \['data-id', 'data-card-id', 'data-owner-id', 'data-name', 'data-rank', 'href', 'src'\]/u);
+  assert.match(remelt, /function bindDomObserverOnce\(\)/u);
+  assert.match(remelt, /data-remelt-root/u);
+  assert.match(remelt, /data-remelt-slot/u);
+});

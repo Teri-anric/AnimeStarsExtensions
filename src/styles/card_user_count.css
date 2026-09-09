@@ -1,4 +1,11 @@
-.lootbox__card, .history__body-item {
+.lootbox__card,
+.history__body-item,
+.noffer__img,
+.card-filter-list__card,
+.deck__item,
+.card-pack__card,
+.card-show__placeholder,
+.anime-cards__placeholder {
     /* fix card boxes */
     position: relative;
 }
