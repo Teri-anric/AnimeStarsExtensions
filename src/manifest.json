@@ -10,6 +10,8 @@
         "declarativeNetRequest"
     ],
     "host_permissions": [
+        "https://animesss.com/*",
+        "https://animesss.tv/*",
         "https://raw.githubusercontent.com/Teri-anric/AnimeStarsExtensions/*",
         "https://ass-api.strawberrycat.dev/*",
         "https://ass.strawberrycat.dev/*"
