@@ -436,6 +436,19 @@ chrome.storage.sync.get(['custom-hosts'], (data) => {
     elements.forEach(cardElm => {
       updateCardElmData(cardElm, cardData);
       renderWidgetsElement(cardElm);
+      clearLoadingStateForCard(cardElm);
+    });
+  }
+
+  function clearLoadingStateForCard(cardElm) {
+    CONFIG.WIDGETS.filter(w => w.enabled).forEach(widget => {
+      const widgetElm = cardElm.querySelector(`.card-user-count[data-widget-id="${widget.id}"]`);
+      if (!widgetElm) return;
+
+      const missingParseTypes = computeNotLoadedNeedWidgetsParseTypes(cardElm, [widget]);
+      if (missingParseTypes.length === 0) {
+        widgetElm.classList.remove('card-user-count-loading');
+      }
     });
   }
 
@@ -631,4 +644,3 @@ chrome.storage.sync.get(['custom-hosts'], (data) => {
   });
   })();
 });
-

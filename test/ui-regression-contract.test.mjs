@@ -35,3 +35,10 @@ test('card widgets absorb stale extension-context errors after a dev reload', ()
   assert.match(widgets, /Extension context invalidated/u);
   assert.doesNotMatch(widgets, /chrome\.runtime\.sendMessage\(\{/u);
 });
+
+test('card widgets clear loading state after all requested data arrives', () => {
+  assert.match(widgets, /function clearLoadingStateForCard\(cardElm\)/u);
+  assert.match(widgets, /clearLoadingStateForCard\(cardElm\);/u);
+  assert.match(widgets, /missingParseTypes\.length === 0/u);
+  assert.match(widgets, /widgetElm\.classList\.remove\('card-user-count-loading'\)/u);
+});
