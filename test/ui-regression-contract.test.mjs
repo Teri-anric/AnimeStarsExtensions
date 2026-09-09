@@ -4,6 +4,7 @@ import test from 'node:test';
 
 const indexer = await readFile(new URL('../src/scripts/card_indexer.js', import.meta.url), 'utf8');
 const remelt = await readFile(new URL('../src/scripts/remelt_topbar.js', import.meta.url), 'utf8');
+const widgets = await readFile(new URL('../src/scripts/card_widgets.js', import.meta.url), 'utf8');
 const statsCss = await readFile(new URL('../src/styles/card_user_count.css', import.meta.url), 'utf8');
 
 test('card indexing keeps the post-update card containers and ID attributes covered', () => {
@@ -26,4 +27,11 @@ test('card and remelt indexers observe dynamic UI updates', () => {
   assert.match(remelt, /function bindDomObserverOnce\(\)/u);
   assert.match(remelt, /data-remelt-root/u);
   assert.match(remelt, /data-remelt-slot/u);
+});
+
+test('card widgets absorb stale extension-context errors after a dev reload', () => {
+  assert.match(widgets, /function sendRuntimeMessage\(message\)/u);
+  assert.match(widgets, /request\.catch\(\(error\) =>/u);
+  assert.match(widgets, /Extension context invalidated/u);
+  assert.doesNotMatch(widgets, /chrome\.runtime\.sendMessage\(\{/u);
 });

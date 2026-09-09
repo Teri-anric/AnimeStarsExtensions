@@ -70,9 +70,31 @@ chrome.storage.sync.get(['custom-hosts'], (data) => {
   };
 
   /* background worker */
+  function isInvalidExtensionContextError(error) {
+    const message = String(error?.message || error || '');
+    return message.includes('Extension context invalidated');
+  }
+
+  function sendRuntimeMessage(message) {
+    try {
+      const request = chrome.runtime.sendMessage(message);
+      if (request && typeof request.catch === 'function') {
+        request.catch((error) => {
+          if (!isInvalidExtensionContextError(error)) {
+            console.error('Card widgets runtime message failed:', error);
+          }
+        });
+      }
+    } catch (error) {
+      if (!isInvalidExtensionContextError(error)) {
+        console.error('Card widgets runtime message failed:', error);
+      }
+    }
+  }
+
   function requestFetchCardData(cardId, needParseTypes = null) {
     showLoadingState(cardId);
-    chrome.runtime.sendMessage({
+    sendRuntimeMessage({
       action: 'fetch_card_data_queue',
       data: {
         cardIds: [cardId],
@@ -85,7 +107,7 @@ chrome.storage.sync.get(['custom-hosts'], (data) => {
 
   function requestCachedCardData(cardIds) {
     if (!Array.isArray(cardIds) || cardIds.length === 0) return;
-    chrome.runtime.sendMessage({
+    sendRuntimeMessage({
       action: 'fetch_cached_card_data', data: {
         cardIds,
         parseTypes: computeNeededDataForWidgets(),
@@ -609,5 +631,4 @@ chrome.storage.sync.get(['custom-hosts'], (data) => {
   });
   })();
 });
-
 
