@@ -182,6 +182,12 @@ export const SETTING_FIELDS = {
         defaultValue: false,
         quickAction: true,
     },
+    'trades-history-big-images': {
+        type: 'checkbox',
+        labelKey: 'trades_history_big_images',
+        defaultValue: false,
+        quickAction: true,
+    },
     'trades-preview-auto-start-delay': {
         type: 'range',
         labelKey: 'trades_preview_auto_start_delay',

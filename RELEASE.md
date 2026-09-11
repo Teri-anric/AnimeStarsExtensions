@@ -15,7 +15,7 @@ This release streamlines the extension around card statistics, trade previews, m
 - **Cinema auto-stone speed control**: Added a setting to adjust the click speed/delay for automatic cinema stone collection.
 - **Labyrinth map and automation**: The map, room synchronization, mine collection, boss actions, and opt-in Berserk support remain available on the labyrinth page.
 - **Quality-of-life fixes**: Multiple refinements for boost automation, card appearance editor, user card quick buttons, plus settings architecture cleanup and multilingual runtime consistency.
-- **Removed obsolete features**: Trade-history filters and remelt helpers are no longer shipped or exposed in settings.
+- **Removed obsolete features**: Trade-history filters and remelt helpers are no longer shipped or exposed in settings; the separate trade-history big-images option remains available.
 
 ## Quick install (need for 1-3 days from release for approval from Google and Mozilla)
 🦊 Firefox Add-ons: https://addons.mozilla.org/firefox/addon/animestar-extension/  

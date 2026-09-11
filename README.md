@@ -33,6 +33,8 @@ This browser extension provides enhanced functionality for the AnimeStar website
     - Optional auto-parse to fetch missing previews with configurable timings
     - Full exchange details display option
     - Shows card previews in trade dialogs
+- **Trade History Big Images**:
+    - Optional larger card images in trade history
 - **Advanced Card Widgets**:
     - Custom positioning controls with percentage-based placement
     - Enhanced template variables for card and deck details
@@ -55,6 +57,7 @@ This browser extension provides enhanced functionality for the AnimeStar website
     - disable update check
     - set language
     - configure card widget positioning
+    - big images in trade history
     - enable/disable full/preview exchange details
 - **Language Support**: 
     - English

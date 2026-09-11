@@ -121,6 +121,19 @@
         },
         {
             "matches": [
+                "https://*/trades/history/",
+                "https://*/trades/history/*"
+            ],
+            "js": [
+                "./scripts/trades_history_big_images.js"
+            ],
+            "css": [
+                "./styles/trades_history_big_images.css"
+            ],
+            "run_at": "document_end"
+        },
+        {
+            "matches": [
                 "https://*/trades/*/",
                 "https://*/trades/offers/*/",
                 "https://*/trades/",

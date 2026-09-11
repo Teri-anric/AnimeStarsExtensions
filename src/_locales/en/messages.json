@@ -428,6 +428,9 @@
     "trades_preview_full_exchange": {
         "message": "Show full exchange (all cards) in lists"
     },
+    "trades_history_big_images": {
+        "message": "Bigger images in trades history"
+    },
     "add_need_btn_to_card_dialog": {
         "message": "Add \"Need\" button to card dialog"
     },

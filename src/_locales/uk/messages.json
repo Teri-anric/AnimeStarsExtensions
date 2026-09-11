@@ -428,6 +428,9 @@
     "trades_preview_full_exchange": {
         "message": "Показувати повний обмін (усі картки) у списках"
     },
+    "trades_history_big_images": {
+        "message": "Більші зображення в історії обміну"
+    },
     "add_need_btn_to_card_dialog": {
         "message": "Додати кнопку \"Хочу картку\" в діалоговому вікні картки"
     },

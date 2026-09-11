@@ -52,28 +52,48 @@ chrome.storage.sync.get(['custom-hosts'], (data) => {
         return cardWrapper;
     }
 
+    function getCardMessageLinks() {
+        return Array.from(document.querySelectorAll(
+            '.animesss-pm__text > a[href*="/cards/users/"], .dpm-dialog-message-text > a[href*="/cards/users/"]',
+        ));
+    }
+
     async function processAllMessages() {
         if (!CONFIG.CARD_PM_PREVIEW_ENABLED) return;
 
-        Array.from(document.querySelectorAll('.dpm-dialog-message-text > a')).forEach(async (messageLink) => {
+        getCardMessageLinks().forEach(async (messageLink) => {
             const MessageElm = messageLink.parentElement;
             if (!MessageElm) return;
+
+            if (MessageElm.dataset.assPmPreviewPending === '1') return;
 
             const linkUrl = new URL(messageLink.getAttribute('href'), window.location.origin);
             const cardId = linkUrl.searchParams.get('id');
             if (!cardId) return;
 
-            if (MessageElm.querySelectorAll('.ass-pm-card-preview').length > 0) return;
+            if (MessageElm.querySelector('.ass-pm-card-preview, .ass-pm-card-preview-loading')) return;
 
-            const cardDetail = await getCardDetails(cardId);
-            if (!cardDetail) return;
-            MessageElm.appendChild(renderCardPreview(cardDetail));
+            MessageElm.dataset.assPmPreviewPending = '1';
+            const pendingMarker = document.createElement('span');
+            pendingMarker.className = 'ass-pm-card-preview-loading';
+            pendingMarker.hidden = true;
+            MessageElm.appendChild(pendingMarker);
+            try {
+                const cardDetail = await getCardDetails(cardId);
+                if (cardDetail && !MessageElm.querySelector('.ass-pm-card-preview')) {
+                    MessageElm.appendChild(renderCardPreview(cardDetail));
+                }
+            } finally {
+                pendingMarker.remove();
+                delete MessageElm.dataset.assPmPreviewPending;
+            }
         });
     }
 
-    new MutationObserver(processAllMessages).observe(document.querySelector('.dpm-dialog-list') || document.body, {
+    const messageRoot = document.querySelector('.animesss-pm__body, .dpm-dialog-list') || document.body;
+    new MutationObserver(processAllMessages).observe(messageRoot, {
         childList: true,
-        subtree: false,
+        subtree: true,
         attributes: false,
     });
 

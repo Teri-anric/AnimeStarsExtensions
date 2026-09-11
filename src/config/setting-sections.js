@@ -140,6 +140,7 @@ export const SETTING_SECTIONS = [
                 fieldKey: 'trades-preview-full-exchange',
                 showIf: { 'trades-preview-enabled': true },
             },
+            { kind: 'field', fieldKey: 'trades-history-big-images' },
             {
                 kind: 'sub',
                 id: 'trades-preview-auto-subsettings',
