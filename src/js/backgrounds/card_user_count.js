@@ -29,6 +29,15 @@ const CARD_COUNT_CONFIG = {
     API_STATS_RECEIVE_ENABLED: false,
 };
 
+const REQUEST_DELAY_MIN_MS = 1000;
+const REQUEST_DELAY_MAX_MS = 120000;
+
+function normalizeRequestDelayMs(value) {
+    const delay = Number(value);
+    if (!Number.isFinite(delay)) return 2000;
+    return Math.min(REQUEST_DELAY_MAX_MS, Math.max(REQUEST_DELAY_MIN_MS, delay));
+}
+
 // Initialise config from persisted settings
 chrome.storage.sync.get([
     'card-user-count-request-delay',
@@ -38,7 +47,7 @@ chrome.storage.sync.get([
     'api-stats-receive-enabled',
 ], (settings) => {
     if (typeof settings['card-user-count-request-delay'] === 'number') {
-        CARD_COUNT_CONFIG.REQUEST_DELAY = settings['card-user-count-request-delay'] * 1000;
+        CARD_COUNT_CONFIG.REQUEST_DELAY = normalizeRequestDelayMs(settings['card-user-count-request-delay'] * 1000);
     }
     if (typeof settings['card-user-count-cache-enabled'] === 'boolean') {
         CARD_COUNT_CONFIG.CACHE_ENABLED = settings['card-user-count-cache-enabled'];
@@ -58,7 +67,7 @@ chrome.storage.sync.get([
 chrome.storage.onChanged.addListener((changes, namespace) => {
     if (namespace !== 'sync') return;
     if (changes['card-user-count-request-delay']?.newValue !== undefined) {
-        CARD_COUNT_CONFIG.REQUEST_DELAY = changes['card-user-count-request-delay'].newValue * 1000;
+        CARD_COUNT_CONFIG.REQUEST_DELAY = normalizeRequestDelayMs(changes['card-user-count-request-delay'].newValue * 1000);
     }
     if (changes['card-user-count-cache-enabled']?.newValue !== undefined) {
         CARD_COUNT_CONFIG.CACHE_ENABLED = changes['card-user-count-cache-enabled'].newValue;
@@ -381,45 +390,74 @@ async function fetchCounts(item) {
 
 const fetchQueue = [];
 let queueProcessing = false;
+let queueTimer = null;
+let activeFetchItem = null;
+const queuedFetchKeys = new Set();
+
+function fetchQueueKey(data) {
+    return [data.origin, data.cardId, data.parseType, data.username || ''].join('|');
+}
+
+function scheduleNextFetch(delay = 0) {
+    if (queueProcessing || queueTimer !== null || fetchQueue.length === 0) return;
+    queueTimer = setTimeout(() => {
+        queueTimer = null;
+        void processNextFetch();
+    }, delay);
+}
 
 async function processNextFetch() {
-    if (fetchQueue.length === 0) {
-        queueProcessing = false;
-        return;
-    }
+    if (queueProcessing || fetchQueue.length === 0) return;
 
     queueProcessing = true;
-    const item = fetchQueue.pop();
+    const item = fetchQueue.shift();
+    const key = fetchQueueKey(item);
+    activeFetchItem = item;
 
     try {
         await cardDataUpdated([await fetchCounts(item)]);
     } catch (err) {
-        await cardDataUpdated([{ ...item, error: err?.message || String(err) }]);
-        throw err;
+        try {
+            await cardDataUpdated([{ ...item, error: err?.message || String(err) }]);
+        } catch (notifyError) {
+            console.error('Card data error notification failed:', notifyError);
+        }
+        console.error('Card data fetch failed:', err);
     } finally {
-        setTimeout(processNextFetch, CARD_COUNT_CONFIG.REQUEST_DELAY);
+        queuedFetchKeys.delete(key);
+        activeFetchItem = null;
+        queueProcessing = false;
+        scheduleNextFetch(CARD_COUNT_CONFIG.REQUEST_DELAY);
     }
 }
 
 function enqueueFetchRequest(data) {
     // skip site card parse types
     if (SITE_CARD_PARSE_TYPES.includes(data.parseType)) return;
+    const key = fetchQueueKey(data);
+    if (queuedFetchKeys.has(key)) return;
+    queuedFetchKeys.add(key);
     fetchQueue.push(data);
-    if (!queueProcessing) {
-        processNextFetch();
-    }
+    scheduleNextFetch();
 }
 
 function clearCardDataQueue(message, sender) {
     registerSenderTab(sender);
-    const length = fetchQueue.length;
-    for (let i = 0; i < length; i++) {
-        fetchQueue.shift();
+    const removedItems = fetchQueue.splice(0);
+    const cleared = removedItems.length;
+    removedItems.forEach((item) => queuedFetchKeys.delete(fetchQueueKey(item)));
+    if (!queueProcessing && fetchQueue.length === 0 && queueTimer !== null) {
+        clearTimeout(queueTimer);
+        queueTimer = null;
     }
     broadcastToSubscribedTabs({
         action: 'card_data_queue_cleared',
     });
-    return { success: true };
+    return {
+        success: true,
+        cleared,
+        active: activeFetchItem ? 1 : 0,
+    };
 }
 
 function fetchCardDataQueue(message, sender) {
@@ -466,7 +504,11 @@ async function updateCardDataFromPage(message, sender) {
 
 // New: report current queue size
 async function getCardDataQueueSize() {
-    return { size: fetchQueue.length };
+    return {
+        size: fetchQueue.length + (activeFetchItem ? 1 : 0),
+        pending: fetchQueue.length,
+        active: activeFetchItem ? 1 : 0,
+    };
 }
 
 // New: clear all cached card data in local storage
@@ -514,4 +556,3 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
         return false;
     }
 });
-

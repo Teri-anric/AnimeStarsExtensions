@@ -5,9 +5,20 @@ chrome.storage.sync.get(['custom-hosts'], (data) => {
   (async () => {
   let enabledCached = false;
   let listenersBound = false;
+  let domObserverBound = false;
+  let applyScheduled = false;
+
+  function getRemeltContainer() {
+    const knownContainer = document.querySelector('.remelt__inner, [data-remelt-root]');
+    if (knownContainer) return knownContainer;
+
+    // The site has changed the wrapper/container classes before. The wrapper
+    // itself is the stable anchor, so its parent is a safe fallback.
+    return document.querySelector('.remelt__wrapper, [data-remelt-wrapper]')?.parentElement || null;
+  }
 
   function ensureTopbar() {
-    const container = document.querySelector('.remelt__inner');
+    const container = getRemeltContainer();
     if (!container) return null;
     let topbar = container.querySelector('.remelt-ext__topbar');
     if (topbar) return topbar;
@@ -37,11 +48,14 @@ chrome.storage.sync.get(['custom-hosts'], (data) => {
       '.remelt__rank-item.tabs__item--active[data-rank]',
       '.remelt__ranks .tabs__item--active[data-rank]',
       '.remelt__ranks [data-rank].tabs__item--active',
+      '[data-remelt-rank].is-active',
+      '[data-remelt-rank].active',
+      '[data-rank].remelt-active',
     ].join(', ');
     try {
       const active = document.querySelector(sel);
       if (active) {
-        const r = (active.getAttribute('data-rank') || '').trim().toLowerCase();
+        const r = (active.getAttribute('data-rank') || active.getAttribute('data-remelt-rank') || '').trim().toLowerCase();
         if (r) return r;
       }
     } catch {}
@@ -54,21 +68,21 @@ chrome.storage.sync.get(['custom-hosts'], (data) => {
 
   function useRemelt6Layout() {
     const rank = getActiveRemeltRankKey();
-    return rank === 'b' && !!document.querySelector('.remelt__wrapper.remelt6');
+    return rank === 'b' && !!document.querySelector('.remelt__wrapper.remelt6, [data-remelt-wrapper].remelt6');
   }
 
   /** Single app-wide control; lives outside .remelt__wrapper (sibling / higher in the tree). */
   function getRemeltStartButton() {
-    return document.querySelector('.remelt__start-btn');
+    return document.querySelector('.remelt__start-btn, [data-action="start-remelt"]');
   }
 
   /** DOM root for the remelt UI that matches the active rank (both wrappers may exist). */
   function getActiveRemeltRoot() {
     if (useRemelt6Layout()) {
-      const w = document.querySelector('.remelt__wrapper.remelt6');
+      const w = document.querySelector('.remelt__wrapper.remelt6, [data-remelt-wrapper].remelt6');
       if (w) return w;
     }
-    const classic = document.querySelector('.remelt__wrapper:not(.remelt6)');
+    const classic = document.querySelector('.remelt__wrapper:not(.remelt6), [data-remelt-wrapper]:not(.remelt6)');
     return classic || document;
   }
 
@@ -78,19 +92,19 @@ chrome.storage.sync.get(['custom-hosts'], (data) => {
         variant: 'remelt6',
         slots: [1, 2, 3, 4, 5, 6].map((n) => ({
           name: String(n),
-          selector: `.remelt6__slot--${n} img`,
+          selector: `.remelt6__slot--${n} img, .remelt6__slot[data-slot="${n}"] img, [data-remelt-slot="${n}"] img`,
         })),
-        resultSelector: '.remelt6__row.remelt6__result img, .remelt6__slot--result img',
+        resultSelector: '.remelt6__row.remelt6__result img, .remelt6__slot--result img, [data-remelt-result] img',
       };
     }
     return {
       variant: 'classic',
       slots: [
-        { name: 'one', selector: '.remelt__item--one img' },
-        { name: 'two', selector: '.remelt__item--two img' },
-        { name: 'three', selector: '.remelt__item--three img' },
+        { name: 'one', selector: '.remelt__item--one img, .remelt__slot--one img, [data-remelt-slot="one"] img' },
+        { name: 'two', selector: '.remelt__item--two img, .remelt__slot--two img, [data-remelt-slot="two"] img' },
+        { name: 'three', selector: '.remelt__item--three img, .remelt__slot--three img, [data-remelt-slot="three"] img' },
       ],
-      resultSelector: '.remelt__item--result img',
+      resultSelector: '.remelt__item--result img, .remelt__result img, [data-remelt-result] img',
     };
   }
 
@@ -143,6 +157,15 @@ chrome.storage.sync.get(['custom-hosts'], (data) => {
     }
   }
 
+  function moveRecipeToTopbar(topbar) {
+    const recipe = document.querySelector('.rf-recipe, [data-remelt-recipe]');
+    if (!recipe || recipe.parentElement === topbar) return;
+
+    recipe.classList.add('remelt-ext__recipe');
+    const resultWrap = topbar.querySelector('.remelt-ext__result');
+    topbar.insertBefore(recipe, resultWrap || null);
+  }
+
   function ensureStartButtonProxy(topbar) {
     const actionWrap = topbar.querySelector('.remelt-ext__action');
     if (!actionWrap) return;
@@ -182,9 +205,44 @@ chrome.storage.sync.get(['custom-hosts'], (data) => {
   function apply() {
     const topbar = ensureTopbar();
     if (!topbar) return;
+    moveRecipeToTopbar(topbar);
     syncSlotsFromWrapper(topbar);
     syncResultToTopbar(topbar);
     ensureStartButtonProxy(topbar);
+  }
+
+  function scheduleApply() {
+    if (applyScheduled) return;
+    applyScheduled = true;
+    setTimeout(() => {
+      applyScheduled = false;
+      apply();
+    }, 0);
+  }
+
+  function bindDomObserverOnce() {
+    if (domObserverBound || !document.body) return;
+    const observer = new MutationObserver((mutations) => {
+      const affectsSiteRemelt = mutations.some((mutation) => {
+        const target = mutation.target;
+        if (target?.closest?.('.remelt-ext__topbar')) return false;
+        if (mutation.type === 'childList') {
+          return [...mutation.addedNodes].some((node) => (
+            node.nodeType === Node.ELEMENT_NODE
+            && !node.closest?.('.remelt-ext__topbar')
+          ));
+        }
+        return true;
+      });
+      if (affectsSiteRemelt) scheduleApply();
+    });
+    observer.observe(document.body, {
+      childList: true,
+      subtree: true,
+      attributes: true,
+      attributeFilter: ['class', 'data-rank', 'data-remelt-rank', 'src', 'style'],
+    });
+    domObserverBound = true;
   }
 
   function bindSyncListenersOnce() {
@@ -231,10 +289,9 @@ chrome.storage.sync.get(['custom-hosts'], (data) => {
     setBodyEnabledClass(true);
     apply();
     bindSyncListenersOnce();
+    bindDomObserverOnce();
   });
 
 
   })();
 });
-
-

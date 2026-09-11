@@ -13,6 +13,11 @@ chrome.storage.sync.get(['custom-hosts'], (data) => {
     '.remelt__inventory-item',
     '.remelt__item',
     '.remelt-ext__slot',
+    '.noffer__img',
+    '.card-filter-list__card',
+    '.deck__item',
+    '.card-pack__card',
+    '.card-show__placeholder',
     '.anime-cards__placeholder',
     '.stone__inventory-item',
   ].join(',');
@@ -85,9 +90,11 @@ chrome.storage.sync.get(['custom-hosts'], (data) => {
 
   function extractCardIdFromElement(elm) {
     if (!elm) return null;
+    // Newer card views expose the type ID as data-card-id, including on
+    // containers that are not trade/remelt items.
+    if (elm.dataset?.cardId) return elm.dataset.cardId;
     if (elm.dataset?.id && !elm.matches(notIdsSelectors)) return elm.dataset.id;
-    if (elm.dataset?.cardId && elm.matches(notIdsSelectors)) return elm.dataset.cardId;
-    const href = elm.getAttribute('href');
+    const href = elm.getAttribute('href') || elm.querySelector('a[href]')?.getAttribute('href');
     if (!href) return null;
     try {
       const url = new URL(href, window.location.origin);
@@ -277,7 +284,7 @@ chrome.storage.sync.get(['custom-hosts'], (data) => {
     cardIndexerObserver.observe(document.body, {
       childList: true,
       subtree: true,
-      attributeFilter: ['data-id', 'href', 'src'],
+      attributeFilter: ['data-id', 'data-card-id', 'data-owner-id', 'data-name', 'data-rank', 'href', 'src'],
       attributes: true,
     });
   }
@@ -298,4 +305,3 @@ chrome.storage.sync.get(['custom-hosts'], (data) => {
   });
   })();
 });
-

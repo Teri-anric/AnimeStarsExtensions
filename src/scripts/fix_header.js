@@ -9,8 +9,35 @@ chrome.storage.sync.get(['custom-hosts'], (data) => {
         AUTO_TAKE_HEAVENLY_STONE: false,
         HIDE_SNOW: false,
     }
-    const USERNAME_ELEMENT = document.querySelector(".lgn__name > span");
-    const USERNAME = USERNAME_ELEMENT ? USERNAME_ELEMENT.textContent.trim() : null;
+    function getUsername() {
+        const selectors = [
+            '.lgn__name > span',
+            '.lgn__name',
+            '[data-username]',
+            '.header__user-name',
+            '.user-menu .username',
+        ];
+        for (const selector of selectors) {
+            const element = document.querySelector(selector);
+            const value = element?.dataset?.username || element?.textContent?.trim();
+            if (value) return value;
+        }
+
+        // The current header opens a profile panel whose native cards link is
+        // available in the DOM but does not render the username in the header.
+        const nativeCardsLink = document.querySelector(
+            '.ap-profile-actions a[href*="/user/cards/"], .ap-profile-action[href*="/user/cards/"], a[href*="/user/cards/"][href*="name="]',
+        );
+        if (nativeCardsLink) {
+            const value = new URL(nativeCardsLink.href, window.location.origin).searchParams.get('name');
+            if (value) return value;
+        }
+        return null;
+    }
+
+    function removeMyCardsButtons() {
+        document.querySelectorAll('.my-cards-button').forEach((button) => button.remove());
+    }
 
     function updateHideSnow(enabled) {
         CONFIG.HIDE_SNOW = !!enabled;
@@ -19,20 +46,49 @@ chrome.storage.sync.get(['custom-hosts'], (data) => {
     }
 
     function createMyCardsButton() {
-        if (!USERNAME) return;
+        const username = getUsername();
+        if (!username) return false;
+
+        const existing = document.querySelector('.my-cards-button');
+        if (existing) {
+            const url = new URL('/user/cards/', window.location.origin);
+            url.searchParams.set('name', username);
+            existing.href = url.href;
+            return true;
+        }
 
         const buttonLink = document.createElement('a');
-        buttonLink.href = `https://${window.location.hostname}/user/cards/?name=${USERNAME}`;
+        const url = new URL('/user/cards/', window.location.origin);
+        url.searchParams.set('name', username);
+        buttonLink.href = url.href;
         buttonLink.title = "Cards";
+        buttonLink.setAttribute('aria-label', 'Cards');
         buttonLink.classList.add('my-cards-button');
 
         const icon = document.createElement('i');
         icon.classList.add('fal', 'fa-yin-yang');
         buttonLink.appendChild(icon);
 
-        const themeToggle = document.querySelector('.header__theme');
-        if (themeToggle) {
-            themeToggle.parentNode.insertBefore(buttonLink, themeToggle.nextSibling);
+        const anchor = document.querySelector(
+            '.header__theme, .theme-toggle2, [href*="/settings"], .header__group-menu',
+        );
+        const fallback = document.querySelector('.header__actions, .header__right, header');
+        if (anchor?.parentNode) {
+            anchor.parentNode.insertBefore(buttonLink, anchor.nextSibling);
+        } else if (fallback) {
+            fallback.appendChild(buttonLink);
+        } else {
+            return false;
+        }
+        return true;
+    }
+
+    function updateMyCardsButton(enabled) {
+        CONFIG.ADD_MY_CARDS_BUTTON = !!enabled;
+        if (CONFIG.ADD_MY_CARDS_BUTTON) {
+            createMyCardsButton();
+        } else {
+            removeMyCardsButtons();
         }
     }
 
@@ -60,9 +116,7 @@ chrome.storage.sync.get(['custom-hosts'], (data) => {
     // init
     chrome.storage.sync.get(['auto-watchlist-fix', 'add-my-cards-button', 'auto-take-heavenly-stone', 'hide-snow'], (settings) => {
         updateWatchlistFix(settings['auto-watchlist-fix']);
-        if (settings['add-my-cards-button']) {
-            createMyCardsButton();
-        }
+        updateMyCardsButton(settings['add-my-cards-button']);
         if (settings['auto-take-heavenly-stone']) {
             CONFIG.AUTO_TAKE_HEAVENLY_STONE = settings['auto-take-heavenly-stone'];
         }
@@ -77,11 +131,7 @@ chrome.storage.sync.get(['custom-hosts'], (data) => {
         }
         // add my cards button
         if (changes['add-my-cards-button'] && changes['add-my-cards-button'].newValue != changes['add-my-cards-button'].oldValue) {
-            if (changes['add-my-cards-button'].newValue) {
-                createMyCardsButton();
-            } else {
-                document.querySelector(".my-cards-button").remove();
-            }
+            updateMyCardsButton(changes['add-my-cards-button'].newValue);
         }
         // auto take heavenly stone
         if (changes['auto-take-heavenly-stone'] && changes['auto-take-heavenly-stone'].newValue != changes['auto-take-heavenly-stone'].oldValue) {
@@ -92,5 +142,15 @@ chrome.storage.sync.get(['custom-hosts'], (data) => {
             updateHideSnow(changes['hide-snow'].newValue);
         }
     });
+
+    // The site header and login identity can arrive after document_idle or be
+    // replaced by partial navigation. Retry through DOM changes without
+    // creating duplicate links.
+    const observer = new MutationObserver(() => {
+        if (CONFIG.ADD_MY_CARDS_BUTTON && !document.querySelector('.my-cards-button')) {
+            createMyCardsButton();
+        }
+    });
+    observer.observe(document.documentElement, { childList: true, subtree: true });
     })();
 });
