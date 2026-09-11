@@ -9,6 +9,7 @@ chrome.storage.sync.get(['custom-hosts'], (hostData) => {
             syncEnabled: true,
             autoMineEnabled: true,
             autoBossEnabled: true,
+            autoBerserkEnabled: false,
             actionDelayMs: 900,
         };
         const CONFIG = { ...DEFAULTS };
@@ -45,6 +46,10 @@ chrome.storage.sync.get(['custom-hosts'], (hostData) => {
         function asInt(value) {
             const n = Number.parseInt(String(value ?? ''), 10);
             return Number.isFinite(n) ? n : null;
+        }
+
+        function isEnabledFlag(value) {
+            return value === true || value === 1 || value === '1';
         }
 
         function getCellCoords(cell) {
@@ -234,13 +239,21 @@ chrome.storage.sync.get(['custom-hosts'], (hostData) => {
             return mine?.can_collect === true || mine?.can_collect === 1 || mine?.can_collect === '1';
         }
 
+        function getBossData(kind) {
+            const keys = kind === 'hard'
+                ? ['hardBoss', 'hard_boss', 'hardboss']
+                : ['miniBoss', 'mini_boss', 'miniboss'];
+            return keys.map((key) => labyrinthData?.[key]).find((boss) => boss && typeof boss === 'object') || null;
+        }
+
         function hasActiveBoss(kind) {
-            const data = labyrinthData || {};
-            const boss = kind === 'hard'
-                ? (data.hardBoss || data.hard_boss)
-                : (data.miniBoss || data.mini_boss);
+            const boss = getBossData(kind);
             if (!boss) return false;
-            if (boss.active === false || boss.is_active === false || boss.dead === true || boss.is_dead === true) return false;
+            if (boss.active === false || boss.active === 0 || boss.active === '0'
+                || boss.is_active === false || boss.is_active === 0 || boss.is_active === '0'
+                || isEnabledFlag(boss.dead) || isEnabledFlag(boss.is_dead)) return false;
+            const hp = asInt(boss.hp);
+            if (hp !== null && hp <= 0) return false;
             return true;
         }
 
@@ -249,7 +262,21 @@ chrome.storage.sync.get(['custom-hosts'], (hostData) => {
             if (!mimic || !isVisible(mimic)) return false;
             const hpText = mimic.querySelector('#labyrinthMimicHpText, .labyrinth__mimic-hp-text')?.textContent || '';
             const hp = hpText.match(/(\d+)\s*\/\s*(\d+)/u);
+            const dataMimic = labyrinthData?.mimicChest || labyrinthData?.mimic_chest;
+            if (dataMimic && asInt(dataMimic.hp) !== null && asInt(dataMimic.hp) <= 0) return false;
             return !hp || Number(hp[1]) > 0;
+        }
+
+        function hasActiveBerserk() {
+            return isEnabledFlag(labyrinthData?.boosts?.active?.berserk);
+        }
+
+        function getBerserkCount() {
+            return asInt(labyrinthData?.boosts?.items?.berserk) || 0;
+        }
+
+        function hasActiveBossEncounter() {
+            return hasActiveBoss('mini') || hasActiveBoss('hard') || hasActiveMimic();
         }
 
         function getBossButton(kind) {
@@ -277,6 +304,20 @@ chrome.storage.sync.get(['custom-hosts'], (hostData) => {
             }
 
             if (CONFIG.autoBossEnabled) {
+                // Berserk is the site's own encounter automation. Keep it
+                // opt-in because activating it consumes one stored boost and
+                // lets the site handle boss/mimic clicks itself.
+                const berserkBtn = document.querySelector('#labyrinthBoostBerserkBtn');
+                if (CONFIG.autoBerserkEnabled && !hasActiveBerserk() && getBerserkCount() > 0
+                    && hasActiveBossEncounter() && canClickButton(berserkBtn)) {
+                    berserkBtn.click();
+                    pageBusyUntil = Date.now() + DOM_SETTLE_MS;
+                    waitingForPageUpdateSince = Date.now();
+                    return true;
+                }
+
+                if (hasActiveBerserk()) return false;
+
                 const miniBtn = getBossButton('mini');
                 if (hasActiveBoss('mini') && canClickButton(miniBtn)) {
                     miniBtn.click();
@@ -338,12 +379,14 @@ chrome.storage.sync.get(['custom-hosts'], (hostData) => {
                 'labyrinth-map-sync-enabled',
                 'labyrinth-auto-mine-enabled',
                 'labyrinth-auto-boss-enabled',
+                'labyrinth-auto-berserk-enabled',
                 'labyrinth-auto-action-delay-ms',
             ]);
             CONFIG.mapEnabled = settings['labyrinth-map-enabled'] ?? DEFAULTS.mapEnabled;
             CONFIG.syncEnabled = settings['labyrinth-map-sync-enabled'] ?? DEFAULTS.syncEnabled;
             CONFIG.autoMineEnabled = settings['labyrinth-auto-mine-enabled'] ?? DEFAULTS.autoMineEnabled;
             CONFIG.autoBossEnabled = settings['labyrinth-auto-boss-enabled'] ?? DEFAULTS.autoBossEnabled;
+            CONFIG.autoBerserkEnabled = settings['labyrinth-auto-berserk-enabled'] ?? DEFAULTS.autoBerserkEnabled;
             CONFIG.actionDelayMs = clampDelay(settings['labyrinth-auto-action-delay-ms']);
         }
 
@@ -365,6 +408,7 @@ chrome.storage.sync.get(['custom-hosts'], (hostData) => {
             if (changes['labyrinth-map-sync-enabled']) CONFIG.syncEnabled = changes['labyrinth-map-sync-enabled'].newValue;
             if (changes['labyrinth-auto-mine-enabled']) CONFIG.autoMineEnabled = changes['labyrinth-auto-mine-enabled'].newValue;
             if (changes['labyrinth-auto-boss-enabled']) CONFIG.autoBossEnabled = changes['labyrinth-auto-boss-enabled'].newValue;
+            if (changes['labyrinth-auto-berserk-enabled']) CONFIG.autoBerserkEnabled = changes['labyrinth-auto-berserk-enabled'].newValue;
             if (changes['labyrinth-auto-action-delay-ms']) CONFIG.actionDelayMs = clampDelay(changes['labyrinth-auto-action-delay-ms'].newValue);
             applyMapClasses();
             if (CONFIG.mapEnabled) refreshSharedRooms(true);

@@ -195,6 +195,7 @@ export const SETTING_SECTIONS = [
             },
             { kind: 'field', fieldKey: 'labyrinth-auto-mine-enabled' },
             { kind: 'field', fieldKey: 'labyrinth-auto-boss-enabled' },
+            { kind: 'field', fieldKey: 'labyrinth-auto-berserk-enabled' },
             {
                 kind: 'sub',
                 id: 'labyrinth-auto-action-subsettings',

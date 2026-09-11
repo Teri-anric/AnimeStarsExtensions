@@ -911,10 +911,16 @@
     "labyrinth_auto_boss_enabled": {
         "message": "Auto hit labyrinth bosses"
     },
+    "labyrinth_auto_berserk_enabled": {
+        "message": "Auto activate Berserk"
+    },
+    "labyrinth_auto_berserk_description": {
+        "message": "When enabled, activates the site's Berserk boost for an active boss or mimic. This spends one stored boost."
+    },
     "labyrinth_auto_action_delay_ms": {
         "message": "Labyrinth action delay"
     },
     "labyrinth_auto_action_delay_description": {
-        "message": "Pause between clicks on the site's mine and boss buttons."
+        "message": "Pause between automatic labyrinth checks and the site's action buttons."
     }
 }

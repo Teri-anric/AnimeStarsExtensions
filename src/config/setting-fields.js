@@ -308,6 +308,12 @@ export const SETTING_FIELDS = {
         defaultValue: true,
         quickAction: true,
     },
+    'labyrinth-auto-berserk-enabled': {
+        type: 'checkbox',
+        labelKey: 'labyrinth_auto_berserk_enabled',
+        defaultValue: false,
+        descriptionKey: 'labyrinth_auto_berserk_description',
+    },
     'labyrinth-auto-action-delay-ms': {
         type: 'range',
         labelKey: 'labyrinth_auto_action_delay_ms',
