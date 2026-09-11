@@ -244,6 +244,27 @@ chrome.storage.sync.get(['custom-hosts'], (hostData) => {
             return true;
         }
 
+        function hasActiveMimic() {
+            const mimic = document.querySelector('#labyrinthMimic, .labyrinth__mimic');
+            if (!mimic || !isVisible(mimic)) return false;
+            const hpText = mimic.querySelector('#labyrinthMimicHpText, .labyrinth__mimic-hp-text')?.textContent || '';
+            const hp = hpText.match(/(\d+)\s*\/\s*(\d+)/u);
+            return !hp || Number(hp[1]) > 0;
+        }
+
+        function getBossButton(kind) {
+            const selectors = {
+                mini: ['#labyrinthMiniBossHitBtn', '[data-labyrinth-action="mini-boss-hit"]'],
+                hard: ['#labyrinthHardBossHitBtn', '[data-labyrinth-action="hard-boss-hit"]'],
+                mimic: [
+                    '#labyrinthMimicHitBtn',
+                    '#labyrinthMimic .labyrinth__mimic-actions .button--primary',
+                    '[data-labyrinth-action="mimic-hit"]',
+                ],
+            }[kind] || [];
+            return selectors.map((selector) => document.querySelector(selector)).find(Boolean) || null;
+        }
+
         function clickActionButton() {
             if (CONFIG.autoMineEnabled && canCollectMine()) {
                 const btn = document.querySelector('#labyrinthCollectMineBtn');
@@ -256,16 +277,26 @@ chrome.storage.sync.get(['custom-hosts'], (hostData) => {
             }
 
             if (CONFIG.autoBossEnabled) {
-                const miniBtn = document.querySelector('#labyrinthMiniBossHitBtn');
+                const miniBtn = getBossButton('mini');
                 if (hasActiveBoss('mini') && canClickButton(miniBtn)) {
                     miniBtn.click();
                     pageBusyUntil = Date.now() + DOM_SETTLE_MS;
                     waitingForPageUpdateSince = Date.now();
                     return true;
                 }
-                const hardBtn = document.querySelector('#labyrinthHardBossHitBtn');
+                const hardBtn = getBossButton('hard');
                 if (hasActiveBoss('hard') && canClickButton(hardBtn)) {
                     hardBtn.click();
+                    pageBusyUntil = Date.now() + DOM_SETTLE_MS;
+                    waitingForPageUpdateSince = Date.now();
+                    return true;
+                }
+
+                // The current site renders the labyrinth mimic as a boss-like
+                // encounter with its own hit button and no mini/hard boss data.
+                const mimicBtn = getBossButton('mimic');
+                if (hasActiveMimic() && canClickButton(mimicBtn)) {
+                    mimicBtn.click();
                     pageBusyUntil = Date.now() + DOM_SETTLE_MS;
                     waitingForPageUpdateSince = Date.now();
                     return true;
