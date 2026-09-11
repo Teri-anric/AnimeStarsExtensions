@@ -413,9 +413,6 @@
     "cards_search_integration_description": {
         "message": "Добавляет кнопку поиска на страницу базы карт для быстрого поиска через API"
     },
-    "trades_history_filters": {
-        "message": "Фильтры истории обменов (ранг и пользователь)"
-    },
     "trades_preview_enabled": {
         "message": "Показывать превью карточек в обменах"
     },
@@ -430,12 +427,6 @@
     },
     "trades_preview_full_exchange": {
         "message": "Показывать полный обмен (все карточки) в списках"
-    },
-    "trades_history_big_images": {
-        "message": "Большие изображения в истории обменов"
-    },
-    "remelt_topbar_enabled": {
-        "message": "Спростить и переместить панель переплавки на верх страницы"
     },
     "add_need_btn_to_card_dialog": {
         "message": "Добавить кнопку \"Хочу карточку\" в диалоге карточки"

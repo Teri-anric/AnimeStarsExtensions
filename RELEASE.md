@@ -2,7 +2,7 @@
 
 ## Overview
 
-You can now build your own floating action buttons on site pages (custom text, icons, colors, links, and behavior) and add quick bookmarks directly to the page header with a dedicated editor. Card search now includes extra filters, and club helpers now include automatic card skip behavior for mine replacements. Cinema auto-stone now has configurable click speed, and several daily-use tools (boost automation helpers, remelt topbar, card appearance editor, profile card buttons, and general settings/translation polish) also feel more stable and polished.
+This release streamlines the extension around card statistics, trade previews, messaging previews, cinema collection, club automation, labyrinth automation, and deck synchronization. Obsolete trade-history filters and remelt helpers have been removed.
 
 ## Changes
 
@@ -13,7 +13,9 @@ You can now build your own floating action buttons on site pages (custom text, i
 - **Cards search filters**: Search integration now includes new filters, plus richer UI/styling and better extension-side interaction handling.
 - **Club auto card skip (mine replacement)**: Added automatic card skip flow for club usage when replacing cards on the mine page.
 - **Cinema auto-stone speed control**: Added a setting to adjust the click speed/delay for automatic cinema stone collection.
-- **Quality-of-life fixes**: Multiple refinements for boost automation, remelt topbar behavior, card appearance editor, user card quick buttons, plus settings architecture cleanup and multilingual runtime consistency.
+- **Labyrinth map and automation**: The map, room synchronization, mine collection, boss actions, and opt-in Berserk support remain available on the labyrinth page.
+- **Quality-of-life fixes**: Multiple refinements for boost automation, card appearance editor, user card quick buttons, plus settings architecture cleanup and multilingual runtime consistency.
+- **Removed obsolete features**: Trade-history filters and remelt helpers are no longer shipped or exposed in settings.
 
 ## Quick install (need for 1-3 days from release for approval from Google and Mozilla)
 🦊 Firefox Add-ons: https://addons.mozilla.org/firefox/addon/animestar-extension/  

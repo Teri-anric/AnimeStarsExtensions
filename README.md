@@ -24,18 +24,15 @@ This browser extension provides enhanced functionality for the AnimeStar website
     - Adds keyboard shortcuts
     - Adds automatic club boost
     - Adds highlight for you user in top
-- **Trades History Filters**:
-    - Filter trades history by rank and by user
-    - Preserves filters when switching subtabs, quick clear button
-    - Big images toggle for enhanced visual clarity
+- **Labyrinth**:
+    - Highlights and synchronizes the discovered labyrinth map
+    - Automatically collects the mine
+    - Automatically hits labyrinth bosses and supports optional Berserk activation
 - **Trade Previews**:
     - Shows small card previews in trade lists
     - Optional auto-parse to fetch missing previews with configurable timings
     - Full exchange details display option
     - Shows card previews in trade dialogs
-- **Remelt Top Bar**:
-    - Simplifies and elevates remelt slots to the top
-    - User-configurable settings for enable/disable
 - **Advanced Card Widgets**:
     - Custom positioning controls with percentage-based placement
     - Enhanced template variables for card and deck details
@@ -54,11 +51,10 @@ This browser extension provides enhanced functionality for the AnimeStar website
     - enable/disable auto heavenly stone collection
     - enable/disable snow-related automation and UI hiding
     - set refresh and action cooldowns
+    - configure labyrinth map sync and automation
     - disable update check
     - set language
-    - enable/disable remelt top bar
     - configure card widget positioning
-    - big images in trade history
     - enable/disable full/preview exchange details
 - **Language Support**: 
     - English

@@ -157,12 +157,6 @@ export const SETTING_FIELDS = {
         defaultValue: false,
         quickAction: true,
     },
-    'remelt-topbar-enabled': {
-        type: 'checkbox',
-        labelKey: 'remelt_topbar_enabled',
-        defaultValue: false,
-        quickAction: true,
-    },
     'pm-card-preview-enabled': {
         type: 'checkbox',
         labelKey: 'pm_card_preview_enabled',
@@ -170,12 +164,6 @@ export const SETTING_FIELDS = {
         quickAction: true,
     },
 
-    'trades-history-filters': {
-        type: 'checkbox',
-        labelKey: 'trades_history_filters',
-        defaultValue: true,
-        quickAction: true,
-    },
     'trades-preview-enabled': {
         type: 'checkbox',
         labelKey: 'trades_preview_enabled',
@@ -191,12 +179,6 @@ export const SETTING_FIELDS = {
     'trades-preview-full-exchange': {
         type: 'checkbox',
         labelKey: 'trades_preview_full_exchange',
-        defaultValue: false,
-        quickAction: true,
-    },
-    'trades-history-big-images': {
-        type: 'checkbox',
-        labelKey: 'trades_history_big_images',
         defaultValue: false,
         quickAction: true,
     },

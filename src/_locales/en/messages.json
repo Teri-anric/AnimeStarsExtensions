@@ -413,9 +413,6 @@
     "cards_search_integration_description": {
         "message": "Adds a search button to the cards base page for quick search via API"
     },
-    "trades_history_filters": {
-        "message": "Trades history filters (rank and user)"
-    },
     "trades_preview_enabled": {
         "message": "Show trade card previews"
     },
@@ -430,12 +427,6 @@
     },
     "trades_preview_full_exchange": {
         "message": "Show full exchange (all cards) in lists"
-    },
-    "trades_history_big_images": {
-        "message": "Bigger images in trades history"
-    },
-    "remelt_topbar_enabled": {
-        "message": "Simplify and move smelting top bar to the top of the page"
     },
     "add_need_btn_to_card_dialog": {
         "message": "Add \"Need\" button to card dialog"

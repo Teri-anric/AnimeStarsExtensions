@@ -77,13 +77,8 @@ chrome.storage.sync.get(['custom-hosts'], (data) => {
         attributes: false,
     });
 
-    chrome.storage.sync.get(['pm_card_previews'], (result) => {
-        const cardPreviews = result.pm_card_previews;
-        if (cardPreviews && CONFIG.CARD_PM_PREVIEW_ENABLED) {
-            cardPreviews.forEach(cardPreview => {
-                getCardDetails(cardPreview);
-            });
-        }
+    chrome.storage.sync.get(['pm-card-preview-enabled'], (result) => {
+        CONFIG.CARD_PM_PREVIEW_ENABLED = result['pm-card-preview-enabled'] ?? true;
         processAllMessages();
     });
     })();

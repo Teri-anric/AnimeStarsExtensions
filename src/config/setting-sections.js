@@ -122,7 +122,6 @@ export const SETTING_SECTIONS = [
             { kind: 'field', fieldKey: 'add-need-btn-to-card-dialog' },
             { kind: 'field', fieldKey: 'card-modal-star-button' },
             { kind: 'field', fieldKey: 'remove-card-list-and-club-rating-in-card-base' },
-            { kind: 'field', fieldKey: 'remelt-topbar-enabled' },
             { kind: 'field', fieldKey: 'pm-card-preview-enabled' },
         ],
     },
@@ -130,7 +129,6 @@ export const SETTING_SECTIONS = [
         kind: 'section',
         titleKey: 'exchange_settings',
         children: [
-            { kind: 'field', fieldKey: 'trades-history-filters' },
             { kind: 'field', fieldKey: 'trades-preview-enabled' },
             {
                 kind: 'field',
@@ -142,7 +140,6 @@ export const SETTING_SECTIONS = [
                 fieldKey: 'trades-preview-full-exchange',
                 showIf: { 'trades-preview-enabled': true },
             },
-            { kind: 'field', fieldKey: 'trades-history-big-images' },
             {
                 kind: 'sub',
                 id: 'trades-preview-auto-subsettings',
