@@ -911,10 +911,16 @@
     "labyrinth_auto_boss_enabled": {
         "message": "Автоматически бить боссов лабиринта"
     },
+    "labyrinth_auto_berserk_enabled": {
+        "message": "Автоматически включать берсерк"
+    },
+    "labyrinth_auto_berserk_description": {
+        "message": "Включает буст «Режим берсерка» для активного босса или мимика. Расходуется один сохранённый буст."
+    },
     "labyrinth_auto_action_delay_ms": {
         "message": "Задержка действий лабиринта"
     },
     "labyrinth_auto_action_delay_description": {
-        "message": "Пауза между кликами по штатным кнопкам шахты и боссов."
+        "message": "Пауза между автоматическими проверками лабиринта и штатными кнопками действий."
     }
 }

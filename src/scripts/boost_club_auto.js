@@ -10,7 +10,6 @@ chrome.storage.sync.get(['custom-hosts'], (data) => {
     const AUTO_KEY = isBossPage ? 'boss-boost-auto' : 'club-boost-auto';
 
     const TICK_INTERVAL_MS = 200;
-    const SKIP_START_TIME = new Date().setUTCHours(18, 3, 0, 0); // 18:03:00 UTC
 
     const CONFIG = {
         boostActive: false,
@@ -157,13 +156,23 @@ chrome.storage.sync.get(['custom-hosts'], (data) => {
     let lastReplaceClickAt = 0;
 
     function getClubBoostCardFingerprint() {
-        const img = document.querySelector('.club-boost .club-boost__image img');
+        const wrap = document.querySelector('.club-boost .club-boost__image');
+        const img = wrap?.querySelector('img');
         const src = (
             img?.getAttribute('src') ||
             img?.dataset?.assBoostOriginalSrc ||
             ''
         ).trim();
-        return `${src}`;
+        const cardId = (
+            wrap?.getAttribute('data-last-card-id') ||
+            wrap?.getAttribute('data-index-card-id') ||
+            wrap?.getAttribute('data-last-parsed-card-id') ||
+            wrap?.getAttribute('data-card-id') ||
+            img?.getAttribute('data-card-id') ||
+            img?.dataset?.cardId ||
+            ''
+        ).trim();
+        return `${src}|${cardId}`;
     }
 
     function clubBoostHasNoContributors() {
@@ -173,8 +182,10 @@ chrome.storage.sync.get(['custom-hosts'], (data) => {
     }
 
     function clickClubReplaceBtn() {
-        const btn = document.querySelector('.club-boost__replace-btn');
-        if (!btn || btn.disabled) return false;
+        const btn = document.querySelector(
+            '.club-boost .club-boost__change .club-boost__replace-btn, .club-boost .club-boost__replace-btn',
+        );
+        if (!btn || btn.disabled || !btn.offsetParent) return false;
         const now = Date.now();
         if (now - lastReplaceClickAt < CONFIG.replaceSkipCooldownMs) return false;
         btn.click();
@@ -184,9 +195,7 @@ chrome.storage.sync.get(['custom-hosts'], (data) => {
     }
 
     function tickClubReplaceAutomation() {
-        if (SKIP_START_TIME > Date.now() || !checkBoostLimit(true)) {
-            return;
-        };
+        if (!checkBoostLimit(true)) return;
         if (isBossPage || !CONFIG.replaceAutoEnabled) {
             return;
         }
