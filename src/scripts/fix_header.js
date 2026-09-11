@@ -22,6 +22,16 @@ chrome.storage.sync.get(['custom-hosts'], (data) => {
             const value = element?.dataset?.username || element?.textContent?.trim();
             if (value) return value;
         }
+
+        // The current header opens a profile panel whose native cards link is
+        // available in the DOM but does not render the username in the header.
+        const nativeCardsLink = document.querySelector(
+            '.ap-profile-actions a[href*="/user/cards/"], .ap-profile-action[href*="/user/cards/"], a[href*="/user/cards/"][href*="name="]',
+        );
+        if (nativeCardsLink) {
+            const value = new URL(nativeCardsLink.href, window.location.origin).searchParams.get('name');
+            if (value) return value;
+        }
         return null;
     }
 

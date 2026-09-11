@@ -9,6 +9,8 @@ test('my-cards header link follows delayed and current site header markup', () =
   assert.match(header, /function getUsername\(\)/u);
   assert.match(header, /'\.lgn__name'/u);
   assert.match(header, /'\.header__user-name'/u);
+  assert.match(header, /\.ap-profile-actions a\[href\*="\/user\/cards\/"\]/u);
+  assert.match(header, /searchParams\.get\('name'\)/u);
   assert.match(header, /url\.searchParams\.set\('name', username\)/u);
   assert.match(header, /new MutationObserver/u);
   assert.match(header, /removeMyCardsButtons/u);
