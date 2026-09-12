@@ -58,6 +58,15 @@ chrome.storage.sync.get(['custom-hosts'], (data) => {
         ));
     }
 
+    function removeCardPreviews() {
+        document.querySelectorAll('.ass-pm-card-preview, .ass-pm-card-preview-loading').forEach((element) => {
+            element.remove();
+        });
+        document.querySelectorAll('[data-ass-pm-preview-pending]').forEach((messageElement) => {
+            delete messageElement.dataset.assPmPreviewPending;
+        });
+    }
+
     async function processAllMessages() {
         if (!CONFIG.CARD_PM_PREVIEW_ENABLED) return;
 
@@ -80,7 +89,9 @@ chrome.storage.sync.get(['custom-hosts'], (data) => {
             MessageElm.appendChild(pendingMarker);
             try {
                 const cardDetail = await getCardDetails(cardId);
-                if (cardDetail && !MessageElm.querySelector('.ass-pm-card-preview')) {
+                if (CONFIG.CARD_PM_PREVIEW_ENABLED
+                    && cardDetail
+                    && !MessageElm.querySelector('.ass-pm-card-preview')) {
                     MessageElm.appendChild(renderCardPreview(cardDetail));
                 }
             } finally {
@@ -100,6 +111,17 @@ chrome.storage.sync.get(['custom-hosts'], (data) => {
     chrome.storage.sync.get(['pm-card-preview-enabled'], (result) => {
         CONFIG.CARD_PM_PREVIEW_ENABLED = result['pm-card-preview-enabled'] ?? true;
         processAllMessages();
+    });
+
+    chrome.storage.onChanged.addListener((changes, areaName) => {
+        if (areaName !== 'sync' || !changes['pm-card-preview-enabled']) return;
+
+        CONFIG.CARD_PM_PREVIEW_ENABLED = changes['pm-card-preview-enabled'].newValue ?? true;
+        if (CONFIG.CARD_PM_PREVIEW_ENABLED) {
+            processAllMessages();
+        } else {
+            removeCardPreviews();
+        }
     });
     })();
 });

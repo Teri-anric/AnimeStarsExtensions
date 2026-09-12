@@ -916,5 +916,17 @@
     },
     "labyrinth_auto_action_delay_description": {
         "message": "Pause between automatic labyrinth checks and the site's action buttons."
+    },
+    "labyrinth_auto_mine_cooldown_ms": {
+        "message": "Mine collection cooldown"
+    },
+    "labyrinth_auto_mine_cooldown_description": {
+        "message": "Minimum pause between automatic mine-collection attempts."
+    },
+    "labyrinth_auto_boss_cooldown_ms": {
+        "message": "Boss action cooldown"
+    },
+    "labyrinth_auto_boss_cooldown_description": {
+        "message": "Minimum pause between automatic boss or mimic actions."
     }
 }

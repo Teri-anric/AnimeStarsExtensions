@@ -312,6 +312,26 @@ export const SETTING_FIELDS = {
         defaultValue: 900,
         descriptionKey: 'labyrinth_auto_action_delay_description',
     },
+    'labyrinth-auto-mine-cooldown-ms': {
+        type: 'range',
+        labelKey: 'labyrinth_auto_mine_cooldown_ms',
+        min: 300,
+        max: 5000,
+        step: 100,
+        unit: 'ms',
+        defaultValue: 900,
+        descriptionKey: 'labyrinth_auto_mine_cooldown_description',
+    },
+    'labyrinth-auto-boss-cooldown-ms': {
+        type: 'range',
+        labelKey: 'labyrinth_auto_boss_cooldown_ms',
+        min: 300,
+        max: 5000,
+        step: 100,
+        unit: 'ms',
+        defaultValue: 1800,
+        descriptionKey: 'labyrinth_auto_boss_cooldown_description',
+    },
 
     'card-user-count': {
         type: 'checkbox',

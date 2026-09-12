@@ -10,7 +10,8 @@ chrome.storage.sync.get(['custom-hosts'], (hostData) => {
             autoMineEnabled: true,
             autoBossEnabled: true,
             autoBerserkEnabled: false,
-            actionDelayMs: 900,
+            mineCooldownMs: 900,
+            bossCooldownMs: 1800,
         };
         const CONFIG = { ...DEFAULTS };
         const LOCAL_LAST_UPLOAD_KEY = 'labyrinth-last-upload-at';
@@ -27,11 +28,12 @@ chrome.storage.sync.get(['custom-hosts'], (hostData) => {
         let sharedRooms = new Map();
         let actionLoopTimer = null;
         let pageBusyUntil = 0;
-        let waitingForPageUpdateSince = 0;
+        let mineCooldownUntil = 0;
+        let bossCooldownUntil = 0;
 
-        function clampDelay(value) {
+        function clampDelay(value, fallback) {
             const n = Number.parseInt(String(value ?? ''), 10);
-            if (!Number.isFinite(n)) return DEFAULTS.actionDelayMs;
+            if (!Number.isFinite(n)) return fallback;
             return Math.min(5000, Math.max(300, n));
         }
 
@@ -226,12 +228,22 @@ chrome.storage.sync.get(['custom-hosts'], (hostData) => {
             return style.display !== 'none' && style.visibility !== 'hidden' && el.offsetParent !== null;
         }
 
-        function canClickButton(button) {
+        function canClickButton(button, cooldownUntil) {
             if (!button || button.disabled || button.getAttribute('aria-disabled') === 'true') return false;
             if (!isVisible(button)) return false;
             if (Date.now() < pageBusyUntil) return false;
-            if (waitingForPageUpdateSince && Date.now() - waitingForPageUpdateSince < Math.max(CONFIG.actionDelayMs, 5000)) return false;
+            if (cooldownUntil && Date.now() < cooldownUntil) return false;
             return !document.body.classList.contains('loading') && !document.body.classList.contains('busy');
+        }
+
+        function markAction(kind) {
+            const cooldown = kind === 'mine' ? CONFIG.mineCooldownMs : CONFIG.bossCooldownMs;
+            const until = Date.now() + cooldown;
+            if (kind === 'mine') {
+                mineCooldownUntil = until;
+            } else {
+                bossCooldownUntil = until;
+            }
         }
 
         function canCollectMine() {
@@ -242,8 +254,39 @@ chrome.storage.sync.get(['custom-hosts'], (hostData) => {
         function getBossData(kind) {
             const keys = kind === 'hard'
                 ? ['hardBoss', 'hard_boss', 'hardboss']
-                : ['miniBoss', 'mini_boss', 'miniboss'];
+                : kind === 'mimic'
+                    ? ['mimicChest', 'mimic_chest', 'mimic']
+                    : ['miniBoss', 'mini_boss', 'miniboss'];
             return keys.map((key) => labyrinthData?.[key]).find((boss) => boss && typeof boss === 'object') || null;
+        }
+
+        function getAvailableCardCount(kind) {
+            const boss = getBossData(kind);
+            if (!boss) return null;
+
+            for (const key of ['available_count', 'availableCount', 'free_count', 'freeCount']) {
+                if (Object.prototype.hasOwnProperty.call(boss, key)) return asInt(boss[key]);
+            }
+            for (const key of ['current_count', 'currentCount', 'card_count', 'cardCount']) {
+                if (Object.prototype.hasOwnProperty.call(boss, key)) return asInt(boss[key]);
+            }
+
+            const selectors = kind === 'hard'
+                ? ['#labyrinthHardBossNeedCount', '#labyrinthBossCardsList']
+                : ['#labyrinthMimicCard', '#labyrinthBossCardsList'];
+            const text = selectors
+                .map((selector) => document.querySelector(selector)?.textContent || '')
+                .find((value) => value.trim()) || '';
+            const match = text.match(/(?:Открытых|Свободных копий|Available|Free copies)\s*:?\s*(\d+)/iu);
+            return match ? asInt(match[1]) : null;
+        }
+
+        function hasRequiredCard(kind) {
+            // The site's current mini-boss API does not expose a card count;
+            // hard bosses and mimics do, and must be count-gated.
+            if (kind === 'mini') return true;
+            const count = getAvailableCardCount(kind);
+            return count !== null && count > 0;
         }
 
         function hasActiveBoss(kind) {
@@ -295,10 +338,10 @@ chrome.storage.sync.get(['custom-hosts'], (hostData) => {
         function clickActionButton() {
             if (CONFIG.autoMineEnabled && canCollectMine()) {
                 const btn = document.querySelector('#labyrinthCollectMineBtn');
-                if (canClickButton(btn)) {
+                if (canClickButton(btn, mineCooldownUntil)) {
                     btn.click();
                     pageBusyUntil = Date.now() + DOM_SETTLE_MS;
-                    waitingForPageUpdateSince = Date.now();
+                    markAction('mine');
                     return true;
                 }
             }
@@ -309,55 +352,54 @@ chrome.storage.sync.get(['custom-hosts'], (hostData) => {
                 // lets the site handle boss/mimic clicks itself.
                 const berserkBtn = document.querySelector('#labyrinthBoostBerserkBtn');
                 if (CONFIG.autoBerserkEnabled && !hasActiveBerserk() && getBerserkCount() > 0
-                    && hasActiveBossEncounter() && canClickButton(berserkBtn)) {
+                    && hasActiveBossEncounter() && canClickButton(berserkBtn, bossCooldownUntil)) {
                     berserkBtn.click();
                     pageBusyUntil = Date.now() + DOM_SETTLE_MS;
-                    waitingForPageUpdateSince = Date.now();
+                    markAction('boss');
                     return true;
                 }
 
                 if (hasActiveBerserk()) return false;
 
                 const miniBtn = getBossButton('mini');
-                if (hasActiveBoss('mini') && canClickButton(miniBtn)) {
+                if (hasActiveBoss('mini') && hasRequiredCard('mini') && canClickButton(miniBtn, bossCooldownUntil)) {
                     miniBtn.click();
                     pageBusyUntil = Date.now() + DOM_SETTLE_MS;
-                    waitingForPageUpdateSince = Date.now();
+                    markAction('boss');
                     return true;
                 }
                 const hardBtn = getBossButton('hard');
-                if (hasActiveBoss('hard') && canClickButton(hardBtn)) {
+                if (hasActiveBoss('hard') && hasRequiredCard('hard') && canClickButton(hardBtn, bossCooldownUntil)) {
                     hardBtn.click();
                     pageBusyUntil = Date.now() + DOM_SETTLE_MS;
-                    waitingForPageUpdateSince = Date.now();
+                    markAction('boss');
                     return true;
                 }
 
                 // The current site renders the labyrinth mimic as a boss-like
                 // encounter with its own hit button and no mini/hard boss data.
                 const mimicBtn = getBossButton('mimic');
-                if (hasActiveMimic() && canClickButton(mimicBtn)) {
+                if (hasActiveMimic() && hasRequiredCard('mimic') && canClickButton(mimicBtn, bossCooldownUntil)) {
                     mimicBtn.click();
                     pageBusyUntil = Date.now() + DOM_SETTLE_MS;
-                    waitingForPageUpdateSince = Date.now();
+                    markAction('boss');
                     return true;
                 }
             }
             return false;
         }
 
-        function scheduleActionLoop(delay = CONFIG.actionDelayMs) {
+        function scheduleActionLoop(delay = Math.min(CONFIG.mineCooldownMs, CONFIG.bossCooldownMs)) {
             clearTimeout(actionLoopTimer);
             actionLoopTimer = setTimeout(() => {
                 clickActionButton();
-                scheduleActionLoop(CONFIG.actionDelayMs);
+                scheduleActionLoop(Math.min(CONFIG.mineCooldownMs, CONFIG.bossCooldownMs));
             }, delay);
         }
 
         function handleLabyrinthData(data) {
             if (!data || typeof data !== 'object') return;
             labyrinthData = data;
-            waitingForPageUpdateSince = 0;
             const rooms = isEmissionActive(data)
                 ? getEmissionObservations()
                 : getKnownRooms();
@@ -381,13 +423,23 @@ chrome.storage.sync.get(['custom-hosts'], (hostData) => {
                 'labyrinth-auto-boss-enabled',
                 'labyrinth-auto-berserk-enabled',
                 'labyrinth-auto-action-delay-ms',
+                'labyrinth-auto-mine-cooldown-ms',
+                'labyrinth-auto-boss-cooldown-ms',
             ]);
             CONFIG.mapEnabled = settings['labyrinth-map-enabled'] ?? DEFAULTS.mapEnabled;
             CONFIG.syncEnabled = settings['labyrinth-map-sync-enabled'] ?? DEFAULTS.syncEnabled;
             CONFIG.autoMineEnabled = settings['labyrinth-auto-mine-enabled'] ?? DEFAULTS.autoMineEnabled;
             CONFIG.autoBossEnabled = settings['labyrinth-auto-boss-enabled'] ?? DEFAULTS.autoBossEnabled;
             CONFIG.autoBerserkEnabled = settings['labyrinth-auto-berserk-enabled'] ?? DEFAULTS.autoBerserkEnabled;
-            CONFIG.actionDelayMs = clampDelay(settings['labyrinth-auto-action-delay-ms']);
+            const legacyDelay = settings['labyrinth-auto-action-delay-ms'];
+            CONFIG.mineCooldownMs = clampDelay(
+                settings['labyrinth-auto-mine-cooldown-ms'] ?? legacyDelay,
+                DEFAULTS.mineCooldownMs,
+            );
+            CONFIG.bossCooldownMs = clampDelay(
+                settings['labyrinth-auto-boss-cooldown-ms'] ?? legacyDelay,
+                DEFAULTS.bossCooldownMs,
+            );
         }
 
         function startObservers() {
@@ -409,7 +461,12 @@ chrome.storage.sync.get(['custom-hosts'], (hostData) => {
             if (changes['labyrinth-auto-mine-enabled']) CONFIG.autoMineEnabled = changes['labyrinth-auto-mine-enabled'].newValue;
             if (changes['labyrinth-auto-boss-enabled']) CONFIG.autoBossEnabled = changes['labyrinth-auto-boss-enabled'].newValue;
             if (changes['labyrinth-auto-berserk-enabled']) CONFIG.autoBerserkEnabled = changes['labyrinth-auto-berserk-enabled'].newValue;
-            if (changes['labyrinth-auto-action-delay-ms']) CONFIG.actionDelayMs = clampDelay(changes['labyrinth-auto-action-delay-ms'].newValue);
+            if (changes['labyrinth-auto-mine-cooldown-ms']) {
+                CONFIG.mineCooldownMs = clampDelay(changes['labyrinth-auto-mine-cooldown-ms'].newValue, DEFAULTS.mineCooldownMs);
+            }
+            if (changes['labyrinth-auto-boss-cooldown-ms']) {
+                CONFIG.bossCooldownMs = clampDelay(changes['labyrinth-auto-boss-cooldown-ms'].newValue, DEFAULTS.bossCooldownMs);
+            }
             applyMapClasses();
             if (CONFIG.mapEnabled) refreshSharedRooms(true);
         });

@@ -198,7 +198,8 @@ export const SETTING_SECTIONS = [
                 kind: 'sub',
                 id: 'labyrinth-auto-action-subsettings',
                 children: [
-                    { kind: 'field', fieldKey: 'labyrinth-auto-action-delay-ms' },
+                    { kind: 'field', fieldKey: 'labyrinth-auto-mine-cooldown-ms' },
+                    { kind: 'field', fieldKey: 'labyrinth-auto-boss-cooldown-ms' },
                 ],
             },
         ],

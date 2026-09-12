@@ -916,5 +916,17 @@
     },
     "labyrinth_auto_action_delay_description": {
         "message": "Пауза між автоматичними перевірками лабіринту та штатними кнопками дій."
+    },
+    "labyrinth_auto_mine_cooldown_ms": {
+        "message": "Кулдаун збору шахти"
+    },
+    "labyrinth_auto_mine_cooldown_description": {
+        "message": "Мінімальна пауза між автоматичними спробами забрати здобич із шахти."
+    },
+    "labyrinth_auto_boss_cooldown_ms": {
+        "message": "Кулдаун дій проти боса"
+    },
+    "labyrinth_auto_boss_cooldown_description": {
+        "message": "Мінімальна пауза між автоматичними діями проти боса або міміка."
     }
 }
