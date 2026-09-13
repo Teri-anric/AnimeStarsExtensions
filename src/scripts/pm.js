@@ -52,39 +52,76 @@ chrome.storage.sync.get(['custom-hosts'], (data) => {
         return cardWrapper;
     }
 
+    function getCardMessageLinks() {
+        return Array.from(document.querySelectorAll(
+            '.animesss-pm__text > a[href*="/cards/users/"], .dpm-dialog-message-text > a[href*="/cards/users/"]',
+        ));
+    }
+
+    function removeCardPreviews() {
+        document.querySelectorAll('.ass-pm-card-preview, .ass-pm-card-preview-loading').forEach((element) => {
+            element.remove();
+        });
+        document.querySelectorAll('[data-ass-pm-preview-pending]').forEach((messageElement) => {
+            delete messageElement.dataset.assPmPreviewPending;
+        });
+    }
+
     async function processAllMessages() {
         if (!CONFIG.CARD_PM_PREVIEW_ENABLED) return;
 
-        Array.from(document.querySelectorAll('.dpm-dialog-message-text > a')).forEach(async (messageLink) => {
+        getCardMessageLinks().forEach(async (messageLink) => {
             const MessageElm = messageLink.parentElement;
             if (!MessageElm) return;
+
+            if (MessageElm.dataset.assPmPreviewPending === '1') return;
 
             const linkUrl = new URL(messageLink.getAttribute('href'), window.location.origin);
             const cardId = linkUrl.searchParams.get('id');
             if (!cardId) return;
 
-            if (MessageElm.querySelectorAll('.ass-pm-card-preview').length > 0) return;
+            if (MessageElm.querySelector('.ass-pm-card-preview, .ass-pm-card-preview-loading')) return;
 
-            const cardDetail = await getCardDetails(cardId);
-            if (!cardDetail) return;
-            MessageElm.appendChild(renderCardPreview(cardDetail));
+            MessageElm.dataset.assPmPreviewPending = '1';
+            const pendingMarker = document.createElement('span');
+            pendingMarker.className = 'ass-pm-card-preview-loading';
+            pendingMarker.hidden = true;
+            MessageElm.appendChild(pendingMarker);
+            try {
+                const cardDetail = await getCardDetails(cardId);
+                if (CONFIG.CARD_PM_PREVIEW_ENABLED
+                    && cardDetail
+                    && !MessageElm.querySelector('.ass-pm-card-preview')) {
+                    MessageElm.appendChild(renderCardPreview(cardDetail));
+                }
+            } finally {
+                pendingMarker.remove();
+                delete MessageElm.dataset.assPmPreviewPending;
+            }
         });
     }
 
-    new MutationObserver(processAllMessages).observe(document.querySelector('.dpm-dialog-list') || document.body, {
+    const messageRoot = document.querySelector('.animesss-pm__body, .dpm-dialog-list') || document.body;
+    new MutationObserver(processAllMessages).observe(messageRoot, {
         childList: true,
-        subtree: false,
+        subtree: true,
         attributes: false,
     });
 
-    chrome.storage.sync.get(['pm_card_previews'], (result) => {
-        const cardPreviews = result.pm_card_previews;
-        if (cardPreviews && CONFIG.CARD_PM_PREVIEW_ENABLED) {
-            cardPreviews.forEach(cardPreview => {
-                getCardDetails(cardPreview);
-            });
-        }
+    chrome.storage.sync.get(['pm-card-preview-enabled'], (result) => {
+        CONFIG.CARD_PM_PREVIEW_ENABLED = result['pm-card-preview-enabled'] ?? true;
         processAllMessages();
+    });
+
+    chrome.storage.onChanged.addListener((changes, areaName) => {
+        if (areaName !== 'sync' || !changes['pm-card-preview-enabled']) return;
+
+        CONFIG.CARD_PM_PREVIEW_ENABLED = changes['pm-card-preview-enabled'].newValue ?? true;
+        if (CONFIG.CARD_PM_PREVIEW_ENABLED) {
+            processAllMessages();
+        } else {
+            removeCardPreviews();
+        }
     });
     })();
 });

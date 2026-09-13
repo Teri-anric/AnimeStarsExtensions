@@ -10,9 +10,6 @@ chrome.storage.sync.get(['custom-hosts'], (data) => {
     'a.history__body-item',
     '.trade__inventory-item',
     'div.trade__main-item',
-    '.remelt__inventory-item',
-    '.remelt__item',
-    '.remelt-ext__slot',
     '.noffer__img',
     '.card-filter-list__card',
     '.deck__item',
@@ -24,10 +21,7 @@ chrome.storage.sync.get(['custom-hosts'], (data) => {
 
   const notIdsSelectors = [
     '.trade__inventory-item',
-    '.remelt__inventory-item',
-    '.remelt__item',
     'div.trade__main-item',
-    '.remelt-ext__slot',
     '.stone__inventory-item',
   ].join(',');
 
@@ -91,7 +85,7 @@ chrome.storage.sync.get(['custom-hosts'], (data) => {
   function extractCardIdFromElement(elm) {
     if (!elm) return null;
     // Newer card views expose the type ID as data-card-id, including on
-    // containers that are not trade/remelt items.
+    // containers that are not trade items.
     if (elm.dataset?.cardId) return elm.dataset.cardId;
     if (elm.dataset?.id && !elm.matches(notIdsSelectors)) return elm.dataset.id;
     const href = elm.getAttribute('href') || elm.querySelector('a[href]')?.getAttribute('href');

@@ -157,12 +157,6 @@ export const SETTING_FIELDS = {
         defaultValue: false,
         quickAction: true,
     },
-    'remelt-topbar-enabled': {
-        type: 'checkbox',
-        labelKey: 'remelt_topbar_enabled',
-        defaultValue: false,
-        quickAction: true,
-    },
     'pm-card-preview-enabled': {
         type: 'checkbox',
         labelKey: 'pm_card_preview_enabled',
@@ -170,12 +164,6 @@ export const SETTING_FIELDS = {
         quickAction: true,
     },
 
-    'trades-history-filters': {
-        type: 'checkbox',
-        labelKey: 'trades_history_filters',
-        defaultValue: true,
-        quickAction: true,
-    },
     'trades-preview-enabled': {
         type: 'checkbox',
         labelKey: 'trades_preview_enabled',
@@ -323,6 +311,26 @@ export const SETTING_FIELDS = {
         unit: 'ms',
         defaultValue: 900,
         descriptionKey: 'labyrinth_auto_action_delay_description',
+    },
+    'labyrinth-auto-mine-cooldown-ms': {
+        type: 'range',
+        labelKey: 'labyrinth_auto_mine_cooldown_ms',
+        min: 300,
+        max: 5000,
+        step: 100,
+        unit: 'ms',
+        defaultValue: 900,
+        descriptionKey: 'labyrinth_auto_mine_cooldown_description',
+    },
+    'labyrinth-auto-boss-cooldown-ms': {
+        type: 'range',
+        labelKey: 'labyrinth_auto_boss_cooldown_ms',
+        min: 300,
+        max: 5000,
+        step: 100,
+        unit: 'ms',
+        defaultValue: 1800,
+        descriptionKey: 'labyrinth_auto_boss_cooldown_description',
     },
 
     'card-user-count': {

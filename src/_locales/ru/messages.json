@@ -413,9 +413,6 @@
     "cards_search_integration_description": {
         "message": "Добавляет кнопку поиска на страницу базы карт для быстрого поиска через API"
     },
-    "trades_history_filters": {
-        "message": "Фильтры истории обменов (ранг и пользователь)"
-    },
     "trades_preview_enabled": {
         "message": "Показывать превью карточек в обменах"
     },
@@ -433,9 +430,6 @@
     },
     "trades_history_big_images": {
         "message": "Большие изображения в истории обменов"
-    },
-    "remelt_topbar_enabled": {
-        "message": "Спростить и переместить панель переплавки на верх страницы"
     },
     "add_need_btn_to_card_dialog": {
         "message": "Добавить кнопку \"Хочу карточку\" в диалоге карточки"
@@ -922,5 +916,17 @@
     },
     "labyrinth_auto_action_delay_description": {
         "message": "Пауза между автоматическими проверками лабиринта и штатными кнопками действий."
+    },
+    "labyrinth_auto_mine_cooldown_ms": {
+        "message": "Задержка сбора шахты"
+    },
+    "labyrinth_auto_mine_cooldown_description": {
+        "message": "Минимальная пауза между автоматическими попытками собрать шахту."
+    },
+    "labyrinth_auto_boss_cooldown_ms": {
+        "message": "Задержка действий против босса"
+    },
+    "labyrinth_auto_boss_cooldown_description": {
+        "message": "Минимальная пауза между автоматическими действиями против босса или мимика."
     }
 }

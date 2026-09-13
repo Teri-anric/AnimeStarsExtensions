@@ -413,9 +413,6 @@
     "cards_search_integration_description": {
         "message": "Додає кнопку пошуку до сторінки бази карт для швидкого пошуку через API"
     },
-    "trades_history_filters": {
-        "message": "Фільтри історії обміну (ранг і користувач)"
-    },
     "trades_preview_enabled": {
         "message": "Показувати превʼю карток в обмінах"
     },
@@ -432,10 +429,7 @@
         "message": "Показувати повний обмін (усі картки) у списках"
     },
     "trades_history_big_images": {
-        "message": "Більші зображення в історії обмінів"
-    },
-    "remelt_topbar_enabled": {
-        "message": "Спростити і перемістити панель переплавки на верх сторінки"
+        "message": "Більші зображення в історії обміну"
     },
     "add_need_btn_to_card_dialog": {
         "message": "Додати кнопку \"Хочу картку\" в діалоговому вікні картки"
@@ -922,5 +916,17 @@
     },
     "labyrinth_auto_action_delay_description": {
         "message": "Пауза між автоматичними перевірками лабіринту та штатними кнопками дій."
+    },
+    "labyrinth_auto_mine_cooldown_ms": {
+        "message": "Кулдаун збору шахти"
+    },
+    "labyrinth_auto_mine_cooldown_description": {
+        "message": "Мінімальна пауза між автоматичними спробами забрати здобич із шахти."
+    },
+    "labyrinth_auto_boss_cooldown_ms": {
+        "message": "Кулдаун дій проти боса"
+    },
+    "labyrinth_auto_boss_cooldown_description": {
+        "message": "Мінімальна пауза між автоматичними діями проти боса або міміка."
     }
 }

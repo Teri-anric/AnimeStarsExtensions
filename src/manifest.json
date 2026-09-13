@@ -121,27 +121,14 @@
         },
         {
             "matches": [
-                "https://*/cards_remelt/",
-                "https://*/cards_remelt/*"
-            ],
-            "js": [
-                "./scripts/remelt_topbar.js"
-            ],
-            "css": [
-                "./styles/remelt_topbar.css"
-            ],
-            "run_at": "document_end"
-        },
-        {
-            "matches": [
-                "https://*/trades/history*",
+                "https://*/trades/history/",
                 "https://*/trades/history/*"
             ],
             "js": [
-                "./scripts/trades_history_filters.js"
+                "./scripts/trades_history_big_images.js"
             ],
             "css": [
-                "./styles/trades_history_filters.css"
+                "./styles/trades_history_big_images.css"
             ],
             "run_at": "document_end"
         },

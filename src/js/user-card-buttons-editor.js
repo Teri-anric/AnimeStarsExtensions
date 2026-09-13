@@ -80,13 +80,6 @@ const DEFAULT_BUTTONS = [
         url: '/user/cards/?name={USERNAME}&locked=0&rank=ass'
     },
     {
-        id: 'trades-history',
-        enabled: false,
-        text: '',
-        icon: 'fal fa-history',
-        url: 'https://animestars.org/trades/history/?kind=calsel_reciever&user={USER}'
-    },
-    {
         id: 'club',
         enabled: false,
         text: '',
@@ -750,4 +743,3 @@ if (typeof window !== 'undefined') {
 }
 
 export default UserCardButtonsEditor;
-
