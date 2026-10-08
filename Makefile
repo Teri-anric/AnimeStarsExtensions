@@ -14,7 +14,7 @@ build-firefox:
 	@rm -rf dist/manifest
 	@echo "Zipping extension..."
 	@echo "Zipping extension..."
-	@cd dist && zip -r -0 ../build/animestars_extension-firefox.xpi *
+	@cd dist && zip -r -FS -0 ../build/animestars_extension-firefox.xpi *
 	@echo "Removing dist directory..."
 	@rm -rf dist
 	@echo "Build complete"
@@ -31,7 +31,7 @@ build-chrome:
 	@echo "Removing manifest directory..."
 	@rm -rf dist/manifest
 	@echo "Zipping extension..."
-	@cd dist && zip -r -0 ../build/animestars_extension-chrome.zip *
+	@cd dist && zip -r -FS -0 ../build/animestars_extension-chrome.zip *
 	@echo "Packing extension (optional)..."
 	@if [ -f mykey.pem ] && command -v google-chrome >/dev/null 2>&1; then \
 		google-chrome --pack-extension=./dist --pack-extension-key=mykey.pem; \
